@@ -52,7 +52,7 @@ highlight:
   auto_detect: false
   tab_replace: ''
   wrap: true
-  hljs: false
+  hljs: true
 prismjs:
   enable: false
   preprocess: true
@@ -100,7 +100,15 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: arknights
+
+mathjax:
+  tags: none # 或 'ams' 或 'all'
+  single_dollars: true # 启用单个美元符号作为内联（行内）数学公式定界符
+  cjk_width: 0.9 # 相对 CJK 字符宽度
+  normal_width: 0.6 # 相对正常（等宽）宽度
+  append_css: true # 将 CSS 添加到每个页面
+  every_page: true # 如果为 true，那么无论每篇文章的前题中的 `mathjax` 设置如何，每页都将由 mathjax 呈现
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
