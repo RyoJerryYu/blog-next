@@ -51,10 +51,23 @@ $$
 来几句 mermaid 吧
 
 ```mermaid
-flowchart TD
-do ---> coll
+graph LR
+
+ohmy-->coll
+
 ```
+
+> <div class="mermaid">
+> graph LR
+> ohmy-->coll
+> </div>
 
 能渲染出来就有鬼了。
 
 别说，还真被我渲染出来了。可是 syntax 怎么跟 vscode 插件 markdown preview enhanced 不一样呢？ vscode 里能渲染的东西，到了 hexo 里就不对劲了，真怪。
+
+本还以为是 mermaid 版本问题，原来是代码块渲染时把 mermaid 代码当作普通代码，往里面里插换行符号了。
+
+一看原作者，原来是使用 quoteblock 来渲染的（quoteblock 不会往其中插入换行符）。
+
+使用了 hexo-filter-mermaid-diagrams 插件，添加 mermaid 过滤器，解决问题。

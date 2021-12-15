@@ -110,6 +110,10 @@ mathjax:
   append_css: true # 将 CSS 添加到每个页面
   every_page: true # 如果为 true，那么无论每篇文章的前题中的 `mathjax` 设置如何，每页都将由 mathjax 呈现
 
+mermaid:
+  enable: true
+  version: '8.13.3'
+
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
