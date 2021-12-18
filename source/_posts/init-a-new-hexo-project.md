@@ -71,3 +71,13 @@ ohmy-->coll
 一看原作者，原来是使用 quoteblock 来渲染的（quoteblock 不会往其中插入换行符）。
 
 使用了 hexo-filter-mermaid-diagrams 插件，添加 mermaid 过滤器，解决问题。
+
+再试试混个 js
+
+<div id="hello_world">Hello World</div>
+<script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script type="text/babel" src="hello_world.jsx"></script>
+
+看来没用。
