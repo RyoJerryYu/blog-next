@@ -10,12 +10,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: Use Go 1.16
+        uses: actions/setup-go@v1
+        with:
+          go-version: '1.16.1'
+      
+      - name: generate config
+        run: go run ./genconfig/main.go --env=local > _config.yml
+
       - name: Checkout submodules
         run: git submodule update --init --recursive
+      
       - name: Use Node.js 16.6.0
         uses: actions/setup-node@v1
         with:
           node-version: '16.6.0'
+      
       - name: Cache NPM dependencies
         uses: actions/cache@v2
         with:
@@ -23,10 +34,13 @@ jobs:
           key: ${{ runner.OS }}-npm-cache
           restore-keys: |
             ${{ runner.OS }}-npm-cache
+      
       - name: Install Dependencies
         run: npm install
+      
       - name: Build
         run: npm run build
+      
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
