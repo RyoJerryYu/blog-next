@@ -34,7 +34,7 @@ func main() {
 		}
 	case "aws-test":
 		config = ConfigVar{
-			Url:  "https://test.blog.ryo-okami.xyz",
+			Url:  "https://test.ryo-okami.xyz",
 			Root: "/",
 		}
 	default:
