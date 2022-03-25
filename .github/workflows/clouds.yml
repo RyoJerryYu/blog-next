@@ -44,12 +44,11 @@ jobs:
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_region: us-east-1
       - name: Deploy
         env:
-          S3_BUCKET: ${{ secrets.S3_BUCKET }}
-          DISTRIBUTION_ID: ${{ secrets.DISTRIBUTION_ID }}
+          S3_BUCKET: test.ryo-okami.xyz
+          DISTRIBUTION_ID: E3DFPA0YC9J6TJ
         run: |
           aws s3 rm s3://$S3_BUCKET/* --recursive --region=ap-northeast-1
           aws s3 cp ./public s3://$S3_BUCKET/ --recursive --region=ap-northeast-1
-          aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths '/*'
+          aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths '/*' --region=us-east-1
