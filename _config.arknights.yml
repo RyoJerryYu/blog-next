@@ -1,3 +1,5 @@
 mermaid:
   enable: true
   version: '8.13.3'
+mathjax:
+  enable: true
