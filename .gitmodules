@@ -1,3 +1,4 @@
-[submodule "themes/arknights"]
+[submodule "my-theme/arknights"]
 	path = themes/arknights
-	url = https://github.com/Yue-plus/hexo-theme-arknights.git
+	url = https://github.com/RyoJerryYu/hexo-theme-arknights.git
+	branch = dev
