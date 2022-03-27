@@ -337,6 +337,16 @@ exports.handler = (event, context, callback) => {
 
 };
 ```
+这一段代码主要作用是把接收到每个以 `/` 结尾的请求，都转换为以 `/index.html` 结尾的请求。
 
-Deploy 之后，为 Lambda 添加 Trigger ，选择 CloudFront 作为 Trigger 。按照界面的提示为 Lambda 创建专用的 Role 。
+Deploy 之后，为 Lambda 添加 Trigger ，选择 CloudFront 作为 Trigger ， Event 选择 On Request 。按照界面的提示为 Lambda 创建专用的 Role 。
 提交后，我们就可以通过 Url 访问，发现 `/` 结尾的 URL 也会正常显示了。
+
+# 之后的事
+
+这个过程仍有以下问题：
+- 对 Lambda 的认识仍有不足，今后需继续学习运用
+- Lambda@Edge 还没有结合到 IaC 中
+- 配置文件生成过程仍有改进空间
+
+留下这些问题，今后再修改。
