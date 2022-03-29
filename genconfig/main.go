@@ -37,6 +37,11 @@ func main() {
 			Url:  "https://test.ryo-okami.xyz",
 			Root: "/",
 		}
+	case "aws-prod":
+		config = ConfigVar{
+			Url:  "https://blog.ryo-okami.xyz",
+			Root: "/",
+		}
 	default:
 		log.Fatal("unknown env")
 	}

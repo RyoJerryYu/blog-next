@@ -1,0 +1,55 @@
+name: Pages
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+  
+
+jobs:
+  cloud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Go 1.16
+        uses: actions/setup-go@v1
+        with:
+          go-version: '1.16.1'
+      - name: generate config
+        run: go run ./genconfig/main.go --env=aws-prod > _config.yml
+
+      - name: Checkout submodules
+        run: git submodule update --init --recursive
+
+      - name: Use Node.js 16.6.0
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.6.0'
+      - name: Cache NPM dependencies
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-npm-cache
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache
+      - name: Install Dependencies
+        run: npm install
+      - name: Build
+        run: npm run build  
+
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+      - name: Deploy
+        env:
+          S3_BUCKET: prod.ryo-okami.xyz
+          DISTRIBUTION_ID: E172E66IEH7CXH
+        run: |
+          aws s3 rm s3://$S3_BUCKET/* --recursive --region=ap-northeast-1
+          aws s3 cp ./public s3://$S3_BUCKET/ --recursive --region=ap-northeast-1
+          aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths '/*' --region=us-east-1
