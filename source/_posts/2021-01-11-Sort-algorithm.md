@@ -81,7 +81,7 @@ tags:
     \end{aligned}
     $$
 
-    令 $\sum_{i=0}^{n}T(i) = Sum(n)$ ，即有：
+    令 $$\sum_{i=0}^{n}T(i) = Sum(n)$$ ，即有：
 
     $$
     \begin{aligned}
@@ -301,7 +301,7 @@ tags:
             &= O(nlogn)
             \end{aligned}$$
 
-            即时间复杂度为$O(nlogn)$
+            即时间复杂度为 $$O(nlogn)$$
 
     - 策略2：从后开始建堆，小堆合并（逐个元素下沉），时间复杂度为O（n）
         - 每次堆合并时，有三部分：左子堆，右子堆，顶元素。下沉顶元素。
