@@ -12,6 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: load updated at
+        run: |
+          git ls-files -z |
+          while read -d '.' path; do
+            touch -d "$(git log -1 --format=\"@%ct\" \"$path\")" "$path"
+          done
 
       - name: Use Go 1.16
         uses: actions/setup-go@v1
