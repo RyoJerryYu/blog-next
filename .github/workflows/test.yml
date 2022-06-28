@@ -1,4 +1,4 @@
-name: Pages
+name: Test
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   
 
 jobs:
-  cloud:
+  aws:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
