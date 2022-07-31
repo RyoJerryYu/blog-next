@@ -32,7 +32,7 @@ $$
 f(k_1 x_1 + k_2 x_2) = k_1 k_0 x_1 + k_2 k_0 x_2 = k_1 f(x_1) + k_2 f(x_2) \\
 $$
 
-即，过原点的直线（正比例函数）本身就是一种从 x 轴到 y 轴的线性变换。
+即， xy 平面上过原点的直线（正比例函数）本身就是一种从 x 轴到 y 轴的线性变换。
 
 关于线性变换， [3blue1Brown](https://www.3blue1brown.com/topics/linear-algebra) 上有更详细更感性的介绍，大家感兴趣可以前往观看。
 
@@ -107,10 +107,10 @@ $$
 
 [[图：三维空间切变，with 向量（0,0,1)的变换]]
 
-我们可以重点关注一下 $$\begin{pmatrix}0\\0\\1\end{pmatrix}$$ 这个向量。从齐次坐标的定义来看，这个向量对应着二维空间中的原点 $$\begin{pmatrix}0\\0\end{pmatrix}$$ 。
-而由矩阵乘法计算可知，经过 $$ \begin{pmatrix}1 & 0 & x \\0 & 1 & y \\0 & 0 & 1\end{pmatrix} $$ 对应的线性变换后， $$ \begin{pmatrix}0\\0\\1\end{pmatrix} $$ 这个向量会被映射到 $$ \begin{pmatrix}x\\y\\1\end{pmatrix} $$ 上。也就是说，二维空间原点 $$\begin{pmatrix}0\\0\end{pmatrix}$$ 经过变换后会变为 $$\begin{pmatrix}x\\y\end{pmatrix}$$ 。
+我们可以重点关注一下 $$\begin{pmatrix}0\\0\\1\end{pmatrix}$$ 这个向量。
+从齐次坐标的定义来看，这个向量对应着二维空间中的原点 $$P_{Origin} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$$ 。而由矩阵乘法计算可知，经过 $$ A = \begin{pmatrix} 1 & 0 & x \\ 0 & 1 & y \\ 0 & 0 & 1 \end{pmatrix} $$ 对应的线性变换后， $$ \begin{pmatrix}0\\0\\1\end{pmatrix} $$ 这个向量会被映射到 $$ \begin{pmatrix}x\\y\\1\end{pmatrix} $$ 上。也就是说，二维空间原点 $$ P_{Origin} = \begin{pmatrix}0\\0\end{pmatrix}$$ 经过变换后会变为 $$ P_{Origin}' = A(P_{Origin}) = \begin{pmatrix}x\\y\end{pmatrix}$$ 。
 
-而对于二维空间中的向量 $$\vec{v}=\begin{pmatrix}v_x\\v_y\end{pmatrix}$$ ，其齐次坐标下 w 轴方向分量为 0 ，因此 w 轴方向上的切变并不会影响二维空间中的向量。
+而对于二维空间中的向量 $$\vec{v}=\begin{pmatrix}v_x\\v_y\end{pmatrix}$$ ，其齐次坐标下 w 轴方向分量为 0 ，因此 w 轴方向上的切变并不会影响二维空间中的向量。即 $$ \vec{v'} = A(\vec{v}) = \vec{v} $$ 。
 
 而对于原来二维空间中的其他点的坐标：
 $$

@@ -1,5 +1,20 @@
 {
     "markdown.extension.list.indentationSize": "inherit",
     "pasteImage.insertPattern": "![[${imageFileName}]]",
-    "pasteImage.path": "${currentFileDir}/${currentFileNameWithoutExt}/"
+    "pasteImage.path": "${currentFileDir}/${currentFileNameWithoutExt}/",
+    "[python]": {
+        "gitlens.codeLens.symbolScopes": [
+            "!Module"
+        ],
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.wordBasedSuggestions": false,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ms-python.python",
+    },
+    "python.languageServer": "Pylance",
+    "python.formatting.provider": "yapf",
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.lintOnSave": true,
 }
