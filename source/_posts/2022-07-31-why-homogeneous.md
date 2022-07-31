@@ -119,7 +119,7 @@ $$
 其实可以理解为原点坐标再加上一个偏移向量：
 $$
 P = \begin{pmatrix}0\\0\end{pmatrix} + \begin{pmatrix}x_0\\y_0\end{pmatrix} = P_{Origin} + \vec{v}_{x,y}
-$$ 。
+$$
 
 而在齐次坐标下，点坐标 = 原点坐标 + 偏移向量 这一等式仍然成立：
 $$
