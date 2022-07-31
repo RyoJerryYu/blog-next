@@ -108,15 +108,7 @@ $$
 [[图：三维空间切变，with 向量（0,0,1)的变换]]
 
 我们可以重点关注一下 $$\begin{pmatrix}0\\0\\1\end{pmatrix}$$ 这个向量。从齐次坐标的定义来看，这个向量对应着二维空间中的原点 $$\begin{pmatrix}0\\0\end{pmatrix}$$ 。
-而由矩阵乘法计算可知，经过 $$
-\begin{pmatrix}
-    1 & 0 & x \\
-    0 & 1 & y \\
-    0 & 0 & 1
-\end{pmatrix}
-$$ 对应的线性变换后， $$\begin{pmatrix}0\\0\\1\end{pmatrix}$$ 这个向量会被映射到 $$ \begin{pmatrix}
-    x\\y\\1
-\end{pmatrix}$$ 上。也就是说，二维空间原点 $$\begin{pmatrix}0\\0\end{pmatrix}$$ 经过变换后会变为 $$\begin{pmatrix}x\\y\end{pmatrix}$$ 。
+而由矩阵乘法计算可知，经过 $$ \begin{pmatrix}1 & 0 & x \\0 & 1 & y \\0 & 0 & 1\end{pmatrix} $$ 对应的线性变换后， $$ \begin{pmatrix}0\\0\\1\end{pmatrix} $$ 这个向量会被映射到 $$ \begin{pmatrix}x\\y\\1\end{pmatrix} $$ 上。也就是说，二维空间原点 $$\begin{pmatrix}0\\0\end{pmatrix}$$ 经过变换后会变为 $$\begin{pmatrix}x\\y\end{pmatrix}$$ 。
 
 而对于二维空间中的向量 $$\vec{v}=\begin{pmatrix}v_x\\v_y\end{pmatrix}$$ ，其齐次坐标下 w 轴方向分量为 0 ，因此 w 轴方向上的切变并不会影响二维空间中的向量。
 
@@ -151,13 +143,7 @@ $$
 
 而这种大小、形状、方向都不变化，只有整体位置发生了变化的变换，正是我们一般所说的“平移”。因此在齐次坐标下，我们能通过线性变换（aka 矩阵乘法）表示平移。
 
-> 其实 $$
-\begin{pmatrix}
-    1 & 0 & x \\
-    0 & 1 & y \\
-    0 & 0 & 1
-\end{pmatrix}
-$$ 对应切变作用后各点坐标如何变化这个过程， 3Blue1Brown 的[这个视频](https://www.3blue1brown.com/lessons/matrix-multiplication) 有更直观明了的解释，大家可以参考。
+> 其实 $$\begin{pmatrix}1 & 0 & x \\0 & 1 & y \\0 & 0 & 1\end{pmatrix}$$ 对应切变作用后各点坐标如何变化这个过程， 3Blue1Brown 的[这个视频](https://www.3blue1brown.com/lessons/matrix-multiplication) 有更直观明了的解释，大家可以参考。
 
 ## 总结一下
 
