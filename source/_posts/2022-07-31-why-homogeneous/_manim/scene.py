@@ -1,4 +1,4 @@
-from typing import Callable, List, Sequence, Union
+from typing import Callable, Iterable, List, Optional, Protocol, Sequence, Union
 import manim as mn
 import numpy as np
 
@@ -6,13 +6,29 @@ PointType = Union[Sequence[float], np.ndarray]
 PointTransformFunction = Callable[[PointType], PointType]
 
 
-class Basic2DMonoSpace(mn.Scene):
+class SpaceManager(Protocol):
+
+  def setup(self) -> List[mn.Mobject]:
+    ...
+
+  def add_vector(self, vector: List | np.ndarray, color=mn.RED) -> mn.Vector:
+    ...
+
+  def add_transformable_mobject(self,
+                                *mobjects: mn.Mobject) -> List[mn.Mobject]:
+    ...
+
+  def anime_apply_matrix(self, matrix: np.ndarray) -> List[mn.Animation]:
+    ...
+
+
+class Basic2DSpaceManager:
   background_plane: mn.NumberPlane
   plane: mn.NumberPlane
   moving_vectors: List[mn.Vector] = []
   transformable_mobjects: List[mn.Mobject] = []
 
-  def setup(self):
+  def setup(self) -> List[mn.Mobject]:
     self.background_plane = mn.NumberPlane(
         color=mn.GRAY,
         axis_config={
@@ -29,18 +45,19 @@ class Basic2DMonoSpace(mn.Scene):
         faded_line_ratio=1,
     )
     self.background_plane.add_coordinates()
-    self.add(self.background_plane, self.plane)
+    return [
+        self.background_plane,
+        self.plane,
+    ]
 
-  def add_vector(self, vector: List | np.ndarray, color=mn.RED, **kwargs):
+  def add_vector(self, vector: List | np.ndarray, color=mn.RED):
     v = mn.Vector(vector, color=color)
     self.moving_vectors.append(v)
-    self.add(v)
-    _ = kwargs
+    return v
 
   def add_transformable_mobject(self, *mobjects: mn.Mobject):
     self.transformable_mobjects.append(*mobjects)
-    for mobj in mobjects:
-      self.add(mobj)
+    return mobjects
 
   def anime_apply_matrix(self, matrix: np.ndarray):
     f = self.get_matrix_apply_function(matrix)
@@ -84,25 +101,37 @@ class Basic2DMonoSpace(mn.Scene):
     return lambda p: matrix @ p
 
 
-class OnOneLineWillStillOneLine(Basic2DMonoSpace):
-  '''图：在同一直线上的点，经过同一线性变换后还在同一直线上
-  '''
+class Basic3DSpaceManager:
+  pass
+
+
+class Basic2DSpaceScene(mn.Scene):
 
   xy_label: mn.MathTex
+  mobj_manager: SpaceManager
 
-  def add_vectors_on_line(self, line_fn: Callable[[int], int], start_x: int,
-                          end_x: int, color: str):
-    to_point = lambda x: [x, line_fn(x)]
-    for x in range(start_x, end_x):
-      self.add_vector(to_point(x), color=color, animate=False)
+  def setup(self):
+    self.mobj_manager = Basic2DSpaceManager()
+    default_mobj = self.mobj_manager.setup()
+    self.add(*default_mobj)
+    self.xy_label = mn.MathTex(r'\begin{pmatrix} x \\ y \end{pmatrix}')
+    # label_group = mn.VGroup(label)
+    self.add(self.xy_label.to_corner(mn.RIGHT + mn.UP))
+    return super().setup()
 
-    vec_line = mn.Line(
-        start=[*to_point(-10), 0], end=[*to_point(10), 0], color=color)
-    self.add_transformable_mobject(vec_line)
+  def add_vector(self, vector: List | np.ndarray, color=mn.RED):
+    vector_mobjs = self.mobj_manager.add_vector(vector, color=color)
+    self.add(*vector_mobjs)
 
-  def apply_matrix(self, matrix: np.ndarray):
+  def add_transformable_mobject(self, *mobjects: mn.Mobject):
+    res_mobjs = self.mobj_manager.add_transformable_mobject(*mobjects)
+    self.add(*res_mobjs)
+
+  def apply_matrix(self,
+                   matrix: np.ndarray,
+                   matrix_display: Optional[Iterable] = None):
     matrix_mobject = mn.Matrix(
-        matrix,
+        matrix_display if matrix_display else matrix,
         left_bracket='(',
         right_bracket=')',
     ).next_to(self.xy_label, mn.LEFT)
@@ -111,7 +140,7 @@ class OnOneLineWillStillOneLine(Basic2DMonoSpace):
 
     label = mn.Group(matrix_mobject, self.xy_label)
 
-    apply_matrix_animes = self.anime_apply_matrix(matrix)
+    apply_matrix_animes = self.mobj_manager.anime_apply_matrix(matrix)
     self.play(
         *apply_matrix_animes,
         mn.Transform(label, self.xy_label),
@@ -120,13 +149,24 @@ class OnOneLineWillStillOneLine(Basic2DMonoSpace):
     self.wait(0.5)
     self.xy_label = label
 
+
+class OnOneLineWillStillOneLine(Basic2DSpaceScene):
+  '''图：在同一直线上的点，经过同一线性变换后还在同一直线上
+  '''
+
+  def add_vectors_on_line(self, line_fn: Callable[[int], int], start_x: int,
+                          end_x: int, color: str):
+    to_point = lambda x: [x, line_fn(x)]
+    for x in range(start_x, end_x):
+      self.add_vector(to_point(x), color=color)
+
+    vec_line = mn.Line(
+        start=[*to_point(-10), 0], end=[*to_point(10), 0], color=color)
+    self.add_transformable_mobject(vec_line)
+
   def construct(self):
     self.add_vectors_on_line(lambda x: 2, -1, 3, mn.RED)
     self.add_vectors_on_line(lambda x: x - 2, -1, 3, mn.GREEN)
-
-    self.xy_label = mn.MathTex(r'\begin{pmatrix} x \\ y \end{pmatrix}')
-    # label_group = mn.VGroup(label)
-    self.add(self.xy_label.to_corner(mn.RIGHT + mn.UP))
 
     matrix1 = np.array([[2, -1], [0, 1]])
     self.apply_matrix(matrix1)
@@ -138,34 +178,13 @@ class OnOneLineWillStillOneLine(Basic2DMonoSpace):
     self.apply_matrix(matrix3)
 
 
-class SliceScaleRotateForOrigin(Basic2DMonoSpace):
+class SliceScaleRotateForOrigin(Basic2DSpaceScene):
   '''动图：切边、伸缩、旋转以及其逆变换变回原样
   '''
-  xy_label: mn.MathTex
-
-  def apply_matrix(self, matrix: np.ndarray, matrix_display=[]):
-    matrix_mobject = mn.Matrix(
-        matrix_display if matrix_display else matrix,
-        left_bracket='(',
-        right_bracket=')',
-    ).next_to(self.xy_label, mn.LEFT)
-    self.play(mn.Write(matrix_mobject), run_time=0.5)
-    self.wait(0.5)
-
-    label = mn.Group(matrix_mobject, self.xy_label)
-
-    apply_matrix_animes = self.anime_apply_matrix(matrix)
-    self.play(
-        *apply_matrix_animes,
-        mn.Transform(label, self.xy_label),
-        run_time=0.5,
-    )
-    self.wait(0.5)
-    self.xy_label = label
 
   def construct(self):
-    self.add_vector([1, 0], color=mn.RED, animate=False)
-    self.add_vector([0, 1], color=mn.GREEN, animate=False)
+    self.add_vector([1, 0], color=mn.RED)
+    self.add_vector([0, 1], color=mn.GREEN)
     self.xy_label = mn.MathTex(r'\begin{pmatrix} x \\ y \end{pmatrix}')
     # label_group = mn.VGroup(label)
     self.add(self.xy_label.to_corner(mn.RIGHT + mn.UP))
