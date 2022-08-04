@@ -1,4 +1,4 @@
-from typing import Callable, Iterable, List, Optional, Protocol, Sequence, Union
+from typing import Callable, Iterable, List, Optional, Protocol, Sequence, Tuple, Union
 import manim as mn
 import numpy as np
 
@@ -88,6 +88,94 @@ class Basic3DSpaceManager:
     return []
 
 
+class LabelManager(Protocol):
+
+  def get_label(self) -> List[mn.Mobject]:
+    ...
+
+  def anime_apply_matrix(
+      self,
+      matrix: np.ndarray,
+      matrix_display: Iterable | None = None,
+  ) -> Tuple[List[mn.Animation], List[mn.Animation]]:
+    '''return: (create_matrix_animes, apply_matrix_animes)
+    '''
+
+
+class Label2DManager:
+  xy_label: mn.Matrix
+
+  def __init__(self, label: mn.Matrix | None = None):
+    if label is None:
+      label = mn.Matrix(
+          [['x'], ['y']],
+          left_bracket='(',
+          right_bracket=')',
+      )
+    self.xy_label = label
+    self.xy_label.to_corner(mn.RIGHT + mn.UP)
+
+  def get_label(self):
+    return [self.xy_label]
+
+  def anime_apply_matrix(self,
+                         matrix: np.ndarray,
+                         matrix_display: Iterable | None = None):
+    matrix_mobject = mn.Matrix(
+        matrix_display if matrix_display else matrix,
+        left_bracket='(',
+        right_bracket=')',
+    ).next_to(self.xy_label, mn.LEFT)
+    create_anime = mn.Write(matrix_mobject)
+    created_label = mn.Group(matrix_mobject, self.xy_label)
+    apply_anime = mn.Transform(created_label, self.xy_label)
+    self.xy_label = created_label
+    return [create_anime], [apply_anime]
+
+
+class Label3DManager:
+  xyz_label: mn.Matrix
+  camera_inv_matrix: np.ndarray
+
+  def __init__(self,
+               camera_rotation_matrix: np.ndarray,
+               label: mn.Matrix | None = None):
+    self.camera_inv_matrix = np.linalg.inv(camera_rotation_matrix)
+    if label is None:
+      label = mn.Matrix(
+          [['x'], ['y'], ['z']],
+          left_bracket='(',
+          right_bracket=')',
+      )
+    self.xyz_label = label
+    self.xyz_label.to_corner(mn.RIGHT + mn.UP)
+    self.xyz_label.apply_matrix(self.camera_inv_matrix)
+
+  def get_label(self):
+    return [self.xyz_label]
+
+  def anime_apply_matrix(self,
+                         matrix: np.ndarray,
+                         matrix_display: Iterable | None = None):
+    matrix_mobject = mn.Matrix(
+        matrix_display if matrix_display else matrix,
+        left_bracket='(',
+        right_bracket=')',
+    )
+    fake_label = self.xyz_label.copy()
+    fake_label.apply_matrix(np.linalg.inv(self.camera_inv_matrix))
+    matrix_mobject.next_to(fake_label, mn.LEFT)
+    matrix_mobject.apply_matrix(self.camera_inv_matrix)
+    # matrix_mobject.next_to(self.xyz_label, self.camera_inv_matrix @ mn.LEFT)
+    create_anime = mn.Create(matrix_mobject)
+
+    created_label = mn.Group(matrix_mobject, self.xyz_label)
+    apply_anime = mn.Transform(created_label, self.xyz_label)
+    self.xyz_label = created_label
+
+    return [create_anime], [apply_anime]
+
+
 class LinearTransformManager:
   space_manager: SpaceManager
   moving_vectors: List[mn.Vector] = []
@@ -109,9 +197,9 @@ class LinearTransformManager:
     self.moving_vectors.append(v)
     return v
 
-  def add_transformable_mobject(self, *mobjects: mn.Mobject):
-    self.transformable_mobjects.append(*mobjects)
-    return mobjects
+  def add_transformable_mobject(self, mobject: mn.Mobject):
+    self.transformable_mobjects.append(mobject)
+    return mobject
 
   def anime_apply_matrix(self, matrix: np.ndarray):
     f = self.get_matrix_apply_function(matrix)
@@ -165,23 +253,24 @@ class LinearTransformManager:
 
 class BasicLinearSpaceScene(mn.ThreeDScene):
 
-  xy_label: mn.MathTex
   mobj_manager: LinearTransformManager
+  label_manager: LabelManager
 
   def setup(self):
     self.mobj_manager = LinearTransformManager(2)
     default_mobj = self.mobj_manager.setup()
     self.add(*default_mobj)
-    self.xy_label = mn.MathTex(r'\begin{pmatrix} x \\ y \end{pmatrix}')
+    self.label_manager = Label2DManager()
     # label_group = mn.VGroup(label)
-    self.add(self.xy_label.to_corner(mn.RIGHT + mn.UP))
-    return super().setup()
+    self.add(*self.label_manager.get_label())
 
   def play_2d_to_3d(self):
     '''animate 2d space to 3d space, moving xy plane to w = 1
     '''
     old_2d_space = self.mobj_manager.space_manager
+    old_2d_label = self.label_manager
     assert isinstance(old_2d_space, Basic2DSpaceManager)
+    assert isinstance(old_2d_label, Label2DManager)
 
     self.mobj_manager.space_manager = Basic3DSpaceManager()
     self.mobj_manager.add_transformable_mobject(old_2d_space.plane)
@@ -203,40 +292,47 @@ class BasicLinearSpaceScene(mn.ThreeDScene):
         *self.mobj_manager.anime_apply_function_to_vector(f),
         *self.mobj_manager.anime_apply_function_to_moving_mobjects(f),
     ]
-    # self.move_camera(
-    #     phi=mn.PI / 5, theta=-mn.PI / 3, run_time=2, added_anims=animes)
     self.move_camera(
-        phi=mn.PI / 2, theta=-mn.PI / 2, run_time=2, added_anims=animes)
+        phi=2 * mn.PI / 5, theta=-mn.PI / 3, run_time=2, added_anims=animes)
+
+    self.label_manager = Label3DManager(self.camera.get_rotation_matrix())
+    new_xyz_label = self.label_manager.xyz_label
+
+    self.play(mn.Transform(old_2d_label.xy_label, new_xyz_label), run_time=1)
+    self.label_manager.xyz_label = old_2d_label.xy_label
 
   def add_vector(self, vector: List | np.ndarray, color=mn.RED):
     vector_mobjs = self.mobj_manager.add_vector(vector, color=color)
     self.add(*vector_mobjs)
 
-  def add_transformable_mobject(self, *mobjects: mn.Mobject):
-    res_mobjs = self.mobj_manager.add_transformable_mobject(*mobjects)
+  def add_transformable_mobject(self, mobjects: mn.Mobject):
+    res_mobjs = self.mobj_manager.add_transformable_mobject(mobjects)
     self.add(*res_mobjs)
 
   def apply_matrix(self,
                    matrix: np.ndarray,
                    matrix_display: Optional[Iterable] = None):
-    matrix_mobject = mn.Matrix(
-        matrix_display if matrix_display else matrix,
-        left_bracket='(',
-        right_bracket=')',
-    ).next_to(self.xy_label, mn.LEFT)
-    self.play(mn.Write(matrix_mobject), run_time=0.5)
+    '''play anime for applying matrix to mobjects
+
+    1. create matrix label
+    2. apply matrix to mobjects and combine matrix label
+    '''
+    (create_label_anime,
+     apply_label_anime) = self.label_manager.anime_apply_matrix(
+         matrix, matrix_display)
+
+    # create matrix label
+    self.play(*create_label_anime, run_time=0.5)
     self.wait(0.5)
 
-    label = mn.Group(matrix_mobject, self.xy_label)
-
+    # apply matrix to mobjects and combine matrix label
     apply_matrix_animes = self.mobj_manager.anime_apply_matrix(matrix)
     self.play(
         *apply_matrix_animes,
-        mn.Transform(label, self.xy_label),
+        *apply_label_anime,
         run_time=0.5,
     )
     self.wait(0.5)
-    self.xy_label = label
 
 
 class OnOneLineWillStillOneLine(BasicLinearSpaceScene):
@@ -274,9 +370,6 @@ class SliceScaleRotateForOrigin(BasicLinearSpaceScene):
   def construct(self):
     self.add_vector([1, 0], color=mn.RED)
     self.add_vector([0, 1], color=mn.GREEN)
-    self.xy_label = mn.MathTex(r'\begin{pmatrix} x \\ y \end{pmatrix}')
-    # label_group = mn.VGroup(label)
-    self.add(self.xy_label.to_corner(mn.RIGHT + mn.UP))
 
     matrix1 = np.array([[1, 1], [0, 1]])
     self.apply_matrix(matrix1)
@@ -316,36 +409,28 @@ class HomogeneousTransform(BasicLinearSpaceScene):
     self.apply_matrix(np.array([[1, 0, 0], [0, 1, 1], [0, 0, 1]]))
 
 
-class SliceInHomogeneousWithOrigin(mn.Scene):
-  '''图：三维空间切变，with 向量（0,0,1)的变换
-  '''
-
-  def construct(self):
-    self.background_plane = mn.NumberPlane(
-        color=mn.GRAY,
-        axis_config={
-            'color': mn.GRAY,
-        },
-        background_line_style={
-            'stroke_color': mn.GRAY,
-            'stroke_width': 1,
-        },
-    )
-    self.plane = mn.NumberPlane(
-        x_range=np.array([-10, 10, 1.0]),
-        y_range=np.array([-10, 10, 1.0]),
-        faded_line_ratio=1,
-    )
-    self.background_plane.add_coordinates()
-    self.add(
-        self.background_plane,
-        self.plane,
-    )
-
-
-class SliceOnHomogeneousWithGraph(mn.Scene):
+class SliceOnHomogeneousWithGraph(BasicLinearSpaceScene):
   '''图：还是三维空间上切变，平面上有图案
   '''
 
   def construct(self):
-    return super().construct()
+    circle = mn.Circle(
+        radius=1, color=mn.RED).move_to([2, -2, 0]).set_fill(
+            color=mn.RED_C, opacity=0.5)
+    triangle = mn.Polygon([-2, 0, 0], [-1, 0, 0], [-2, 1, 0],
+                          color=mn.GREEN).set_fill(
+                              color=mn.GREEN_C, opacity=0.5)
+    square = mn.Polygon([2, 2, 0], [2, 1, 0], [3, 1, 0], [3, 2, 0],
+                        color=mn.BLUE).set_fill(
+                            color=mn.BLUE_C, opacity=0.5)
+    star = mn.Star(color=mn.PURPLE).move_to([-2, -2, 0]).set_fill(
+        color=mn.PURPLE_C, opacity=0.5)
+    self.add_transformable_mobject(circle)
+    self.add_transformable_mobject(triangle)
+    self.add_transformable_mobject(square)
+    self.add_transformable_mobject(star)
+    self.play_2d_to_3d()
+    self.add_vector([0, 0, 1], color=mn.GREEN)
+    self.apply_matrix(np.array([[1, 0, 1], [0, 1, 0], [0, 0, 1]]))
+    self.apply_matrix(np.array([[1, 0, -1], [0, 1, -1], [0, 0, 1]]))
+    self.apply_matrix(np.array([[1, 0, 0], [0, 1, 1], [0, 0, 1]]))

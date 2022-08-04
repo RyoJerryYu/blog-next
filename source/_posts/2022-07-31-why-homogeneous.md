@@ -103,10 +103,6 @@ $$
 
 这不就是三维空间中在 w 轴上做切变时的变换矩阵嘛！
 
-我们可以用图来直观观察这个变换：
-
-[[图：三维空间切变，with 向量（0,0,1)的变换]]
-
 我们可以重点关注一下 $$\begin{pmatrix}0\\0\\1\end{pmatrix}$$ 这个向量。
 从齐次坐标的定义来看，这个向量对应着二维空间中的原点 $$P_{Origin} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$$ 。而由矩阵乘法计算可知，经过 $$ A = \begin{pmatrix} 1 & 0 & x \\ 0 & 1 & y \\ 0 & 0 & 1 \end{pmatrix} $$ 对应的线性变换后， $$ \begin{pmatrix}0\\0\\1\end{pmatrix} $$ 这个向量会被映射到 $$ \begin{pmatrix}x\\y\\1\end{pmatrix} $$ 上。也就是说，二维空间原点 $$ P_{Origin} = \begin{pmatrix}0\\0\end{pmatrix}$$ 经过变换后会变为 $$ P_{Origin}' = A(P_{Origin}) = \begin{pmatrix}x\\y\end{pmatrix}$$ 。
 
