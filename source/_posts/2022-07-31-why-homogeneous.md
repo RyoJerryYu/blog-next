@@ -16,7 +16,7 @@ $$
 
 我们可以直观地从下面这张图看出原因：
 
-[[OnOneLineWillStillOneLine_ManimCE_v0.16.0.post0.gif]]
+![[OnOneLineWillStillOneLine_ManimCE_v0.16.0.post0.gif]]
 我们可以看到，在同一直线上的点，经过同一线性变换后还在同一直线上。所以它很“线”。
 
 另一方面，我们可以找一找最简单的线性变换：
@@ -62,7 +62,7 @@ $$
     \frac{\sqrt{3}}{2} & -\frac{1}{2} \\ \frac{1}{2} & \frac{\sqrt{3}}{2}
 \end{pmatrix} $$ 这些经典的线性变换，变换后原点都不会变。
 
-[[SliceScaleRotateForOrigin_ManimCE_v0.16.0.post0.gif]]
+![[SliceScaleRotateForOrigin_ManimCE_v0.16.0.post0.gif]]
 
 但是平移这种变换不一样。原点经过平移后，是一定不会还留在原点的。因此平移不是一种线性变换，自然也不能用矩阵来表示。
 
@@ -86,7 +86,7 @@ $$
 
 从字面上看可能还是不太明显，让我们试着把二维空间齐次坐标强行转化为三维空间坐标看看：
 
-[[HomogeneousTransform_ManimCE_v0.16.0.post0.gif]]
+![[HomogeneousTransform_ManimCE_v0.16.0.post0.gif]]
 
 我们发现，原来二维空间中的点，被投射到三维空间中 w = 1 的平面上了！
 
@@ -135,7 +135,7 @@ $$
 
 因为切变前后偏移向量没有发生变化，因此二维空间上的点经变换后相对于原点的方向、距离都没有发生变化。由此也可得出，原先由二维空间中的点组成的图案，经齐次坐标下 w 轴的切变后，其大小、形状、方向都不会发生变化。
 
-[[SliceOnHomogeneousWithGraph_ManimCE_v0.16.0.post0.gif]]
+![[SliceOnHomogeneousWithGraph_ManimCE_v0.16.0.post0.gif]]
 
 而这种大小、形状、方向都不变化，只有整体位置发生了变化的变换，正是我们一般所说的“平移”。因此在齐次坐标下，我们能通过线性变换（aka 矩阵乘法）表示平移。
 
