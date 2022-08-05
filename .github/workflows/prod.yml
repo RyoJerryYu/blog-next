@@ -17,6 +17,7 @@ jobs:
           # for each file. This requires a full git history. The default value (1)
           # creates a shallow checkout.
           fetch-depth: 0
+          lfs: true
       # Fix timestamps
       - name: restore timestamps
         uses: chetan/git-restore-mtime-action@v1
