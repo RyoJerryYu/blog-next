@@ -148,3 +148,6 @@ A: 因为矩阵乘法只能表示线性变换。平移不是线性变换。
 
 Q: 为什么在齐次坐标下的矩阵乘法又能表示平移？
 A: 因为齐次坐标增加了一个维度。平移变换矩阵其实是在新增的这个维度上做切变（一种线性变换）。切变后的结果正好就是原坐标中的平移变换。
+
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
