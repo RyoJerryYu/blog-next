@@ -4,7 +4,7 @@ date: 2022-08-13 17:45:31
 tags:
 ---
 
-## 容器， Docker 与 K8s
+# 容器， Docker 与 K8s
 
 我们知道 K8s 利用了容器虚拟化技术。而说到容器虚拟化就要说 Docker 。可是，容器到底是什么？ Docker 又为我们做了些什么？我们又为什么要用 K8s ？
 
@@ -85,7 +85,7 @@ K8s 与 Docker 关系很复杂，是一个逐渐变化的过程。
 
 《凤凰架构》书中[这一章节](http://icyfenix.cn/immutable-infrastructure/container/history.html#%E5%B0%81%E8%A3%85%E9%9B%86%E7%BE%A4%EF%BC%9Akubernetes)详细介绍了 K8s 与 Docker 的历史，我这里就不再赘述。
 
-## 部署一个 Pod
+# 部署一个 Pod
 
 上面说了一堆概念，我们接下来实际上会怎样应用 K8s 。
 
@@ -360,7 +360,7 @@ ReplicaSet11 --> Pod12
 
 比如在上面的例子中，名为 gateway 的 Deployment 创建后，就会有如下 ReplicaSet 和 Pod ：
 
-```
+```sh
 # Replica Set:
 $ kubectl get rc -l app=gateway
 NAME                 DESIRED   CURRENT   READY   AGE
@@ -427,7 +427,7 @@ A --> B --> C
 
 整个过程完成后， Deployment 还不会将旧的 Replica Set 删除掉。我们注意到 Deployment 的声明中有这么一个字段： `revisionHistoryLimit: 10` ，表示 Deployment 会保留历史中 最近的 10 个 Replica Set ，这样在必要的时候可以立刻将 Deployment 回滚到上个版本。而超出 10 个的 Replica Set 才会被从 K8s 中删除。
 
-```
+```sh
 # 实际中被 scale 到 0 但还没被删除的 Replica Set
 $ kubectl get rs -l app=gateway
 NAME                 DESIRED   CURRENT   READY   AGE
@@ -446,16 +446,101 @@ gateway-9dc546658    2         2         2       5d4h
 
 ### Stateful Set
 
+Deployment 中默认了我们不关心自己访问的是哪个 Pod ，因为各个 Pod 的功能是一样的，访问哪个没有差别。
 
+实际上这也符合大多数情况：试想一个 HTTP Server ，如果其所有数据都存放到同一个的数据库中，那这个 HTTP Server 不管部署在哪台主机、不管有多少个实例、不管你访问的是哪个实例，都察觉不出有什么差别。而有了这种默认，我们就能更放心地对 Pod 进行负载均衡、缩扩容等操作。
+
+但实际上我们总会遇到需要保存自己状态的 Pod 。比如我们在 K8s 里部署一个 Kafka 集群，每个 Kafka broker 都需要保存自己的分区数据，而且还要往 Zookeeper 里写入自己的名字来实现选举等功能。如果简单地用 Deployment 来部署， broker 之间可能就会分不清到底哪块是自己的分区，而且由 Deployment 生成出来的 Pod 名字是随机的，升级后 Pod 的名字会变，导致 Kafka 升级后名字与 Zookeeper 里的名字不一致，被以为是一个新的 broker 。
+
+Stateful Set 就是为了解决有状态应用的部署而出现的。下面是 用 bitnami 的 Kafka Helm Chart 部署的一个 Kafka Stateful Set 的例子：
+
+```yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/name: kafka
+  name: kafka
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kafka
+  serviceName: kafka-headless
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kafka
+    spec:
+      containers:
+      - name: kafka
+        image: docker.io/bitnami/kafka:3.1.0-debian-10-r52
+        command:
+        - /scripts/setup.sh
+        ports:
+        - containerPort: 9092
+          name: kafka-client
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /bitnami/kafka
+          name: data
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: data
+    spec:
+      resources:
+        requests:
+          storage: 10Gi
+      storageClassName: gp2
+```
+
+可以看到其实 Stateful Set 类似 Deployment ，也可以通过 replicas 字段定义实例数，如果更新 template 部分， Stateful Set 也会以一定的策略对 Pod 进行更新。
+
+而其创建出来的 Pod 如下所示：
+```sh
+$ kubectl get po -l app.kubernetes.io/name=kafka
+NAME      READY   STATUS    RESTARTS   AGE
+kafka-0   1/1     Running   1          26d
+kafka-1   1/1     Running   3          26d
+kafka-2   1/1     Running   3          26d
+```
+
+与 Replica Set 创建出来的 Pod 相比名字上会有很大差别。 Stateful Set 创建出来的 Pod 会固定的以 `-0` 、 `-1` 、 `-2` 结尾而不是随机生成：
+
+```mermaid
+flowchart TB
+rs[Replica Set A]
+rs --> A-qwert
+rs --> A-asdfg
+rs --> A-zxcvb
+
+ss[Stateful Set A]
+ss --> A-0
+ss --> A-1
+ss --> A-2
+```
+
+这样一来，更新时将 Pod 更换之后，新的 Pod 仍能够跟旧的 Pod 保持相同的名字。此外，与 Deployment 相比， Stateful Set 更新后同名的 Pod 仍能保持原来的 IP ，拿到同一个持久化卷，而且不同的 Pod 还能通过独立的 DNS 记录相互区分。这些内容后面还会详细介绍。
+
+> **宠物与牛（ Cattle vs Pets ）的比喻**
+> 
+> Deployment 更倾向于将 Pod 看作是牛：我们不会去关心每一个 Pod 个体，如果有一个 Pod 出现了问题，我们只需要把他杀掉并替换成新的 Pod 就好。
+> 
+> 但 Stateful Set 更倾向于将 Pod 看作是宠物：弄来一直完全一模一样的宠物并不是容易的事，我们对待这些宠物必须小心翼翼。我们要给他们各自一个专属的名字，替换掉一只宠物时，必须要保证它的花色、名字、行为举止都与之前那只宠物一模一样。
 
 ### Daemon Set
+
+不管是 Deployment 还是 Stateful Set ，一般都不会在意自己的 Pod 部署到哪个节点。而假如你不在意自己 Pod 的数量，但需要保证每个节点上都运行一个 Pod 时，就需要 Daemon Set 了。
+
 
 
 ### Job 与 CronJob
 
 ※ 资源的名称空间
 
-## 其他资源
+# 其他资源
 
 ### 网络
 
@@ -484,7 +569,7 @@ Presistent Volume 与 Presistent Volume Claim 与 Storage Class
 
 Config Map 与 Secret
 
-## Kubernetes 架构
+# Kubernetes 架构
 
 - API Server
 - Controller Manager
@@ -492,13 +577,13 @@ Config Map 与 Secret
 - Kubelet ： 是 Kubelet 在对 Pod 做生存检测
 - kube-proxy, kube-dns, 等
 
-## 更高级的部署方式
+# 更高级的部署方式
 
 - Helm Chart：其实是 go template 代码生成
 - kustomize
 - 自定义资源与自定义控制器与 Operator
 
-## Furder More
+# Furder More
 
 ### k8s 与 AWS
 
