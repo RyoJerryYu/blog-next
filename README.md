@@ -1,3 +1,7 @@
 # hexo-blog
 
-[My Blog](https://ryojerryyu.github.io/blog/). A github page build in hexo.
+My Blog, build in hexo.
+
+- [Release Version](https://blog.ryo-okami.xyz/)
+- [Preview Version](https://test.ryo-okami.xyz/)
+- [GitHub Pages Version](https://ryojerryyu.github.io/blog/)
