@@ -48,7 +48,7 @@ K8s 中默认提供了几种 Volume ，比如：
 - gitRepo ：这种 Volume 其实相当于 emptyDir ，不过在 Pod 启动时会从 Git 仓库 clone 一份内容作为默认数据。
 - configMap 、 secret ：一般用于配置文件加载，需要与 configMap 、 secret 这两种资源一同使用。会将 configMap 、 secret 中对应的内容拷贝一份作为 Volume 绑到容器。（下一节中会展开讨论）
 - nfs 、 glusterfs 、 ……：可以通过各种网络存储协议直接挂载一个网络存储
-- gcePersistentDisk 、 awsElasticBlockStore ……：可以调用各个云平台的 API ，创建一个块储存硬件挂载到宿主机上，再讲那个硬件挂载到容器中。
+- (deprecated!) gcePersistentDisk 、 awsElasticBlockStore ……：可以调用各个云平台的 API ，创建一个块储存硬件挂载到宿主机上，再将那个硬件挂载到容器中。
 - persistentVolumeClaim ：持久卷声明，用于把实际储存方式抽象化，使得 Pod 不需要关心具体的储存类型。这种类型会在下面详细介绍。
 
 我们可以注意到， Volume 的声明是 Pod 的一个属性，而不是一种单独的资源。 Volume 是 Pod 的一部分，因此不同的 Pod 之间永远不可能共享同一个 Volume 。
@@ -140,10 +140,21 @@ pvc --> pv
 pv --> ebs
 ```
 
-而 Storage Class 在上图中则负责读取我们提交的 PVC 来创建 PV 与 EBS 。
+而 Storage Class 在上图中则负责读取我们提交的 PVC ，然后创建 PV 与 EBS 。
 
+### 再说回 Stateful Set
 
-# 配置
+之前我们提到 Stateful Set 时说到 Stateful Set 创建的 Pod 拥有固定的储存，到底是什么意思呢？跟 Deployment 的储存又有什么区别呢？
+
+我们先来看看，如果要给 Deployment 创建出来的 Pod 挂载 PVC 需要怎么做：
+
+apply 后，会
+
+而要给 Stateful Set 创建出来的 Pod 挂载 PVC ，可以：
+
+这样一来，会为每个 Pod 创建一个对应的 PVC ：
+
+# ConfigMap ，Secret ， Downward API
 
 
 # 网络
@@ -164,10 +175,6 @@ Service
 - NodePort
 - LB
 - Ingress
-
-### 配置
-
-Config Map 与 Secret
 
 # Kubernetes 架构
 
