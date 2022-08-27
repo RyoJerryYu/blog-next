@@ -176,6 +176,11 @@ Service
 - LB
 - Ingress
 
+# 更高级的部署方式（一）
+
+- Helm Chart：其实是 go template 代码生成
+- kustomize
+
 # Kubernetes 架构
 
 - API Server
@@ -184,25 +189,54 @@ Service
 - Kubelet ： 是 Kubelet 在对 Pod 做生存检测
 - kube-proxy, kube-dns, 等
 
-# 更高级的部署方式
+# 更高级的部署方式（二）
 
-- Helm Chart：其实是 go template 代码生成
-- kustomize
 - 自定义资源与自定义控制器与 Operator
 
-# Furder More
+# k8s 与云原生
+云原生的定义 http://icyfenix.cn/immutable-infrastructure/msa-to-cn.html
 
-### k8s 与 AWS
+### 可观察性 Observability
+
+tracing:
+- jaeger, zepkin
+
+metrics:
+- prometheus
+
+logging:
+- fluentd
+- loki
+
+Open Telemetry
+
+### 云原生的 CI/CD
+
+- Tekton
+https://tekton.dev/
+
+- Jenkins X
+https://jenkins-x.io/
+
+### GitOps
+
+- Argo CD
+- Flux2 CD
+
+- Progressive Delivery: Flagger VS Argo Rollout
+- 
+
+### Service Mesh
+
+- istio
+
+### K8s 中的 FaaS
+
+- Knative = Google Cloud Run
+
+# k8s 与 AWS
 
 - ELB Controller
 - External DNS
 - 卷储存 EBS
 - IAM Profile
-
-### k8s 与云原生
-云原生的定义 http://icyfenix.cn/immutable-infrastructure/msa-to-cn.html
-- Service Mesh: istio
-- GitOpts: argo CD 与 flux CD
-- Progressive Delivery: Flagger
-- Service Proxy: envoy
-- Of course: etcd, jaeger, prometheus, fluentd, open telemetry
