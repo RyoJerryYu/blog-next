@@ -146,16 +146,252 @@ pv --> ebs
 
 之前我们提到 Stateful Set 时说到 Stateful Set 创建的 Pod 拥有固定的储存，到底是什么意思呢？跟 Deployment 的储存又有什么区别呢？
 
-我们先来看看，如果要给 Deployment 创建出来的 Pod 挂载 PVC 需要怎么做：
+我们先来看看，如果要给 Deployment 创建出来的 Pod 挂载 PVC 需要怎么做。下面是一个部署 Nginx 的 Deployment 清单，其中 html 目录下的静态文件存放在 NFS 里，通过 PVC 挂载到 Pod 中：
 
-apply 后，会
+```yaml
+# 这里省略了 Service 相关的内容
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-dpl-with-nfs-pvc
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts: #挂载容器中的目录到 pvc nfs 中的目录
+        - name: www
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: www
+        persistentVolumeClaim: #指定pvc
+          claimName: nfs-pvc-for-nginx
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-pvc-for-nginx
+  namespace: default
+spec:
+  storageclassname: "" # 指定使用现有 PV ，不使用 StorageClass 创建 PV
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+---
+# 这个例子中需要挂载 NFS 上的特定路径，所以手动定义了一个 PV
+# 一般情况下我们不会手动创建 PV，而是使用 StorageClass 自动创建
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv-for-nginx
+spec:
+  capacity: 
+    storage: 1Gi
+  accessModes:
+  - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    path: /nfs/sharefolder/nginx
+    server: 81.70.4.171
+```
 
-而要给 Stateful Set 创建出来的 Pod 挂载 PVC ，可以：
+这份清单我们主要关注前两个资源，我们可以看到除了一个 Deployment 资源以外我们还单独定义了一个 PVC 资源。然后在 Deployment 的 Pod 模板中声明并绑定了这个 PVC 。
 
-这样一来，会为每个 Pod 创建一个对应的 PVC ：
+可这样 apply 了之后会发生什么情况呢？因为我们只声明了一份 PVC ，当然我们只会拥有一个 PVC 资源。但这个 Deployment 的副本数是 3 ，因此我们会有 3 个相同的 Pod 去绑定同一个 PVC 。也就是最终会在 3 个容器里访问同一个 NFS 的同一个目录。如果我们在其中一个容器里对这个目录作修改，也会影响到另外两个容器。
 
-# ConfigMap ，Secret ， Downward API
+> 注：这一现象不一定在任何情况下都适用。比如 AWS 的 EBS 卷只支持单个 AZ 内的绑定。如果 Pod 因为 Node Affinity 等设定被部署到了多个区，没法绑定同一个 EBS 卷，就会在 Scedule 的阶段报错。
 
+很多时候我们都不希望多个 Pod 绑定到同一 PVC 。比如我们部署一个 DB 集群的时候，如果好不容易部署出来的多个实例居然用的是同一份储存，就会显得很呆。 Stateful Set 就是为了解决这种情况，会为其管理下的每个 Pod 都部署一个专用的 PVC 。
+
+下面是给 Stateful Set 创建出来的 Pod 挂载 PVC 的一份清单：
+
+```yaml
+# 这里省略了 Service 相关的内容
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "nginx"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: k8s.gcr.io/nginx-slim:0.8
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+```
+
+我们可以看到，部署 Stateful Set 时我们不能另外单独定义一份 PVC 了，只能作为 Stateful Set 定义的一部分，在 volumeClaimTemplates 字段中定义 PVC 的模板。这样一来， Stateful Set 会根据这个模板，为每个 Pod 创建一个对应的 PVC ，并作为 Pod 的 Volume 绑定上：
+
+```bash
+# Stateful Set 创建出来的 Pod ，名字都是按顺序的
+$ kubectl get pods -l app=nginx
+NAME      READY     STATUS    RESTARTS   AGE
+web-0     1/1       Running   0          1m
+web-1     1/1       Running   0          1m
+
+# Stateful Set 创建出来的 PVC ，名字与 Pod 的名字一一对应
+$ kubectl get pvc -l app=nginx
+NAME        STATUS    VOLUME                                     CAPACITY   ACCESSMODES   AGE
+www-web-0   Bound     pvc-15c268c7-b507-11e6-932f-42010a800002   1Gi        RWO           48s
+www-web-1   Bound     pvc-15c79307-b507-11e6-932f-42010a800002   1Gi        RWO           48s
+```
+
+这样， Stateful Set 的多个 Pod 就会拥有自己的储存，不会相互打架了。另外，如果我们事先定义了 StorageClass ，还能根据 Stateful Set 的副本数动态配置 PV 。
+
+### ConfigMap 与 Secret 挂载作为特殊的卷
+
+有时候我们需要使用配置文件来配置应用（比如 Nginx 的配置文件），而且我们有时候会需要不重启 Pod 就热更新配置。如果用 PVC 来加载配置文件略微麻烦，这时候可以使用 Config Map 。
+
+下面是 K8s 官网上 Config Map 的一个例子：
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: game-demo
+data:
+  # 一个 Key 可以对应一个值
+  player_initial_lives: "3"
+  ui_properties_file_name: "user-interface.properties"
+
+  # 一个 Key 也可以对应一个文件的内容
+  game.properties: |
+    enemy.types=aliens,monsters
+    player.maximum-lives=5    
+  user-interface.properties: |
+    color.good=purple
+    color.bad=yellow
+    allow.textmode=true    
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-demo-pod
+spec:
+  containers:
+    - name: demo
+      image: alpine
+      command: ["sleep", "3600"]
+      env:
+        # ConfigMap 的 Key 可以作为环境变量引用
+        - name: PLAYER_INITIAL_LIVES
+          valueFrom:
+            configMapKeyRef:
+              name: game-demo           # 从这个 Config Map 里
+              key: player_initial_lives # 拿到这个 key 的值
+        - name: UI_PROPERTIES_FILE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: game-demo
+              key: ui_properties_file_name
+      volumeMounts:
+      - name: config
+        mountPath: "/config"
+        readOnly: true
+  volumes:
+    # 定义 Pod 的 Volume ，种类为 configMap
+    - name: config
+      configMap:
+        name: game-demo # ConfigMap的名字
+        # 需要作为文件放入 Volume 的 Key
+        items:
+        - key: "game.properties"
+          path: "game.properties"
+        - key: "user-interface.properties"
+          path: "user-interface.properties"
+```
+
+我们可以看到 ConfigMap 里的 Key 可以作为文件或是环境变量加载到 Pod 中。另外，作为环境变量加载后其实还能作为命令行参数传入应用，实现各种配置方式。如果修改 Config map 的内容，也可以自动更新 Pod 中的文件。
+
+然而， Config Map 的热更新有一些不太灵活的地方：
+
+1. 作为环境变量加载的 Config Map 数据不会被热更新。想要更新这一部分数据需要重启 Pod。（当然，命令行参数也不能热更新）
+2. 由于 Kubelet 会先将 Config Map 内容加载到本地作为缓存，因此修改 Config Map 后新的内容不会第一时间加载到 Pod 中。而且在旧版本的 K8s 中， Config Map 被更新直到缓存被刷新的时间间隔还会很长（据说新版本的 K8s 这一部分有了优化）。
+
+除 Config Map 以外， K8s 还提供了一种叫 Secret 的资源，用法和 Config Map 几乎一样。对比 Config Map ，Secret 有以下几个特点：
+
+1. 在 Pod 里， Secret 只会被加载到内存中，而永远不会被写到磁盘上。
+2. 用 `kubectl get` 之类的命令显示的 Secret 内容会被用 base64 编码。（不过， well ，众所周知 base64 可不算是什么加密）
+3. 可以通过 K8s 的 Service Account 等 RBAC 相关的资源来控制 Secret 的访问权限。
+
+不过，由于 Secret 也是以明文的形式被存储在 K8s 的主节点中的，因此需要保证 K8s 主节点的安全。
+
+> **Downward API 挂载作为特殊的卷**
+> 
+> 还有另外一种叫 Downward API 的东西，可以作为 Volume 或是环境变量被加载到 Pod 中。有一些参数我们很难事先在 Manifest 中定义（ e.g. Deployment 生成的 Pod 的名字），因此可以通过 Downward API 来实现。
+> 
+> ```yaml
+> apiVersion: v1
+> kind: Pod
+> metadata:
+>     name: test-volume-pod
+>     namespace: kube-system
+>     labels:
+>         k8s-app: test-volume
+>         node-env: test
+> spec:
+>     containers:
+>     - name: test-volume-pod-container
+>       image: busybox:latest
+>       env:
+>       - name: POD_NAME # 将 Pod 的名字作为环境变量 POD_NAME 加载到 Pod 中
+>         valueFrom:
+>           fieldRef:
+>             fieldPath: metadata.name
+>       command: ["sh", "-c"]
+>       args:
+>       - while true; do
+>           cat /etc/podinfo/labels | echo;
+>           env | sort | echo;
+>           sleep 3600;
+>         done;
+>       volumeMounts:
+>       - name: podinfo
+>         mountPath: /etc/podinfo
+>     volumes:
+>     - name: podinfo
+>       downwardAPI: # Downward API 类型的卷
+>         items:
+>         - path: "labels" # 将 Pod 的标签作为  labels 文件挂载到 Pod 中
+>           fieldRef:
+>             fieldPath: metadata.labels
+> ```
 
 # 网络
 
