@@ -342,7 +342,7 @@ spec:
 然而， Config Map 的热更新有一些不太灵活的地方：
 
 1. 作为环境变量加载的 Config Map 数据不会被热更新。想要更新这一部分数据需要重启 Pod。（当然，命令行参数也不能热更新）
-2. 由于 Kubelet 会先将 Config Map 内容加载到本地作为缓存，因此修改 Config Map 后新的内容不会第一时间加载到 Pod 中。而且在旧版本的 K8s 中， Config Map 被更新直到缓存被刷新的时间间隔还会很长（据说新版本的 K8s 这一部分有了优化）。
+2. 由于 Kubelet 会先将 Config Map 内容加载到本地作为缓存，因此修改 Config Map 后新的内容不会第一时间加载到 Pod 中。而且在旧版本的 K8s 中， Config Map 被更新直到缓存被刷新的时间间隔还会很长，新版本的 K8s 这一部分有了优化，可以设定刷新时间，但会导致 API Server 的负担加重。（这其实是一个 Known Issue ，被诟病多年： https://github.com/kubernetes/kubernetes/issues/22368 ）
 
 除 Config Map 以外， K8s 还提供了一种叫 Secret 的资源，用法和 Config Map 几乎一样。对比 Config Map ，Secret 有以下几个特点：
 
@@ -395,8 +395,81 @@ spec:
 
 # 网络
 
-为什么需要 Service： Pod 可能会挂掉，换成新的之后 IP 会变，找不到就会很尬。
-Service 会根据选择器来不断更新指向的 IP
+其实 Pod 只要部署好了，就会被分配到一个集群内部的 IP 地址，流量就可以通过 IP 地址来访问 Pod 了。然而通过可能会有很大问题： **Pod 随时会被杀死。** 虽然通过用 Deployment 等资源可以在挂掉后重新创建一个 Pod ，但那毕竟是不同的 Pod ， IP 已经改变。
+
+另外， Deployment 等资源的就是为了能更方便的做到多副本部署及任意缩容扩容而存在的。如果在 K8s 中访问 Pod 还需要小心翼翼地去找到 Pod 的 IP 地址，或是去寻找 Pod 是否部署了新副本， Deployment 等资源就几乎没有存在价值了。
+
+### Service
+
+在古代，人们是通过注册中心、服务发现、负载均衡等中间件来解决上面这些问题的，但这样很不云原生。于是 K8s 引入了 Service 这种资源，来实现简易的服务发现、 DNS 功能。
+
+下面是一个经典的例子，部署了一个 Service 和一个 Deployment：
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  labels:
+    app: auth
+spec:
+  type: ClusterIP
+  selector:
+    app: auth # 指向 Deployment 创建的 Pod
+  ports:
+  - port: 80 # Service 暴露的端口
+    targetPort: 8080 # Pod 的端口
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  auth
+  labels:
+    app: auth
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      name: auth
+      labels:
+        app: auth
+    spec:
+      containers:
+      - name: auth
+        image: xxxxx.dkr.ecr.ap-northeast-1.amazonaws.com/auth:xxxxx
+        ports:
+        - containerPort: 8080
+```
+
+根据前面的知识我们知道，这份文件会部署 Deployment 会创建 2 个相同的 Pod 副本。另外还会部署一个名为 auth-service 的 Service 资源。这个 Service 暴露了一个 80 端口，并且指向那两个 Pod 的 8080 端口。
+
+而这份文件部署后，集群内其他 Pod （为了辨别我们叫它 Client ）就可以通过相同 Service 的名称来访问 Deployment 部署的这 2 个 Pod ：
+
+```sh
+curl http://auth-service.<namespace>.svc.cluster.local:80
+# 或者省略掉后面的一大串
+curl http://auth-service.<namespace>:80
+# 如果 Client 和 Service 在同一个 Namespace 中，还可以：
+curl http://auth-service:80
+```
+
+像这样 Client 通过 Service 来访问时，会随机访问到其中一个 Pod ，这样一来无论 Deployment 到底创建了多少个副本，只要副本的标签相同，就能通过同一种方式来访问，还能自动实现一些简单的负载均衡。
+
+> 为什么 DNS 名称可以简化？
+> 
+> Pod 被部署时， kubelet 会为每个 Pod 注入一个类似如下的 `/etc/resolv.conf` 文件：
+> 
+> ```
+> nameserver 10.32.0.10
+> search <namespace>.svc.cluster.local svc.cluster.local cluster.local
+> options ndots:5
+> ```
+> 
+> Pod 中进行 DNS 查询时，默认会先读取这个文件，然后按照 `search` 选项中的内容展开 DNS 。例如，在 test 名称空间中的 Pod ，访问 data 时的查询可能被展开为 data.test.svc.cluster.local 。
+> 更多关于 `/etc/resolv.conf` 文件的内容可参考 https://www.man7.org/linux/man-pages/man5/resolv.conf.5.html
 
 Service
 - 域名解析
@@ -407,14 +480,24 @@ Service
     - ExternalName
     - Headless Service
 
+本质上是一个通过 iptables 定义的虚拟地址
+
 外部访问
 - NodePort
 - LB
 - Ingress
 
+### 第三次回到 Stateful Set
+
+为什么说 Stateful Set 有唯一稳定的网络标识？
+
+SRV 记录
+Headless Service
+
 # 更高级的部署方式（一）
 
 - Helm Chart：其实是 go template 代码生成
+  https://artifacthub.io/
 - kustomize：k8s 推出的辅助工具（现在集成到 kubectl 里了），可以通过一些特殊类型的定义来生成资源定义（特殊类型的定义本身不是资源定义！不会提交给 API Server）
 
 # Kubernetes 架构
@@ -433,6 +516,7 @@ Pod 这种资源是特别的，只有 Pod 可以“跑”起来
 # 更高级的部署方式（二）
 
 - 自定义资源与自定义控制器与 Operator
+  https://operatorhub.io/
 
 # 基于 K8s 的云原生生态
 云原生的定义 http://icyfenix.cn/immutable-infrastructure/msa-to-cn.html
