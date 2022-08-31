@@ -118,48 +118,102 @@ curl http://auth-service:80
 
 有些时候（比如想使用自己的服务发现机制或是自己的负载均衡机制时）我们确实也会想越过虚拟 IP ，直接获取背后 Pod 的 IP 地址。这时候我们可以将 Service 的 `spec.clusterIP` 字段指定为 `None` ，这样 K8s 就不会给这个 Service 分配一个 Cluster IP 。这样的 Service 被称为 **Headless Service** 。
 
-Headless Service 资源会创建一组 A 记录直接指向背后的 Pod ，可以通过 DNS 轮询等方式直接获得其中一个 Pod 的 IP 地址。另外 Headless Service 还会创建一组 SRV 记录，可以通过 SRV 记录来获取所有 Pod 的名字。
+Headless Service 资源会创建一组 A 记录直接指向背后的 Pod ，可以通过 DNS 轮询等方式直接获得其中一个 Pod 的 IP 地址。另外更重要的一点， Headless Service 还会创建一组 SRV 记录，包含了指向各个 Pod 的 DNS 记录，可以通过 SRV 记录来发现所有 Pod 。
 
 我们可以在集群里用 nsloopup 或 dig 命令去验证一下：
 
 ```sh
 # 在集群的 Pod 内部运行
-$ nslookup kafka.kafka.svc.cluster.local
+$ nslookup kafka-headless.kafka.svc.cluster.local
 Server:     10.96.0.10
 Address:    10.96.0.10#53
 
-Name:   kafka.kafka.svc.cluster.local
+Name:   kafka-headless.kafka.svc.cluster.local
 Address: 172.17.0.6
-Name:   kafka.kafka.svc.cluster.local
+Name:   kafka-headless.kafka.svc.cluster.local
 Address: 172.17.0.5
-Name:   kafka.kafka.svc.cluster.local
+Name:   kafka-headless.kafka.svc.cluster.local
 Address: 172.17.0.4
 
-$ dig SRV kafka.kafka.svc.cluster.local
+$ dig SRV kafka-headless.kafka.svc.cluster.local
 # .....
 ;; ANSWER SECTION:
-kafka.kafka.svc.cluster.local.      30      IN      SRV     0 20 9092 kafka-0.kafka.kafka.svc.cluster.local.
-kafka.kafka.svc.cluster.local.      30      IN      SRV     0 20 9092 kafka-1.kafka.kafka.svc.cluster.local.
-kakfa.kafka.svc.cluster.local.      30      IN      SRV     0 20 9092 kafka-2.kafka.kafka.svc.cluster.local.
+kafka-headless.kafka.svc.cluster.local.      30      IN      SRV     0 20 9092 kafka-0.kafka-headless.kafka.svc.cluster.local.
+kafka-headless.kafka.svc.cluster.local.      30      IN      SRV     0 20 9092 kafka-1.kafka-headless.kafka.svc.cluster.local.
+kakfa-headless.kafka.svc.cluster.local.      30      IN      SRV     0 20 9092 kafka-2.kafka-headless.kafka.svc.cluster.local.
 
 ;; ADDITIONAL SECTION:
-kafka-0.kafka.kafka.svc.cluster.local. 30 IN A  172.17.0.6
-kafka-1.kafka.kafka.svc.cluster.local. 30 IN A  172.17.0.5
-kafka-2.kafka.kafka.svc.cluster.local. 30 IN A  172.17.0.4
+kafka-0.kafka-headless.kafka.svc.cluster.local. 30 IN A  172.17.0.6
+kafka-1.kafka-headless.kafka.svc.cluster.local. 30 IN A  172.17.0.5
+kafka-2.kafka-headless.kafka.svc.cluster.local. 30 IN A  172.17.0.4
 ```
 
 > 拥有 Cluster IP 的 Service 其实也有 SRV 记录。但这种情况的 SRV 记录中对应的 Target 仍为 Service 自己的 FQDN 。
 
 ### 第三次回到 Stateful Set
 
-回到 Stateful Set ，之前我们说到 Stateful Set 有唯一稳定的网络标识，这到底是在指什么呢？
+在上面 Headless Service 的例子中，我们看到，各个 Pod 对应的 DNS A 记录格式为 `<pod_name>.<svc_name>.<namespace>.svc.cluster.local` 。不对啊，之前的小知识里不是说过 Pod 被分配的 DNS A 记录格式应该是 `172-17-0-3.default.pod.cluster.local` 的吗？
 
+其实 Headless Service 还有一个众所周知的隐藏功能。 Pod 这种资源本身的参数中有 `subdomain` 字段和 `hostname` 字段，如果设置了这两个字段，这个 Pod 就拥有了形如 `<hostname>.<subdomain>.<namespace>.svc.cluster.local` 的 FQDN （全限定域名）。如果这时刚好在同一名称空间下有与 `subdomain` 同名的 Headless Service ， DNS 就会用为这个 Pod 用它的 FQDN 来创建一条 DNS A 记录。
 
+比如 Pod1 在 `kafka` 名称空间中， `hostname` 为 `kafka-1` ， `subdomain` 为 `kafka-headless` ，那么 Pod1 的 FQDN 就是 `kafka-1.kafka-headless.kakfa.svc.cluster.local` 。而同样在 `kafka` 名称空间中，刚好又有一个 `kafka-headless` 的 Headless Service ，那么 DNS 就会创建一条 A 记录，就可以通过 `kafka-1.kafka-headless.kafka.svc.cluster.local` 来访问 Pod1 了。当然，由于 DNS 展开，也可以用 `kafka-1.kafka-headless.kafka` 甚至是 `kafka-1.kafka-headless` 来访问这个 Pod 。
 
-SRV 记录
-Headless Service
+其实这些 Pod 是用 Stateful Set 来部署的，这一部分其实是 Stateful Set 相关的功能。之前我们说到 Stateful Set 有唯一稳定的网络标识。我们现在就来详细讲讲，这“唯一稳定的网络标识”到底是在指什么。
+
+我们来看一下这个 kafka Stateful Set 到底是怎么部署的：
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-headless
+spec:
+  clusterIP: None # 这是一个 headless service
+  ports:
+  - name: tcp-client
+    port: 9092
+    protocol: TCP
+    targetPort: kafka-client
+  selector:
+    select-label: kafka-label
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+spec:
+  replicas: 3
+  serviceName: kafka-headless # 注意到这里有 serviceName 字段
+  selector:
+    matchLabels:
+      select-label: kafka-label
+  template:
+    metadata:
+      labels:
+        select-label: kafka-label
+    spec:
+      containers:
+      - name: kafka
+        image: docker.io/bitnami/kafka:3.1.0-debian-10-r52
+        # 接下来 Pod 相关部分省略
+  # 下面 Volume 相关部分也省略
+```
+
+我们看到， Stateful Set 的定义中必须要用 `spec.serviceName` 字段指定一个 Headless Service 。 Stateful Set 创建 Pod 时，会自动给 Pod 指定 `hostname` 和 `subdomain` 字段。这样一来，每个 Pod 才有了唯一固定的 hostname ，唯一固定的 FQDN ，以及通过与 Headless Service 共同部署而获得唯一固定的 A 记录。（此外，其实当 Pod 因为版本升级等原因被重新创建时，相同序号的 Pod 还会被分配到相同固定的集群内 IP 。）
+
+> **关于 Stateful Set 中 `serviceName` 字段的争议**
+> 
+> Stateful Set 中的 serviceName 字段是必填字段。这个字段唯一的作用其实就是给 Pod 指定 subdomain 。其实这样会有一些问题：
+> 
+> 1. Stateful Set 部署时不会检查是否真的存在这么一个 Headless Service 。如果 serviceName 乱填一个值，会导致虽然 Pod 的 `hostname` 和 `subdomain` 都指定了却没有创建 A 记录的情况。
+> 2. 有时 Stateful Set 的 Pod 不需要接收流量，也不需要相互发现，这时候还强行需要指定一个 serviceName 显得有点多余。
+> 
+> 在 GitHub 上有关于这个问题的 Issue ： https://github.com/kubernetes/kubernetes/issues/69608
 
 ### 从集群外部访问
+
+
 - NodePort
 - LB
 - Ingress
