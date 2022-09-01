@@ -93,10 +93,12 @@ curl http://auth-service:80
 
 我们上面的例子中，可以看到 Service 资源有个字段 `type:ClusterIP` 。其实 Service 资源有以下几个种类：
 
-1. `ClusterIP` ：这个类型的 Service 会在集群内创建一条 DNS A 记录并通过一定方法将流量代理到其指向的 Pod 上。这种 Service 不会暴露到集群外。这是最基础的 Service 种类。
-2. `NodePort` ：这种 Service 会在 ClusterIP 的基础上，在所有节点上各暴露一个端口，并把端口的流量也代理到指向的 Pod 上。可以通过这种方法从集群外访问集群内的资源。
-3. `LoadBalancer` ：这种 Service 会在 ClusterIP 的基础上，在所有节点上各暴露一个端口，并在集群外创建一个负载均衡器来将外部流量路由到暴露的端口，再把流量代理到指向的 Pod 上。这种 Service 一般需要调用云服务提供的 API 或是额外安装的插件。如果什么插件都没安装的话，这种 Service 部署后会与 `NodePort` 的表现一样。
-4. `ExternalName` ：这种 Service 不需要 selector 字段指定后端，而是用 externalName 字段指定一个外部 DNS 记录，然后将流量全部指向外部服务。如果打算将集群内的服务迁移到集群外、或是集群外迁移到集群内，这种类型的 Service 可以实现无缝迁移。
+| 种类           | 作用                                                                                                                                                                                                                                                                                             |
+| :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ClusterIP`    | 这个类型的 Service 会在集群内创建一条 DNS A 记录并通过一定方法将流量代理到其指向的 Pod 上。这种 Service 不会暴露到集群外。这是最基础的 Service 种类。                                                                                                                                            |
+| `NodePort`     | 这种 Service 会在 ClusterIP 的基础上，在所有节点上各暴露一个端口，并把端口的流量也代理到指向的 Pod 上。可以通过这种方法从集群外访问集群内的资源。                                                                                                                                                |
+| `LoadBalancer` | 这种 Service 会在 ClusterIP 的基础上，在所有节点上各暴露一个端口，并在集群外创建一个负载均衡器来将外部流量路由到暴露的端口，再把流量代理到指向的 Pod 上。这种 Service 一般需要调用云服务提供的 API 或是额外安装的插件。如果什么插件都没安装的话，这种 Service 部署后会与 `NodePort` 的表现一样。 |
+| `ExternalName` | 这种 Service 不需要 selector 字段指定后端，而是用 externalName 字段指定一个外部 DNS 记录，然后将流量全部指向外部服务。如果打算将集群内的服务迁移到集群外、或是集群外迁移到集群内，这种类型的 Service 可以实现无缝迁移。                                                                          |
 
 ### 虚拟 IP 与 Headless Service
 
@@ -213,12 +215,70 @@ spec:
 
 ### 从集群外部访问
 
+在 K8s 集群里把应用部署好了，可是如何让集群外部的客户端访问我们集群中的应用呢？这可能是大家最关心的问题。
 
-- NodePort
-- LB
-- Ingress
+不过有认真听的同学估计已经有这个问题的答案了。之前我们讲过 NodePort 和 LoadBalancer 这两种 Service 类型。
 
+其中 NodePort Service 只是简单地在节点机器上各开一个端口，而如何路由、如何负载均衡等则一概不管。
 
+而 LoadBalancer Service 则是在 NodePort 的基础上再加一个一个负载均衡器，然后把节点暴露的端口注册到这个负载均衡器上。这样一来，集群外部的客户端就可以通过同一个 IP 来访问集群中的应用。但是要使用 LoadBalancer Service ，一般需要先安装云供应商提供的 Controller ，或是安装其他第三方的 Controller （比如 Nginx Controller ）。
+
+在 Service 之外还另有一种资源类型叫 Ingress ，也可以用来实现集群外部访问集群内部应用的功能。 Ingress 其实也会在集群外创建一个负载均衡器，因此也需要预先安装云供应商的 Controller 。但 Ingress 与 Service 不同的是，它还会管理一定的路由逻辑，接收流量后可以根据路由来分配给不同的 Service 。
+
+| 类型                 | OSI 模型工作层数 | 依赖于云平台或其他插件 |
+| :------------------- | :--------------- | :--------------------- |
+| NodePort Service     | 第四层           | 否                     |
+| LoadBalancer Service | 第四层           | 是                     |
+| Ingress              | 第七层           | 是                     |
+
+特别再详细说一下 Ingress 这种资源。 Ingress 本身不会在集群内的 DNS 上创建记录，一般也不会主动去路由集群内的流量（除非你在集群内强行访问 Ingress 的负载均衡器…… 不过一般也没什么理由要这样做对吧）。但 Ingress 可以根据 HTTP 的 hostname 和 path 来路由流量，把流量分发到不同的 Service 上。 Ingress 也是 K8s 的原生资源里唯一能看到 OSI 第七层的资源。
+
+下面是 AWS 的 EKS 服务中部署的一个 Ingress 的例子（集群中已安装 AWS Load Balancer Controller ）：
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/backend-protocol-version: GRPC
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /grpc.health.v1.Health/Check
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/success-codes: 0,12
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:xxxxxxxxxx:certificate/xxxxxxxxxx
+
+    external-dns.alpha.kubernetes.io/hostname: sample.example.com
+  
+  name: gateway-ingress
+spec:
+  rules:
+  - host: sample.example.com
+    http:
+      paths:
+      - path: /grpc.health.v1.Health
+        pathType: Prefix
+        backend:
+          service:
+            name: health-service
+            port:
+              number: 50051
+      - path: /proto.sample.v1.Sample
+        pathType: Prefix
+        backend:
+          service:
+            name: sample-service
+            port:
+              number: 50051
+```
+
+可以看到， Ingress 资源可以通过 `spec.rules` 字段中定义各条规则，通过 hostname 或是 path 等第七层的信息来进行路由。 Ingress 部署下去后， AWS Load Balancer Controller 会读取会根据的配置，并在云上创建一个 AWS Application Load Balancer （ALB），而 `spec.rules` 会应用到 ALB 上，由 ALB 来负责流量的路由。
+
+我们也会注意到，怎么 `metadata.annotations` 里有这么多奇奇怪怪的字段！ Ingress 本身的功能都是 AWS Load Balancer Controller 调用 AWS 的 API 创建 ALB 来实现的。但 AWS 的 ALB 能实现的功能可不止 Ingress 字段定义的这些，比如安装 TLS 证书、 health check 等 spec 字段中描述不下的功能，就只能是通过 annotation 的形式来定义了。
+
+> 小彩蛋：可以看到例子中的 Ingress 资源 annotation 字段里还有一行 `external-dns.alpha.kubernetes.io/hostname: sample.example.com` 。其实这个 K8s 集群中还安装了 external-dns 这个应用，它可以根据 annotation 来在外部 DNS 上直接创建 DNS 记录！有了这个插件我们可不用再慢慢打开公共 DNS 管理页面，再小心翼翼地记下 IP 地址去添加 A 记录了。
 
 # 更高级的部署方式（一）
 
