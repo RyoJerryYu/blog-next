@@ -282,75 +282,23 @@ spec:
 
 # 更高级的部署方式（一）
 
+一路说道这里， K8s 中最基础的资源大部分都已经介绍了。但是，这么多资源之间又需要相互配合，只部署一种资源基本没什么生产能力。
+
+比如只部署 Deployment 的话，我们确实是能在一组多副本的 Pod 里跑起可执行程序，但这组 Pod 却几乎没办法接受集群里其他 Pod 的流量（只能通过制定 Pod 的 IP 来访问，但 Pod 的 IP 是会变的）。因此一般来说一个 Deployment 都会搭配一个 Service 来使用。这还是最简单的一种搭配了。
+
+假若我们现在要在自己的 K8s 里安装一个别人提供的应用。当然由于 K8s 是基于容器的，只要别人提供了他应用的 yaml 清单，我们只用把清单用 `kubectl apply -f` 提交给 K8s ，然后让 K8s 把清单中的镜像拉下来就能跑了。可如果我们需要根据环境来改一些参数呢？
+
+如果别人提供的 yaml 文件比较简单还好说，改改对应的字段就好了。如果别人的应用比较复杂，那改 yaml 文件可就是一个大难题了。比如 AWS 的 Load Balancer Controller ，它的 yaml 清单文件可是多达 939 行！
+
+[[aws-elb-controller-lines.png]]
+
+在这种复杂的场景下，我们就需要一些更高级的部署方式了。
+
+### Helm
+
 - Helm Chart：其实是 go template 代码生成
   https://artifacthub.io/
 - kustomize：k8s 推出的辅助工具（现在集成到 kubectl 里了），可以通过一些特殊类型的定义来生成资源定义（特殊类型的定义本身不是资源定义！不会提交给 API Server）
-
-# Kubernetes 架构
-
-- API Server ： 所有资源定义状态全部存在 etcd 中
-
-关键：所有东西都是资源
-可以通过 Controller 来管理资源
-Pod 这种资源是特别的，只有 Pod 可以“跑”起来
-
-- Controller Manager ： 负责事件分发，各个 Controller 只监听自己关心的事件
-- Sceduler ： 监听集群中没有被 Schedule 的 Pod ，通过筛选、打分来找到最适合部署的 Node ，然后将 Node 信息写入 Pod 的资源定义中
-- Kubelet ： 监听被 Scedule 到该 Node 上的 Pod ，与容器运行时交互创建容器
-- kube-proxy, kube-dns, 等
-
-# 更高级的部署方式（二）
-
-- 自定义资源与自定义控制器与 Operator
-  https://operatorhub.io/
-
-# 基于 K8s 的云原生生态
-云原生的定义 http://icyfenix.cn/immutable-infrastructure/msa-to-cn.html
-
-### 可观察性 Observability
-
-tracing:
-- jaeger, zepkin
-
-metrics:
-- prometheus
-
-logging:
-- fluentd
-- loki
-
-Open Telemetry
-
-### 云原生的 CI/CD
-
-- Tekton
-https://tekton.dev/
-
-- Jenkins X
-https://jenkins-x.io/
-
-### GitOps
-
-- Argo CD
-- Flux2 CD
-
-- Progressive Delivery: Flagger VS Argo Rollout
-- 
-
-### Service Mesh
-
-- istio
-
-### K8s 中的 FaaS
-
-- Knative = Google Cloud Run
-
-# k8s 与 AWS
-
-- ELB Controller
-- External DNS
-- 卷储存 EBS
-- IAM Profile
 
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
