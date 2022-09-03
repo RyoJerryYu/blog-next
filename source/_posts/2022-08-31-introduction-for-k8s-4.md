@@ -296,6 +296,10 @@ spec:
 
 ### Helm
 
+首先来介绍的是 Helm 。 Helm 是一个包管理工具，可以类比一下 CentOS 中的 yum 工具。它可以把一组 K8s 资源发布成一个 Chart ，然后我们可以用 Helm 来安装这个 Chart ，并且可以通过参数设值来改变 Chart 中的部分资源。利用 Helm 安装 Chart 后还可以管理 Chart 的升级、回滚、卸载。
+
+使用别人提供的 Helm Chart 前，需要先 add 一下 Chart 的仓库，然后再 install 一下 Chart 。
+
 - Helm Chart：其实是 go template 代码生成
   https://artifacthub.io/
 - kustomize：k8s 推出的辅助工具（现在集成到 kubectl 里了），可以通过一些特殊类型的定义来生成资源定义（特殊类型的定义本身不是资源定义！不会提交给 API Server）
