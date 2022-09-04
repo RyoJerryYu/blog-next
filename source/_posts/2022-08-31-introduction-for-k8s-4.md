@@ -359,10 +359,84 @@ spec:
 
 通过设置 `KAFKA_CFG_ZOOKEEPER_CONNECT` 这个环境变量，指定了 Kafka Broker 可以通过访问 `kafka-zookeeper` 来找到 zookeeper 服务。（还记得 zookeeper 的 Service 名字是 `kafka-zookeeper` 吗？ zookeeper 与 kafka 部署在同一个名称空间里，因此可以直接通过 Service 名访问。）
 
+如果我们打开这个 helm chart 对应的[代码仓库](https://github.com/bitnami/charts/tree/master/bitnami/kafka)，会发现原来有一组 go template 文件，以及一个 `values.yaml` 文件， helm 就是通过用 `values.yaml` 中预定义的参数，渲染这组 go template 文件，生成最终的 yaml 文件，然后再通过 kubectl apply -f 的方式，将 yaml 文件里的资源部署到 K8s 里。
 
+### Kustomize
 
-- Helm Chart：其实是 go template 代码生成
-  https://artifacthub.io/
+另一个部署工具是 Kustomize 。之前提到 Config Map 时的例子中，将配置文件的内容直接写进了 yaml 清单的一个字段里：
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: game-demo
+data:
+  # 一个 Key 可以对应一个值
+  player_initial_lives: "3"
+  ui_properties_file_name: "user-interface.properties"
+
+  # 一个 Key 也可以对应一个文件的内容
+  game.properties: |
+    enemy.types=aliens,monsters
+    player.maximum-lives=5    
+  user-interface.properties: |
+    color.good=purple
+    color.bad=yellow
+    allow.textmode=true    
+```
+
+其实这样很不好，先不说这样写没办法在 IDE 里用配置文件自己的语法检查，每行还需要一定的缩进，如果配置文件有好几百行，你甚至会忘了这一行到底是哪个配置文件！此时我们就会自然而然的想把每个配置文件以单独文件的形式保存。
+
+Kustomize 就是这样一个工具，它可以帮助我们把每个配置文件以单独文件的形式保存，然后再通过一个 `kustomization.yaml` 文件，将这些配置文件组合起来，生成最终的 yaml 文件。
+
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # 其他资源也可以单独使用一个文件定义
+  - deployment.yaml
+
+# 用 configMapGenerator 从文件中生成 ConfigMap
+configMapGenerator:
+  - name: game-demo
+    literals:
+      - "ui_properties_file_name=user-interface.properties"
+      - "player_initial_lives=3"
+    # 从文件中读取内容
+    files:
+      - game.properties
+      - user-interface.properties
+# 有多个 configMap 时，可以通过统一的 generatorOptions 来设置一些通用的选项
+generatorOptions:
+  disableNameSuffixHash: true
+```
+
+然后两个配置文件的内容可以单独用文件定义，此时可以结合 IDE 的语法检查，以及代码补全功能，来编写配置文件。
+
+```properties
+# user-interface.properties
+color.good=purple
+color.bad=yellow
+allow.textmode=true    
+```
+
+然后将 `kustomization.yaml` 和其他所需的文件都放在同一个目录下：
+
+```bash
+.
+├── kustomization.yaml
+├── deployment.yaml
+├── game.properties
+└── user-interface.properties
+```
+
+然后就可以通过 `kubectl apply -k ./` 来将整个 kustomize 文件夹转换为 yaml 清单直接部署到 K8s 中。
+（没错，现在 Kustomize 已经成为 kubectl 中的内置功能！可以不用先 `kustomize build` 生成 yaml 文件再 `kubectl apply` 两步走了！）
+
+值得提醒的是，虽然 `kustomization.yaml` 有 `apiVersion` 和 `kind` 字段，长得很像一个资源清单，但其实 K8s 的 API server 并不认识他。 Kustomize 的工作原理其实是先根据 `kustomization.yaml` 生成 K8s 认识的 yaml 资源清单，然后再通过 `kubectl apply` 来部署。
+
+除了可以直接将 ConfigMap 与 Secret 中的文件字段内容用单独的文件定义外， Kustomize 还有其他比如为部署的资源添加统一的名称前缀、添加统一字段等功能。这些大家可以阅读 Kustomize 的[官方文档](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/)来了解。
+
 - kustomize：k8s 推出的辅助工具（现在集成到 kubectl 里了），可以通过一些特殊类型的定义来生成资源定义（特殊类型的定义本身不是资源定义！不会提交给 API Server）
 
 
