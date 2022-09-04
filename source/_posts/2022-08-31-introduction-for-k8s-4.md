@@ -298,7 +298,68 @@ spec:
 
 首先来介绍的是 Helm 。 Helm 是一个包管理工具，可以类比一下 CentOS 中的 yum 工具。它可以把一组 K8s 资源发布成一个 Chart ，然后我们可以用 Helm 来安装这个 Chart ，并且可以通过参数设值来改变 Chart 中的部分资源。利用 Helm 安装 Chart 后还可以管理 Chart 的升级、回滚、卸载。
 
-使用别人提供的 Helm Chart 前，需要先 add 一下 Chart 的仓库，然后再 install 一下 Chart 。
+使用别人提供的 Helm Chart 前，需要先 add 一下 Chart 的仓库，然后再安装仓库里提供的 Chart 。比如我们要安装 bitnami 提供的 Kafka Chart 时：
+
+```bash
+# 添加 https://charts.bitnami.com/bitnami 这个仓库，命名为 bitnami
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+# 在 kafka 名称空间里安装 bitnami 仓库里的 kafka Chart ，并通过参数设置为 3 个副本，并同时安装一个 3 副本的 Zookeeper
+helm install kafka -n kafka \
+  --set replicaCount=3 \
+  --set zookeeper.enabled=true \
+  --set zookeeper.replicaCount=3 \
+  bitnami/kafka
+```
+
+命令执行后， helm 就会根据参数与 Chart 的内容，在 K8s 里安装 StatefulSet 、 Service 、 ConfigMap 等一切所需要的资源。
+
+```sh
+$ k -n kafka get all,cm
+NAME                    READY   STATUS    RESTARTS      AGE
+pod/kafka-0             1/1     Running   1             46d
+pod/kafka-1             1/1     Running   3             46d
+pod/kafka-2             1/1     Running   3             46d
+pod/kafka-zookeeper-0   1/1     Running   0             46d
+pod/kafka-zookeeper-1   1/1     Running   0             46d
+pod/kafka-zookeeper-2   1/1     Running   0             46d
+
+NAME                               TYPE           CLUSTER-IP       EXTERNAL-IP      PORT(S)                      AGE
+service/kafka                      ClusterIP      172.20.1.196     <none>           9092/TCP                     164d
+service/kafka-headless             ClusterIP      None             <none>           9092/TCP,9093/TCP            164d
+service/kafka-zookeeper            ClusterIP      172.20.227.236   <none>           2181/TCP,2888/TCP,3888/TCP   164d
+service/kafka-zookeeper-headless   ClusterIP      None             <none>           2181/TCP,2888/TCP,3888/TCP   164d
+
+NAME                               READY   AGE
+statefulset.apps/kafka             3/3     164d
+statefulset.apps/kafka-zookeeper   3/3     164d
+
+NAME                                DATA   AGE
+configmap/kafka-scripts             2      164d
+configmap/kafka-zookeeper-scripts   2      164d
+configmap/kube-root-ca.crt          1      165d
+```
+
+甚至， Helm 可以通过模板生成的 Pod 环境变量，来预先设置好 Kafka 的配置，让他找得到 Zookeeper 服务：
+
+```yaml
+apiVersion: v1
+kind: Pod
+# 略去无关信息
+spec:
+  containers:
+  - name: kafka
+    command:
+    - /scripts/setup.sh
+    env:
+    - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+      value: kafka-zookeeper
+    # ...
+```
+
+通过设置 `KAFKA_CFG_ZOOKEEPER_CONNECT` 这个环境变量，指定了 Kafka Broker 可以通过访问 `kafka-zookeeper` 来找到 zookeeper 服务。（还记得 zookeeper 的 Service 名字是 `kafka-zookeeper` 吗？ zookeeper 与 kafka 部署在同一个名称空间里，因此可以直接通过 Service 名访问。）
+
+
 
 - Helm Chart：其实是 go template 代码生成
   https://artifacthub.io/
