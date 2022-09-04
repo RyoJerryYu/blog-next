@@ -359,7 +359,31 @@ spec:
 
 通过设置 `KAFKA_CFG_ZOOKEEPER_CONNECT` 这个环境变量，指定了 Kafka Broker 可以通过访问 `kafka-zookeeper` 来找到 zookeeper 服务。（还记得 zookeeper 的 Service 名字是 `kafka-zookeeper` 吗？ zookeeper 与 kafka 部署在同一个名称空间里，因此可以直接通过 Service 名访问。）
 
-如果我们打开这个 helm chart 对应的[代码仓库](https://github.com/bitnami/charts/tree/master/bitnami/kafka)，会发现原来有一组 go template 文件，以及一个 `values.yaml` 文件， helm 就是通过用 `values.yaml` 中预定义的参数，渲染这组 go template 文件，生成最终的 yaml 文件，然后再通过 kubectl apply -f 的方式，将 yaml 文件里的资源部署到 K8s 里。
+如果我们打开这个 helm chart 对应的[代码仓库](https://github.com/bitnami/charts/tree/master/bitnami/kafka)，会发现原来有一组 go template 文件，以及一个 `values.yaml` 文件和 `Chart.yaml` 文件：
+
+```sh
+.
+├── Chart.lock
+├── Chart.yaml
+├── README.md
+├── templates
+│   ├── NOTES.txt # 这里定义的是 helm 工具的命令行信息
+│   ├── _helpers.tpl # 这里面是一些定义好的 go template 代码块可以供其他模板使用
+│   ├── configmap.yaml
+│   ├── statefulset.yaml
+│   ├── svc-headless.yaml
+│   ├── svc.yaml
+│   └── # 以下省略若干模板文件
+└── values.yaml
+```
+
+- `Chart.yaml` 中定义了这个 Chart 的基本信息，包括名称、版本、描述、依赖等。
+- `values.yaml` 中定义了这个 Chart 的默认参数，包括各种资源的默认配置、副本数量、镜像版本等。其中的值都可以通过 `helm install` 命令的 `--set` 参数来覆盖。
+- `templates/` 文件夹下的都是 go template 的模板文件。
+
+`helm install` 就是通过用 `values.yaml` 中预定义的参数，渲染 `templates/` 文件夹下的 go template 文件，生成最终的 yaml 文件，然后再通过 kubectl apply -f 的方式，将 yaml 文件里的资源部署到 K8s 里。然后通过忘资源里注入一些特殊 annotation 的方式来记住自己部署了那些资源，进而提供 `update` 、 `uninstall` 等功能。
+
+关于更多 Helm 的内容，可以参考[官方文档](https://helm.sh/docs/)。
 
 ### Kustomize
 
@@ -437,7 +461,33 @@ allow.textmode=true
 
 除了可以直接将 ConfigMap 与 Secret 中的文件字段内容用单独的文件定义外， Kustomize 还有其他比如为部署的资源添加统一的名称前缀、添加统一字段等功能。这些大家可以阅读 Kustomize 的[官方文档](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/)来了解。
 
-- kustomize：k8s 推出的辅助工具（现在集成到 kubectl 里了），可以通过一些特殊类型的定义来生成资源定义（特殊类型的定义本身不是资源定义！不会提交给 API Server）
+### 各种工具的优缺点
 
+我们目前已经知道有三种在 K8s 中部署资源的方式： `kubectl apply`、Helm 和 Kustomize 。
+
+其中 `kubectl apply` 的优缺点很明确，优点是最简单直接，缺点是会导致要么 yaml 清单过长，要么需要分多文件多次部署，使集群中产生中间状态。
+
+而 Helm 与 Kustomize 我们上面也分析过，其实都是基于 `kubectl apply` 的。 Helm 是通过 go template 先生成 yaml 文件再 `kubectl apply` ，而 Kustomize 是通过 `kustomization.yaml` 中的定义用自己的一套逻辑生成 yaml 文件，然后再 `kubectl apply` 。
+
+Helm 的优点是 Helm Chart 安装时可以直接使用别人 Helm 仓库中已经上传好的 Chart ，只需要设置参数就可以使用。这也是 Kustomize 的缺点：如果想要使用别人提供的 Kustomization 而只修改其中的一些配置，必须要先把放 `kustomization.yaml` 的整个文件夹下载下来才能做修改。
+
+而 Helm 的缺点也是明显的， Helm 依赖于往资源里注入特殊的 annotation 来管理 Chart 生成的资源，这可能会很难与集群中现有的一些系统（比如 Service Mesh 或是 GitOps 系统等）放一起管理。而 Kustomize 生成的 yaml 清单就是很干净的 K8s 资源，原先的 K8s 资源该是什么表现就是什么表现，与现有的系统兼容一般会比较好。
+
+而另外，由于 Helm 与 Kustomize 都是基于 `kubectl apply` 的，因此他们有共同的缺点，就是不能做 `kubectl apply` 不能做的事情。
+
+什么叫 `kubectl apply` 不能做的事情呢？比如说我们要在 K8s 中部署 Redis 集群。聪明的你可能就想到要用 Stateful Set 、 PVC 、 Headless Service 来一套组合拳。这确实可以部署一个多节点、有状态的 Redis Cluster 。可是如果我们要往 Redis Cluster 里加一个节点呢？
+
+你当然可以把 Stateful Set 中的 `Replicas` 字段加个 1 然后用 `kubectl apply` 部署，可是这实际上只能增加一个一个 Redis 实例 —— 然后什么都没发生。其他节点不认识这个新的节点，访问这个新节点也不能拿到正确的数据。要知道往 Redis Cluster 里加节点，是要先让集群发现这个新节点，然后还要迁移 slot 的！ `kubectl apply` 可不会做这些事。
+
+> Well, 其实这些也是可以通过增加 initContainer 、修改镜像增加启动脚本等方式，实现用 `kubectl apply` 部署的。可是，这会让整个 Pod 资源变得很难理解，也不好维护。而且，如果不是因为做不到，谁会想去修改别人的镜像呢？
+
+我们接下来会介绍 K8s 的核心架构，来理解我们之前讲的这些资源到底是怎么工作的。最后会引出一组新的概念： Operator 与自定义资源（ Custom Resource Definition ，简称 CRD ）。通过 Operator 与 CRD ，我们可以做到 `kubectl apply` 所不能做到的事，包括 Redis Cluster 的扩容。
+
+> DIO: `kubectl apply` 的能力是有限的……
+> 越是部署复杂的应用，就越会发现 `kubectl apply` 的能力是有极限的……除非超越 `kubectl apply` 。
+> 
+> JOJO: 你到底想说什么？
+> 
+> DIO: 我不用 `kubectl apply` 了！ JOJO ！
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
