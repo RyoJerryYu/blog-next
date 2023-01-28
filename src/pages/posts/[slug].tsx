@@ -1,5 +1,11 @@
-import { blogFiles, PostProps, getSlugFromFile } from "@/utils/pages";
+import {
+  blogFiles,
+  getPostProps,
+  getSlugFromFile,
+  PostProps,
+} from "@/utils/pages";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { MDXRemote } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   console.log(blogFiles);
@@ -15,7 +21,7 @@ export const getStaticProps: GetStaticProps<
   { slug: string }
 > = async ({ params }) => {
   return {
-    props: { slug: params!.slug },
+    props: await getPostProps(params!.slug),
   };
 };
 
@@ -24,6 +30,9 @@ const Post = (props: PostProps) => {
     <div>
       <h1>Post</h1>
       {props.slug}
+      <p>{props.date}</p>
+      <p>length: {props.content.length}</p>
+      <MDXRemote {...props.source} />
     </div>
   );
 };
