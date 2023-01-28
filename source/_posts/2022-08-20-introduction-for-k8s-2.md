@@ -1,4 +1,6 @@
 ---
+created_at: 2022-08-20 21:56:52
+updated_at: 2022-08-20 22:02:18+08:00
 title: Kubernetes 入门 （2）
 date: 2022-08-20 21:56:52
 tags:

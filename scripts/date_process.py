@@ -1,3 +1,11 @@
+'''Scripts for process date of markdown file for migration.
+
+Because the markdown files should move to new folder,
+and the date of file would be lost.
+This script will get the date from git log,
+and save it to front matter.
+'''
+
 from git import Repo
 import frontmatter
 import os
@@ -43,13 +51,24 @@ def save_date_to_front_matter(
     updated_at: datetime,
 ):
   '''save the created_at to front matter for migration
+
+  Do not use frontmatter.dump here,
+  because it will change the order of front matter,
+  and use pointer for datetime format.
   '''
+
+  lines: list[str] = []
   with open(file, 'r+', encoding='utf-8') as f:
-    matter = frontmatter.load(f)
-    matter['created_at'] = created_at
-    matter['updated_at'] = updated_at
-    res = frontmatter.dumps(matter, encoding='utf-8')
-    f.write(res)
+    lines = f.readlines()
+
+  assert lines[0].strip() == '---'
+
+  lines.insert(1, f'created_at: {created_at}' + os.linesep)
+  lines.insert(2, f'updated_at: {updated_at}' + os.linesep)
+
+  print(''.join(lines))
+  with open(file, 'w', encoding='utf-8') as f:
+    f.writelines(lines)
 
 
 def main(repo: Repo, path: str):

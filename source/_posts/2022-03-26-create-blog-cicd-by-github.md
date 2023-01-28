@@ -1,4 +1,6 @@
 ---
+created_at: 2022-03-26 23:55:08
+updated_at: 2022-03-27 21:31:04+08:00
 title: 用 GitHub Action 自动化构建 Hexo 并发布到 S3
 date: 2022-03-26 23:55:08
 tags: 
