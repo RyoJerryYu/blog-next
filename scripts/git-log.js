@@ -9,6 +9,8 @@ const log = async (dir, filepath) => {
     for (const commit of commits) {
         console.log(commit.commit.committer.timestamp)
         console.log(commit.commit.committer.timezoneOffset)
+        const date = new Date(commit.commit.committer.timestamp * 1000)
+        console.log(date)
     }
 }
 

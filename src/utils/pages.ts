@@ -40,6 +40,12 @@ export const parseMeta = (rawContent: string): ParseDataResult => {
   // put dates in serializable format
   data.date = data.date ? new Date(data.date).toISOString() : null;
   // data.lastMod = new Date(fs.statSync(file).mtime || new Date()).toISOString();
+  data.created_at = data.created_at
+    ? new Date(data.created_at).toISOString()
+    : null;
+  data.updated_at = data.updated_at
+    ? new Date(data.updated_at).toISOString()
+    : null;
 
   return { content, ...data };
 };
