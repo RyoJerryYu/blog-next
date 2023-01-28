@@ -89,23 +89,3 @@ export const searchBlogFile = (slug?: string) => {
 
 // all blog files to load
 export const blogFiles = searchBlogFile();
-
-export type PostProps = {
-  slug: string;
-  content: string;
-  source: MDXRemoteSerializeResult;
-  [key: string]: any;
-};
-
-export const getPostProps = async (slug: string): Promise<PostProps> => {
-  const filePath = searchBlogFile(slug)[0]!;
-  const fileContent = fs.readFileSync(filePath, "utf-8");
-  const meta = parseMeta(fileContent);
-  const source = await parseMdx(meta.content);
-
-  return {
-    slug,
-    source,
-    ...meta,
-  };
-};

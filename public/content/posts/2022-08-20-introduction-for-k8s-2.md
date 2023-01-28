@@ -2,6 +2,7 @@
 created_at: 2022-08-20 21:56:52
 updated_at: 2022-08-20 22:02:18+08:00
 title: Kubernetes 入门 （2）
+license: true
 date: 2022-08-20 21:56:52
 tags:
   - Kubernetes
@@ -883,4 +884,3 @@ Helm 的优点是 Helm Chart 安装时可以直接使用别人 Helm 仓库中已
 > DIO: 我不用 `kubectl apply` 了！ JOJO ！
 > （其实还是要用的）
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.

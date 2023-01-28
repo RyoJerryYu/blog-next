@@ -2,6 +2,7 @@
 created_at: 2022-07-19 23:12:48
 updated_at: 2022-08-13 17:53:03+08:00
 title: 图解经济学原理(2)
+license: true
 date: 2022-07-19 23:12:48
 tags:
 ---
@@ -192,4 +193,3 @@ needed:
 ## 两种政策对经济影响 —— 总供给总需求模型
 ## 国际经济
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
