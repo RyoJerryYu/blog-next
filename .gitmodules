@@ -1,4 +1,0 @@
-[submodule "my-theme/arknights"]
-	path = themes/arknights
-	url = https://github.com/RyoJerryYu/hexo-theme-arknights.git
-	branch = dev
