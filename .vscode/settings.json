@@ -1,4 +1,10 @@
 {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    },
+    "jest.autoRun": "off",
     "markdown.extension.list.indentationSize": "inherit",
     "pasteImage.insertPattern": "![[${imageFileName}]]",
     "pasteImage.path": "${currentFileDir}/${currentFileNameWithoutExt}/",
