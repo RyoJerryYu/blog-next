@@ -17,6 +17,11 @@
     "remark-math": "^5.1.1",
     "remark-parse": "^10.0.1",
     "remark-rehype": "^10.1.0",
-    "unified": "^10.1.2"
+    "remark-stringify": "^10.0.2",
+    "unified": "^10.1.2",
+    "unist": "^8.0.11",
+    "unist-util-inspect": "^7.0.2",
+    "unist-util-visit": "^4.1.2",
+    "vfile": "^5.3.6"
   }
 }
