@@ -1,14 +1,35 @@
-export const getStaticProps = async () => {
+import PostList from "@/components/PostList";
+import { blogFiles, getSlugFromFile } from "@/utils/pages";
+import { getPostMatter, PostMatter } from "@/utils/post-matter";
+import { GetStaticProps } from "next";
+
+export const getStaticProps: GetStaticProps<PostsProps> = async () => {
+  const slugs = blogFiles.map(getSlugFromFile);
+  const matters: PostMatter[] = [];
+  for (const slug of slugs) {
+    const matter = await getPostMatter(slug);
+    matters.push(matter);
+  }
+
   return {
-    props: {},
+    props: {
+      postMatters: matters,
+    },
   };
 };
 
-const Post = () => {
+type PostsProps = {
+  postMatters: PostMatter[];
+};
+
+const Post = ({ postMatters }: PostsProps) => {
   return (
-    <div>
-      <h1>Post</h1>
-    </div>
+    <>
+      <PostList
+        postMatters={postMatters}
+        getUrl={(post) => `/posts/${post.slug}`}
+      />
+    </>
   );
 };
 
