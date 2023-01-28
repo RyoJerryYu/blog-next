@@ -83,7 +83,7 @@ export const getSlugFromFile = (file: string) => {
 // return an array of file matches,
 // or return all files if slug is not provided
 export const searchBlogFile = (slug?: string) => {
-  const res = glob.sync(`public/content/posts/${slug || "*"}.md`);
+  const res = glob.sync(`public/content/posts/${slug || "*"}.md*`);
   return res;
 };
 
