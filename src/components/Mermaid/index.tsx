@@ -10,22 +10,14 @@ type MermaidProps = {
 };
 
 const Mermaid = ({ name = "mermaid", children, className }: MermaidProps) => {
-  // const [inited, setInited] = React.useState(false);
-  const [diagram, setDiagram] = React.useState("");
+  const svg = mermaid.render(name, children);
 
-  useEffect(() => {
-    mermaid.render(name, children, (svg) => {
-      console.log(`mermaid rendered: ${name}`);
-      setDiagram(svg);
-    });
-  }, [name, children]);
-
-  return diagram === "" ? (
+  return svg === "" ? (
     <code>{children}</code>
   ) : (
     <div
       className={className ? `mermaid ${className}` : `mermaid`}
-      dangerouslySetInnerHTML={{ __html: diagram }}
+      dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
 };

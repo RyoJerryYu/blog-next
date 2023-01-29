@@ -63,7 +63,7 @@ export const parseMdx = async (content: string) => {
         rehypeKatex,
         rehypeSlug,
         [rehypeAutolinkHeadings, { behavior: "wrap" }],
-        [rehypePrettyCode, prettyCodeOpt],
+        // [rehypePrettyCode, prettyCodeOpt],
       ],
     },
   });
