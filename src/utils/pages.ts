@@ -12,6 +12,7 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode, {
   Options as PrettyCodeOptions,
 } from "rehype-pretty-code";
+import remarkMermaid from "@/plugins/remark-mermaid";
 
 // as 3b1b, we also define some terms here:
 
@@ -58,12 +59,12 @@ export const parseMdx = async (content: string) => {
   };
   const source = await serialize(content, {
     mdxOptions: {
-      remarkPlugins: [remarkGfm, remarkMath],
+      remarkPlugins: [remarkGfm, remarkMath, remarkMermaid],
       rehypePlugins: [
         rehypeKatex,
         rehypeSlug,
         [rehypeAutolinkHeadings, { behavior: "wrap" }],
-        // [rehypePrettyCode, prettyCodeOpt],
+        [rehypePrettyCode, prettyCodeOpt],
       ],
     },
   });
