@@ -20,7 +20,9 @@ const Mermaid = ({ name = "mermaid", children, className }: MermaidProps) => {
     });
   }, [name, children]);
 
-  return diagram === "" ? null : (
+  return diagram === "" ? (
+    <code>{children}</code>
+  ) : (
     <div
       className={className ? `mermaid ${className}` : `mermaid`}
       dangerouslySetInnerHTML={{ __html: diagram }}
