@@ -1,7 +1,11 @@
 "use client";
 
 import mermaid from "mermaid";
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useMemo } from "react";
+
+mermaid.init({
+  startOnLoad: false,
+});
 
 type MermaidProps = {
   name?: string;
@@ -10,8 +14,13 @@ type MermaidProps = {
 };
 
 const Mermaid = ({ name = "mermaid", children, className }: MermaidProps) => {
-  const svg = mermaid.render(name, children);
+  const [svg, setSvg] = React.useState("");
+  useEffect(() => {
+    const res = mermaid.render(name, children);
+    setSvg(res);
+  }, [name, children]);
 
+  // TODO maybe caculate simple size and set default size
   return svg === "" ? (
     <code>{children}</code>
   ) : (
