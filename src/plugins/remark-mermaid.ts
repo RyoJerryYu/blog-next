@@ -1,40 +1,180 @@
-import unified from "unified";
-import { Code, Root, Paragraph } from "mdast";
-import { Parent } from "unist";
-import { visit } from "unist-util-visit";
-import mermaid from "mermaid";
-import playwright from "playwright";
-import { VFileCompatible } from "@mdx-js/mdx/lib/compile";
+import * as playwright from "playwright";
 import rehypeParse from "rehype-parse";
 import { optimize } from "svgo";
+import { unified } from "unified";
+import { is } from "unist-util-is";
+import { visit } from "unist-util-visit";
 
-type RemarkMermaidOptions = {
+import type { Code, Paragraph } from "mdast";
+import type Mermaid from "mermaid";
+import type { MermaidConfig } from "mermaid";
+import type { Config as SvgoConfig } from "svgo";
+import type { Plugin, Transformer } from "unified";
+import type { Node, Parent } from "unist";
+import type { VFileCompatible } from "vfile";
+
+function isObject(target: unknown): target is { [key: string]: unknown } {
+  return typeof target === "object" && target !== null;
+}
+
+function isParent(node: unknown): node is Parent {
+  return isObject(node) && Array.isArray(node.children);
+}
+
+// we want to check types for browser-executed mermaid codes, but don't want to "import" any mermaid modules in them.
+declare const mermaid: typeof Mermaid;
+
+export const UserTheme = {
+  Forest: "forest",
+  Dark: "dark",
+  Default: "default",
+  Neutral: "neutral",
+  Null: "null",
+} as const;
+
+export type Theme = typeof UserTheme[keyof typeof UserTheme];
+
+export interface RemarkMermaidOptions {
+  /**
+   * Launch options to pass to playwright.
+   *
+   * @default {}
+   */
   launchOptions?: playwright.LaunchOptions;
-  contextOptions?: playwright.BrowserContextOptions;
-  theme?: string;
+
+  /**
+   * The Mermaid theme to use.
+   *
+   * @default 'default'
+   */
+  theme?: Theme;
+
+  /**
+   * Whether to wrap svg with <div> element.
+   *
+   * @default "false"
+   */
   wrap?: boolean;
-  classNames?: string[];
+
+  /**
+   * When wrapping with <div>, you can choose what classname to add.
+   * @default []
+   */
+  className?: string[];
+}
+
+function svgParse(svg: string): Node {
+  const processor = unified().use(rehypeParse);
+  const ast = processor.parse(svg);
+  return ast;
+}
+
+function isMermaid(node: unknown): node is Code {
+  if (!is(node, { type: "code", lang: "mermaid" })) {
+    return false;
+  }
+  return true;
+}
+
+type MermaidBlock = [Code, number, Parent];
+
+const remarkMermaid: Plugin<[RemarkMermaidOptions?]> = function mermaidTrans(
+  options
+): Transformer {
+  const DEFAULT_SETTINGS = {
+    launchOptions: {
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    },
+    theme: "default",
+    wrap: false,
+    className: [],
+  };
+
+  const settings = Object.assign({}, DEFAULT_SETTINGS, options);
+
+  return async (node: Node, _file: VFileCompatible) => {
+    const mermaidBlocks = getMermaidBlocks(node);
+    if (mermaidBlocks.length === 0) {
+      return;
+    }
+    const browser = await playwright.chromium.launch(settings.launchOptions);
+    const context = await browser.newContext({
+      viewport: { width: 1000, height: 3000 },
+    });
+    const page = await context.newPage();
+    await page.setContent(`<!DOCTYPE html>`);
+    await page.addScriptTag({
+      url: "https://unpkg.com/mermaid/dist/mermaid.min.js",
+      type: "module",
+    });
+    // await page.setViewportSize({ width: 1000, height: 3000 });
+    const svgResults = await page.evaluate(
+      ({ blocks, theme }) => {
+        const config: MermaidConfig = {
+          theme: theme,
+          startOnLoad: false,
+        };
+        mermaid.mermaidAPI.initialize(config);
+        return blocks.map(([code, ,], id) => {
+          const svg = mermaid.mermaidAPI.render(`mermaid-${id}`, code.value);
+          return svg;
+        });
+      },
+      { blocks: mermaidBlocks, theme: settings.theme }
+    );
+    await browser.close();
+
+    mermaidBlocks.forEach(([, index, parent], i) => {
+      const svgAst = svgParse(optSvg(svgResults[i]));
+      if (settings.wrap) {
+        parent.children[index] = {
+          type: "parent",
+          children: [],
+          data: {
+            hChildren: [
+              {
+                type: "element",
+                children: [svgAst],
+                tagName: "div",
+                properties: {
+                  className: settings.className,
+                },
+              },
+            ],
+          },
+        } as Parent;
+      } else {
+        parent.children[index] = {
+          type: "paragraph",
+          children: [],
+          data: {
+            hChildren: [svgAst],
+          },
+        } as Paragraph;
+      }
+    });
+  };
 };
 
-const DEFAULT_OPTIONS: RemarkMermaidOptions = {
-  contextOptions: {
-    viewport: { width: 1920, height: 1080 },
-  },
-  theme: "default",
-  wrap: false,
-  classNames: [],
-};
+function getMermaidBlocks(node: Node): MermaidBlock[] {
+  const blocks: MermaidBlock[] = [];
 
-type CodeInstance = {
-  node: Code;
-  index: number;
-  parent: Parent;
-};
+  visit(
+    node,
+    isMermaid,
+    (node: Code, index: number, parent: Parent | undefined) => {
+      if (!isParent(parent)) {
+        return;
+      }
+      blocks.push([node, index, parent]);
+    }
+  );
 
-type RenderResult = string;
+  return blocks;
+}
 
-const parseSvg = (svg: string) => {
-  const svgOptimized = optimize(svg, {
+function optSvg(svg: string) {
+  const svgoOptions: SvgoConfig = {
     js2svg: {
       indent: 2,
       pretty: true,
@@ -73,96 +213,10 @@ const parseSvg = (svg: string) => {
         },
       },
     ],
-  }).data;
-  const processor = unified.unified().use(rehypeParse);
-  return processor.parse(svgOptimized);
-};
-
-const searchMermaidBlocks = (ast: Root) => {
-  const instances: CodeInstance[] = [];
-
-  visit(ast, { type: "code", lang: "mermaid" }, (node, index, parent) => {
-    instances.push({ node, index, parent });
-  });
-
-  return instances;
-};
-
-const replaceMermaidBlocks = (
-  instances: CodeInstance[],
-  results: RenderResult[],
-  options?: RemarkMermaidOptions
-) => {
-  for (let i = 0; i < instances.length; i++) {
-    const { node, index, parent } = instances[i];
-    const result = results[i];
-    const svgAst = parseSvg(result);
-    if (options?.wrap) {
-      parent.children[index] = {
-        type: "parent",
-        children: [],
-        data: {
-          hChildren: [
-            {
-              type: "element",
-              children: [svgAst],
-              tagName: "div",
-              properties: {
-                className: options?.classNames,
-              },
-            },
-          ],
-        },
-      } as Parent;
-    } else {
-      parent.children[index] = {
-        type: "paragraph",
-        children: [],
-        data: {
-          hChildren: [svgAst],
-        },
-      } as Paragraph;
-    }
-  }
-};
-
-const remarkMermaid: unified.Plugin<[RemarkMermaidOptions?], Root> = (
-  options
-) => {
-  const opts = { ...DEFAULT_OPTIONS, ...options };
-  const { launchOptions, contextOptions, theme, wrap, classNames } = opts;
-
-  return async (tree, _file) => {
-    const mermaidBlocks = searchMermaidBlocks(tree);
-    if (mermaidBlocks.length === 0) {
-      return;
-    }
-
-    const browser = await playwright.chromium.launch(launchOptions);
-    const context = await browser.newContext(contextOptions);
-    const page = await context.newPage();
-    await page.setContent(`<!DOCTYPE html>`);
-    await page.addScriptTag({
-      url: "https://unpkg.com/mermaid/dist/mermaid.min.js",
-      type: "module",
-    });
-
-    const svgResult = await page.evaluate(
-      ({ blocks, theme }) => {
-        mermaid.mermaidAPI.initialize({ theme, startOnLoad: false });
-        return blocks.map(({ node }, id) =>
-          mermaid.mermaidAPI.render(`mermaid-${id}`, node.value)
-        );
-      },
-      {
-        blocks: mermaidBlocks,
-        theme,
-      }
-    );
-    await browser.close();
-
-    replaceMermaidBlocks(mermaidBlocks, svgResult, opts);
   };
-};
+
+  const value = optimize(svg, svgoOptions).data;
+  return value;
+}
 
 export default remarkMermaid;
