@@ -1,4 +1,5 @@
 import { MDXComponents } from "mdx/types";
+import CodeBlock from "./CodeBlock";
 import License from "./License";
 import Mermaid from "./Mermaid";
 
@@ -9,7 +10,8 @@ const components: MDXComponents = {
     if (props.className === "language-mermaid") {
       return <Mermaid {...props} />;
     }
-    return <code {...props} />;
+    const language = props.className?.replace("language-", "");
+    return <CodeBlock language={language} {...props} />;
   },
 };
 
