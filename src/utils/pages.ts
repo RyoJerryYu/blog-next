@@ -59,7 +59,7 @@ export const parseMdx = async (content: string) => {
   };
   const source = await serialize(content, {
     mdxOptions: {
-      remarkPlugins: [remarkGfm, remarkMath, remarkMermaid],
+      remarkPlugins: [remarkGfm, remarkMath],
       rehypePlugins: [
         rehypeKatex,
         rehypeSlug,
