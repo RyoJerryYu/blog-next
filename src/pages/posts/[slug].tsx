@@ -36,16 +36,16 @@ export const getStaticProps: GetStaticProps<
   const fileContent = fs.readFileSync(filePath, "utf-8");
   const meta = parseMeta(fileContent);
   const source = await parseMdx(meta.content);
-
-  return {
-    props: {
-      slug,
-      source,
-      date: meta.date,
-      length: meta.content.length,
-      license: meta.license ? true : false,
-    },
+  const props: PostProps = {
+    slug,
+    source,
+    date: meta.date,
+    length: meta.content.length,
+    license: meta.license ? true : false,
   };
+  fs.writeFileSync(`${filePath}.tmp`, JSON.stringify(props));
+
+  return { props };
 };
 
 const Post = (props: PostProps) => {

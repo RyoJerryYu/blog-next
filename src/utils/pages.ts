@@ -13,6 +13,7 @@ import rehypePrettyCode, {
   Options as PrettyCodeOptions,
 } from "rehype-pretty-code";
 import remarkMermaid from "@/plugins/remark-mermaid";
+import remarkVsmemoImg from "@/plugins/remark-vsmemo-img";
 
 // as 3b1b, we also define some terms here:
 
@@ -59,7 +60,7 @@ export const parseMdx = async (content: string) => {
   };
   const source = await serialize(content, {
     mdxOptions: {
-      remarkPlugins: [remarkGfm, remarkMath],
+      remarkPlugins: [remarkGfm, remarkMath, remarkVsmemoImg],
       rehypePlugins: [
         rehypeKatex,
         rehypeSlug,

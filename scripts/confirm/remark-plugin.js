@@ -71,6 +71,8 @@ text
 
 ![title](https://some/image.png "trueTitle")
 
+![[linkgger/2323.jpg]]
+
 <License />
 
 | 名称空间     | 隔离内容                      | 内核版本 |
@@ -105,4 +107,4 @@ async function serimdx() {
   console.log(mdxSource);
 }
 
-serimdx();
+// serimdx();
