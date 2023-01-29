@@ -13,6 +13,8 @@ import type { Plugin, Transformer } from "unified";
 import type { Node, Parent } from "unist";
 import type { VFileCompatible } from "vfile";
 
+// copy from https://github.com/haxibami/haxibami.net
+
 function isObject(target: unknown): target is { [key: string]: unknown } {
   return typeof target === "object" && target !== null;
 }
