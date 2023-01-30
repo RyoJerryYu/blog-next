@@ -1,19 +1,8 @@
 import path from "path";
 import fs from "fs";
-import { serialize } from "next-mdx-remote/serialize";
 import { glob } from "glob";
 import matter from "gray-matter";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
-import remarkMath from "remark-math";
-import remarkGfm from "remark-gfm";
-import rehypeKatex from "rehype-katex";
-import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypePrettyCode, {
-  Options as PrettyCodeOptions,
-} from "rehype-pretty-code";
-import remarkMermaid from "@/plugins/remark-mermaid";
-import remarkVsmemoImg from "@/plugins/remark-vsmemo-img";
 
 // as 3b1b, we also define some terms here:
 
@@ -50,26 +39,6 @@ export const parseMeta = (rawContent: string): ParseDataResult => {
     : null;
 
   return { content, ...data };
-};
-
-// make serialized file for mdx renderer
-export const parseMdx = async (content: string) => {
-  const prettyCodeOpt: Partial<PrettyCodeOptions> = {
-    theme: "rose-pine-moon",
-    keepBackground: true,
-  };
-  const source = await serialize(content, {
-    mdxOptions: {
-      remarkPlugins: [remarkGfm, remarkMath, remarkVsmemoImg],
-      rehypePlugins: [
-        rehypeKatex,
-        rehypeSlug,
-        [rehypeAutolinkHeadings, { behavior: "wrap" }],
-        // [rehypePrettyCode, prettyCodeOpt],
-      ],
-    },
-  });
-  return source;
 };
 
 export const getSlugFromFile = (file: string) => {

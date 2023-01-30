@@ -1,10 +1,10 @@
 import {
   blogFiles,
   getSlugFromFile,
-  parseMdx,
   parseMeta,
   searchBlogFile,
 } from "@/utils/pages";
+import parseMdx from "@/plugins";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import fs from "fs";
@@ -35,7 +35,11 @@ export const getStaticProps: GetStaticProps<
   const filePath = searchBlogFile(slug)[0]!;
   const fileContent = fs.readFileSync(filePath, "utf-8");
   const meta = parseMeta(fileContent);
-  const source = await parseMdx(meta.content);
+  const source = await parseMdx(meta.content, {
+    remarkVsmemoImgOptions: {
+      baseDir: `/content/posts/${slug}`,
+    },
+  });
   const props: PostProps = {
     slug,
     source,

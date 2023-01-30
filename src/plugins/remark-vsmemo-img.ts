@@ -26,6 +26,7 @@ const isVsmemoImg = (node: unknown): node is Paragraph => {
   return syntax.test(text.value);
 };
 
+// need slug passed here
 export type RemarkVsmemoImgOptions = {
   baseDir: string;
 };
