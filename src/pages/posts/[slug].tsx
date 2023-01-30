@@ -47,7 +47,7 @@ export const getStaticProps: GetStaticProps<
     length: meta.content.length,
     license: meta.license ? true : false,
   };
-  fs.writeFileSync(`${filePath}.tmp`, JSON.stringify(props));
+  fs.writeFileSync(`temp/${slug}.tmp`, JSON.stringify(props));
 
   return { props };
 };
