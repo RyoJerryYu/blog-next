@@ -1,0 +1,10 @@
+@tailwind components;
+
+@layer components {
+  .headeritem {
+    @apply h-full flex justify-center bg-green-100;
+  }
+  .textbox {
+    @apply h-full flex items-center justify-center;
+  }
+}
