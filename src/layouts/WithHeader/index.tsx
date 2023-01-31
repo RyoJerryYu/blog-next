@@ -1,11 +1,5 @@
+import Link from "next/link";
 import style from "./style.module.css";
-
-type IconProps = {
-  className?: string;
-};
-const Icon: React.FC<IconProps> = ({ className }) => {
-  return <div className={className}>Icon Here</div>;
-};
 
 type NavBarItem = {
   to: string;
@@ -20,56 +14,57 @@ const NavBar: React.FC<NavBarProps> = ({ className, items }) => {
   return (
     <div className={className}>
       {items.map((item) => (
-        <div
-          key={item.text}
-          className={`relative float-left mx-8 ${style.textbox}`}
-        >
-          {item.text}
+        <div key={item.text} className={style.navBarItem}>
+          <Link href={item.to} className={style.textlink}>
+            {item.text}
+          </Link>
         </div>
       ))}
     </div>
   );
 };
 
-type HeaderRightProps = {
-  className?: string;
-};
-const HeaderRight: React.FC<HeaderRightProps> = ({ className }) => {
-  return (
-    <div className={className}>
-      <div className={style.textbox}>Header Right</div>
-    </div>
-  );
-};
-
-type HeaderProps = {
-  children: React.ReactNode;
-};
-const Header: React.FC<HeaderProps> = ({ children }) => {
-  return (
-    <div className="top-0 fixed w-screen bg-red-200 z-10 h-16 flex">
-      {children}
-    </div>
-  );
-};
-
 type WithHeaderProps = {
   children: React.ReactNode;
+  withFullScreen?: boolean;
 };
-const WithHeader: React.FC<WithHeaderProps> = ({ children }) => {
+const WithHeader: React.FC<WithHeaderProps> = ({
+  children,
+  withFullScreen,
+}) => {
   const items: NavBarItem[] = [
-    { to: "/", text: "Post" },
+    { to: "/posts", text: "Post" },
     { to: "/", text: "Notes" },
     { to: "/", text: "Lesson" },
     { to: "/", text: "About" },
   ];
   return (
     <>
-      <Header>
-        <Icon className={`ml-2 w-32 ${style.headeritem}`} />
-        <NavBar className={`ml-12 pr-2 ${style.headeritem}`} items={items} />
-        <HeaderRight className={`ml-auto mr-8 ${style.headeritem}`} />
-      </Header>
+      <div className={style.header}>
+        {/* icon */}
+        <div className={style.icon}>
+          <div className={style.textbox}>
+            <Link href={"/"} className={style.textlink}>
+              {"Ryo's Blog"}
+            </Link>
+          </div>
+        </div>
+
+        {/* NavBar */}
+        <NavBar className={style.navBar} items={items} />
+
+        {/* headerRight */}
+        <div className={style.headerRight}>
+          <div className={style.textbox}>
+            <Link href={"/about"} className={style.textlink}>
+              About Me
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* outside header */}
+      {withFullScreen ? null : <div className={style.headerBg}></div>}
 
       {children}
     </>

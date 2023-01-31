@@ -17,8 +17,8 @@ export async function getStaticProps() {
 export default function Home() {
   return (
     <>
-      <WithHeader>
-        <div className="h-screen w-screen bg-slate-500 flex items-center justify-center">
+      <WithHeader withFullScreen>
+        <div className="h-screen w-screen bg-green-200 flex items-center justify-center">
           Poster Should be Full Screen
         </div>
         <p className=" h-64">Hello From my next.js app!</p>

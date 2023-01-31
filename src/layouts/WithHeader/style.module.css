@@ -1,10 +1,42 @@
 @tailwind components;
 
-@layer components {
-  .headeritem {
-    @apply h-full flex justify-center bg-green-100;
-  }
-  .textbox {
-    @apply h-full flex items-center justify-center;
-  }
+$hover-cyan: #69e0ff;
+
+.headeritem {
+  @apply h-full flex justify-center;
+}
+
+.textbox {
+  @apply h-full flex items-center justify-center p-4;
+}
+
+.textlink {
+  @apply text-gray-300 font-sans text-lg font-normal;
+  @apply hover:text-white;
+}
+.textlink:hover {
+  text-shadow: 0 0 10px #69e0ff, 0 0 20px #69e0ff;
+}
+
+.header {
+  @apply top-0 fixed w-screen z-10 h-16 flex bg-gray-900 bg-opacity-75;
+}
+.headerBg {
+  @apply top-0 w-screen z-0 h-16 bg-gradient-to-b from-gray-700 to-transparent;
+}
+.icon {
+  @apply headeritem;
+  @apply ml-2 w-32;
+}
+.navBar {
+  @apply headeritem;
+  @apply ml-12 pr-2;
+}
+.navBarItem {
+  @apply textbox;
+  @apply relative float-left mx-2;
+}
+.headerRight {
+  @apply headeritem;
+  @apply ml-auto mr-2;
 }

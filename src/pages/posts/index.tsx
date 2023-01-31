@@ -1,4 +1,5 @@
 import PostList from "@/components/PostList";
+import WithHeader from "@/layouts/WithHeader";
 import { blogFiles, getSlugFromFile } from "@/utils/pages";
 import { getPostMatter, PostMatter } from "@/utils/post-matter";
 import { GetStaticProps } from "next";
@@ -25,10 +26,12 @@ type PostsProps = {
 const Post = ({ postMatters }: PostsProps) => {
   return (
     <>
-      <PostList
-        postMatters={postMatters}
-        getUrl={(post) => `/posts/${post.slug}`}
-      />
+      <WithHeader>
+        <PostList
+          postMatters={postMatters}
+          getUrl={(post) => `/posts/${post.slug}`}
+        />
+      </WithHeader>
     </>
   );
 };
