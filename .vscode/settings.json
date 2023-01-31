@@ -5,6 +5,12 @@
         "source.fixAll": true
     },
     "jest.autoRun": "off",
+    
+    "scss.lint.unknownAtRules": "ignore",
+    "[scss]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+    },
+
     "markdown.extension.list.indentationSize": "inherit",
     "pasteImage.insertPattern": "![[${imageFileName}]]",
     "pasteImage.path": "${currentFileDir}/${currentFileNameWithoutExt}/",

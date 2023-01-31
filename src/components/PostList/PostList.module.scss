@@ -1,0 +1,5 @@
+@tailwind components;
+
+.header {
+  @apply flex-auto bg-gradient-to-t to-teal-400;
+}
