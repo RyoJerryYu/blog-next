@@ -15,7 +15,7 @@
   @apply text-xs text-slate-700;
 }
 .postAbstract {
-  @apply text-sm text-slate-900 whitespace-pre-line;
+  @apply text-sm text-slate-900 p-1 leading-snug;
 }
 
 .postTagsBox {

@@ -26,6 +26,7 @@ export const getPostMatter = async (slug: string) => {
     tags: data.tags,
     abstract: content
       .split("\n")
+      .filter((line) => !line.startsWith("#"))
       .filter((line) => line.trim() !== "")
       .slice(0, 3)
       .join("\n"),

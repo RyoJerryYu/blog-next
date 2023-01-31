@@ -5,6 +5,26 @@ import React from "react";
 import RelativeTime from "../RelativeTime";
 import style from "./PostList.module.scss";
 
+type PostAbstractProps = {
+  className?: string;
+  children: string;
+};
+const PostAbstract: React.FC<PostAbstractProps> = ({ className, children }) => {
+  const lines = children.split("\n");
+
+  return (
+    <div className={className}>
+      {lines.map((line, index) => {
+        return (
+          <p key={index} className={style.postAbstract}>
+            {line}
+          </p>
+        );
+      })}
+    </div>
+  );
+};
+
 type PostListElementProps = {
   className?: string;
   postMatter: PostMatter;
@@ -39,7 +59,9 @@ export function PostListElement({
           {postMatter.created_at}
         </RelativeTime>
         {postMatter.abstract && postMatter.abstract.length > 0 && (
-          <div className={style.postAbstract}>{postMatter.abstract}</div>
+          <PostAbstract className={style.postAbstract}>
+            {postMatter.abstract}
+          </PostAbstract>
         )}
       </Link>
       {renderTags()}
