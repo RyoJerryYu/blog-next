@@ -2,10 +2,18 @@ import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
 type RelativeTimeProps = {
-  time: string;
+  className?: string;
+  children: string;
 };
 
-export default function RelativeTime({ time }: RelativeTimeProps) {
-  const jsTime = dayjs(time);
-  return <time dateTime={jsTime.toJSON()}>{jsTime.format("YYYY-MM-DD")}</time>;
+export default function RelativeTime({
+  className,
+  children,
+}: RelativeTimeProps) {
+  const jsTime = dayjs(children);
+  return (
+    <time className={className} dateTime={jsTime.toJSON()}>
+      {jsTime.format("YYYY-MM-DD")}
+    </time>
+  );
 }

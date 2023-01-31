@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import RelativeTime from "../RelativeTime";
+import style from "./PostList.module.scss";
 
 type PostListElementProps = {
   className?: string;
@@ -20,9 +21,11 @@ export function PostListElement({
       return null;
     }
     return (
-      <div>
+      <div className={style.postTagsBox}>
         {postMatter.tags.map((tag) => (
-          <span key={tag}>{tag}</span>
+          <span key={tag} className={style.postTag}>
+            {tag}
+          </span>
         ))}
       </div>
     );
@@ -31,13 +34,15 @@ export function PostListElement({
   return (
     <div className={className}>
       <Link href={url}>
-        <h6>{postMatter.title}</h6>
+        <h6 className={style.postTitle}>{postMatter.title}</h6>
+        <RelativeTime className={style.postDate}>
+          {postMatter.created_at}
+        </RelativeTime>
         {postMatter.abstract && postMatter.abstract.length > 0 && (
-          <div>{postMatter.abstract}</div>
+          <div className={style.postAbstract}>{postMatter.abstract}</div>
         )}
       </Link>
       {renderTags()}
-      <RelativeTime time={postMatter.created_at} />
     </div>
   );
 }
@@ -61,10 +66,11 @@ export default function PostList({ postMatters, getUrl }: PostListProps) {
   });
 
   return (
-    <div>
+    <div className={style.postList}>
       {elementsProps.map(({ postMatter, url }) => (
         <PostListElement
           key={postMatter.slug}
+          className={style.postListElement}
           postMatter={postMatter}
           url={url}
         />
