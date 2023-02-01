@@ -19,7 +19,7 @@ $hover-cyan: #69e0ff;
 }
 
 .header {
-  @apply top-0 fixed w-screen z-10 h-16 flex bg-gray-900 bg-opacity-75;
+  @apply top-0 fixed w-screen z-10 h-16 flex bg-gray-900 bg-opacity-50 hover:bg-opacity-75;
 }
 .headerBg {
   @apply top-0 w-screen z-0 h-16 bg-gradient-to-b from-gray-700 to-transparent;

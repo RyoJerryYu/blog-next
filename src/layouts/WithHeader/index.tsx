@@ -33,10 +33,8 @@ const WithHeader: React.FC<WithHeaderProps> = ({
   withFullScreen,
 }) => {
   const items: NavBarItem[] = [
-    { to: "/posts", text: "Post" },
-    { to: "/", text: "Notes" },
-    { to: "/", text: "Lesson" },
-    { to: "/", text: "About" },
+    { to: "/posts", text: "Posts" },
+    { to: "/tag/1", text: "Tags" },
   ];
   return (
     <>
@@ -67,6 +65,7 @@ const WithHeader: React.FC<WithHeaderProps> = ({
       {withFullScreen ? null : <div className={style.headerBg}></div>}
 
       {children}
+      {/* add sth last of the site here */}
     </>
   );
 };
