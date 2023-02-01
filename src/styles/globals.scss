@@ -13,7 +13,6 @@
   --prevfg: #1c1b22;
   --codehl: #403d52;
   --codefind: #add7ff40;
-  --codelinenum: #767c9d50;
   --codetitlebg: #303340;
   --codetitlefg: #a6accd;
   --mermaidbg: #edebef;
@@ -148,7 +147,7 @@
           width: 1rem;
           margin-right: 1.25rem;
           text-align: right;
-          color: var(--codelinenum);
+          @apply text-code-lineno;
         }
 
         & .line.highlighted {

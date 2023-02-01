@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import RelativeTime from "../RelativeTime";
+import TagsBox from "../TagsBox";
 import style from "./PostList.module.scss";
 
 type PostAbstractProps = {
@@ -40,15 +41,7 @@ export function PostListElement({
     if (!postMatter.tags || postMatter.tags.length === 0) {
       return null;
     }
-    return (
-      <div className={style.postTagsBox}>
-        {postMatter.tags.map((tag) => (
-          <span key={tag} className={style.postTag}>
-            {tag}
-          </span>
-        ))}
-      </div>
-    );
+    return;
   };
 
   return (
@@ -64,7 +57,9 @@ export function PostListElement({
           </PostAbstract>
         )}
       </Link>
-      {renderTags()}
+      {postMatter.tags && postMatter.tags.length > 0 && (
+        <TagsBox tags={postMatter.tags} />
+      )}
     </div>
   );
 }

@@ -17,11 +17,3 @@
 .postAbstract {
   @apply text-sm py-1 px-1 leading-snug;
 }
-
-.postTagsBox {
-  @apply flex flex-row h-6 mt-1;
-}
-.postTag {
-  @apply flex-initial py-1 px-2 mr-1 rounded-xl text-center text-xs;
-  @apply border border-line hover:border-line-focus hover:bg-bg-focus2;
-}

@@ -17,11 +17,14 @@ module.exports = {
           focus: colors.slate[100],
           focus2: colors.slate[300],
         },
-        line: {
+        border: {
           DEFAULT: colors.slate[400],
           focus: colors.slate[500],
         },
-        code: colors.slate[300],
+        code: {
+          DEFAULT: colors.slate[300],
+          lineno: colors.slate[500],
+        }
       }
     },
   },
