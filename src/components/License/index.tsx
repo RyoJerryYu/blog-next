@@ -6,7 +6,7 @@ type LicenseProps = {};
 export default function License({}: LicenseProps) {
   return (
     <>
-      <div className="w-96 text-gray-700">
+      <div className="w-96 text-gray-700 leading-none">
         <span className="!text-sm">
           <Link
             className="!inline-block !p-0 !m-0 align-text-bottom"

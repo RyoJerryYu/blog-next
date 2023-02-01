@@ -25,7 +25,9 @@ type PostPageProps = {
   slug: string;
   length: number;
   date: string;
+  title: string;
   license: boolean;
+  tags: string[];
   source: MDXRemoteSerializeResult;
 };
 
@@ -47,7 +49,9 @@ export const getStaticProps: GetStaticProps<
     source,
     date: meta.date,
     length: meta.content.length,
-    license: meta.license ? true : false,
+    title: meta.title ?? "Untitled",
+    tags: meta.tags,
+    license: meta.license ?? false,
   };
   fs.writeFileSync(`temp/${slug}.tmp`, JSON.stringify(props));
 
@@ -59,10 +63,11 @@ const PostPage = (props: PostPageProps) => {
     <>
       <WithHeader>
         <Post
-          title={"props.slug"}
+          title={props.title}
           length={props.length}
           date={props.date}
           license={props.license}
+          tags={props.tags}
           source={props.source}
         />
       </WithHeader>
