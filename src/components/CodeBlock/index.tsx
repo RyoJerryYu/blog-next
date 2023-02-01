@@ -1,6 +1,5 @@
-import SyntaxHighlighter, {
-  SyntaxHighlighterProps,
-} from "react-syntax-highlighter";
+import { NoSsr } from "@mui/base";
+import SyntaxHighlighter from "react-syntax-highlighter";
 import { monokaiSublime } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 
 type CodeBlockProps = {
@@ -11,13 +10,17 @@ type CodeBlockProps = {
 // TODO want show language, show file name, highlight line...
 const CodeBlock = ({ language, children }: CodeBlockProps) => {
   return (
-    <SyntaxHighlighter
-      language={language}
-      style={monokaiSublime}
-      showLineNumbers={true}
-    >
-      {children}
-    </SyntaxHighlighter>
+    <>
+      <NoSsr>
+        <SyntaxHighlighter
+          language={language}
+          style={monokaiSublime}
+          showLineNumbers={true}
+        >
+          {children}
+        </SyntaxHighlighter>
+      </NoSsr>
+    </>
   );
 };
 

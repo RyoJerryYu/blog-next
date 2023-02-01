@@ -11,7 +11,7 @@ import fs from "fs";
 import License from "@/components/License";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  console.log(blogFiles);
+  console.log(`onGetStaticPaths:`, blogFiles);
   const paths = blogFiles.map(getSlugFromFile).map((slug) => `/posts/${slug}`);
   return {
     paths,
