@@ -1,21 +1,21 @@
 @tailwind components;
 
 .postList {
-  @apply flex flex-col max-w-2xl mx-auto min-h-screen bg-slate-300;
+  @apply flex flex-col max-w-2xl mx-auto min-h-screen;
 }
 .postListElement {
-  @apply flex-1 p-2 mt-2 mx-2 bg-slate-200 rounded-md;
-  @apply cursor-pointer hover:bg-slate-100;
+  @apply flex-1 p-2 mt-2 mx-2 rounded-md;
+  @apply cursor-pointer hover:bg-bg-focus;
 }
 
 .postTitle {
-  @apply text-xl font-bold text-slate-900;
+  @apply text-xl font-bold;
 }
 .postDate {
-  @apply text-xs text-slate-700;
+  @apply text-xs text-fg-light;
 }
 .postAbstract {
-  @apply text-sm text-slate-900 p-1 leading-snug;
+  @apply text-sm py-1 px-1 leading-snug;
 }
 
 .postTagsBox {
@@ -23,5 +23,5 @@
 }
 .postTag {
   @apply flex-initial py-1 px-2 mr-1 rounded-xl text-center text-xs;
-  @apply border border-slate-400 hover:border-slate-500 hover:bg-slate-300;
+  @apply border border-line hover:border-line-focus hover:bg-bg-focus2;
 }

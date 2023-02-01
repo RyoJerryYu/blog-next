@@ -22,6 +22,7 @@ tags:
 参考[BruceZhao][BruceZhao]提供的中文翻译：[README.zh.md][READMEzh]，先将[Huxpro][Huxpro]提供的[博客模板仓库][origin_repo]fork出来，`git clone`到本地。
 
 整个网站文件夹大致结构如下：
+
 ```
 ├── _config.yml
 |

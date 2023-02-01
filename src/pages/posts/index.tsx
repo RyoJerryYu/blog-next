@@ -23,7 +23,7 @@ type PostsProps = {
   postMatters: PostMatter[];
 };
 
-const Post = ({ postMatters }: PostsProps) => {
+const PostListPage = ({ postMatters }: PostsProps) => {
   return (
     <>
       <WithHeader>
@@ -36,4 +36,4 @@ const Post = ({ postMatters }: PostsProps) => {
   );
 };
 
-export default Post;
+export default PostListPage;

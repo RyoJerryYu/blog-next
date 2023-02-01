@@ -4,9 +4,13 @@ import remarkVsmemoImg, {
 import { serialize } from "next-mdx-remote/serialize";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeKatex from "rehype-katex";
+import rehypePrettyCode, {
+  Options as PrettyCodeOptions,
+} from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import remarkUnwrapImages from "remark-unwrap-images";
 
 type ParseMdxConfig = {
   remarkVsmemoImgOptions?: RemarkVsmemoImgOptions;
@@ -20,11 +24,30 @@ const parseMdx = async (content: string, config?: ParseMdxConfig) => {
         remarkGfm,
         remarkMath,
         [remarkVsmemoImg, config?.remarkVsmemoImgOptions],
+        remarkUnwrapImages,
       ],
       rehypePlugins: [
-        rehypeKatex,
         rehypeSlug,
         [rehypeAutolinkHeadings, { behavior: "wrap" }],
+        rehypeKatex,
+        [
+          rehypePrettyCode,
+          {
+            theme: "rose-pine-moon",
+            keepBackground: true,
+            onVisitLine: (node: any) => {
+              if (node.children.length === 0) {
+                node.children = [{ type: "text", value: " " }];
+              }
+            },
+            onVisitHighlightedLine: (node: any) => {
+              node.properties.className.push("highlighted");
+            },
+            onVisitHighlightedWord: (node: any, id: string | undefined) => {
+              node.properties.className = ["word"];
+            },
+          } as PrettyCodeOptions,
+        ],
       ],
     },
   });

@@ -8,7 +8,9 @@ import parseMdx from "@/plugins";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import fs from "fs";
+import Post from "@/components/Post";
 import License from "@/components/License";
+import WithHeader from "@/layouts/WithHeader";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   console.log(`onGetStaticPaths:`, blogFiles);
@@ -19,7 +21,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-type PostProps = {
+type PostPageProps = {
   slug: string;
   length: number;
   date: string;
@@ -28,7 +30,7 @@ type PostProps = {
 };
 
 export const getStaticProps: GetStaticProps<
-  PostProps,
+  PostPageProps,
   { slug: string }
 > = async ({ params }) => {
   const slug = params!.slug;
@@ -40,7 +42,7 @@ export const getStaticProps: GetStaticProps<
       baseDir: `/content/posts/${slug}`,
     },
   });
-  const props: PostProps = {
+  const props: PostPageProps = {
     slug,
     source,
     date: meta.date,
@@ -52,17 +54,20 @@ export const getStaticProps: GetStaticProps<
   return { props };
 };
 
-const Post = (props: PostProps) => {
+const PostPage = (props: PostPageProps) => {
   return (
-    <div>
-      <h1>Post</h1>
-      {props.slug}
-      <p>{props.date}</p>
-      <p>length: {props.length}</p>
-      <MDXRemote {...props.source} />
-      {props.license && <License />}
-    </div>
+    <>
+      <WithHeader>
+        <Post
+          title={"props.slug"}
+          length={props.length}
+          date={props.date}
+          license={props.license}
+          source={props.source}
+        />
+      </WithHeader>
+    </>
   );
 };
 
-export default Post;
+export default PostPage;
