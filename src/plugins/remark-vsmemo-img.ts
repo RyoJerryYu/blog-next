@@ -5,6 +5,9 @@ import { is } from "unist-util-is";
 import { visit } from "unist-util-visit";
 
 const syntax = /^\!\[\[(.+)\]\]$/;
+const basePath = process.env.SITE_URL_BASE_PATH
+  ? `/${process.env.SITE_URL_BASE_PATH}`
+  : "";
 
 /**
  * test if node is a vscode memo image
@@ -60,7 +63,7 @@ const remarkVsmemoImg: unified.Plugin<[RemarkVsmemoImgOptions?]> = (
         const img: Image = {
           type: "image",
           title: label,
-          url: `${opts.baseDir}/${file}`,
+          url: `${basePath}${opts.baseDir}/${file}`,
           alt: label,
         };
 
