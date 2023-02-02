@@ -1,6 +1,8 @@
 /** @type {import('next-sitemap').IConfig} */
+const siteOrigin = process.env.SITE_URL_ORIGIN || 'https://blog.ryojerryyu.xyz';
+const basePath = process.env.SITE_URL_BASE_PATH || "";
 module.exports = {
-  siteUrl: process.env.SITE_URL || 'https://ryojerryyu.github.io/blog-next',
+  siteUrl: `${siteOrigin}/${basePath}`,
   generateRobotsTxt: true, // (optional)
   outDir: "./out",
   // sitemapSize: 7000,
