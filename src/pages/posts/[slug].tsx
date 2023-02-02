@@ -53,7 +53,7 @@ export const getStaticProps: GetStaticProps<
     tags: meta.tags,
     license: meta.license ?? false,
   };
-  fs.writeFileSync(`temp/${slug}.tmp`, JSON.stringify(props));
+  // fs.writeFileSync(`temp/${slug}.tmp`, JSON.stringify(props));
 
   return { props };
 };
