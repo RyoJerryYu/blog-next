@@ -1,7 +1,8 @@
 import Post from "@/components/Post";
 import WithHeader from "@/layouts/WithHeader";
 import parseMdx from "@/plugins";
-import { slugs, slugToMatter, slugToPath } from "@/statics";
+import { slugs, slugToFile, slugToMatter, slugToPath } from "@/statics";
+import { parseMetaFromFile } from "@/statics/utils";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
@@ -30,7 +31,11 @@ export const getStaticProps: GetStaticProps<
 > = async ({ params }) => {
   console.log(`onGetStaticProps: ${params?.slug}`);
   const slug = params!.slug;
-  const meta = slugToMatter(slug);
+  let meta = slugToMatter(slug);
+  if (process.env.NODE_ENV === "development") {
+    // for reloading in development
+    meta = parseMetaFromFile(slugToFile(slug));
+  }
   const source = await parseMdx(meta.content, {
     remarkVsmemoImgOptions: {
       baseDir: `/content/posts/${slug}`,
@@ -40,8 +45,8 @@ export const getStaticProps: GetStaticProps<
     slug,
     source,
     date: meta.created_at,
-    length: meta.content.length,
-    title: meta.title ?? "Untitled",
+    length: meta.length,
+    title: meta.title,
     tags: meta.tags ?? [],
     license: meta.license ?? false,
   };

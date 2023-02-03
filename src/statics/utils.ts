@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import matter from "gray-matter";
 import path from "path";
+import fs from "fs";
 
 const slugWithoutPrefixRegex = /(\d*-)*(.*)/;
 export const getSlugFromFile = (file: string) => {
@@ -18,32 +19,39 @@ export const getPathFromSlug = (path: string) => {
 };
 
 export type PostMeta = {
-  // should test if content could refresh when dev
-  // if not, load it on get static props
   content: string;
   title: string;
+  abstract: string;
+  length: number;
   created_at: string;
   updated_at?: string;
   tags?: string[];
-  abstract?: string;
   license?: boolean;
 };
-// return [matter, content]
-export const parseMatterFromRaw = (raw: string) => {
+
+// export for test
+export const parseMetaFromRaw = (raw: string) => {
   const { data, content } = matter(raw);
   const result: PostMeta = {
     content,
     title: data.title,
-    created_at: dayjs(data.created_at).toJSON(),
-    updated_at: data.updated_at ? dayjs(data.updated_at).toJSON() : undefined,
-    tags: data.tags,
     abstract: content
       .split("\n")
       .filter((line) => !line.startsWith("#"))
       .filter((line) => line.trim() !== "")
       .slice(0, 3)
       .join("\n"),
+    length: content.split("\n").length,
+    created_at: dayjs(data.created_at).toJSON(),
+    updated_at: data.updated_at ? dayjs(data.updated_at).toJSON() : undefined,
+    tags: data.tags,
     license: data.license,
   };
   return result;
+};
+
+export const parseMetaFromFile = (file: string) => {
+  console.log("parseMetaFromFile", file);
+  const raw = fs.readFileSync(file, "utf-8");
+  return parseMetaFromRaw(raw);
 };

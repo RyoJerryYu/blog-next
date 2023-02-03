@@ -5,12 +5,11 @@
  * And ensure: init once, no modification after init.
  */
 
-import fs from "fs";
 import { glob } from "glob";
 import {
   getPathFromSlug,
   getSlugFromFile,
-  parseMatterFromRaw,
+  parseMetaFromFile,
   PostMeta,
 } from "./utils";
 
@@ -29,9 +28,8 @@ type Page = {
   path: string;
   matter: PostMeta;
 };
-// map<slug, file>
-const post: Map<string, Page> = new Map();
-const collectPages = () => {
+const initPages = () => {
+  const post: Map<string, Page> = new Map();
   const files = glob.sync("public/content/posts/*.md*");
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
@@ -40,12 +38,13 @@ const collectPages = () => {
       throw new Error(`Duplicate slug: ${slug}`);
     }
     const path = getPathFromSlug(slug);
-    const raw = fs.readFileSync(file, "utf-8");
-    const matter = parseMatterFromRaw(raw);
+    const matter = parseMetaFromFile(file);
     post.set(slug, { slug, file, path, matter });
   }
+  return post;
 };
-collectPages();
+// map<slug, file>
+const post: Map<string, Page> = initPages();
 // console.log(`post:`, post);
 
 export const slugs = () => {

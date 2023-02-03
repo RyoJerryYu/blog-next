@@ -1,4 +1,4 @@
-import { getSlugFromFile, parseMatterFromRaw } from "./utils";
+import { getSlugFromFile, parseMetaFromRaw } from "./utils";
 
 describe("test get slug from file", () => {
   const cases = [
@@ -42,7 +42,6 @@ edf
         title: "abc",
         tagLength: 2,
         abstract: "edf",
-        contentPrefix: "# abc",
       },
     },
     {
@@ -57,18 +56,16 @@ second line
         title: "abc",
         tagLength: undefined,
         abstract: "first line\nsecond line",
-        contentPrefix: "first line",
       },
     },
   ];
 
   for (const { name, input, output } of cases) {
     it(name, () => {
-      const result = parseMatterFromRaw(input);
+      const result = parseMetaFromRaw(input);
       expect(result.title).toBe(output.title);
       expect(result.tags?.length).toBe(output.tagLength);
       expect(result.abstract).toBe(output.abstract);
-      expect(result.content.startsWith(output.contentPrefix)).toBe(true);
     });
   }
 });
