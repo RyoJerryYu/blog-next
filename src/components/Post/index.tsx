@@ -4,32 +4,25 @@ import License from "../License";
 import RelativeTime from "../RelativeTime";
 import clsx from "clsx";
 import TagsBox from "../TagsBox";
+import { PostMeta } from "@/statics/utils";
 
 type PostProps = {
-  title: string;
-  length: number;
-  date: string;
-  license: boolean;
-  tags?: string[];
   source: MDXRemoteSerializeResult;
+  meta: PostMeta;
 };
 
-const Post = (props: PostProps) => {
+const Post = ({ meta, source }: PostProps) => {
   return (
     <article className={style.post}>
-      <h1 className={style.postTitle}>{props.title}</h1>
-      <RelativeTime className={style.postDate}>{props.date}</RelativeTime>
-      {props.tags && props.tags.length > 0 && (
-        <TagsBox className="mt-2" tags={props.tags} />
-      )}
+      <h1 className={style.postTitle}>{meta.title}</h1>
+      <RelativeTime className={style.postDate}>{meta.created_at}</RelativeTime>
+      {meta.tags.length > 0 && <TagsBox className="mt-2" tags={meta.tags} />}
 
       <div className={clsx("post-body", style.postContent)}>
-        <MDXRemote {...props.source} />
+        <MDXRemote {...source} />
       </div>
-      {props.license && <License />}
-      {props.tags && props.tags.length > 0 && (
-        <TagsBox className="mt-4" tags={props.tags} />
-      )}
+      {meta.license && <License />}
+      {meta.tags.length > 0 && <TagsBox className="mt-4" tags={meta.tags} />}
     </article>
   );
 };

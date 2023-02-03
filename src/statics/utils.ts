@@ -25,8 +25,8 @@ export type PostMeta = {
   length: number;
   created_at: string;
   updated_at?: string;
-  tags?: string[];
-  license?: boolean;
+  tags: string[];
+  license: boolean;
 };
 
 // export for test
@@ -44,8 +44,8 @@ export const parseMetaFromRaw = (raw: string) => {
     length: content.split("\n").length,
     created_at: dayjs(data.created_at).toJSON(),
     updated_at: data.updated_at ? dayjs(data.updated_at).toJSON() : undefined,
-    tags: data.tags,
-    license: data.license,
+    tags: data.tags ?? [],
+    license: data.license ?? false,
   };
   return result;
 };

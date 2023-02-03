@@ -2,7 +2,7 @@ import Post from "@/components/Post";
 import WithHeader from "@/layouts/WithHeader";
 import parseMdx from "@/plugins";
 import { getSlugs, slugToFile, slugToMatter, slugToPath } from "@/statics";
-import { parseMetaFromFile } from "@/statics/utils";
+import { parseMetaFromFile, PostMeta } from "@/statics/utils";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
@@ -17,12 +17,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 type PostPageProps = {
   slug: string;
-  length: number;
-  date: string;
-  title: string;
-  license: boolean;
-  tags: string[];
   source: MDXRemoteSerializeResult;
+  meta: PostMeta;
 };
 
 export const getStaticProps: GetStaticProps<
@@ -45,11 +41,7 @@ export const getStaticProps: GetStaticProps<
   const props: PostPageProps = {
     slug,
     source,
-    date: meta.created_at,
-    length: meta.length,
-    title: meta.title,
-    tags: meta.tags ?? [],
-    license: meta.license ?? false,
+    meta,
   };
   // fs.writeFileSync(`temp/${slug}.tmp`, JSON.stringify(props));
 
@@ -60,14 +52,7 @@ const PostPage = (props: PostPageProps) => {
   return (
     <>
       <WithHeader>
-        <Post
-          title={props.title}
-          length={props.length}
-          date={props.date}
-          license={props.license}
-          tags={props.tags}
-          source={props.source}
-        />
+        <Post meta={props.meta} source={props.source} />
       </WithHeader>
     </>
   );
