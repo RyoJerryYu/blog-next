@@ -66,8 +66,9 @@ export interface RemarkMermaidOptions {
 }
 
 function svgParse(svg: string): Node {
-  const processor = unified().use(rehypeParse);
+  const processor = unified().use(rehypeParse, { fragment: true });
   const ast = processor.parse(svg);
+  // console.log("pafter process", ast);
   return ast;
 }
 
@@ -115,6 +116,16 @@ const remarkMermaid: Plugin<[RemarkMermaidOptions?]> = function mermaidTrans(
         const config: MermaidConfig = {
           theme: theme,
           startOnLoad: false,
+
+          /**
+           * setting htmlLabels to false
+           * to prevent mermaid svg containing html tags
+           * which will be styled by css
+           * and cause the text in svg to be cut off
+           * NOTE: maybe other type of chart would be affected too
+           * then change that type of chart to htmlLabels: true
+           */
+          flowchart: { htmlLabels: false },
         };
         mermaid.mermaidAPI.initialize(config);
         return blocks.map(([code, ,], id) => {
@@ -176,6 +187,7 @@ function getMermaidBlocks(node: Node): MermaidBlock[] {
 }
 
 function optSvg(svg: string) {
+  // console.log("before opt svg", svg);
   const svgoOptions: SvgoConfig = {
     js2svg: {
       indent: 2,
@@ -218,6 +230,7 @@ function optSvg(svg: string) {
   };
 
   const value = optimize(svg, svgoOptions).data;
+  // console.log("after opt svg", value);
   return value;
 }
 

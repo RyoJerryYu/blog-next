@@ -208,6 +208,18 @@
       margin-top: 1.5rem;
       background: var(--mermaidbg);
       border-radius: 0.375rem;
+
+      // for fixing the leading applied to svg
+      // now it fixed by setting mermaid's config
+      // by setting htmlLabel to false
+      // now flowchart, sequence, pie is pretty good
+      // if some other chart have the same issue and
+      // not fixed by setting config, then use this
+      // & svg {
+      //   & div[display="inline-block"] {
+      //     @apply leading-none h-full;
+      //   }
+      // }
     }
     & blockquote {
       & p {

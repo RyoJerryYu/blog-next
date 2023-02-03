@@ -11,6 +11,7 @@ import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkUnwrapImages from "remark-unwrap-images";
+import remarkMermaid from "./remark-mermaid";
 
 type ParseMdxConfig = {
   remarkVsmemoImgOptions?: RemarkVsmemoImgOptions;
@@ -23,6 +24,7 @@ const parseMdx = async (content: string, config?: ParseMdxConfig) => {
       remarkPlugins: [
         remarkGfm,
         remarkMath,
+        [remarkMermaid, { wrap: true, className: ["mermaid"] }],
         [remarkVsmemoImg, config?.remarkVsmemoImgOptions],
         remarkUnwrapImages,
       ],

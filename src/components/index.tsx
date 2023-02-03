@@ -4,7 +4,7 @@ import License from "./License";
 import Mermaid from "./Mermaid";
 
 const components: MDXComponents = {
-  Mermaid,
+  // Mermaid,
   License,
   // code: (props: any) => {
   //   if (props.className === "language-mermaid") {
