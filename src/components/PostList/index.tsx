@@ -1,5 +1,5 @@
-import { PostMatter } from "@/utils/post-matter";
-import Image from "next/image";
+import { Page } from "@/statics";
+import { PostMeta } from "@/statics/utils";
 import Link from "next/link";
 import React from "react";
 import RelativeTime from "../RelativeTime";
@@ -28,7 +28,7 @@ const PostAbstract: React.FC<PostAbstractProps> = ({ className, children }) => {
 
 type PostListElementProps = {
   className?: string;
-  postMatter: PostMatter;
+  postMatter: PostMeta;
   url: string;
 };
 
@@ -65,16 +65,16 @@ export function PostListElement({
 }
 
 type PostListProps = {
-  postMatters: PostMatter[];
-  getUrl?: (post: PostMatter) => string;
+  posts: Page[];
+  getUrl?: (post: Page) => string;
 };
 
-export default function PostList({ postMatters, getUrl }: PostListProps) {
-  if (postMatters.length === 0) {
+export default function PostList({ posts, getUrl }: PostListProps) {
+  if (posts.length === 0) {
     return <div>No posts</div>;
   }
 
-  const elementsProps = postMatters.map((post) => {
+  const elementsProps = posts.map((post) => {
     const url = getUrl ? getUrl(post) : `/posts/${post.slug}`;
     return {
       postMatter: post,
@@ -88,7 +88,7 @@ export default function PostList({ postMatters, getUrl }: PostListProps) {
         <PostListElement
           key={postMatter.slug}
           className={style.postListElement}
-          postMatter={postMatter}
+          postMatter={postMatter.matter}
           url={url}
         />
       ))}

@@ -1,14 +1,14 @@
 import Post from "@/components/Post";
 import WithHeader from "@/layouts/WithHeader";
 import parseMdx from "@/plugins";
-import { slugs, slugToFile, slugToMatter, slugToPath } from "@/statics";
+import { getSlugs, slugToFile, slugToMatter, slugToPath } from "@/statics";
 import { parseMetaFromFile } from "@/statics/utils";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   console.log(`onGetStaticPaths:`);
-  const paths = slugs().map(slugToPath);
+  const paths = getSlugs().map(slugToPath);
   return {
     paths,
     fallback: false,
@@ -34,6 +34,7 @@ export const getStaticProps: GetStaticProps<
   let meta = slugToMatter(slug);
   if (process.env.NODE_ENV === "development") {
     // for reloading in development
+    console.log(`reloading on dev ${slug}`);
     meta = parseMetaFromFile(slugToFile(slug));
   }
   const source = await parseMdx(meta.content, {

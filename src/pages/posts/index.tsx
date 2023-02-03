@@ -1,36 +1,29 @@
 import PostList from "@/components/PostList";
 import WithHeader from "@/layouts/WithHeader";
-import { blogFiles, getSlugFromFile } from "@/utils/pages";
-import { getPostMatter, PostMatter } from "@/utils/post-matter";
+import { getSlugs, Page, slugToMatter, slugToPage } from "@/statics";
+import { PostMeta } from "@/statics/utils";
 import { GetStaticProps } from "next";
 
 export const getStaticProps: GetStaticProps<PostsProps> = async () => {
-  const slugs = blogFiles.map(getSlugFromFile);
-  const matters: PostMatter[] = [];
-  for (const slug of slugs) {
-    const matter = await getPostMatter(slug);
-    matters.push(matter);
-  }
+  const slugs = getSlugs();
+  const pages = slugs.map(slugToPage);
 
   return {
     props: {
-      postMatters: matters,
+      pages: pages,
     },
   };
 };
 
 type PostsProps = {
-  postMatters: PostMatter[];
+  pages: Page[];
 };
 
-const PostListPage = ({ postMatters }: PostsProps) => {
+const PostListPage = ({ pages: pages }: PostsProps) => {
   return (
     <>
       <WithHeader>
-        <PostList
-          postMatters={postMatters}
-          getUrl={(post) => `/posts/${post.slug}`}
-        />
+        <PostList posts={pages} getUrl={(post) => `/posts/${post.slug}`} />
       </WithHeader>
     </>
   );

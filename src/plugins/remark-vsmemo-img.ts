@@ -47,15 +47,15 @@ const remarkVsmemoImg: unified.Plugin<[RemarkVsmemoImgOptions?]> = (
       tree,
       isVsmemoImg,
       (node: Paragraph, index: number, parent: Parent) => {
-        console.log("node:", node);
-        console.log("index:", index);
+        // console.log("node:", node);
+        // console.log("index:", index);
         let text = ((node as Paragraph).children[0] as Text).value;
-        console.log("text:", text);
+        // console.log("text:", text);
         let [_, matched] = syntax.exec(text)!;
         if (!matched) {
           return;
         }
-        console.log("matched", matched);
+        // console.log("matched", matched);
         let [file, label] = matched.split("|");
         if (!label) {
           label = file;

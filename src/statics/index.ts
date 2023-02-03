@@ -22,7 +22,7 @@ import {
 
 const postFileDirs = ["public/content/posts"];
 
-type Page = {
+export type Page = {
   slug: string;
   file: string;
   path: string;
@@ -47,7 +47,7 @@ const initPages = () => {
 const post: Map<string, Page> = initPages();
 // console.log(`post:`, post);
 
-export const slugs = () => {
+export const getSlugs = () => {
   const slugs = Array.from(post.keys());
   return slugs;
 };
@@ -71,4 +71,11 @@ export const slugToMatter = (slug: string) => {
     throw new Error(`Invalid slug to matter: ${slug}`);
   }
   return matter;
+};
+export const slugToPage = (slug: string) => {
+  const page = post.get(slug);
+  if (!page) {
+    throw new Error(`Invalid slug to page: ${slug}`);
+  }
+  return page;
 };
