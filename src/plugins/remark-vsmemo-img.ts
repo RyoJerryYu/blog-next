@@ -63,7 +63,7 @@ const remarkVsmemoImg: unified.Plugin<[RemarkVsmemoImgOptions?]> = (
         const img: Image = {
           type: "image",
           title: label,
-          url: `${basePath}${opts.baseDir}/${file}`,
+          url: `${basePath}/${opts.baseDir}/${file}`,
           alt: label,
         };
 

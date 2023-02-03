@@ -13,6 +13,13 @@ export const getSlugFromFile = (file: string) => {
   return slug;
 };
 
+export const getMediaDirFromFile = (file: string) => {
+  const filename = path.basename(file, path.extname(file));
+  let dir = path.join(path.dirname(file), filename);
+  dir = path.relative("public/", dir);
+  return dir;
+};
+
 const postPathPrefix = "/posts/";
 export const getPathFromSlug = (path: string) => {
   return postPathPrefix + path;

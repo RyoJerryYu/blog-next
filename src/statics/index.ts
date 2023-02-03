@@ -6,7 +6,9 @@
  */
 
 import { glob } from "glob";
+import path from "path";
 import {
+  getMediaDirFromFile,
   getPathFromSlug,
   getSlugFromFile,
   parseMetaFromFile,
@@ -25,6 +27,7 @@ const postFileDirs = ["public/content/posts"];
 export type Page = {
   slug: string;
   file: string;
+  mediaDir: string;
   path: string;
   matter: PostMeta;
 };
@@ -37,9 +40,10 @@ const initPages = () => {
     if (post.has(slug)) {
       throw new Error(`Duplicate slug: ${slug}`);
     }
+    const mediaDir = getMediaDirFromFile(file);
     const path = getPathFromSlug(slug);
     const matter = parseMetaFromFile(file);
-    post.set(slug, { slug, file, path, matter });
+    post.set(slug, { slug, file, mediaDir, path, matter });
   }
   return post;
 };
@@ -57,6 +61,13 @@ export const slugToFile = (slug: string) => {
     throw new Error(`Invalid slug to file: ${slug}`);
   }
   return file;
+};
+export const slugToMediaDir = (slug: string) => {
+  const mediaDir = post.get(slug)?.mediaDir;
+  if (!mediaDir) {
+    throw new Error(`Invalid slug to mediaDir: ${slug}`);
+  }
+  return mediaDir;
 };
 export const slugToPath = (slug: string) => {
   const path = post.get(slug)?.path;

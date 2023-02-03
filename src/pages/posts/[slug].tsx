@@ -1,7 +1,13 @@
 import Post from "@/components/Post";
 import WithHeader from "@/layouts/WithHeader";
 import parseMdx from "@/plugins";
-import { getSlugs, slugToFile, slugToMatter, slugToPath } from "@/statics";
+import {
+  getSlugs,
+  slugToFile,
+  slugToMatter,
+  slugToMediaDir,
+  slugToPath,
+} from "@/statics";
 import { parseMetaFromFile, PostMeta } from "@/statics/utils";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
@@ -35,7 +41,7 @@ export const getStaticProps: GetStaticProps<
   }
   const source = await parseMdx(meta.content, {
     remarkVsmemoImgOptions: {
-      baseDir: `/content/posts/${slug}`,
+      baseDir: slugToMediaDir(slug),
     },
   });
   const props: PostPageProps = {
