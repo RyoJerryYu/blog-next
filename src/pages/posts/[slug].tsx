@@ -1,20 +1,13 @@
-import {
-  blogFiles,
-  getSlugFromFile,
-  parseMeta,
-  searchBlogFile,
-} from "@/utils/pages";
-import parseMdx from "@/plugins";
-import { GetStaticPaths, GetStaticProps } from "next";
-import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
-import fs from "fs";
 import Post from "@/components/Post";
-import License from "@/components/License";
 import WithHeader from "@/layouts/WithHeader";
+import parseMdx from "@/plugins";
+import { slugs, slugToMatter, slugToPath } from "@/statics";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  console.log(`onGetStaticPaths:`, blogFiles);
-  const paths = blogFiles.map(getSlugFromFile).map((slug) => `/posts/${slug}`);
+  console.log(`onGetStaticPaths:`);
+  const paths = slugs().map(slugToPath);
   return {
     paths,
     fallback: false,
@@ -35,10 +28,9 @@ export const getStaticProps: GetStaticProps<
   PostPageProps,
   { slug: string }
 > = async ({ params }) => {
+  console.log(`onGetStaticProps: ${params?.slug}`);
   const slug = params!.slug;
-  const filePath = searchBlogFile(slug)[0]!;
-  const fileContent = fs.readFileSync(filePath, "utf-8");
-  const meta = parseMeta(fileContent);
+  const meta = slugToMatter(slug);
   const source = await parseMdx(meta.content, {
     remarkVsmemoImgOptions: {
       baseDir: `/content/posts/${slug}`,
@@ -47,10 +39,10 @@ export const getStaticProps: GetStaticProps<
   const props: PostPageProps = {
     slug,
     source,
-    date: meta.date,
+    date: meta.created_at,
     length: meta.content.length,
     title: meta.title ?? "Untitled",
-    tags: meta.tags,
+    tags: meta.tags ?? [],
     license: meta.license ?? false,
   };
   // fs.writeFileSync(`temp/${slug}.tmp`, JSON.stringify(props));
