@@ -77,7 +77,7 @@ export const initCache = async () => {
 
   const post: Map<string, Post> = new Map();
   const loader = articleLoader();
-  const files = glob.sync("public/content/posts/*.md*");
+  const files = loader.listFiles();
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const slug = loader.getSlugFromFile(file);

@@ -3,11 +3,16 @@ import matter from "gray-matter";
 import path from "path";
 import fs from "fs";
 import git, { ReadCommitResult } from "isomorphic-git";
+import { glob } from "glob";
 
 const gitDir = ".";
 
 export function articleLoader() {
-  return new StaticsLoader(/(\d*-)*(.*)/, "/articles/");
+  return new StaticsLoader(
+    "public/content/posts/*.md*",
+    /(\d*-)*(.*)/,
+    "/articles/"
+  );
 }
 
 export type PostMeta = {
@@ -22,12 +27,22 @@ export type PostMeta = {
 };
 
 class StaticsLoader {
+  private readonly fileGlobPattern: string;
   private readonly filenameSlugRegex: RegExp;
   private readonly pathPrefix: string;
-  constructor(filenameSlugRegex: RegExp, pathPrefix: string) {
+  constructor(
+    fileGlobPattern: string,
+    filenameSlugRegex: RegExp,
+    pathPrefix: string
+  ) {
+    this.fileGlobPattern = fileGlobPattern;
     this.filenameSlugRegex = filenameSlugRegex;
     this.pathPrefix = pathPrefix;
   }
+
+  listFiles = () => {
+    return glob.sync(this.fileGlobPattern);
+  };
 
   getSlugFromFile = (file: string) => {
     const filename = path.basename(file, path.extname(file));
