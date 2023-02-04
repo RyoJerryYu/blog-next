@@ -5,8 +5,8 @@
  * And ensure: init once, no modification after init.
  */
 
-import { glob } from "glob";
-import { articleLoader, PostMeta, StaticsLoader } from "./loader";
+import { mergeGitMeta } from "./git-meta";
+import { articleLoader, ideaLoader, PostMeta, StaticsLoader } from "./loader";
 
 /**
  * Some terms:
@@ -31,7 +31,9 @@ export type Post = {
  * Note that PageCache is not a "traditional singleton class",
  * but ensuring singleton by using a module variable.
  * Doing so could provide better testability.
- * (Well, mostly because I don't like that pattern.)
+ *
+ * (Well, mostly because I don't like the traditional singleton
+ * pattern.)
  */
 class PostCache {
   // map<slug, page>
@@ -55,7 +57,7 @@ class PostCache {
   slugToMeta = (slug: string) => {
     return this.cache.get(slug)!.meta;
   };
-  slugToPage = (slug: string) => {
+  slugToPost = (slug: string) => {
     return this.cache.get(slug)!;
   };
 }
@@ -76,39 +78,39 @@ const loadPostCache = async (loader: StaticsLoader) => {
     }
     const mediaDir = loader.getMediaDirFromFile(file);
     const path = loader.getPathFromSlug(slug);
-    const meta = loader.parseMetaFromFile(file);
-    if (!meta.created_at || !meta.updated_at) {
-      // loading git meta is slow, so only do it when necessary
-      const gitMeta = await loader.parseGitMetaFromFile(file);
-      if (!meta.created_at) {
-        meta.created_at = gitMeta.created_at;
-      }
-      if (!meta.updated_at && gitMeta.updated_at) {
-        meta.updated_at = gitMeta.updated_at;
-      }
-    }
+    let meta = loader.parseMetaFromFile(file);
+    meta = await mergeGitMeta(file, meta);
     post.set(slug, { slug, file, mediaDir, path, meta });
   }
   return new PostCache(post);
 };
 
-// the module variable as the lazy init singleton
+/**
+ * The module variable as a lazy init singleton
+ * Init once, and all types of caches are inited.
+ */
 type Cache = {
   articleCache: PostCache;
-  // ideaCache: PostCache;
+  ideaCache: PostCache;
 };
 let cache: Cache | undefined = undefined;
-export const initCache = async () => {
+const init = async () => {
   if (cache) {
-    console.log("posts chached");
-    return cache.articleCache;
+    return cache;
   }
-  console.log("posts not chached");
-
   const articleCache = await loadPostCache(articleLoader());
+  const ideaCache = await loadPostCache(ideaLoader());
 
   cache = {
     articleCache,
+    ideaCache,
   };
-  return cache.articleCache;
+  return cache;
+};
+
+export const articleCache = async () => {
+  return (await init()).articleCache;
+};
+export const ideaCache = async () => {
+  return (await init()).ideaCache;
 };

@@ -2,16 +2,21 @@ import dayjs from "dayjs";
 import matter from "gray-matter";
 import path from "path";
 import fs from "fs";
-import git, { ReadCommitResult } from "isomorphic-git";
 import { glob } from "glob";
-
-const gitDir = ".";
 
 export function articleLoader() {
   return new StaticsLoader(
     "public/content/posts/*.md*",
     /(\d*-)*(.*)/,
     "/articles/"
+  );
+}
+
+export function ideaLoader() {
+  return new StaticsLoader(
+    "public/content/ideas/*.md*",
+    /(\d*-)*(.*)/,
+    "/ideas/"
   );
 }
 
@@ -69,7 +74,7 @@ export class StaticsLoader {
     const { data, content } = matter(raw);
     const result: PostMeta = {
       content,
-      title: data.title,
+      title: data.title ?? "",
       abstract: content
         .split("\n")
         .filter((line) => !line.startsWith("#"))
@@ -77,8 +82,8 @@ export class StaticsLoader {
         .slice(0, 3)
         .join("\n"),
       length: content.split("\n").length,
-      created_at: dayjs(data.created_at).toJSON(),
-      updated_at: data.updated_at ? dayjs(data.updated_at).toJSON() : undefined,
+      created_at: dayjs(data.created_at).toJSON() || "",
+      updated_at: data.updated_at ? dayjs(data.updated_at).toJSON() : "",
       tags: data.tags ?? [],
       license: data.license ?? false,
     };
@@ -89,27 +94,5 @@ export class StaticsLoader {
     console.log("parseMetaFromFile", file);
     const raw = fs.readFileSync(file, "utf-8");
     return this.parseMetaFromRaw(raw);
-  };
-
-  parseGitMetaFromFile = async (file: string) => {
-    const commits = await git.log({ fs, dir: gitDir, filepath: file });
-    if (commits.length === 0) {
-      throw new Error(`Invalid commits: ${file}`);
-    }
-
-    const timeStrFromCommit = (commit: ReadCommitResult) => {
-      return dayjs(commit.commit.committer.timestamp * 1000).toJSON();
-    };
-
-    const res: {
-      created_at: string;
-      updated_at?: string;
-    } = {
-      created_at: timeStrFromCommit(commits[0]),
-    };
-    if (commits.length > 1) {
-      res.updated_at = timeStrFromCommit(commits[commits.length - 1]);
-    }
-    return res;
   };
 }

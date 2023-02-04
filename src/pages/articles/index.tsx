@@ -1,12 +1,12 @@
 import PostList from "@/components/PostList";
 import WithHeader from "@/layouts/WithHeader";
-import { initCache, Post } from "@/statics";
+import { articleCache, Post } from "@/statics";
 import { GetStaticProps } from "next";
 
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
-  const cache = await initCache();
+  const cache = await articleCache();
   const slugs = cache.getSlugs();
-  const posts = slugs.map(cache.slugToPage);
+  const posts = slugs.map(cache.slugToPost);
 
   return {
     props: {

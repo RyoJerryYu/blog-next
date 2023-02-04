@@ -1,14 +1,14 @@
 import Post from "@/components/Post";
 import WithHeader from "@/layouts/WithHeader";
 import parseMdx from "@/plugins";
-import { initCache } from "@/statics";
+import { articleCache } from "@/statics";
 import { articleLoader, PostMeta } from "@/statics/loader";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   console.log(`onGetStaticPaths:`);
-  const cache = await initCache();
+  const cache = await articleCache();
   const paths = cache.getSlugs().map(cache.slugToPath);
   return {
     paths,
@@ -27,7 +27,7 @@ export const getStaticProps: GetStaticProps<
   { slug: string }
 > = async ({ params }) => {
   console.log(`onGetStaticProps: ${params?.slug}`);
-  const cache = await initCache();
+  const cache = await articleCache();
   const slug = params!.slug;
   let meta = cache.slugToMeta(slug);
   if (process.env.NODE_ENV === "development") {
