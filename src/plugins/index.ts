@@ -3,7 +3,7 @@ import remarkVsmemoImg, {
 } from "@/plugins/remark-vsmemo-img";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypeKatex from "rehype-katex";
+import rehypeKatex, { Options as KatexOptions } from "rehype-katex";
 import rehypePrettyCode, {
   Options as PrettyCodeOptions,
 } from "rehype-pretty-code";
@@ -31,7 +31,12 @@ const parseMdx = async (content: string, config?: ParseMdxConfig) => {
       rehypePlugins: [
         rehypeSlug,
         [rehypeAutolinkHeadings, { behavior: "wrap" }],
-        rehypeKatex,
+        [
+          rehypeKatex,
+          {
+            strict: false,
+          } as KatexOptions,
+        ],
         [
           rehypePrettyCode,
           {
