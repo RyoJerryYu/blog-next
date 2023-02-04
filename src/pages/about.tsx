@@ -1,5 +1,5 @@
 import WithHeader from "@/layouts/WithHeader";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticProps } from "next";
 
 type AboutPageProps = {};
 export const getStaticProps: GetStaticProps<AboutPageProps> = async () => {

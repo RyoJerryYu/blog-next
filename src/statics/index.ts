@@ -6,7 +6,6 @@
  */
 
 import { glob } from "glob";
-import path from "path";
 import {
   getMediaDirFromFile,
   getPathFromSlug,

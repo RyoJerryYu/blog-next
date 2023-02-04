@@ -1,7 +1,6 @@
 import PostList from "@/components/PostList";
 import WithHeader from "@/layouts/WithHeader";
-import { getSlugs, Page, slugToMatter, slugToPage } from "@/statics";
-import { PostMeta } from "@/statics/utils";
+import { getSlugs, Page, slugToPage } from "@/statics";
 import { GetStaticProps } from "next";
 
 export const getStaticProps: GetStaticProps<PostsProps> = async () => {
