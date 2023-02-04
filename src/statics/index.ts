@@ -6,7 +6,7 @@
  */
 
 import { glob } from "glob";
-import { articleLoader, PostMeta } from "./loader";
+import { articleLoader, PostMeta, StaticsLoader } from "./loader";
 
 /**
  * Some terms:
@@ -14,8 +14,6 @@ import { articleLoader, PostMeta } from "./loader";
  * - path: url path to a file, e.g. `/posts/xxx`
  * - slug: the last part of a path, e.g. `xxx`
  */
-
-const postFileDirs = ["public/content/posts"];
 
 export type Post = {
   slug: string;
@@ -62,21 +60,13 @@ class PostCache {
   };
 }
 
-// the module variable as the lazy init singleton
-type Cache = {
-  articleCache: PostCache;
-  // ideaCache: PostCache;
-};
-let cache: Cache | undefined = undefined;
-export const initCache = async () => {
-  if (cache) {
-    console.log("posts chached");
-    return cache.articleCache;
-  }
-  console.log("posts not chached");
-
+/**
+ * create a cache of static files
+ * This function has no side effect,
+ * but it is very slow.
+ */
+const loadPostCache = async (loader: StaticsLoader) => {
   const post: Map<string, Post> = new Map();
-  const loader = articleLoader();
   const files = loader.listFiles();
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
@@ -99,8 +89,26 @@ export const initCache = async () => {
     }
     post.set(slug, { slug, file, mediaDir, path, meta });
   }
+  return new PostCache(post);
+};
+
+// the module variable as the lazy init singleton
+type Cache = {
+  articleCache: PostCache;
+  // ideaCache: PostCache;
+};
+let cache: Cache | undefined = undefined;
+export const initCache = async () => {
+  if (cache) {
+    console.log("posts chached");
+    return cache.articleCache;
+  }
+  console.log("posts not chached");
+
+  const articleCache = await loadPostCache(articleLoader());
+
   cache = {
-    articleCache: new PostCache(post),
+    articleCache,
   };
   return cache.articleCache;
 };

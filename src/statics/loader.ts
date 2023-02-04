@@ -26,7 +26,7 @@ export type PostMeta = {
   license: boolean;
 };
 
-class StaticsLoader {
+export class StaticsLoader {
   private readonly fileGlobPattern: string;
   private readonly filenameSlugRegex: RegExp;
   private readonly pathPrefix: string;
