@@ -28,17 +28,17 @@ const PostAbstract: React.FC<PostAbstractProps> = ({ className, children }) => {
 
 type PostListElementProps = {
   className?: string;
-  postMatter: PostMeta;
+  postMeta: PostMeta;
   url: string;
 };
 
 export function PostListElement({
   className,
-  postMatter,
+  postMeta,
   url,
 }: PostListElementProps) {
   const renderTags = () => {
-    if (!postMatter.tags || postMatter.tags.length === 0) {
+    if (!postMeta.tags || postMeta.tags.length === 0) {
       return null;
     }
     return;
@@ -47,18 +47,18 @@ export function PostListElement({
   return (
     <div className={className}>
       <Link href={url}>
-        <h6 className={style.postTitle}>{postMatter.title}</h6>
+        <h6 className={style.postTitle}>{postMeta.title}</h6>
         <RelativeTime className={style.postDate}>
-          {postMatter.created_at}
+          {postMeta.created_at}
         </RelativeTime>
-        {postMatter.abstract && postMatter.abstract.length > 0 && (
+        {postMeta.abstract && postMeta.abstract.length > 0 && (
           <PostAbstract className={style.postAbstract}>
-            {postMatter.abstract}
+            {postMeta.abstract}
           </PostAbstract>
         )}
       </Link>
-      {postMatter.tags && postMatter.tags.length > 0 && (
-        <TagsBox tags={postMatter.tags} />
+      {postMeta.tags && postMeta.tags.length > 0 && (
+        <TagsBox tags={postMeta.tags} />
       )}
     </div>
   );
@@ -77,18 +77,18 @@ export default function PostList({ posts, getUrl }: PostListProps) {
   const elementsProps = posts.map((post) => {
     const url = getUrl ? getUrl(post) : `/posts/${post.slug}`;
     return {
-      postMatter: post,
+      post,
       url,
     };
   });
 
   return (
     <div className={style.postList}>
-      {elementsProps.map(({ postMatter, url }) => (
+      {elementsProps.map(({ post, url }) => (
         <PostListElement
-          key={postMatter.slug}
+          key={post.slug}
           className={style.postListElement}
-          postMatter={postMatter.matter}
+          postMeta={post.meta}
           url={url}
         />
       ))}

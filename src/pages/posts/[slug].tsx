@@ -4,7 +4,7 @@ import parseMdx from "@/plugins";
 import {
   getSlugs,
   slugToFile,
-  slugToMatter,
+  slugToMeta,
   slugToMediaDir,
   slugToPath,
 } from "@/statics";
@@ -33,7 +33,7 @@ export const getStaticProps: GetStaticProps<
 > = async ({ params }) => {
   console.log(`onGetStaticProps: ${params?.slug}`);
   const slug = params!.slug;
-  let meta = slugToMatter(slug);
+  let meta = slugToMeta(slug);
   if (process.env.NODE_ENV === "development") {
     // for reloading in development
     console.log(`reloading on dev ${slug}`);

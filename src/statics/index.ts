@@ -28,7 +28,7 @@ export type Page = {
   file: string;
   mediaDir: string;
   path: string;
-  matter: PostMeta;
+  meta: PostMeta;
 };
 const initPages = () => {
   const post: Map<string, Page> = new Map();
@@ -41,8 +41,8 @@ const initPages = () => {
     }
     const mediaDir = getMediaDirFromFile(file);
     const path = getPathFromSlug(slug);
-    const matter = parseMetaFromFile(file);
-    post.set(slug, { slug, file, mediaDir, path, matter });
+    const meta = parseMetaFromFile(file);
+    post.set(slug, { slug, file, mediaDir, path, meta });
   }
   return post;
 };
@@ -75,12 +75,12 @@ export const slugToPath = (slug: string) => {
   }
   return path;
 };
-export const slugToMatter = (slug: string) => {
-  const matter = post.get(slug)?.matter;
-  if (!matter) {
+export const slugToMeta = (slug: string) => {
+  const meta = post.get(slug)?.meta;
+  if (!meta) {
     throw new Error(`Invalid slug to matter: ${slug}`);
   }
-  return matter;
+  return meta;
 };
 export const slugToPage = (slug: string) => {
   const page = post.get(slug);
