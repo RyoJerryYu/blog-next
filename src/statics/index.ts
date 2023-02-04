@@ -69,12 +69,16 @@ class PostCache {
   };
 }
 
-//
-let postCache: PostCache | undefined;
+// the module variable as the lazy init singleton
+type Cache = {
+  articleCache: PostCache;
+  // ideaCache: PostCache;
+};
+let cache: Cache | undefined = undefined;
 export const initCache = async () => {
-  if (postCache) {
+  if (cache) {
     console.log("posts chached");
-    return postCache;
+    return cache.articleCache;
   }
   console.log("posts not chached");
 
@@ -101,6 +105,8 @@ export const initCache = async () => {
     }
     post.set(slug, { slug, file, mediaDir, path, meta });
   }
-  postCache = new PostCache(post);
-  return postCache;
+  cache = {
+    articleCache: new PostCache(post),
+  };
+  return cache.articleCache;
 };
