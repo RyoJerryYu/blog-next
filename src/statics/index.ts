@@ -24,7 +24,7 @@ import {
 
 const postFileDirs = ["public/content/posts"];
 
-export type Page = {
+export type Post = {
   slug: string;
   file: string;
   mediaDir: string;
@@ -42,10 +42,10 @@ export type Page = {
  * Doing so could provide better testability.
  * (Well, mostly because I don't like that pattern.)
  */
-class PageCache {
+class PostCache {
   // map<slug, page>
-  cache: Map<string, Page>;
-  constructor(c: Map<string, Page>) {
+  cache: Map<string, Post>;
+  constructor(c: Map<string, Post>) {
     this.cache = c;
   }
 
@@ -70,7 +70,7 @@ class PageCache {
 }
 
 //
-let postCache: PageCache | undefined;
+let postCache: PostCache | undefined;
 export const initCache = async () => {
   if (postCache) {
     console.log("posts chached");
@@ -78,7 +78,7 @@ export const initCache = async () => {
   }
   console.log("posts not chached");
 
-  const post: Map<string, Page> = new Map();
+  const post: Map<string, Post> = new Map();
   const files = glob.sync("public/content/posts/*.md*");
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
@@ -101,6 +101,6 @@ export const initCache = async () => {
     }
     post.set(slug, { slug, file, mediaDir, path, meta });
   }
-  postCache = new PageCache(post);
+  postCache = new PostCache(post);
   return postCache;
 };

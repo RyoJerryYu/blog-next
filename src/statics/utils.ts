@@ -21,7 +21,7 @@ export const getMediaDirFromFile = (file: string) => {
   return dir;
 };
 
-const postPathPrefix = "/posts/";
+const postPathPrefix = "/articles/";
 export const getPathFromSlug = (path: string) => {
   return postPathPrefix + path;
 };

@@ -16,14 +16,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-type PostPageProps = {
+type ArticlePageProps = {
   slug: string;
   source: MDXRemoteSerializeResult;
   meta: PostMeta;
 };
 
 export const getStaticProps: GetStaticProps<
-  PostPageProps,
+  ArticlePageProps,
   { slug: string }
 > = async ({ params }) => {
   console.log(`onGetStaticProps: ${params?.slug}`);
@@ -40,7 +40,7 @@ export const getStaticProps: GetStaticProps<
       baseDir: cache.slugToMediaDir(slug),
     },
   });
-  const props: PostPageProps = {
+  const props: ArticlePageProps = {
     slug,
     source,
     meta,
@@ -50,7 +50,7 @@ export const getStaticProps: GetStaticProps<
   return { props };
 };
 
-const PostPage = (props: PostPageProps) => {
+const ArticlePage = (props: ArticlePageProps) => {
   return (
     <>
       <WithHeader>
@@ -60,4 +60,4 @@ const PostPage = (props: PostPageProps) => {
   );
 };
 
-export default PostPage;
+export default ArticlePage;

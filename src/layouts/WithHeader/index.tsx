@@ -33,8 +33,9 @@ const WithHeader: React.FC<WithHeaderProps> = ({
   withFullScreen,
 }) => {
   const items: NavBarItem[] = [
-    { to: "/posts", text: "Posts" },
-    { to: "/tags/1", text: "Tags" },
+    { to: "/articles", text: "Articles" },
+    { to: "/ideas", text: "Ideas" },
+    { to: "/tags", text: "Tags" },
   ];
   return (
     <>

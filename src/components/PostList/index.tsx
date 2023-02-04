@@ -1,4 +1,4 @@
-import { Page } from "@/statics";
+import { Post } from "@/statics";
 import { PostMeta } from "@/statics/utils";
 import Link from "next/link";
 import React from "react";
@@ -65,8 +65,8 @@ export function PostListElement({
 }
 
 type PostListProps = {
-  posts: Page[];
-  getUrl?: (post: Page) => string;
+  posts: Post[];
+  getUrl?: (post: Post) => string;
 };
 
 export default function PostList({ posts, getUrl }: PostListProps) {
