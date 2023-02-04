@@ -1,4 +1,8 @@
-import { getSlugFromFile, parseMetaFromRaw } from "./utils";
+import {
+  getSlugFromFile,
+  parseGitMetaFromFile,
+  parseMetaFromRaw,
+} from "./utils";
 
 describe("test get slug from file", () => {
   const cases = [
@@ -54,7 +58,7 @@ second line
 `,
       output: {
         title: "abc",
-        tagLength: undefined,
+        tagLength: 0,
         abstract: "first line\nsecond line",
       },
     },
@@ -68,4 +72,14 @@ second line
       expect(result.abstract).toBe(output.abstract);
     });
   }
+});
+
+describe("test parse git meta", () => {
+  it("should have right time", async () => {
+    const result = await parseGitMetaFromFile(
+      "public/content/posts/2020-01-27-Building-this-blog.md"
+    );
+    expect(result.created_at).not.toBeUndefined();
+    expect(result.updated_at).not.toBeUndefined();
+  });
 });

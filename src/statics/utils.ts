@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import matter from "gray-matter";
 import path from "path";
 import fs from "fs";
+import git, { ReadCommitResult } from "isomorphic-git";
 
 const slugWithoutPrefixRegex = /(\d*-)*(.*)/;
 export const getSlugFromFile = (file: string) => {
@@ -61,4 +62,27 @@ export const parseMetaFromFile = (file: string) => {
   console.log("parseMetaFromFile", file);
   const raw = fs.readFileSync(file, "utf-8");
   return parseMetaFromRaw(raw);
+};
+
+const gitDir = ".";
+export const parseGitMetaFromFile = async (file: string) => {
+  const commits = await git.log({ fs, dir: gitDir, filepath: file });
+  if (commits.length === 0) {
+    throw new Error(`Invalid commits: ${file}`);
+  }
+
+  const timeStrFromCommit = (commit: ReadCommitResult) => {
+    return dayjs(commit.commit.committer.timestamp * 1000).toJSON();
+  };
+
+  const res: {
+    created_at: string;
+    updated_at?: string;
+  } = {
+    created_at: timeStrFromCommit(commits[0]),
+  };
+  if (commits.length > 1) {
+    res.updated_at = timeStrFromCommit(commits[commits.length - 1]);
+  }
+  return res;
 };
