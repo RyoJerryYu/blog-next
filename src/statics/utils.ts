@@ -84,5 +84,6 @@ export const parseGitMetaFromFile = async (file: string) => {
   if (commits.length > 1) {
     res.updated_at = timeStrFromCommit(commits[commits.length - 1]);
   }
+  console.log("git meta fetched: ", file, res);
   return res;
 };
