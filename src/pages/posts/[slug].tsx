@@ -1,20 +1,15 @@
 import Post from "@/components/Post";
 import WithHeader from "@/layouts/WithHeader";
 import parseMdx from "@/plugins";
-import {
-  getSlugs,
-  slugToFile,
-  slugToMeta,
-  slugToMediaDir,
-  slugToPath,
-} from "@/statics";
+import { initCache } from "@/statics";
 import { parseMetaFromFile, PostMeta } from "@/statics/utils";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   console.log(`onGetStaticPaths:`);
-  const paths = getSlugs().map(slugToPath);
+  const cache = await initCache();
+  const paths = cache.getSlugs().map(cache.slugToPath);
   return {
     paths,
     fallback: false,
@@ -32,16 +27,17 @@ export const getStaticProps: GetStaticProps<
   { slug: string }
 > = async ({ params }) => {
   console.log(`onGetStaticProps: ${params?.slug}`);
+  const cache = await initCache();
   const slug = params!.slug;
-  let meta = slugToMeta(slug);
+  let meta = cache.slugToMeta(slug);
   if (process.env.NODE_ENV === "development") {
     // for reloading in development
     console.log(`reloading on dev ${slug}`);
-    meta = parseMetaFromFile(slugToFile(slug));
+    meta = parseMetaFromFile(cache.slugToFile(slug));
   }
   const source = await parseMdx(meta.content, {
     remarkVsmemoImgOptions: {
-      baseDir: slugToMediaDir(slug),
+      baseDir: cache.slugToMediaDir(slug),
     },
   });
   const props: PostPageProps = {
