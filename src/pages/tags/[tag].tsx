@@ -3,7 +3,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
-    paths: ["/tag/1", "/tag/2"],
+    paths: ["/tags/1", "/tags/2"],
     fallback: false,
   };
 };

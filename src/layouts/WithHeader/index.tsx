@@ -34,7 +34,7 @@ const WithHeader: React.FC<WithHeaderProps> = ({
 }) => {
   const items: NavBarItem[] = [
     { to: "/posts", text: "Posts" },
-    { to: "/tag/1", text: "Tags" },
+    { to: "/tags/1", text: "Tags" },
   ];
   return (
     <>
