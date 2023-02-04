@@ -4,7 +4,7 @@ import License from "../License";
 import RelativeTime from "../RelativeTime";
 import clsx from "clsx";
 import TagsBox from "../TagsBox";
-import { PostMeta } from "@/statics/utils";
+import { PostMeta } from "@/statics/loader";
 
 type PostProps = {
   source: MDXRemoteSerializeResult;
