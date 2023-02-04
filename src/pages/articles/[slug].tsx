@@ -2,7 +2,7 @@ import Post from "@/components/Post";
 import WithHeader from "@/layouts/WithHeader";
 import parseMdx from "@/plugins";
 import { initCache } from "@/statics";
-import { parseMetaFromFile, PostMeta } from "@/statics/utils";
+import { articleLoader, PostMeta } from "@/statics/loader";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
@@ -33,7 +33,8 @@ export const getStaticProps: GetStaticProps<
   if (process.env.NODE_ENV === "development") {
     // for reloading in development
     console.log(`reloading on dev ${slug}`);
-    meta = parseMetaFromFile(cache.slugToFile(slug));
+    const loader = articleLoader();
+    meta = loader.parseMetaFromFile(cache.slugToFile(slug));
   }
   const source = await parseMdx(meta.content, {
     remarkVsmemoImgOptions: {

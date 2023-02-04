@@ -1,5 +1,5 @@
 import { Post } from "@/statics";
-import { PostMeta } from "@/statics/utils";
+import { PostMeta } from "@/statics/loader";
 import Link from "next/link";
 import React from "react";
 import RelativeTime from "../RelativeTime";

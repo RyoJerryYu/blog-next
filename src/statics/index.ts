@@ -6,14 +6,7 @@
  */
 
 import { glob } from "glob";
-import {
-  getMediaDirFromFile,
-  getPathFromSlug,
-  getSlugFromFile,
-  parseGitMetaFromFile,
-  parseMetaFromFile,
-  PostMeta,
-} from "./utils";
+import { articleLoader, PostMeta } from "./loader";
 
 /**
  * Some terms:
@@ -83,19 +76,20 @@ export const initCache = async () => {
   console.log("posts not chached");
 
   const post: Map<string, Post> = new Map();
+  const loader = articleLoader();
   const files = glob.sync("public/content/posts/*.md*");
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    const slug = getSlugFromFile(file);
+    const slug = loader.getSlugFromFile(file);
     if (post.has(slug)) {
       throw new Error(`Duplicate slug: ${slug}`);
     }
-    const mediaDir = getMediaDirFromFile(file);
-    const path = getPathFromSlug(slug);
-    const meta = parseMetaFromFile(file);
+    const mediaDir = loader.getMediaDirFromFile(file);
+    const path = loader.getPathFromSlug(slug);
+    const meta = loader.parseMetaFromFile(file);
     if (!meta.created_at || !meta.updated_at) {
       // loading git meta is slow, so only do it when necessary
-      const gitMeta = await parseGitMetaFromFile(file);
+      const gitMeta = await loader.parseGitMetaFromFile(file);
       if (!meta.created_at) {
         meta.created_at = gitMeta.created_at;
       }

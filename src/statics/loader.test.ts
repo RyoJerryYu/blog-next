@@ -1,8 +1,4 @@
-import {
-  getSlugFromFile,
-  parseGitMetaFromFile,
-  parseMetaFromRaw,
-} from "./utils";
+import { articleLoader } from "./loader";
 
 describe("test get slug from file", () => {
   const cases = [
@@ -22,10 +18,11 @@ describe("test get slug from file", () => {
       output: "abc",
     },
   ];
+  const loader = articleLoader();
 
   for (const { name, input, output } of cases) {
     it(name, () => {
-      expect(getSlugFromFile(input)).toBe(output);
+      expect(loader.getSlugFromFile(input)).toBe(output);
     });
   }
 });
@@ -63,10 +60,11 @@ second line
       },
     },
   ];
+  const loader = articleLoader();
 
   for (const { name, input, output } of cases) {
     it(name, () => {
-      const result = parseMetaFromRaw(input);
+      const result = loader.parseMetaFromRaw(input);
       expect(result.title).toBe(output.title);
       expect(result.tags?.length).toBe(output.tagLength);
       expect(result.abstract).toBe(output.abstract);
@@ -75,8 +73,9 @@ second line
 });
 
 describe("test parse git meta", () => {
+  const loader = articleLoader();
   it("should have right time", async () => {
-    const result = await parseGitMetaFromFile(
+    const result = await loader.parseGitMetaFromFile(
       "public/content/posts/2020-01-27-Building-this-blog.md"
     );
     expect(result.created_at).not.toBeUndefined();
