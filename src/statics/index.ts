@@ -89,16 +89,16 @@ export const initCache = async () => {
     const mediaDir = getMediaDirFromFile(file);
     const path = getPathFromSlug(slug);
     const meta = parseMetaFromFile(file);
-    if (!meta.created_at || !meta.updated_at) {
-      // loading git meta is slow, so only do it when necessary
-      const gitMeta = await parseGitMetaFromFile(file);
-      if (!meta.created_at) {
-        meta.created_at = gitMeta.created_at;
-      }
-      if (!meta.updated_at && gitMeta.updated_at) {
-        meta.updated_at = gitMeta.updated_at;
-      }
+    // if (!meta.created_at || !meta.updated_at) {
+    // loading git meta is slow, so only do it when necessary
+    const gitMeta = await parseGitMetaFromFile(file);
+    if (!meta.created_at) {
+      meta.created_at = gitMeta.created_at;
     }
+    if (!meta.updated_at && gitMeta.updated_at) {
+      meta.updated_at = gitMeta.updated_at;
+    }
+    // }
     post.set(slug, { slug, file, mediaDir, path, meta });
   }
   postCache = new PageCache(post);
