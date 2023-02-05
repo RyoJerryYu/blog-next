@@ -1,8 +1,9 @@
 import Post from "@/components/Post";
 import WithHeader from "@/layouts/WithHeader";
 import parseMdx from "@/plugins";
-import { articleCache } from "@/statics";
+import { articleCache, getTagIndex } from "@/statics";
 import { articleLoader, PostMeta } from "@/statics/loader";
+import { TagInfo } from "@/statics/tag-index";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
@@ -18,6 +19,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 type ArticlePageProps = {
   slug: string;
+  tags: TagInfo[];
   source: MDXRemoteSerializeResult;
   meta: PostMeta;
 };
@@ -36,6 +38,9 @@ export const getStaticProps: GetStaticProps<
     const loader = articleLoader();
     meta = loader.parseMetaFromFile(cache.slugToFile(slug));
   }
+
+  const tags = (await getTagIndex()).getTagsOf(meta.tags);
+
   const source = await parseMdx(meta.content, {
     remarkVsmemoImgOptions: {
       baseDir: cache.slugToMediaDir(slug),
@@ -43,6 +48,7 @@ export const getStaticProps: GetStaticProps<
   });
   const props: ArticlePageProps = {
     slug,
+    tags,
     source,
     meta,
   };
@@ -55,7 +61,7 @@ const ArticlePage = (props: ArticlePageProps) => {
   return (
     <>
       <WithHeader>
-        <Post meta={props.meta} source={props.source} />
+        <Post meta={props.meta} tags={props.tags} source={props.source} />
       </WithHeader>
     </>
   );

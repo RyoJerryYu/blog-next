@@ -1,21 +1,21 @@
 import PostList from "@/components/PostList";
 import TagsBox from "@/components/TagsBox";
 import WithHeader from "@/layouts/WithHeader";
-import { getTags } from "@/statics";
+import { getTagIndex } from "@/statics";
+import { TagInfo } from "@/statics/tag-index";
 import { GetStaticProps } from "next";
 
 type TagsProps = {
-  tags: string[];
+  tagInfos: TagInfo[];
 };
 
 export const getStaticProps: GetStaticProps<TagsProps> = async () => {
-  const tagInfos = await getTags();
-  const tags = new Set<string>();
-  tagInfos.forEach((tagInfo) => tags.add(tagInfo.tag));
+  const tagIndex = await getTagIndex();
+  const tagInfos = tagIndex.getTags();
 
   return {
     props: {
-      tags: Array.from(tags),
+      tagInfos: tagInfos,
     },
   };
 };
@@ -24,7 +24,7 @@ const TagsPage = (props: TagsProps) => {
   return (
     <>
       <WithHeader>
-        <TagsBox tags={props.tags} />
+        <TagsBox tags={props.tagInfos} />
       </WithHeader>
     </>
   );

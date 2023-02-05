@@ -11,15 +11,23 @@ type PostSlugInfo = {
   postSlug: string;
 };
 
-type TagInfo = {
+export type TagInfo = {
   tag: string;
   slug: string;
   path: string;
   postSlugs: PostSlugInfo[];
 };
 
-export class TagIndex {
-  // tagSlug -> TagInfo
+// return map<tag, TagInfo>, the key is tag name, not tag slug!
+export const tagInfoListToMap = (tagInfoList: TagInfo[]) => {
+  const map = new Map<string, TagInfo>();
+  tagInfoList.forEach((tagInfo) => {
+    map.set(tagInfo.slug, tagInfo);
+  });
+  return map;
+};
+
+export class TagIndexBuilder {
   private readonly index: Map<string, TagInfo>;
   constructor() {
     this.index = new Map();
@@ -31,6 +39,17 @@ export class TagIndex {
       this.index.set(slug, { tag, slug, path, postSlugs: [] });
     }
     this.index.get(slug)?.postSlugs.push({ postSlug, postType });
+  }
+  build() {
+    return new TagIndex(this.index);
+  }
+}
+
+export class TagIndex {
+  // tagSlug -> TagInfo
+  private readonly index: Map<string, TagInfo>;
+  constructor(index: Map<string, TagInfo>) {
+    this.index = index;
   }
   getPostSlugs(tag: string) {
     const tagSlug = tagToTagSlug(tag);

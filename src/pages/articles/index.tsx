@@ -1,6 +1,7 @@
 import PostList from "@/components/PostList";
 import WithHeader from "@/layouts/WithHeader";
-import { articleCache, Post } from "@/statics";
+import { articleCache, getTagIndex, Post } from "@/statics";
+import { TagInfo, tagInfoListToMap } from "@/statics/tag-index";
 import { GetStaticProps } from "next";
 
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
@@ -8,22 +9,31 @@ export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   const slugs = cache.getSlugs();
   const posts = slugs.map(cache.slugToPost);
 
+  const allTagsList = (await getTagIndex()).getTags();
+
   return {
     props: {
       posts: posts,
+      allTagsList: allTagsList,
     },
   };
 };
 
 type ArticlesProps = {
+  allTagsList: TagInfo[];
   posts: Post[];
 };
 
-const ArticlesPage = ({ posts: posts }: ArticlesProps) => {
+const ArticlesPage = (props: ArticlesProps) => {
+  const allTagsMap = tagInfoListToMap(props.allTagsList);
   return (
     <>
       <WithHeader>
-        <PostList posts={posts} getUrl={(post) => post.path} />
+        <PostList
+          posts={props.posts}
+          allTags={allTagsMap}
+          getUrl={(post) => post.path}
+        />
       </WithHeader>
     </>
   );

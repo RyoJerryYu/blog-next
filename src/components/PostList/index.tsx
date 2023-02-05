@@ -1,5 +1,6 @@
 import { Post } from "@/statics";
 import { PostMeta } from "@/statics/loader";
+import { TagInfo } from "@/statics/tag-index";
 import Link from "next/link";
 import React from "react";
 import RelativeTime from "../RelativeTime";
@@ -30,12 +31,14 @@ type PostListElementProps = {
   className?: string;
   postMeta: PostMeta;
   url: string;
+  tags: TagInfo[];
 };
 
 export function PostListElement({
   className,
   postMeta,
   url,
+  tags,
 }: PostListElementProps) {
   const renderTags = () => {
     if (!postMeta.tags || postMeta.tags.length === 0) {
@@ -57,38 +60,41 @@ export function PostListElement({
           </PostAbstract>
         )}
       </Link>
-      {postMeta.tags && postMeta.tags.length > 0 && (
-        <TagsBox tags={postMeta.tags} />
-      )}
+      {postMeta.tags && postMeta.tags.length > 0 && <TagsBox tags={tags} />}
     </div>
   );
 }
 
 type PostListProps = {
   posts: Post[];
+  allTags: Map<string, TagInfo>; // Map<tag, TagInfo>
   getUrl?: (post: Post) => string;
 };
 
-export default function PostList({ posts, getUrl }: PostListProps) {
+export default function PostList({ posts, getUrl, allTags }: PostListProps) {
   if (posts.length === 0) {
     return <div>No posts</div>;
   }
 
   const elementsProps = posts.map((post) => {
     const url = getUrl ? getUrl(post) : `/posts/${post.slug}`;
+    const tags = post.meta.tags.map((tag) => allTags.get(tag)!);
+
     return {
-      post,
-      url,
+      post: post,
+      url: url,
+      tags: tags,
     };
   });
 
   return (
     <div className={style.postList}>
-      {elementsProps.map(({ post, url }) => (
+      {elementsProps.map(({ post, url, tags }) => (
         <PostListElement
           key={post.slug}
           className={style.postListElement}
           postMeta={post.meta}
+          tags={tags}
           url={url}
         />
       ))}

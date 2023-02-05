@@ -1,8 +1,9 @@
 import Post from "@/components/Post";
 import WithHeader from "@/layouts/WithHeader";
 import parseMdx from "@/plugins";
-import { ideaCache } from "@/statics";
+import { getTagIndex, ideaCache } from "@/statics";
 import { ideaLoader, PostMeta } from "@/statics/loader";
+import { TagInfo } from "@/statics/tag-index";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
@@ -17,6 +18,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 type IdeaPageProps = {
   slug: string;
+  tags: TagInfo[];
   source: MDXRemoteSerializeResult;
   meta: PostMeta;
 };
@@ -34,6 +36,9 @@ export const getStaticProps: GetStaticProps<
     const loader = ideaLoader();
     meta = loader.parseMetaFromFile(cache.slugToFile(slug));
   }
+
+  const tagIndex = await getTagIndex();
+  const tags = tagIndex.getTagsOf(meta.tags);
   const source = await parseMdx(meta.content, {
     remarkVsmemoImgOptions: {
       baseDir: cache.slugToMediaDir(slug),
@@ -42,6 +47,7 @@ export const getStaticProps: GetStaticProps<
   return {
     props: {
       slug,
+      tags,
       source,
       meta,
     },
@@ -52,7 +58,7 @@ const IdeaPage = (props: IdeaPageProps) => {
   return (
     <>
       <WithHeader>
-        <Post meta={props.meta} source={props.source} />
+        <Post meta={props.meta} tags={props.tags} source={props.source} />
       </WithHeader>
     </>
   );

@@ -7,7 +7,7 @@
 
 import { mergeGitMeta } from "./git-meta";
 import { articleLoader, ideaLoader, PostMeta, StaticsLoader } from "./loader";
-import { TagIndex } from "./tag-index";
+import { TagIndex, TagIndexBuilder } from "./tag-index";
 
 /**
  * Some terms:
@@ -91,20 +91,20 @@ const loadPostCache = async (loader: StaticsLoader) => {
  * This function has no side effects too.
  */
 const buildTagIndex = (articleCache: PostCache, ideaCache: PostCache) => {
-  const tagIndex = new TagIndex();
+  const tagIndexBuilder = new TagIndexBuilder();
 
   const addPostSlugs = (postCache: PostCache, postType: "article" | "idea") => {
     postCache.getSlugs().forEach((slug) => {
       const meta = postCache.slugToMeta(slug);
       meta.tags.forEach((tag) => {
-        tagIndex.addPostSlug(tag, postType, slug);
+        tagIndexBuilder.addPostSlug(tag, postType, slug);
       });
     });
   };
 
   addPostSlugs(articleCache, "article");
   addPostSlugs(ideaCache, "idea");
-  return tagIndex;
+  return tagIndexBuilder.build();
 };
 
 /**
@@ -139,9 +139,6 @@ export const articleCache = async () => {
 export const ideaCache = async () => {
   return (await init()).ideaCache;
 };
-export const getTags = async () => {
-  return (await init()).tagIndex.getTags();
-};
-export const getTagsOf = async (tags: string[]) => {
-  return (await init()).tagIndex.getTagsOf(tags);
+export const getTagIndex = async () => {
+  return (await init()).tagIndex;
 };

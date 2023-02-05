@@ -1,19 +1,20 @@
+import { TagInfo } from "@/statics/tag-index";
 import clsx from "clsx";
 import Link from "next/link";
 import style from "./TagsBox.module.scss";
 
 type TagsBoxProps = {
   className?: string;
-  tags: string[];
+  tags: TagInfo[];
 };
 
 const TagsBox: React.FC<TagsBoxProps> = ({ className, tags }) => {
   return (
     <>
       <div className={clsx(style.tagsBox, className)}>
-        {tags.map((tag) => (
-          <Link key={tag} href={`/tags/${tag}`}>
-            <span className={style.tag}>{tag}</span>
+        {tags.map((tagInfo) => (
+          <Link key={tagInfo.slug} href={tagInfo.path}>
+            <span className={style.tag}>{tagInfo.tag}</span>
           </Link>
         ))}
       </div>
