@@ -26,6 +26,7 @@ type ArticlesProps = {
 
 const ArticlesPage = (props: ArticlesProps) => {
   const allTagsMap = tagInfoListToMap(props.allTagsList);
+  console.log(allTagsMap);
   return (
     <>
       <WithHeader>

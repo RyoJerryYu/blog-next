@@ -22,7 +22,7 @@ export type TagInfo = {
 export const tagInfoListToMap = (tagInfoList: TagInfo[]) => {
   const map = new Map<string, TagInfo>();
   tagInfoList.forEach((tagInfo) => {
-    map.set(tagInfo.slug, tagInfo);
+    map.set(tagInfo.tag, tagInfo);
   });
   return map;
 };
