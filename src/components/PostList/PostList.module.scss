@@ -1,10 +1,10 @@
 @tailwind components;
 
 .postList {
-  @apply flex flex-col max-w-2xl mx-auto;
+  @apply flex flex-col;
 }
 .postListElement {
-  @apply flex-1 p-2 mt-2 mb-2 mx-2 rounded-md;
+  @apply flex-1 p-2 rounded-md;
   @apply cursor-pointer hover:bg-bg-focus;
 }
 

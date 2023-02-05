@@ -1,7 +1,7 @@
 .tagsBox {
-  @apply flex flex-row h-6;
+  @apply flex flex-row flex-wrap;
 }
 .tag {
-  @apply flex-initial py-1 px-2 mr-1 rounded-xl text-center text-xs;
+  @apply flex-initial py-1 px-2 mr-1 mb-1 rounded-xl text-center text-xs;
   @apply border border-border hover:border-border-focus hover:bg-bg-focus2;
 }

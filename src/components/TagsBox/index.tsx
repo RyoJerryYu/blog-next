@@ -14,7 +14,7 @@ const TagsBox: React.FC<TagsBoxProps> = ({ className, tags }) => {
       <div className={clsx(style.tagsBox, className)}>
         {tags.map((tagInfo) => (
           <Link key={tagInfo.slug} href={tagInfo.path}>
-            <span className={style.tag}>{tagInfo.tag}</span>
+            <div className={style.tag}>{tagInfo.tag}</div>
           </Link>
         ))}
       </div>

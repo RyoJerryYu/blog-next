@@ -1,5 +1,7 @@
 import PostList from "@/components/PostList";
 import TagsBox from "@/components/TagsBox";
+import TagSelector from "@/components/TagSelector";
+import MainWidth from "@/layouts/MainWidth";
 import WithHeader from "@/layouts/WithHeader";
 import { articleCache, getTagIndex, ideaCache, Post } from "@/statics";
 import { TagInfo } from "@/statics/tag-index";
@@ -60,12 +62,14 @@ const TagPage = (props: TagPageProps) => {
   return (
     <>
       <WithHeader>
-        <TagsBox tags={props.allTagInfos} />
-        <PostList
-          posts={props.posts}
-          allTags={tagInfoMap}
-          getUrl={(post) => post.path}
-        />
+        <MainWidth>
+          <TagSelector tags={props.allTagInfos} />
+          <PostList
+            posts={props.posts}
+            allTags={tagInfoMap}
+            getUrl={(post) => post.path}
+          />
+        </MainWidth>
       </WithHeader>
     </>
   );

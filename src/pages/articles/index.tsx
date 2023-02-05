@@ -1,4 +1,5 @@
 import PostList from "@/components/PostList";
+import MainWidth from "@/layouts/MainWidth";
 import WithHeader from "@/layouts/WithHeader";
 import { articleCache, getTagIndex, Post } from "@/statics";
 import { TagInfo, tagInfoListToMap } from "@/statics/tag-index";
@@ -30,11 +31,13 @@ const ArticlesPage = (props: ArticlesProps) => {
   return (
     <>
       <WithHeader>
-        <PostList
-          posts={props.posts}
-          allTags={allTagsMap}
-          getUrl={(post) => post.path}
-        />
+        <MainWidth>
+          <PostList
+            posts={props.posts}
+            allTags={allTagsMap}
+            getUrl={(post) => post.path}
+          />
+        </MainWidth>
       </WithHeader>
     </>
   );

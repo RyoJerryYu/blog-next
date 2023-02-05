@@ -1,5 +1,7 @@
 import PostList from "@/components/PostList";
 import TagsBox from "@/components/TagsBox";
+import TagSelector from "@/components/TagSelector";
+import MainWidth from "@/layouts/MainWidth";
 import WithHeader from "@/layouts/WithHeader";
 import { getTagIndex } from "@/statics";
 import { TagInfo } from "@/statics/tag-index";
@@ -24,7 +26,9 @@ const TagsPage = (props: TagsProps) => {
   return (
     <>
       <WithHeader>
-        <TagsBox tags={props.tagInfos} />
+        <MainWidth>
+          <TagSelector tags={props.tagInfos} />
+        </MainWidth>
       </WithHeader>
     </>
   );

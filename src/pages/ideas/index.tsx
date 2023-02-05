@@ -1,4 +1,5 @@
 import PostList from "@/components/PostList";
+import MainWidth from "@/layouts/MainWidth";
 import WithHeader from "@/layouts/WithHeader";
 import { getTagIndex, ideaCache, Post } from "@/statics";
 import { TagInfo, tagInfoListToMap } from "@/statics/tag-index";
@@ -28,11 +29,13 @@ const IdeasPage = (props: IdeasProps) => {
   return (
     <>
       <WithHeader>
-        <PostList
-          posts={props.posts}
-          allTags={allTagsMap}
-          getUrl={(idea) => idea.path}
-        />
+        <MainWidth>
+          <PostList
+            posts={props.posts}
+            allTags={allTagsMap}
+            getUrl={(idea) => idea.path}
+          />
+        </MainWidth>
       </WithHeader>
     </>
   );
