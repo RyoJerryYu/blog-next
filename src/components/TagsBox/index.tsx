@@ -12,7 +12,7 @@ const TagsBox: React.FC<TagsBoxProps> = ({ className, tags }) => {
     <>
       <div className={clsx(style.tagsBox, className)}>
         {tags.map((tag) => (
-          <Link key={tag} href={`/tag/${tag}`}>
+          <Link key={tag} href={`/tags/${tag}`}>
             <span className={style.tag}>{tag}</span>
           </Link>
         ))}

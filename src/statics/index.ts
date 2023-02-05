@@ -7,6 +7,7 @@
 
 import { mergeGitMeta } from "./git-meta";
 import { articleLoader, ideaLoader, PostMeta, StaticsLoader } from "./loader";
+import { TagIndex } from "./tag-index";
 
 /**
  * Some terms:
@@ -86,12 +87,34 @@ const loadPostCache = async (loader: StaticsLoader) => {
 };
 
 /**
+ * Build a tag index (map<tagParam,slugs[]>) from a post cache.
+ * This function has no side effects too.
+ */
+const buildTagIndex = (articleCache: PostCache, ideaCache: PostCache) => {
+  const tagIndex = new TagIndex();
+
+  const addPostSlugs = (postCache: PostCache, postType: "article" | "idea") => {
+    postCache.getSlugs().forEach((slug) => {
+      const meta = postCache.slugToMeta(slug);
+      meta.tags.forEach((tag) => {
+        tagIndex.addPostSlug(tag, postType, slug);
+      });
+    });
+  };
+
+  addPostSlugs(articleCache, "article");
+  addPostSlugs(ideaCache, "idea");
+  return tagIndex;
+};
+
+/**
  * The module variable as a lazy init singleton
  * Init once, and all types of caches are inited.
  */
 type Cache = {
   articleCache: PostCache;
   ideaCache: PostCache;
+  tagIndex: TagIndex;
 };
 let cache: Cache | undefined = undefined;
 const init = async () => {
@@ -100,10 +123,12 @@ const init = async () => {
   }
   const articleCache = await loadPostCache(articleLoader());
   const ideaCache = await loadPostCache(ideaLoader());
+  const tagIndex = buildTagIndex(articleCache, ideaCache);
 
   cache = {
     articleCache,
     ideaCache,
+    tagIndex,
   };
   return cache;
 };
@@ -113,4 +138,10 @@ export const articleCache = async () => {
 };
 export const ideaCache = async () => {
   return (await init()).ideaCache;
+};
+export const getTags = async () => {
+  return (await init()).tagIndex.getTags();
+};
+export const getTagsOf = async (tags: string[]) => {
+  return (await init()).tagIndex.getTagsOf(tags);
 };

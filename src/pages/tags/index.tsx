@@ -1,20 +1,31 @@
 import PostList from "@/components/PostList";
+import TagsBox from "@/components/TagsBox";
 import WithHeader from "@/layouts/WithHeader";
+import { getTags } from "@/statics";
 import { GetStaticProps } from "next";
 
-type TagsProps = {};
+type TagsProps = {
+  tags: string[];
+};
 
 export const getStaticProps: GetStaticProps<TagsProps> = async () => {
+  const tagInfos = await getTags();
+  const tags = new Set<string>();
+  tagInfos.forEach((tagInfo) => tags.add(tagInfo.tag));
+
   return {
-    props: {},
+    props: {
+      tags: Array.from(tags),
+    },
   };
 };
 
 const TagsPage = (props: TagsProps) => {
-  // TODO only show tags here
   return (
     <>
-      <WithHeader>tags</WithHeader>
+      <WithHeader>
+        <TagsBox tags={props.tags} />
+      </WithHeader>
     </>
   );
 };
