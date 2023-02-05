@@ -1,7 +1,7 @@
 @tailwind components;
 
 .postList {
-  @apply flex flex-col max-w-2xl mx-auto min-h-screen;
+  @apply flex flex-col max-w-2xl mx-auto;
 }
 .postListElement {
   @apply flex-1 p-2 mt-2 mb-2 mx-2 rounded-md;
