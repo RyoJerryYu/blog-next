@@ -142,3 +142,15 @@ export const ideaCache = async () => {
 export const getTagIndex = async () => {
   return (await init()).tagIndex;
 };
+
+// a helper function to get meta from cache or reload when development
+export const getPostMetaOrReload = async (cache: PostCache, slug: string) => {
+  if (process.env.NODE_ENV === "development") {
+    // for reloading in development
+    console.log(`reloading on dev ${slug}`);
+    const loader = articleLoader();
+    return loader.parseMetaFromFile(cache.slugToFile(slug));
+  } else {
+    return cache.slugToMeta(slug);
+  }
+};

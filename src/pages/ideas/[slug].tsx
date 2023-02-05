@@ -1,7 +1,7 @@
 import Post from "@/components/Post";
 import WithHeader from "@/layouts/WithHeader";
 import parseMdx from "@/plugins";
-import { getTagIndex, ideaCache } from "@/statics";
+import { getPostMetaOrReload, getTagIndex, ideaCache } from "@/statics";
 import { ideaLoader, PostMeta } from "@/statics/loader";
 import { TagInfo } from "@/statics/tag-index";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -29,13 +29,7 @@ export const getStaticProps: GetStaticProps<
 > = async ({ params }) => {
   const cache = await ideaCache();
   const slug = params!.slug;
-  let meta = cache.slugToMeta(slug);
-  if (process.env.NODE_ENV === "development") {
-    // for reloading in development
-    console.log(`reloading on dev ${slug}`);
-    const loader = ideaLoader();
-    meta = loader.parseMetaFromFile(cache.slugToFile(slug));
-  }
+  let meta = await getPostMetaOrReload(cache, slug);
 
   const tagIndex = await getTagIndex();
   const tags = tagIndex.getTagsOf(meta.tags);
