@@ -1,11 +1,6 @@
+import { BASE_PATH, SITE_NAME, SITE_URL } from "@/utils/env-var";
 import Head from "next/head";
 import { useRouter } from "next/router";
-
-const SITE_NAME = "Ryo's Blog";
-const SITE_ORIGIN =
-  process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://blog.ryojerryyu.xyz";
-const BASE_PATH = process.env.NEXT_PUBLIC_SITE_BASE_PATH || "";
-const SITE_URL = `${SITE_ORIGIN}${BASE_PATH}`;
 
 export const Title = ({
   children,
