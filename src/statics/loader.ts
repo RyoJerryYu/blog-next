@@ -74,7 +74,7 @@ export class StaticsLoader {
     const { data, content } = matter(raw);
     const result: PostMeta = {
       content,
-      title: data.title ?? "",
+      title: data.title ?? "<No Title>",
       abstract: content
         .split("\n")
         .filter((line) => !line.startsWith("#"))

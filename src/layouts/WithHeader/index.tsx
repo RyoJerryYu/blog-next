@@ -39,7 +39,7 @@ const WithHeader: React.FC<WithHeaderProps> = ({
   ];
   return (
     <>
-      <div className={style.header}>
+      <header className={style.header}>
         {/* icon */}
         <div className={style.icon}>
           <div className={style.textbox}>
@@ -60,7 +60,7 @@ const WithHeader: React.FC<WithHeaderProps> = ({
             </Link>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* outside header */}
       {withFullScreen ? null : <div className={style.headerBg}></div>}

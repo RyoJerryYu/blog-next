@@ -1,5 +1,6 @@
 import PostList from "@/components/PostList";
 import MainWidth from "@/layouts/MainWidth";
+import { Title } from "@/layouts/UniversalHead";
 import WithHeader from "@/layouts/WithHeader";
 import { getTagIndex, ideaCache, Post } from "@/statics";
 import { TagInfo, tagInfoListToMap } from "@/statics/tag-index";
@@ -28,6 +29,7 @@ const IdeasPage = (props: IdeasProps) => {
   const allTagsMap = tagInfoListToMap(props.allTags);
   return (
     <>
+      <Title>Ideas</Title>
       <WithHeader>
         <MainWidth>
           <PostList

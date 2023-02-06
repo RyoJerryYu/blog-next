@@ -1,5 +1,6 @@
 import PostList from "@/components/PostList";
 import MainWidth from "@/layouts/MainWidth";
+import { Title } from "@/layouts/UniversalHead";
 import WithHeader from "@/layouts/WithHeader";
 import { articleCache, getTagIndex, Post } from "@/statics";
 import { TagInfo, tagInfoListToMap } from "@/statics/tag-index";
@@ -30,6 +31,7 @@ const ArticlesPage = (props: ArticlesProps) => {
   console.log(allTagsMap);
   return (
     <>
+      <Title>Articles</Title>
       <WithHeader>
         <MainWidth>
           <PostList

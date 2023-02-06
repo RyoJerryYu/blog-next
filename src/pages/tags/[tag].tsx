@@ -2,6 +2,7 @@ import PostList from "@/components/PostList";
 import TagsBox from "@/components/TagsBox";
 import TagSelector from "@/components/TagSelector";
 import MainWidth from "@/layouts/MainWidth";
+import { Title } from "@/layouts/UniversalHead";
 import WithHeader from "@/layouts/WithHeader";
 import { articleCache, getTagIndex, ideaCache, Post } from "@/statics";
 import { TagInfo } from "@/statics/tag-index";
@@ -20,7 +21,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 type TagPageProps = {
   allTagInfos: TagInfo[];
-  focusTag: string;
+  focusTagInfo: TagInfo;
   posts: Post[];
 };
 export const getStaticProps: GetStaticProps<
@@ -29,8 +30,8 @@ export const getStaticProps: GetStaticProps<
 > = async ({ params }) => {
   const tagIndex = await getTagIndex();
   const allTagInfos = tagIndex.getTags();
-  const focusTagInfos = tagIndex.getTagsOf([params!.tag]);
-  const postSlugInfos = focusTagInfos[0].postSlugs;
+  const focusTagInfo = tagIndex.getTagsOf([params!.tag])[0];
+  const postSlugInfos = focusTagInfo.postSlugs;
 
   const posts: Set<Post> = new Set();
   const articleCaches = await articleCache();
@@ -48,7 +49,7 @@ export const getStaticProps: GetStaticProps<
   return {
     props: {
       allTagInfos: allTagInfos,
-      focusTag: params!.tag,
+      focusTagInfo: focusTagInfo,
       posts: Array.from(posts),
     },
   };
@@ -61,6 +62,7 @@ const TagPage = (props: TagPageProps) => {
   });
   return (
     <>
+      <Title>{props.focusTagInfo.tag}</Title>
       <WithHeader>
         <MainWidth>
           <TagSelector tags={props.allTagInfos} />

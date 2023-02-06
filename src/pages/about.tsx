@@ -1,3 +1,4 @@
+import { Title } from "@/layouts/UniversalHead";
 import WithHeader from "@/layouts/WithHeader";
 import { GetStaticProps } from "next";
 
@@ -11,6 +12,7 @@ export const getStaticProps: GetStaticProps<AboutPageProps> = async () => {
 const AboutPage = ({}: AboutPageProps) => {
   return (
     <>
+      <Title>About</Title>
       <WithHeader>
         <div>AboutPage</div>
       </WithHeader>
