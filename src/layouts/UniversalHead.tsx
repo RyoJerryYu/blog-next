@@ -1,6 +1,11 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const DEFAULT_TITLE = "Ryo's Blog";
+const SITE_ORIGIN =
+  process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://blog.ryojerryyu.xyz";
+const BASE_PATH = process.env.NEXT_PUBLIC_SITE_BASE_PATH || "";
+const SITE_URL = `${SITE_ORIGIN}${BASE_PATH}`;
 
 export const Title = ({
   children,
@@ -38,17 +43,29 @@ export const Description = ({ children }: { children: string }) => {
   );
 };
 
+export const SEOImage = ({ children }: { children: string }) => {
+  const fullUrl = `${SITE_URL}${children}`;
+  return (
+    <Head>
+      <meta key="og:image" property="og:image" content={fullUrl} />
+      <meta key="twitter:image" name="twitter:image" content={fullUrl} />
+    </Head>
+  );
+};
+
 const UniversalHead = () => {
+  const route = useRouter();
   return (
     <>
       <Title force>{DEFAULT_TITLE}</Title>
       <Description>{"Ryo's blog, build with next.js"}</Description>
       <Head>
+        <meta property="og:url" content={`${SITE_URL}${route.asPath}`} />
         {/* og:site, og:image, og:url */}
         {/* og:type? twitter:card? */}
         {/* Facebook Open Graph: https://developers.facebook.com/docs/sharing/webmasters#markup */}
         {/* Twitter Card: https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/abouts-cards */}
-        <link rel="icon" href="/img/favicon.ico" />
+        <link rel="icon" href={`${BASE_PATH}/favicon.ico`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
           httpEquiv="Content-Security-Policy"

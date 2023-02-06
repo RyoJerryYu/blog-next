@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const basePath = process.env.SITE_URL_BASE_PATH || undefined;
+const basePath = process.env.NEXT_PUBLIC_SITE_BASE_PATH || undefined;
 const nextConfig = {
   reactStrictMode: true,
   assetPrefix: basePath,
