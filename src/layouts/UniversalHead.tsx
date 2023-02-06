@@ -45,12 +45,13 @@ export const Description = ({ children }: { children: string }) => {
   );
 };
 
+// children should prefixed with slash
 export const SEOImage = ({ children }: { children: string }) => {
-  const fullPath = `${BASE_PATH}${children}`;
+  const fullUrl = `${SITE_URL}${children}`;
   return (
     <Head>
-      <meta key="og:image" property="og:image" content={fullPath} />
-      <meta key="twitter:image" name="twitter:image" content={fullPath} />
+      <meta key="og:image" property="og:image" content={fullUrl} />
+      <meta key="twitter:image" name="twitter:image" content={fullUrl} />
     </Head>
   );
 };
