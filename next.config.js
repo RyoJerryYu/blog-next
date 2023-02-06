@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
-const basePath = process.env.SITE_URL_BASE_PATH ? `/${process.env.SITE_URL_BASE_PATH}` : "";
+const basePath = process.env.SITE_URL_BASE_PATH || undefined;
 const nextConfig = {
   reactStrictMode: true,
-  assetPrefix: `${basePath}`,
-  basePath: `${basePath}`,
+  assetPrefix: basePath,
+  basePath: basePath,
   experimental: {
     // we load metadata when build-time, which is very very slow.
     // and those metadata are immutable and could be cached.

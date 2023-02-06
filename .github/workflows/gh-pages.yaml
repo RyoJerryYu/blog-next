@@ -11,7 +11,7 @@ on:
 
 env:
   SITE_URL_ORIGIN: https://ryojerryyu.github.io
-  SITE_URL_BASE_PATH: blog-next
+  SITE_URL_BASE_PATH: /blog-next
 jobs:
   build: # Job name
     runs-on: ubuntu-latest
