@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-const DEFAULT_TITLE = "Ryo's Blog";
+const SITE_NAME = "Ryo's Blog";
 const SITE_ORIGIN =
   process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://blog.ryojerryyu.xyz";
 const BASE_PATH = process.env.NEXT_PUBLIC_SITE_BASE_PATH || "";
@@ -14,11 +14,13 @@ export const Title = ({
   children: string;
   force?: boolean;
 }) => {
-  const fullTitle = force ? children : `${children} | ${DEFAULT_TITLE}`;
+  const title = children ?? SITE_NAME;
+  const fullTitle = force ? children : `${children} | ${SITE_NAME}`;
   return (
     <Head>
       <title key="title">{fullTitle}</title>
-      <meta key="og:title" property="og:title" content={fullTitle} />
+      <meta key="og:title" property="og:title" content={title} />
+      <meta key="og:site_name" property="og:site_name" content={SITE_NAME} />
       <meta key="twitter:title" name="twitter:title" content={fullTitle} />
     </Head>
   );
@@ -44,11 +46,11 @@ export const Description = ({ children }: { children: string }) => {
 };
 
 export const SEOImage = ({ children }: { children: string }) => {
-  const fullUrl = `${SITE_URL}${children}`;
+  const fullPath = `${BASE_PATH}${children}`;
   return (
     <Head>
-      <meta key="og:image" property="og:image" content={fullUrl} />
-      <meta key="twitter:image" name="twitter:image" content={fullUrl} />
+      <meta key="og:image" property="og:image" content={fullPath} />
+      <meta key="twitter:image" name="twitter:image" content={fullPath} />
     </Head>
   );
 };
@@ -57,12 +59,17 @@ const UniversalHead = () => {
   const route = useRouter();
   return (
     <>
-      <Title force>{DEFAULT_TITLE}</Title>
-      <Description>{"Ryo's blog, build with next.js"}</Description>
+      <Title force>{SITE_NAME}</Title>
+      <Description>
+        {"The blog owned by Ryo, about Programing, Painting, and Gaming."}
+      </Description>
+      <SEOImage>{`/img/home-bg-kasumi-hanabi.jpg`}</SEOImage>
       <Head>
+        <meta key="og:type" property="og:type" content="website" />
         <meta property="og:url" content={`${SITE_URL}${route.asPath}`} />
-        {/* og:site, og:image, og:url */}
-        {/* og:type? twitter:card? */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@ryo_okami" />
+        <meta name="twitter:creator" content="@ryo_okami" />
         {/* Facebook Open Graph: https://developers.facebook.com/docs/sharing/webmasters#markup */}
         {/* Twitter Card: https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/abouts-cards */}
         <link rel="icon" href={`${BASE_PATH}/favicon.ico`} />
