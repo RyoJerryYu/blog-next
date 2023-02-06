@@ -1,5 +1,5 @@
 import Post from "@/components/Post";
-import { Title } from "@/layouts/UniversalHead";
+import { Description, Title } from "@/layouts/UniversalHead";
 import WithHeader from "@/layouts/WithHeader";
 import parseMdx from "@/plugins";
 import { getPostMetaOrReload, getTagIndex, ideaCache } from "@/statics";
@@ -53,6 +53,7 @@ const IdeaPage = (props: IdeaPageProps) => {
   return (
     <>
       <Title>{props.meta.title}</Title>
+      <Description>{props.meta.abstract}</Description>
       <WithHeader>
         <Post meta={props.meta} tags={props.tags} source={props.source} />
       </WithHeader>
