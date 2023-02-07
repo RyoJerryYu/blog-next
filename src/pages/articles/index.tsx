@@ -1,7 +1,7 @@
 import PostList from "@/components/PostList";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import WithHeader from "@/layouts/WithHeader";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import { articleCache, getTagIndex, Post } from "@/statics";
 import { TagInfo, tagInfoListToMap } from "@/statics/tag-index";
 import { GetStaticProps } from "next";
@@ -32,7 +32,7 @@ const ArticlesPage = (props: ArticlesProps) => {
   return (
     <>
       <Title>Articles</Title>
-      <WithHeader>
+      <DefaultLayout>
         <MainWidth>
           <PostList
             posts={props.posts}
@@ -40,7 +40,7 @@ const ArticlesPage = (props: ArticlesProps) => {
             getUrl={(post) => post.path}
           />
         </MainWidth>
-      </WithHeader>
+      </DefaultLayout>
     </>
   );
 };

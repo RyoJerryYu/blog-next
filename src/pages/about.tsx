@@ -1,5 +1,5 @@
 import { Title } from "@/layouts/UniversalHead";
-import WithHeader from "@/layouts/WithHeader";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import { GetStaticProps } from "next";
 
 type AboutPageProps = {};
@@ -13,9 +13,9 @@ const AboutPage = ({}: AboutPageProps) => {
   return (
     <>
       <Title>About</Title>
-      <WithHeader>
+      <DefaultLayout>
         <div>AboutPage</div>
-      </WithHeader>
+      </DefaultLayout>
     </>
   );
 };

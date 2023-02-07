@@ -2,7 +2,7 @@ import HomeCategoryList, {
   HomeCategoryItem,
   HomeCategoryListProps,
 } from "@/components/HomeCategoryList";
-import WithHeader from "@/layouts/WithHeader";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import { BASE_PATH } from "@/utils/env-var";
 import { Inter } from "@next/font/google";
 import clsx from "clsx";
@@ -35,7 +35,7 @@ export default function Home() {
   ];
   return (
     <>
-      <WithHeader withFullScreen>
+      <DefaultLayout withFullScreen>
         <div
           className={`h-screen w-screen bg-green-200 flex items-center justify-center bg-no-repeat bg-center bg-cover `}
           style={{ backgroundImage: `url(${bgUrl})` }}
@@ -48,7 +48,7 @@ export default function Home() {
           </div>
         </div>
         <HomeCategoryList items={categoryListItems} />
-      </WithHeader>
+      </DefaultLayout>
     </>
   );
 }

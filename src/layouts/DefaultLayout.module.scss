@@ -1,0 +1,60 @@
+@tailwind components;
+
+$hover-cyan: #69e0ff;
+
+.headeritem {
+  @apply h-full flex justify-center;
+}
+
+.textbox {
+  @apply h-full flex items-center justify-center p-4;
+}
+
+.textlink {
+  @apply text-gray-300 font-sans text-lg font-normal;
+  @apply hover:text-white;
+}
+.textlink:hover {
+  text-shadow: 0 0 10px #69e0ff, 0 0 20px #69e0ff;
+}
+
+.header {
+  @apply top-0 fixed w-screen z-10 h-16 flex;
+  @apply bg-gray-900 bg-opacity-50;
+  @apply transition ease-in-out hover:bg-opacity-75;
+
+  & .icon {
+    @apply headeritem;
+    @apply ml-2 w-32;
+  }
+  & .navBar {
+    @apply headeritem;
+    @apply ml-12 pr-2;
+  }
+  & .navBarItem {
+    @apply textbox;
+    @apply relative float-left mx-2;
+  }
+  & .headerRight {
+    @apply headeritem;
+    @apply ml-auto mr-2;
+  }
+}
+
+.headerBg {
+  @apply top-0 w-screen z-0 h-16 bg-gradient-to-b from-gray-700 to-transparent;
+}
+
+.footer {
+  @apply bottom-0 w-screen z-10 h-16 bg-gray-900;
+  @apply transition ease-in-out bg-opacity-80 hover:bg-opacity-100;
+  @apply text-slate-100 text-sm font-sans font-normal;
+
+  & .footerLeft {
+    @apply ml-2;
+  }
+  & .footerRight {
+    @apply ml-auto mr-2 float-right;
+    @apply flex flex-row gap-8 items-center justify-center;
+  }
+}

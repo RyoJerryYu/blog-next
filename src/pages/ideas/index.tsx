@@ -1,7 +1,7 @@
 import PostList from "@/components/PostList";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import WithHeader from "@/layouts/WithHeader";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import { getTagIndex, ideaCache, Post } from "@/statics";
 import { TagInfo, tagInfoListToMap } from "@/statics/tag-index";
 import { GetStaticProps } from "next";
@@ -30,7 +30,7 @@ const IdeasPage = (props: IdeasProps) => {
   return (
     <>
       <Title>Ideas</Title>
-      <WithHeader>
+      <DefaultLayout>
         <MainWidth>
           <PostList
             posts={props.posts}
@@ -38,7 +38,7 @@ const IdeasPage = (props: IdeasProps) => {
             getUrl={(idea) => idea.path}
           />
         </MainWidth>
-      </WithHeader>
+      </DefaultLayout>
     </>
   );
 };

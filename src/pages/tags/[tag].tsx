@@ -3,7 +3,7 @@ import TagsBox from "@/components/TagsBox";
 import TagSelector from "@/components/TagSelector";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import WithHeader from "@/layouts/WithHeader";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import { articleCache, getTagIndex, ideaCache, Post } from "@/statics";
 import { TagInfo } from "@/statics/tag-index";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -63,7 +63,7 @@ const TagPage = (props: TagPageProps) => {
   return (
     <>
       <Title>{props.focusTagInfo.tag}</Title>
-      <WithHeader>
+      <DefaultLayout>
         <MainWidth>
           <TagSelector tags={props.allTagInfos} />
           <PostList
@@ -72,7 +72,7 @@ const TagPage = (props: TagPageProps) => {
             getUrl={(post) => post.path}
           />
         </MainWidth>
-      </WithHeader>
+      </DefaultLayout>
     </>
   );
 };

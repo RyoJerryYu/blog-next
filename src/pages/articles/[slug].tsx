@@ -1,6 +1,6 @@
 import Post from "@/components/Post";
 import { Description, Title } from "@/layouts/UniversalHead";
-import WithHeader from "@/layouts/WithHeader";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import parseMdx from "@/plugins";
 import { articleCache, getPostMetaOrReload, getTagIndex } from "@/statics";
 import { articleLoader, PostMeta } from "@/statics/loader";
@@ -57,9 +57,9 @@ const ArticlePage = (props: ArticlePageProps) => {
     <>
       <Title>{props.meta.title}</Title>
       <Description>{props.meta.abstract}</Description>
-      <WithHeader>
+      <DefaultLayout>
         <Post meta={props.meta} tags={props.tags} source={props.source} />
-      </WithHeader>
+      </DefaultLayout>
     </>
   );
 };

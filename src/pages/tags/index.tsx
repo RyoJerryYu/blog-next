@@ -3,7 +3,7 @@ import TagsBox from "@/components/TagsBox";
 import TagSelector from "@/components/TagSelector";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import WithHeader from "@/layouts/WithHeader";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import { getTagIndex } from "@/statics";
 import { TagInfo } from "@/statics/tag-index";
 import { GetStaticProps } from "next";
@@ -28,11 +28,11 @@ const TagsPage = (props: TagsProps) => {
   return (
     <>
       <Title>Tags</Title>
-      <WithHeader>
+      <DefaultLayout>
         <MainWidth>
           <TagSelector tags={props.tagInfos} />
         </MainWidth>
-      </WithHeader>
+      </DefaultLayout>
     </>
   );
 };
