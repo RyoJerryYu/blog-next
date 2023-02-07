@@ -1,0 +1,36 @@
+.list {
+  @apply overflow-hidden;
+}
+
+.hoverAnimation {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.listItem {
+  @apply w-full h-64 bg-center bg-no-repeat bg-cover
+  relative overflow-hidden cursor-pointer;
+
+  &:before {
+    @apply -z-10 absolute w-full h-full;
+    @apply hoverAnimation;
+    content: "";
+  }
+
+  & > .bg {
+    @apply -z-30 absolute top-0 left-0 block w-full h-full bg-opacity-70 bg-amber-600;
+    @apply flex justify-center items-center;
+  }
+
+  & > a {
+    @apply absolute inline-block z-0 w-full h-full;
+    @apply text-4xl text-center flex items-center justify-center;
+  }
+
+  & > .charactor {
+    @apply -z-20 absolute top-0 right-0 block;
+  }
+
+  & > .border {
+    @apply -z-0 absolute w-full h-full block text-white border-solid border-white;
+  }
+}

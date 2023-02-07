@@ -1,3 +1,7 @@
+import HomeCategoryList, {
+  HomeCategoryItem,
+  HomeCategoryListProps,
+} from "@/components/HomeCategoryList";
 import WithHeader from "@/layouts/WithHeader";
 import { BASE_PATH } from "@/utils/env-var";
 import { Inter } from "@next/font/google";
@@ -16,6 +20,19 @@ export async function getStaticProps() {
 export default function Home() {
   const bgUrl = `${BASE_PATH}/img/home-bg-kasumi-hanabi.jpg`;
   const bgClass = "bg-[url(" + bgUrl + ")]";
+
+  const categoryListItems: HomeCategoryItem[] = [
+    {
+      title: "Articles",
+      href: "/articles",
+      bgUrl: bgUrl,
+    },
+    {
+      title: "Ideas",
+      href: "/ideas",
+      bgUrl: bgUrl,
+    },
+  ];
   return (
     <>
       <WithHeader withFullScreen>
@@ -30,11 +47,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <p className=" h-64">Hello From my next.js app!</p>
-        <p className=" bg-slate-400 h-32 flex items-center">
-          more content here...
-        </p>
-        <div>Footer here...</div>
+        <HomeCategoryList items={categoryListItems} />
       </WithHeader>
     </>
   );
