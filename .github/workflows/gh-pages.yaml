@@ -14,6 +14,7 @@ env:
   NEXT_PUBLIC_SITE_BASE_PATH: /blog-next
 jobs:
   build: # Job name
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       # https://github.com/actions/checkout
