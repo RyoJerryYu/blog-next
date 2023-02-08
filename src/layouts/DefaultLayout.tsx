@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Link from "next/link";
 import style from "./DefaultLayout.module.scss";
 import MainWidth from "./MainWidth";
@@ -12,7 +13,7 @@ const FooterIcon = (svgPath: string) => {
     return (
       <Link href={href} title={title}>
         <svg
-          className="h-8 w-8 fill-slate-100"
+          className={clsx("h-8 w-8", style.footerIcon)}
           viewBox="0 0 512 512"
           xmlns="http://www.w3.org/2000/svg"
         >
