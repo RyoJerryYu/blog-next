@@ -36,7 +36,7 @@ const ExternalIcons = (props: ExternalIconsProps) => {
   ];
 
   return (
-    <div className=" flex flex-row gap-4 items-center justify-center">
+    <div className=" flex flex-row gap-8 items-center justify-center">
       {iconMetas.map((meta) => {
         return (
           <Link href={meta.href} title={meta.title} key={meta.title}>
@@ -74,7 +74,7 @@ const NavBar: React.FC<NavBarProps> = ({ className, items }) => {
 type DefaultHeaderProps = {
   iconItem: ClickableItem;
   items: ClickableItem[];
-  rightItem: ClickableItem;
+  rightItem?: ClickableItem;
 };
 const DefaultHeader: React.FC<DefaultHeaderProps> = ({
   items,
@@ -98,11 +98,13 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
       {/* headerRight */}
       <div className={style.headerRight}>
         <ExternalIcons className=" h-6 w-6 fill-gray-300 hover:fill-white transition-all ease-in-out" />
-        <div className={style.textbox}>
-          <Link href={rightItem.to} className={style.textlink}>
-            {rightItem.text}
-          </Link>
-        </div>
+        {rightItem && (
+          <div className={style.textbox}>
+            <Link href={rightItem.to} className={style.textlink}>
+              {rightItem.text}
+            </Link>
+          </div>
+        )}
       </div>
     </header>
   );
@@ -143,10 +145,10 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
     { to: "/ideas", text: "Ideas" },
     { to: "/tags", text: "Tags" },
   ];
-  const rightItem: ClickableItem = { to: "/about", text: "About Me" };
+  // const rightItem: ClickableItem = { to: "/about", text: "About Me" };
   return (
     <>
-      <DefaultHeader items={items} iconItem={iconItem} rightItem={rightItem} />
+      <DefaultHeader items={items} iconItem={iconItem} />
 
       {/* outside header */}
       {withFullScreen ? (
