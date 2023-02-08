@@ -132,9 +132,14 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
       <DefaultHeader items={items} iconItem={iconItem} rightItem={rightItem} />
 
       {/* outside header */}
-      {withFullScreen ? null : <div className={style.headerBg}></div>}
-
-      {children}
+      {withFullScreen ? (
+        children
+      ) : (
+        <>
+          <div className={style.headerBg}></div>
+          <div className={style.contentHeight}>{children}</div>
+        </>
+      )}
 
       <DefaultFooter />
     </>

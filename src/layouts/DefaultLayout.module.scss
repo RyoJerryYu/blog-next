@@ -2,6 +2,9 @@
 
 $hover-cyan: #69e0ff;
 
+$header-height: 4rem;
+$footer-height: 4rem;
+
 .headeritem {
   @apply h-full flex justify-center;
 }
@@ -19,9 +22,11 @@ $hover-cyan: #69e0ff;
 }
 
 .header {
-  @apply top-0 fixed w-screen z-10 h-16 flex;
+  @apply top-0 fixed w-screen z-10 flex;
   @apply bg-gray-900 bg-opacity-50;
   @apply transition ease-in-out hover:bg-opacity-75;
+
+  height: $header-height;
 
   & .icon {
     @apply headeritem;
@@ -45,10 +50,16 @@ $hover-cyan: #69e0ff;
   @apply top-0 w-screen z-0 h-16 bg-gradient-to-b from-gray-700 to-transparent;
 }
 
+.contentHeight {
+  min-height: calc(100vh - $header-height - $footer-height);
+}
+
 .footer {
-  @apply bottom-0 w-screen z-10 h-16 bg-gray-900;
+  @apply bottom-0 w-screen z-10 bg-gray-900;
   @apply transition ease-in-out bg-opacity-80 hover:bg-opacity-100;
   @apply text-slate-100 text-sm font-sans font-normal;
+
+  height: $footer-height;
 
   & .footerLeft {
     @apply ml-2;
