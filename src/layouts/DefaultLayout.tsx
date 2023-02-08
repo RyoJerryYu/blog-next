@@ -9,19 +9,42 @@ import Link from "next/link";
 import style from "./DefaultLayout.module.scss";
 import MainWidth from "./MainWidth";
 
-const FooterIcon = ({
-  href,
-  title,
-  Icon,
-}: {
-  href: string;
-  title: string;
-  Icon: (props: IconItem) => JSX.Element;
-} & IconItem) => {
+type ExternalIconsProps = {
+  className?: string;
+};
+const ExternalIcons = (props: ExternalIconsProps) => {
+  const iconMetas: {
+    href: string;
+    title: string;
+    Icon: (props: IconItem) => JSX.Element;
+  }[] = [
+    {
+      href: "https://twitter.com/ryo_okami",
+      title: "Twitter",
+      Icon: TwitterIcon,
+    },
+    {
+      href: "https://github.com/RyoJerryYu",
+      title: "GitHub",
+      Icon: GitHubIcon,
+    },
+    {
+      href: "https://www.pixiv.net/users/9159893",
+      title: "Pixiv",
+      Icon: PixivIcon,
+    },
+  ];
+
   return (
-    <Link href={href} title={title}>
-      <Icon className={clsx(style.footerIcon, "h-8 w-8")} />
-    </Link>
+    <div className=" flex flex-row gap-4 items-center justify-center">
+      {iconMetas.map((meta) => {
+        return (
+          <Link href={meta.href} title={meta.title} key={meta.title}>
+            <meta.Icon className={props.className} />
+          </Link>
+        );
+      })}
+    </div>
   );
 };
 
@@ -74,6 +97,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
 
       {/* headerRight */}
       <div className={style.headerRight}>
+        <ExternalIcons className=" h-6 w-6 fill-gray-300 hover:fill-white transition-all ease-in-out" />
         <div className={style.textbox}>
           <Link href={rightItem.to} className={style.textlink}>
             {rightItem.text}
@@ -97,21 +121,7 @@ const DefaultFooter: React.FC<DefaultFooterProps> = (
             {"© 2023 Ryo Jerry Yu. All rights reserved."}
           </div>
           <div className={style.footerRight}>
-            <FooterIcon
-              href="https://twitter.com/ryo_okami"
-              title="Twitter"
-              Icon={TwitterIcon}
-            />
-            <FooterIcon
-              href="https://github.com/RyoJerryYu"
-              title="GitHub"
-              Icon={GitHubIcon}
-            />
-            <FooterIcon
-              href="https://www.pixiv.net/users/9159893"
-              title="Pixiv"
-              Icon={PixivIcon}
-            />
+            <ExternalIcons className={clsx(style.footerIcon, "h-8 w-8")} />
           </div>
         </div>
       </MainWidth>
