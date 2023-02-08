@@ -21,7 +21,7 @@ export default function HomeCategoryList(props: HomeCategoryListProps) {
           className={clsx(
             style.listItem,
             "group",
-            "before:bg-black before:bg-opacity-30 hover:before:bg-opacity-20"
+            "before:bg-black before:bg-opacity-50 hover:before:bg-opacity-20"
           )}
         >
           <div

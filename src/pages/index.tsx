@@ -1,7 +1,11 @@
 import HomeCategoryList, {
   HomeCategoryItem,
 } from "@/components/HomeCategoryList";
-import BgKasumiHanabi from "@/components/imgs/BgKasumiHanabi";
+import BgKasumiHanabi, {
+  HomeKasumiDigimon,
+  HomeKasumiGakkou,
+  HomeKasumiTanjyoubi,
+} from "@/components/imgs/BgKasumiHanabi";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { BASE_PATH } from "@/utils/env-var";
 import { Inter } from "@next/font/google";
@@ -23,12 +27,12 @@ export default function Home() {
     {
       title: "Articles",
       href: "/articles",
-      BgComponent: BgKasumiHanabi,
+      BgComponent: HomeKasumiGakkou,
     },
     {
       title: "Ideas",
       href: "/ideas",
-      BgComponent: BgKasumiHanabi,
+      BgComponent: HomeKasumiDigimon,
     },
   ];
   return (
