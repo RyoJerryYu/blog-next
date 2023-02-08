@@ -66,7 +66,7 @@ $footer-height: 4rem;
   }
   & .footerRight {
     @apply ml-auto mr-2 float-right;
-    @apply flex flex-row gap-8 items-center justify-center;
+    @apply flex flex-row gap-4 items-center justify-center;
   }
 }
 
