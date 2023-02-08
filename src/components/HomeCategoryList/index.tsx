@@ -1,4 +1,3 @@
-import { BASE_PATH } from "@/utils/env-var";
 import clsx from "clsx";
 import Link from "next/link";
 import style from "./HomeCategoryList.module.scss";
@@ -7,7 +6,7 @@ export type HomeCategoryItem = {
   title: string;
   href: string;
   charUrl?: string;
-  bgUrl: string;
+  BgComponent: React.FC<{ className?: string }>;
 };
 export type HomeCategoryListProps = {
   items: HomeCategoryItem[];
@@ -32,7 +31,7 @@ export default function HomeCategoryList(props: HomeCategoryListProps) {
               style.hoverAnimation
             )}
           >
-            <img alt="" src={item.bgUrl} className=" min-w-full min-h-full" />
+            <item.BgComponent className=" min-w-full min-h-full" />
           </div>
           <Link
             href={item.href}

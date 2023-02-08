@@ -1,11 +1,10 @@
 import HomeCategoryList, {
   HomeCategoryItem,
-  HomeCategoryListProps,
 } from "@/components/HomeCategoryList";
+import BgKasumiHanabi from "@/components/imgs/BgKasumiHanabi";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { BASE_PATH } from "@/utils/env-var";
 import { Inter } from "@next/font/google";
-import clsx from "clsx";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,32 +18,33 @@ export async function getStaticProps() {
 
 export default function Home() {
   const bgUrl = `${BASE_PATH}/img/home-bg-kasumi-hanabi.jpg`;
-  const bgClass = "bg-[url(" + bgUrl + ")]";
 
   const categoryListItems: HomeCategoryItem[] = [
     {
       title: "Articles",
       href: "/articles",
-      bgUrl: bgUrl,
+      BgComponent: BgKasumiHanabi,
     },
     {
       title: "Ideas",
       href: "/ideas",
-      bgUrl: bgUrl,
+      BgComponent: BgKasumiHanabi,
     },
   ];
   return (
     <>
       <DefaultLayout withFullScreen>
         <div
-          className={`h-screen w-screen bg-green-200 flex items-center justify-center bg-no-repeat bg-center bg-cover `}
-          style={{ backgroundImage: `url(${bgUrl})` }}
+          className={`h-screen w-screen flex items-center justify-center bg-no-repeat bg-center bg-cover `}
         >
-          <div className="flex flex-col items-center">
+          <div className=" absolute z-0 flex flex-col items-center">
             <div className="text-6xl text-slate-200">{`Ryo's Blog`}</div>
             <div className=" text-3xl text-slate-200 mt-8">
               {"About Tech, Paint, and Games."}
             </div>
+          </div>
+          <div className=" absolute -z-10  w-full h-full flex justify-center items-center overflow-hidden">
+            <BgKasumiHanabi className="min-h-full min-w-full object-cover" />
           </div>
         </div>
         <HomeCategoryList items={categoryListItems} />
