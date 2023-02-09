@@ -9,15 +9,12 @@ on:
       - 'dependabot/**'
   workflow_dispatch:
 
-env:
-  NEXT_PUBLIC_SITE_ORIGIN: https://ryojerryyu.github.io
-  NEXT_PUBLIC_SITE_BASE_PATH: /blog-next
 jobs:
   build:
     uses: ./.github/workflows/build.yaml
     with:
-      site-origin: ${{ env.NEXT_PUBLIC_SITE_ORIGIN }}
-      site-base-path: ${{ env.NEXT_PUBLIC_SITE_BASE_PATH }}
+      site-origin: https://ryojerryyu.github.io
+      site-base-path: /blog-next
 
   deploy:
     needs: build
