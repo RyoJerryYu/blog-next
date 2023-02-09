@@ -11,6 +11,7 @@ on:
 
 jobs:
   build:
+    if: github.actor != 'dependabot[bot]'
     uses: ./.github/workflows/build.yaml
     with:
       site-origin: https://ryojerryyu.github.io
