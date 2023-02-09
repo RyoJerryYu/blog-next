@@ -1,0 +1,53 @@
+name: Build And Upload Artifacts
+
+on:
+  workflow_call:
+    inputs:
+      site-origin:
+        description: |
+          site host, port, and protocol, e.g. https://ryojerryyu.github.io
+        required: true
+        type: string
+      site-base-path:
+        description: |
+          site base path, e.g. /blog-next
+          default empty
+        required: false
+        type: string
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/actions/checkout
+      - uses: actions/checkout@v3
+        with:
+          # git-restore-mtime-bare uses the ref log to find the correct timestamp
+          # for each file. This requires a full git history. The default value (1)
+          # creates a shallow checkout.
+          fetch-depth: 0
+          lfs: true
+      # Fix timestamps
+      - name: restore timestamps
+        uses: chetan/git-restore-mtime-action@v1
+
+      # a standard step for GitHub actions on Node
+      # https://github.com/actions/setup-node
+      - uses: actions/setup-node@v3
+        with:
+          # update the Node version to meet your needs
+          node-version: 16
+          cache: yarn
+
+      - name: Build
+        run: |
+          yarn install
+          yarn build
+          touch out/.nojekyll
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: blog-next
+          path: out
