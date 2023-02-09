@@ -1,0 +1,52 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches-ignore:
+      - 'dependabot/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    if: github.actor != 'dependabot[bot]'
+    uses: ./.github/workflows/build.yaml
+    with:
+      site-origin: https://test.ryo-okami.xyz
+      site-base-path: ''
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        # Deploy to gh-pages should be in a git directory
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: blog-next
+          path: out
+      
+      - name: Debug
+        run: |
+          ls -al out
+          cat out/sitemap-0.xml
+
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+      - name: Deploy
+        env:
+          S3_BUCKET: test.ryo-okami.xyz
+          DISTRIBUTION_ID: E3DFPA0YC9J6TJ
+        run: |
+          aws s3 rm s3://$S3_BUCKET/* --recursive --region=ap-northeast-1
+          aws s3 cp ./public s3://$S3_BUCKET/ --recursive --region=ap-northeast-1
+          aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths '/*' --region=us-east-1
