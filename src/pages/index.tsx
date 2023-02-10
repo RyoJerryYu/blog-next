@@ -47,7 +47,7 @@ export default function Home() {
               {"About Tech, Paint, and Games."}
             </div>
           </div>
-          <div className=" absolute -z-10  w-full h-full flex justify-center items-center overflow-hidden">
+          <div className=" absolute -z-10  w-full h-full flex justify-center items-center overflow-hidden bg-slate-900">
             <BgKasumiHanabi className="min-h-full min-w-full object-cover" />
           </div>
         </div>
