@@ -2,7 +2,7 @@
 const basePath = process.env.NEXT_PUBLIC_SITE_BASE_PATH || undefined;
 const nextConfig = {
   reactStrictMode: true,
-  trailingSlash: true,
+  trailingSlash: false,
   assetPrefix: basePath,
   basePath: basePath,
   experimental: {
