@@ -5,3 +5,8 @@
   @apply flex-initial py-1 px-2 mr-1 mb-1 rounded-xl text-center text-xs;
   @apply border border-border hover:border-border-focus hover:bg-bg-focus2;
 }
+
+.highlightedTag {
+  @extend .tag;
+  @apply border-border-focus bg-bg-focus2;
+}
