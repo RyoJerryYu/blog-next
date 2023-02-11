@@ -24,15 +24,6 @@ export default function HomeCategoryList(props: HomeCategoryListProps) {
             "before:bg-black before:bg-opacity-50 hover:before:bg-opacity-20"
           )}
         >
-          <div
-            className={clsx(
-              "group-hover:scale-110",
-              style.bg,
-              style.hoverAnimation
-            )}
-          >
-            <item.BgComponent className=" min-w-full min-h-full" />
-          </div>
           <Link
             href={item.href}
             className={clsx(
@@ -40,26 +31,43 @@ export default function HomeCategoryList(props: HomeCategoryListProps) {
               style.hoverAnimation
             )}
           >
-            <p>{item.title}</p>
-          </Link>
-          <div
-            className={clsx(
-              style.border,
-              "border-4 opacity-0 group-hover:opacity-90",
-              style.hoverAnimation
-            )}
-          ></div>
-          {item.charUrl && (
-            <img
+            <div
               className={clsx(
-                "opacity-100 group-hover:opacity-100 group-hover:translate-x-32",
-                style.charactor,
+                "group-hover:scale-110",
+                style.bg,
                 style.hoverAnimation
               )}
-              src={item.charUrl}
-              alt="some text"
-            />
-          )}
+            >
+              <item.BgComponent className=" min-w-full min-h-full" />
+            </div>
+            <p
+              className={clsx(
+                style.title,
+                "text-3xl text-slate-300 group-hover:text-slate-100",
+                style.hoverAnimation
+              )}
+            >
+              {item.title}
+            </p>
+            <div
+              className={clsx(
+                style.border,
+                "border-4 opacity-0 group-hover:opacity-90",
+                style.hoverAnimation
+              )}
+            ></div>
+            {item.charUrl && (
+              <img
+                className={clsx(
+                  "opacity-100 group-hover:opacity-100 group-hover:translate-x-32",
+                  style.charactor,
+                  style.hoverAnimation
+                )}
+                src={item.charUrl}
+                alt="some text"
+              />
+            )}
+          </Link>
         </li>
       ))}
     </ul>

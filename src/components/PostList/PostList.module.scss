@@ -12,7 +12,7 @@
   @apply text-xl font-bold;
 }
 .postDate {
-  @apply text-xs text-fg-light;
+  @apply text-xs text-fg-light w-full;
 }
 .postAbstract {
   @apply text-sm py-1 px-1 leading-snug;
