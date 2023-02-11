@@ -34,7 +34,7 @@ jobs:
       - name: Debug
         run: |
           ls -al out
-          cat out/sitemap-0.xml
+          cat out/sitemap.xml
 
       - name: Deploy
         # https://github.com/JamesIves/github-pages-deploy-action
