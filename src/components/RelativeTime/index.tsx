@@ -12,8 +12,8 @@ export default function RelativeTime({
 }: RelativeTimeProps) {
   const jsTime = dayjs(children);
   return (
-    <time className={className} dateTime={jsTime.toJSON()}>
-      {jsTime.format("YYYY-MM-DD")}
-    </time>
+    <div className={className}>
+      <time dateTime={jsTime.toJSON()}>{jsTime.format("YYYY-MM-DD")}</time>
+    </div>
   );
 }
