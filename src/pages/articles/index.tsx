@@ -5,11 +5,12 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import { articleCache, getTagIndex, Post } from "@/statics";
 import { TagInfo, tagInfoListToMap } from "@/statics/tag-index";
 import { GetStaticProps } from "next";
+import { sortPostsByDate } from "@/statics/utils";
 
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   const cache = await articleCache();
   const slugs = cache.getSlugs();
-  const posts = slugs.map(cache.slugToPost);
+  const posts = sortPostsByDate(slugs.map(cache.slugToPost));
 
   const allTagsList = (await getTagIndex()).getTags();
 

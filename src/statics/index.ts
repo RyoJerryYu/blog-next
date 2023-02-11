@@ -5,6 +5,7 @@
  * And ensure: init once, no modification after init.
  */
 
+import dayjs from "dayjs";
 import { mergeGitMeta } from "./git-meta";
 import { articleLoader, ideaLoader, PostMeta, StaticsLoader } from "./loader";
 import { TagIndex, TagIndexBuilder } from "./tag-index";

@@ -7,6 +7,7 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import { articleCache, getTagIndex, ideaCache, Post } from "@/statics";
 import { TagInfo } from "@/statics/tag-index";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { sortPostsByDate } from "@/statics/utils";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const tagIndex = await getTagIndex();
@@ -46,11 +47,13 @@ export const getStaticProps: GetStaticProps<
     }
   });
 
+  const postArray = sortPostsByDate(Array.from(posts));
+
   return {
     props: {
       allTagInfos: allTagInfos,
       selectedTagInfo: selectedTagInfo,
-      posts: Array.from(posts),
+      posts: postArray,
     },
   };
 };
