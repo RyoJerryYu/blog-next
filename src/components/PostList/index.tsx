@@ -59,8 +59,8 @@ export function PostListElement({
             {postMeta.abstract}
           </PostAbstract>
         )}
-        {postMeta.tags && postMeta.tags.length > 0 && <TagsBox tags={tags} />}
       </Link>
+      {postMeta.tags && postMeta.tags.length > 0 && <TagsBox tags={tags} />}
     </div>
   );
 }

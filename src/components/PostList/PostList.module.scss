@@ -5,7 +5,7 @@
 }
 .postListElement {
   @apply flex-1 p-2 rounded-md;
-  @apply cursor-pointer hover:bg-bg-focus;
+  @apply hover:bg-bg-focus;
 }
 
 .postTitle {

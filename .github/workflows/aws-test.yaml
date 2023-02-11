@@ -5,8 +5,8 @@ on:
     branches:
       - master
   pull_request:
-    branches-ignore:
-      - 'dependabot/**'
+    branches:
+      - 'test/**'
   workflow_dispatch:
 
 jobs:
