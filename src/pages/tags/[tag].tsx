@@ -21,7 +21,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 type TagPageProps = {
   allTagInfos: TagInfo[];
-  focusTagInfo: TagInfo;
+  selectedTagInfo: TagInfo;
   posts: Post[];
 };
 export const getStaticProps: GetStaticProps<
@@ -30,8 +30,8 @@ export const getStaticProps: GetStaticProps<
 > = async ({ params }) => {
   const tagIndex = await getTagIndex();
   const allTagInfos = tagIndex.getTags();
-  const focusTagInfo = tagIndex.getTagsOf([params!.tag])[0];
-  const postSlugInfos = focusTagInfo.postSlugs;
+  const selectedTagInfo = tagIndex.getTagsOf([params!.tag])[0];
+  const postSlugInfos = selectedTagInfo.postSlugs;
 
   const posts: Set<Post> = new Set();
   const articleCaches = await articleCache();
@@ -49,7 +49,7 @@ export const getStaticProps: GetStaticProps<
   return {
     props: {
       allTagInfos: allTagInfos,
-      focusTagInfo: focusTagInfo,
+      selectedTagInfo: selectedTagInfo,
       posts: Array.from(posts),
     },
   };
@@ -62,10 +62,13 @@ const TagPage = (props: TagPageProps) => {
   });
   return (
     <>
-      <Title>{props.focusTagInfo.tag}</Title>
+      <Title>{props.selectedTagInfo.tag}</Title>
       <DefaultLayout>
         <MainWidth>
-          <TagSelector tags={props.allTagInfos} />
+          <TagSelector
+            tags={props.allTagInfos}
+            selectedTagSlug={props.selectedTagInfo.slug}
+          />
           <PostList
             posts={props.posts}
             allTags={tagInfoMap}
