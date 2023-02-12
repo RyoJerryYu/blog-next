@@ -30,19 +30,19 @@ $footer-height: 4rem;
 
   & .icon {
     @apply headeritem;
-    @apply ml-2 w-32;
+    @apply ml-2 w-32 mr-4 md:mr-12;
   }
   & .navBar {
     @apply headeritem;
-    @apply ml-12 pr-2;
+    @apply pr-2;
   }
   & .navBarItem {
     @apply textbox;
-    @apply relative float-left mx-2;
+    @apply relative float-left mx-1 md:mx-2;
   }
   & .headerRight {
     @apply headeritem;
-    @apply ml-auto mr-8;
+    @apply ml-auto mr-8 hidden md:flex;
   }
 }
 

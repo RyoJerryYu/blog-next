@@ -1,5 +1,5 @@
 import Post from "@/components/Post";
-import { Description, Title } from "@/layouts/UniversalHead";
+import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import parseMdx from "@/plugins";
 import { articleCache, getPostMetaOrReload, getTagIndex } from "@/statics";
@@ -57,6 +57,13 @@ const ArticlePage = (props: ArticlePageProps) => {
     <>
       <Title>{props.meta.title}</Title>
       <Description>{props.meta.abstract}</Description>
+      <SEOObject
+        article={{
+          publishedTime: props.meta.created_at,
+          modifiedTime: props.meta.updated_at,
+          tags: props.meta.tags,
+        }}
+      />
       <DefaultLayout>
         <Post meta={props.meta} tags={props.tags} source={props.source} />
       </DefaultLayout>

@@ -18,7 +18,7 @@ const PostAbstract: React.FC<PostAbstractProps> = ({ className, children }) => {
     <div className={className}>
       {lines.map((line, index) => {
         return (
-          <p key={index} className={style.postAbstract}>
+          <p key={index} className="py-1">
             {line}
           </p>
         );
@@ -60,7 +60,9 @@ export function PostListElement({
           </PostAbstract>
         )}
       </Link>
-      {postMeta.tags && postMeta.tags.length > 0 && <TagsBox tags={tags} />}
+      {postMeta.tags && postMeta.tags.length > 0 && (
+        <TagsBox tags={tags} className="py-4 md:py-1" />
+      )}
     </div>
   );
 }
