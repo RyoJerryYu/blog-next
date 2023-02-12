@@ -17,7 +17,11 @@ const Post = ({ meta, source, tags }: PostProps) => {
   return (
     <article className={style.post}>
       <h1 className={style.postTitle}>{meta.title}</h1>
-      <RelativeTime className={style.postDate}>{meta.created_at}</RelativeTime>
+      {meta.created_at && (
+        <RelativeTime className={style.postDate}>
+          {meta.created_at}
+        </RelativeTime>
+      )}
       {meta.tags.length > 0 && <TagsBox className="mt-2" tags={tags} />}
 
       <div className={clsx("post-body", style.postContent)}>

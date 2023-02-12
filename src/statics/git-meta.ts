@@ -45,7 +45,23 @@ export const mergeGitMeta = async (file: string, meta: PostMeta) => {
   const gitMeta = await parseGitMetaFromFile(file);
   return {
     ...meta,
-    created_at: meta.created_at || gitMeta.created_at || "",
-    updated_at: meta.updated_at || gitMeta.updated_at || "",
+    created_at: meta.created_at || gitMeta.created_at || null,
+    updated_at: meta.updated_at || gitMeta.updated_at || null,
+  };
+};
+
+// used for dev mode
+// loading git meta is slow, so we mock it
+// created_at always be tomorrow, updated_at always be null
+export const mergeMockGitMeta = async (file: string, meta: PostMeta) => {
+  if (!shouldMergeGitMeta(meta)) {
+    return meta;
+  }
+
+  const now = dayjs().add(1, "day").toJSON();
+  return {
+    ...meta,
+    created_at: meta.created_at || now,
+    updated_at: meta.updated_at || null,
   };
 };

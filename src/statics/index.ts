@@ -6,7 +6,7 @@
  */
 
 import dayjs from "dayjs";
-import { mergeGitMeta } from "./git-meta";
+import { mergeGitMeta, mergeMockGitMeta } from "./git-meta";
 import { articleLoader, ideaLoader, PostMeta, StaticsLoader } from "./loader";
 import { TagIndex, TagIndexBuilder } from "./tag-index";
 
@@ -150,7 +150,9 @@ export const getPostMetaOrReload = async (cache: PostCache, slug: string) => {
     // for reloading in development
     console.log(`reloading on dev ${slug}`);
     const loader = articleLoader();
-    return loader.parseMetaFromFile(cache.slugToFile(slug));
+    let meta = loader.parseMetaFromFile(cache.slugToFile(slug));
+    meta = await mergeMockGitMeta(cache.slugToFile(slug), meta);
+    return meta;
   } else {
     return cache.slugToMeta(slug);
   }

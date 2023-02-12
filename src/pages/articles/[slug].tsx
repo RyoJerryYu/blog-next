@@ -59,8 +59,8 @@ const ArticlePage = (props: ArticlePageProps) => {
       <Description>{props.meta.abstract}</Description>
       <SEOObject
         article={{
-          publishedTime: props.meta.created_at,
-          modifiedTime: props.meta.updated_at,
+          publishedTime: props.meta.created_at ?? undefined,
+          modifiedTime: props.meta.updated_at ?? undefined,
           tags: props.meta.tags,
         }}
       />

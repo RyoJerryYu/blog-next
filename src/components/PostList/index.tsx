@@ -51,9 +51,11 @@ export function PostListElement({
     <div className={className}>
       <Link href={url}>
         <h6 className={style.postTitle}>{postMeta.title}</h6>
-        <RelativeTime className={style.postDate}>
-          {postMeta.created_at}
-        </RelativeTime>
+        {postMeta.created_at && (
+          <RelativeTime className={style.postDate}>
+            {postMeta.created_at}
+          </RelativeTime>
+        )}
         {postMeta.abstract && postMeta.abstract.length > 0 && (
           <PostAbstract className={style.postAbstract}>
             {postMeta.abstract}
