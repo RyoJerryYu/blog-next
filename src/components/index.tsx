@@ -1,9 +1,27 @@
+import {
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  Title,
+  Tooltip,
+} from "chart.js";
 import { MDXComponents } from "mdx/types";
-import CodeBlock from "./CodeBlock";
+import { Bar } from "react-chartjs-2";
 import License from "./License";
-import Mermaid from "./Mermaid";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const components: MDXComponents = {
+  Bar,
   // Mermaid,
   License,
   // code: (props: any) => {
