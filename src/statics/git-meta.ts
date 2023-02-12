@@ -45,7 +45,7 @@ export const mergeGitMeta = async (file: string, meta: PostMeta) => {
   const gitMeta = await parseGitMetaFromFile(file);
   return {
     ...meta,
-    created_at: meta.created_at || gitMeta.created_at || "",
-    updated_at: meta.updated_at || gitMeta.updated_at || "",
+    created_at: meta.created_at || gitMeta.created_at || null,
+    updated_at: meta.updated_at || gitMeta.updated_at || null,
   };
 };

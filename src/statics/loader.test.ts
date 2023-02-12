@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { articleLoader } from "./loader";
 
 describe("test get slug from file", () => {
@@ -27,7 +28,7 @@ describe("test get slug from file", () => {
   }
 });
 
-describe("test parse meta", () => {
+describe("test parse meta: general", () => {
   const cases = [
     {
       name: "should parse meta",
@@ -72,13 +73,51 @@ second line
   }
 });
 
-describe("test parse git meta", () => {
+describe("test parse meta: time", () => {
+  const expectTimeEq = (a: string | null, b: string | null) => {
+    if (a && b) {
+      expect(dayjs(a).toJSON()).toBe(dayjs(b).toJSON());
+    } else {
+      expect(a).toBeNull();
+      expect(b).toBeNull();
+    }
+  };
+  const cases = [
+    {
+      name: "should parse time",
+      input: `---
+created_at: 2020-01-01
+updated_at: 2020-01-02
+---
+# abc
+`,
+      output: {
+        created_at: dayjs("2020-01-01 00:00:00 +00:00"),
+        updated_at: dayjs("2020-01-02 00:00:00 +00:00"),
+      },
+    },
+    {
+      name: "should null if no time",
+      input: `
+# abc
+`,
+      output: {},
+    },
+  ];
+
   const loader = articleLoader();
-  it("should have right time", async () => {
-    const result = await loader.parseGitMetaFromFile(
-      "public/content/posts/2020-01-27-Building-this-blog.md"
-    );
-    expect(result.created_at).not.toBeUndefined();
-    expect(result.updated_at).not.toBeUndefined();
-  });
+
+  for (const { name, input, output } of cases) {
+    it(name, () => {
+      const result = loader.parseMetaFromRaw(input);
+
+      output.created_at
+        ? expectTimeEq(result.created_at, output.created_at.toJSON())
+        : expect(result.created_at).toBeNull();
+
+      output.updated_at
+        ? expectTimeEq(result.updated_at, output.updated_at.toJSON())
+        : expect(result.updated_at).toBeNull();
+    });
+  }
 });

@@ -25,8 +25,8 @@ export type PostMeta = {
   title: string;
   abstract: string;
   length: number;
-  created_at: string;
-  updated_at?: string;
+  created_at: string | null;
+  updated_at: string | null;
   tags: string[];
   license: boolean;
 };
@@ -82,8 +82,8 @@ export class StaticsLoader {
         .slice(0, 3)
         .join("\n"),
       length: content.split("\n").length,
-      created_at: dayjs(data.created_at).toJSON() || "",
-      updated_at: data.updated_at ? dayjs(data.updated_at).toJSON() : "",
+      created_at: data.created_at ? dayjs(data.created_at).toJSON() : null,
+      updated_at: data.updated_at ? dayjs(data.updated_at).toJSON() : null,
       tags: data.tags ?? [],
       license: data.license ?? false,
     };

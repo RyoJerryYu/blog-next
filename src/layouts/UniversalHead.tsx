@@ -54,7 +54,7 @@ export const SEOImage = ({ children }: { children: string }) => {
 
 type SEOObjectProps = {
   article?: {
-    publishedTime: string;
+    publishedTime?: string;
     modifiedTime?: string;
     tags: string[];
   };
@@ -65,11 +65,13 @@ export const SEOObject = (props: SEOObjectProps) => {
     return (
       <Head>
         <meta key="og:type" property="og:type" content="article" />
-        <meta
-          key="article:published_time"
-          property="article:published_time"
-          content={dayjs(props.article.publishedTime).toISOString()}
-        />
+        {props.article.publishedTime && (
+          <meta
+            key="article:published_time"
+            property="article:published_time"
+            content={dayjs(props.article.publishedTime).toISOString()}
+          />
+        )}
         {props.article.modifiedTime && (
           <meta
             key="article:modified_time"
