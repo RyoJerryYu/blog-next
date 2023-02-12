@@ -1,7 +1,7 @@
 @tailwind components;
 
 .postList {
-  @apply flex flex-col;
+  @apply flex flex-col gap-4 md:gap-0;
 }
 .postListElement {
   @apply flex-1 p-2 rounded-md;
@@ -15,5 +15,5 @@
   @apply text-xs text-fg-light w-full;
 }
 .postAbstract {
-  @apply text-sm py-1 px-1 leading-snug;
+  @apply text-sm py-1 leading-snug;
 }
