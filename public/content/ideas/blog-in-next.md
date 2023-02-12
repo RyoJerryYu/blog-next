@@ -90,7 +90,7 @@ tags:
         - [x] Github Action 复用
         - [x] test infra stack 更新使用 s3 web hosting
         - [x] 处理 url 结尾带 slash 问题
-            - https://github.com/keaeriksson/hugo-s3-cloudfront <- 最终解决方案，用 pulumi 把这个重写一遍
+            - https://github.com/keaeriksson/hugo-s3-cloudfront \<- 最终解决方案，用 pulumi 把这个重写一遍
             - maybe it's time to serverless https://github.com/serverless-nextjs/serverless-next.js
             - or just use vercel! 
 
