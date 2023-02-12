@@ -18,7 +18,7 @@
     "@mui/base": "^5.0.0-alpha.117",
     "@mui/material": "^5.11.8",
     "@next/font": "13.1.6",
-    "@types/node": "18.11.18",
+    "@types/node": "18.13.0",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
     "clsx": "^1.2.1",
