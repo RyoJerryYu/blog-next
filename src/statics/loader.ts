@@ -6,7 +6,7 @@ import { glob } from "glob";
 
 export function articleLoader() {
   return new StaticsLoader(
-    "public/content/posts/*.md*",
+    "public/content/articles/*.md*",
     /(\d*-)*(.*)/,
     "/articles/"
   );
