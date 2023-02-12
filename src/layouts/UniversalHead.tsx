@@ -103,8 +103,8 @@ const UniversalHead = () => {
         {"The blog owned by Ryo, about Programing, Painting, and Gaming."}
       </Description>
       <SEOImage>{`/img/home-bg-kasumi-hanabi.jpg`}</SEOImage>
+      <SEOObject />
       <Head>
-        <meta key="og:type" property="og:type" content="website" />
         <meta property="og:url" content={`${PROD_SITE_URL}${route.asPath}`} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ryo_okami" />
