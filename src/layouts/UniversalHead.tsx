@@ -1,4 +1,5 @@
-import { BASE_PATH, SITE_NAME, SITE_URL } from "@/utils/env-var";
+import { BASE_PATH, PROD_SITE_URL, SITE_NAME, SITE_URL } from "@/utils/env-var";
+import dayjs from "dayjs";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
@@ -51,6 +52,48 @@ export const SEOImage = ({ children }: { children: string }) => {
   );
 };
 
+type SEOObjectProps = {
+  article?: {
+    publishedTime: string;
+    modifiedTime?: string;
+    tags: string[];
+  };
+};
+
+export const SEOObject = (props: SEOObjectProps) => {
+  if (props.article) {
+    return (
+      <Head>
+        <meta key="og:type" property="og:type" content="article" />
+        <meta
+          key="article:published_time"
+          property="article:published_time"
+          content={dayjs(props.article.publishedTime).toISOString()}
+        />
+        {props.article.modifiedTime && (
+          <meta
+            key="article:modified_time"
+            property="article:modified_time"
+            content={dayjs(props.article.modifiedTime).toISOString()}
+          />
+        )}
+        {props.article.tags.map((tag) => (
+          <meta
+            key={`article:tag:${tag}`}
+            property="article:tag"
+            content={tag}
+          />
+        ))}
+      </Head>
+    );
+  }
+  return (
+    <Head>
+      <meta key="og:type" property="og:type" content="website" />
+    </Head>
+  );
+};
+
 const UniversalHead = () => {
   const route = useRouter();
   return (
@@ -62,7 +105,7 @@ const UniversalHead = () => {
       <SEOImage>{`/img/home-bg-kasumi-hanabi.jpg`}</SEOImage>
       <Head>
         <meta key="og:type" property="og:type" content="website" />
-        <meta property="og:url" content={`${SITE_URL}${route.asPath}`} />
+        <meta property="og:url" content={`${PROD_SITE_URL}${route.asPath}`} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ryo_okami" />
         <meta name="twitter:creator" content="@ryo_okami" />
