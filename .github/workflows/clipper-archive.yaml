@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Archive Notion Clipper
-        uses: RyoJerryYu/notion-clipper-archive@v1
+        uses: RyoJerryYu/notion-clipper-archiver@v1
         id: notion_clipper_archive
         with:
           notion_token: ${{ secrets.NOTION_TOKEN }}
