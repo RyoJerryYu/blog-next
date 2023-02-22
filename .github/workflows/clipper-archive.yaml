@@ -16,12 +16,12 @@ jobs:
         with:
           notion_token: ${{ secrets.NOTION_TOKEN }}
           database_id: ${{ secrets.DATABASE_ID }}
-          output_dir: ./data
-          save_file: clips.json
+          save_dir: ./data
+          file_name: clips.json
 
       - name: Debug
         run: |
-          ls -al ./data
+          ls -la ./data
           cat ./data/clips.json
 
       - name: Upload Artifacts
