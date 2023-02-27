@@ -29,3 +29,9 @@ jobs:
         with:
           name: notion-clipper-archive
           path: ${{ steps.notion_clipper_archive.outputs.save_path }}
+
+      - name: Commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'Update clips.json'
+          add: ${{ steps.notion_clipper_archive.outputs.save_path }}
