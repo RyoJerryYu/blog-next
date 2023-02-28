@@ -5,7 +5,7 @@
  * And ensure: init once, no modification after init.
  */
 
-import dayjs from "dayjs";
+import { ClipData, loadClipData } from "./data";
 import { mergeGitMeta, mergeMockGitMeta } from "./git-meta";
 import { articleLoader, ideaLoader, PostMeta, StaticsLoader } from "./loader";
 import { TagIndex, TagIndexBuilder } from "./tag-index";
@@ -116,6 +116,7 @@ type Cache = {
   articleCache: PostCache;
   ideaCache: PostCache;
   tagIndex: TagIndex;
+  clipData: ClipData[];
 };
 let cache: Cache | undefined = undefined;
 const init = async () => {
@@ -125,11 +126,13 @@ const init = async () => {
   const articleCache = await loadPostCache(articleLoader());
   const ideaCache = await loadPostCache(ideaLoader());
   const tagIndex = buildTagIndex(articleCache, ideaCache);
+  const clipData = loadClipData();
 
   cache = {
     articleCache,
     ideaCache,
     tagIndex,
+    clipData,
   };
   return cache;
 };
@@ -142,6 +145,9 @@ export const ideaCache = async () => {
 };
 export const getTagIndex = async () => {
   return (await init()).tagIndex;
+};
+export const getClipData = async () => {
+  return (await init()).clipData;
 };
 
 // a helper function to get meta from cache or reload when development

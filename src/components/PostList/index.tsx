@@ -82,7 +82,18 @@ export default function PostList({ posts, getUrl, allTags }: PostListProps) {
 
   const elementsProps = posts.map((post) => {
     const url = getUrl ? getUrl(post) : `/posts/${post.slug}`;
-    const tags = post.meta.tags.map((tag) => allTags.get(tag)!);
+    const tags = post.meta.tags.map((tag): TagInfo => {
+      const tagInfo = allTags.get(tag);
+      if (!tagInfo) {
+        return {
+          tag: tag,
+          slug: tag,
+          path: "",
+          postSlugs: [],
+        };
+      }
+      return tagInfo;
+    });
 
     return {
       post: post,

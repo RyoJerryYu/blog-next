@@ -144,6 +144,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
     { to: "/articles", text: "Articles" },
     { to: "/ideas", text: "Ideas" },
     { to: "/tags", text: "Tags" },
+    { to: "/clips", text: "Clips" },
   ];
   // const rightItem: ClickableItem = { to: "/about", text: "About Me" };
   return (
