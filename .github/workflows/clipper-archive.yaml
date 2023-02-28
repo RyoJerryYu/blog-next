@@ -1,0 +1,39 @@
+name: Archive Notion Clipper
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: master
+
+      - name: Archive Notion Clipper
+        uses: RyoJerryYu/notion-clipper-archiver@v1
+        id: notion_clipper_archive
+        with:
+          notion_token: ${{ secrets.NOTION_TOKEN }}
+          database_id: ${{ secrets.DATABASE_ID }}
+          save_dir: ./public/data
+          file_name: clips.json
+
+      - name: Debug
+        run: |
+          ls -la ./public/data
+          cat ./public/data/clips.json
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: notion-clipper-archive
+          path: ${{ steps.notion_clipper_archive.outputs.save_path }}
+
+      - name: Commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'Update clips.json'
+          add: ${{ steps.notion_clipper_archive.outputs.save_path }}

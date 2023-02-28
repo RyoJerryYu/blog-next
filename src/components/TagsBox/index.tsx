@@ -10,18 +10,28 @@ type TagsBoxProps = {
 };
 
 const TagsBox: React.FC<TagsBoxProps> = (props: TagsBoxProps) => {
+  const renderTag = (tagInfo: TagInfo) => {
+    const tagBoxBody =
+      props.highlightedTagSlug === tagInfo.slug ? (
+        <div className={style.highlightedTag}>{tagInfo.tag}</div>
+      ) : (
+        <div className={style.tag}>{tagInfo.tag}</div>
+      );
+
+    if (tagInfo.path) {
+      return (
+        <Link key={tagInfo.slug} href={tagInfo.path}>
+          {tagBoxBody}
+        </Link>
+      );
+    }
+    return <div key={tagInfo.slug}>{tagBoxBody}</div>;
+  };
+
   return (
     <>
       <div className={clsx(style.tagsBox, props.className)}>
-        {props.tags.map((tagInfo) => (
-          <Link key={tagInfo.slug} href={tagInfo.path}>
-            {props.highlightedTagSlug === tagInfo.slug ? (
-              <div className={style.highlightedTag}>{tagInfo.tag}</div>
-            ) : (
-              <div className={style.tag}>{tagInfo.tag}</div>
-            )}
-          </Link>
-        ))}
+        {props.tags.map((tagInfo) => renderTag(tagInfo))}
       </div>
     </>
   );
