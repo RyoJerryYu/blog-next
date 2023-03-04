@@ -4,7 +4,6 @@ import HomeCategoryList, {
 import BgKasumiHanabi, {
   HomeKasumiDigimon,
   HomeKasumiGakkou,
-  HomeKasumiTanjyoubi,
 } from "@/components/imgs/BgKasumiHanabi";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { BASE_PATH } from "@/utils/env-var";
@@ -39,7 +38,7 @@ export default function Home() {
     <>
       <DefaultLayout withFullScreen>
         <div
-          className={`h-screen w-screen flex items-center justify-center bg-no-repeat bg-center bg-cover `}
+          className={`h-screen w-full flex items-center justify-center bg-no-repeat bg-center bg-cover `}
         >
           <div className=" absolute z-0 flex flex-col items-center">
             <div className="text-6xl text-slate-200">{`Ryo's Blog`}</div>

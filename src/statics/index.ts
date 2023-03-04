@@ -5,6 +5,7 @@
  * And ensure: init once, no modification after init.
  */
 
+import dayjs from "dayjs";
 import { ClipData, loadClipData } from "./data";
 import { mergeGitMeta, mergeMockGitMeta } from "./git-meta";
 import { articleLoader, ideaLoader, PostMeta, StaticsLoader } from "./loader";
@@ -24,6 +25,18 @@ export type Post = {
   path: string;
   meta: PostMeta;
 };
+export type PrevNextInfo = {
+  prevInfo: {
+    slug: string;
+    title: string;
+    path: string;
+  } | null;
+  nextInfo: {
+    slug: string;
+    title: string;
+    path: string;
+  } | null;
+};
 
 /**
  * A class holding the cache of all pages,
@@ -38,29 +51,64 @@ export type Post = {
  * pattern.)
  */
 class PostCache {
-  // map<slug, page>
-  cache: Map<string, Post>;
-  constructor(c: Map<string, Post>) {
+  cache: Post[]; // posts in order
+  index: Map<string, number>; // map<slug, index>
+  constructor(c: Post[]) {
     this.cache = c;
+    this.index = new Map();
+    for (let i = 0; i < c.length; i++) {
+      this.index.set(c[i].slug, i);
+    }
   }
 
   getSlugs = () => {
-    return Array.from(this.cache.keys());
+    return Array.from(this.index.keys());
   };
   slugToFile = (slug: string) => {
-    return this.cache.get(slug)!.file;
+    return this.slugToPost(slug).file;
   };
   slugToMediaDir = (slug: string) => {
-    return this.cache.get(slug)!.mediaDir;
+    return this.slugToPost(slug).mediaDir;
   };
   slugToPath = (slug: string) => {
-    return this.cache.get(slug)!.path;
+    return this.slugToPost(slug).path;
   };
   slugToMeta = (slug: string) => {
-    return this.cache.get(slug)!.meta;
+    return this.slugToPost(slug)!.meta;
+  };
+  slugToPrevNextInfo = (slug: string) => {
+    const index = this.index.get(slug);
+    if (index === undefined || index < 0 || index >= this.cache.length) {
+      throw new Error(`Invalid slug: ${slug}`);
+    }
+    const resInfo: PrevNextInfo = {
+      prevInfo: null,
+      nextInfo: null,
+    };
+    if (index !== 0) {
+      const prevPost = this.cache[index - 1];
+      resInfo.prevInfo = {
+        slug: prevPost.slug,
+        title: prevPost.meta.title,
+        path: prevPost.path,
+      };
+    }
+    if (index !== this.cache.length - 1) {
+      const nextPost = this.cache[index + 1];
+      resInfo.nextInfo = {
+        slug: nextPost.slug,
+        title: nextPost.meta.title,
+        path: nextPost.path,
+      };
+    }
+    return resInfo;
   };
   slugToPost = (slug: string) => {
-    return this.cache.get(slug)!;
+    const index = this.index.get(slug);
+    if (index === undefined || index < 0 || index >= this.cache.length) {
+      throw new Error(`Invalid slug: ${slug}`);
+    }
+    return this.cache[index];
   };
 }
 
@@ -70,20 +118,24 @@ class PostCache {
  * but it is very slow.
  */
 const loadPostCache = async (loader: StaticsLoader) => {
-  const post: Map<string, Post> = new Map();
+  const post: Post[] = [];
+  const slugCache: Set<string> = new Set();
   const files = loader.listFiles();
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const slug = loader.getSlugFromFile(file);
-    if (post.has(slug)) {
+    if (slugCache.has(slug)) {
       throw new Error(`Duplicate slug: ${slug}`);
     }
     const mediaDir = loader.getMediaDirFromFile(file);
     const path = loader.getPathFromSlug(slug);
     let meta = loader.parseMetaFromFile(file);
     meta = await mergeGitMeta(file, meta);
-    post.set(slug, { slug, file, mediaDir, path, meta });
+    post.push({ slug, file, mediaDir, path, meta });
   }
+  post.sort((a, b) => {
+    return dayjs(a.meta.created_at).isBefore(b.meta.created_at) ? 1 : -1;
+  });
   return new PostCache(post);
 };
 
