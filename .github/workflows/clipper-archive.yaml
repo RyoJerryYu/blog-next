@@ -37,3 +37,5 @@ jobs:
         with:
           message: 'Update clips.json'
           add: ${{ steps.notion_clipper_archive.outputs.save_path }}
+          new_branch: external/clipper-archive
+          tag_push: '--force'
