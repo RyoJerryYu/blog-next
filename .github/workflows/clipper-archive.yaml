@@ -39,3 +39,9 @@ jobs:
           add: ${{ steps.notion_clipper_archive.outputs.save_path }}
           new_branch: external/clipper-archive
           tag_push: '--force'
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          branch: external/clipper-archive
+          base: master
+          labels: 'external'
