@@ -1,9 +1,14 @@
 import Post from "@/components/Post";
-import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import DefaultLayout from "@/layouts/DefaultLayout";
+import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import parseMdx from "@/plugins";
-import { articleCache, getPostMetaOrReload, getTagIndex } from "@/statics";
-import { articleLoader, PostMeta } from "@/statics/loader";
+import {
+  articleCache,
+  getPostMetaOrReload,
+  getTagIndex,
+  PrevNextInfo,
+} from "@/statics";
+import { PostMeta } from "@/statics/loader";
 import { TagInfo } from "@/statics/tag-index";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
@@ -23,6 +28,7 @@ type ArticlePageProps = {
   tags: TagInfo[];
   source: MDXRemoteSerializeResult;
   meta: PostMeta;
+  prevNextInfo: PrevNextInfo;
 };
 
 export const getStaticProps: GetStaticProps<
@@ -32,7 +38,8 @@ export const getStaticProps: GetStaticProps<
   console.log(`onGetStaticProps: ${params?.slug}`);
   const cache = await articleCache();
   const slug = params!.slug;
-  let meta = await getPostMetaOrReload(cache, slug);
+  const meta = await getPostMetaOrReload(cache, slug);
+  const prevNextInfo = cache.slugToPrevNextInfo(slug);
 
   const tags = (await getTagIndex()).getTagsOf(meta.tags);
 
@@ -41,11 +48,13 @@ export const getStaticProps: GetStaticProps<
       baseDir: cache.slugToMediaDir(slug),
     },
   });
+
   const props: ArticlePageProps = {
     slug,
     tags,
     source,
     meta,
+    prevNextInfo,
   };
   // fs.writeFileSync(`temp/${slug}.tmp`, JSON.stringify(props));
 
@@ -65,7 +74,12 @@ const ArticlePage = (props: ArticlePageProps) => {
         }}
       />
       <DefaultLayout>
-        <Post meta={props.meta} tags={props.tags} source={props.source} />
+        <Post
+          meta={props.meta}
+          tags={props.tags}
+          source={props.source}
+          prevNextInfo={props.prevNextInfo}
+        />
       </DefaultLayout>
     </>
   );
