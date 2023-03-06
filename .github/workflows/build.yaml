@@ -30,7 +30,7 @@ jobs:
           lfs: true
       # Fix timestamps
       - name: restore timestamps
-        uses: chetan/git-restore-mtime-action@v1
+        uses: chetan/git-restore-mtime-action@v2
 
       # a standard step for GitHub actions on Node
       # https://github.com/actions/setup-node
