@@ -1,12 +1,13 @@
+import Comments from "@/components/Comments";
 import Post from "@/components/Post";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import parseMdx from "@/plugins";
 import {
+  PrevNextInfo,
   articleCache,
   getPostMetaOrReload,
   getTagIndex,
-  PrevNextInfo,
 } from "@/statics";
 import { PostMeta } from "@/statics/loader";
 import { TagInfo } from "@/statics/tag-index";
@@ -80,6 +81,7 @@ const ArticlePage = (props: ArticlePageProps) => {
           source={props.source}
           prevNextInfo={props.prevNextInfo}
         />
+        <Comments />
       </DefaultLayout>
     </>
   );

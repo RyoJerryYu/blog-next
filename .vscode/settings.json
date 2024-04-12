@@ -2,16 +2,14 @@
     "editor.formatOnSave": true,
     "editor.tabSize": 2,
     "editor.codeActionsOnSave": {
-        "source.fixAll": true,
-        "source.organizeImports": true
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit"
     },
-    "jest.autoRun": "off",
-    
+    "jest.runMode": "on-demand",
     "scss.lint.unknownAtRules": "ignore",
     "[scss]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
     },
-
     "markdown.extension.list.indentationSize": "inherit",
     "pasteImage.insertPattern": "![[${imageFileName}]]",
     "pasteImage.path": "${currentFileDir}/${currentFileNameWithoutExt}/",
@@ -21,7 +19,7 @@
         ],
         "editor.insertSpaces": true,
         "editor.tabSize": 2,
-        "editor.wordBasedSuggestions": false,
+        "editor.wordBasedSuggestions": "off",
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "ms-python.python",
     },
