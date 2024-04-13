@@ -81,7 +81,7 @@ const ArticlePage = (props: ArticlePageProps) => {
           source={props.source}
           prevNextInfo={props.prevNextInfo}
         />
-        <Comments />
+        <Comments issue-term={props.slug} />
       </DefaultLayout>
     </>
   );

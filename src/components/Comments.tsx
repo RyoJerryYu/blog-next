@@ -1,16 +1,23 @@
 import useScript from "@/hooks/use-script";
 import { useRef } from "react";
 
-const Comments = () => {
+export type CommentsProps = {
+  theme?: string;
+  "issue-term"?: string;
+  repo?: string;
+  label?: string;
+};
+
+const Comments = (props?: CommentsProps) => {
   const comment = useRef(null);
 
   const status = useScript({
     url: "https://utteranc.es/client.js",
     attributes: {
-      theme: "github-light",
-      "issue-term": "pathname",
-      repo: "RyoJerryYu/blog-next",
-      label: "comment",
+      theme: props?.theme ?? "github-light",
+      "issue-term": props?.["issue-term"] ?? "pathname",
+      repo: props?.repo ?? "RyoJerryYu/blog-next",
+      label: props?.label ?? "comment",
     },
     ref: comment,
   });
