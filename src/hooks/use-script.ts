@@ -16,40 +16,47 @@ const useScript = (params: UseScriptParams) => {
     setStatus(e.type === "load" ? "ready" : "error");
   };
 
-  useEffect(() => {
-    // prevent adding script tag if it already exists
-    // now it's only for using utterances,
-    // replacing or only not appending script tag won't work well
-    if (ref.current?.children.length) {
-      return;
-    }
-    if (!url) {
-      setStatus("idle");
-      return;
-    }
-
-    let script = document.createElement("script");
-
-    script.src = url;
-    script.async = true;
-    script.crossOrigin = "anonymous";
-    if (attributes) {
-      Object.keys(attributes).forEach((key) => {
-        script.setAttribute(key, attributes[key]);
-      });
-    }
-    ref.current?.appendChild(script);
-
-    script.addEventListener("load", setAttributeStatus);
-    script.addEventListener("error", setAttributeStatus);
-
-    return () => {
-      if (script) {
-        script.removeEventListener("load", setAttributeStatus);
-        script.removeEventListener("error", setAttributeStatus);
+  useEffect(
+    () => {
+      if (!url) {
+        setStatus("idle");
+        return;
       }
-    };
-  }, [url, attributes, ref]);
+
+      // prevent adding script tag if it already exists
+      // now it's only for using utterances,
+      // replacing or only not appending script tag won't work well
+      let script: HTMLScriptElement;
+      if (ref.current?.children?.length) {
+        script = ref.current.children[0] as HTMLScriptElement;
+      } else {
+        script = document.createElement("script");
+
+        script.src = url;
+        script.async = true;
+        script.crossOrigin = "anonymous";
+        if (attributes) {
+          Object.keys(attributes).forEach((key) => {
+            script.setAttribute(key, attributes[key]);
+          });
+        }
+        ref.current?.appendChild(script);
+      }
+
+      script.addEventListener("load", setAttributeStatus);
+      script.addEventListener("error", setAttributeStatus);
+
+      return () => {
+        if (script) {
+          script.removeEventListener("load", setAttributeStatus);
+          script.removeEventListener("error", setAttributeStatus);
+        }
+      };
+    },
+    // create script tag only once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [url, attributes]
+  );
 
   return status;
 };

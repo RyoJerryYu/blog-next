@@ -25,6 +25,9 @@ const Comments = (props?: CommentsProps) => {
   return (
     <div className="w-full">
       <div ref={comment} />
+      {status === "loading" && (
+        <div className="text-center">Loading comments...</div>
+      )}
       {status === "error" && (
         <div className="text-center text-red-500">
           Error loading comments. Please try again later.
