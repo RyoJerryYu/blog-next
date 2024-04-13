@@ -1,7 +1,6 @@
-import { visit } from "unist-util-visit";
-import unified from "unified";
-import { Node } from "unist";
 import { Text } from "mdast";
+import unified from "unified";
+import { visit } from "unist-util-visit";
 /**
  * for escaping the arrow for mdx, which would raise an error
  *
