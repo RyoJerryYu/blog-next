@@ -1,20 +1,18 @@
-import PostList from "@/components/PostList";
-import TagsBox from "@/components/TagsBox";
 import TagSelector from "@/components/TagSelector";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import { getTagIndex } from "@/statics";
+import { getTagIndex, initCache } from "@/statics";
 import { TagInfo } from "@/statics/tag-index";
 import { GetStaticProps } from "next";
-import Head from "next/head";
 
 type TagsProps = {
   tagInfos: TagInfo[];
 };
 
 export const getStaticProps: GetStaticProps<TagsProps> = async () => {
-  const tagIndex = await getTagIndex();
+  await initCache();
+  const tagIndex = getTagIndex();
   const tagInfos = tagIndex.getTags();
 
   return {

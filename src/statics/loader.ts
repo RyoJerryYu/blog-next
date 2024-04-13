@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
-import matter from "gray-matter";
-import path from "path";
 import fs from "fs";
 import { glob } from "glob";
+import matter from "gray-matter";
+import path from "path";
 
 export function articleLoader() {
   return new StaticsLoader(

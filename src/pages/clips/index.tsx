@@ -2,7 +2,7 @@ import PostList from "@/components/PostList";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import { getClipData, getTagIndex, Post } from "@/statics";
+import { getClipData, getTagIndex, initCache, Post } from "@/statics";
 import { ClipData } from "@/statics/data";
 import { TagInfo, tagInfoListToMap } from "@/statics/tag-index";
 import { GetStaticProps } from "next";
@@ -13,8 +13,9 @@ type ClipsProps = {
 };
 
 export const getStaticProps: GetStaticProps<ClipsProps> = async () => {
-  const data = await getClipData();
-  const allTags = (await getTagIndex()).getTags();
+  await initCache();
+  const data = getClipData();
+  const allTags = getTagIndex().getTags();
 
   return {
     props: {

@@ -7,6 +7,7 @@ import {
   getPostMetaOrReload,
   getTagIndex,
   ideaCache,
+  initCache,
 } from "@/statics";
 import { PostMeta } from "@/statics/loader";
 import { TagInfo } from "@/statics/tag-index";
@@ -14,7 +15,8 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const cache = await ideaCache();
+  await initCache();
+  const cache = ideaCache();
   const path = cache.getSlugs().map(cache.slugToPath);
   return {
     paths: path,
@@ -34,12 +36,13 @@ export const getStaticProps: GetStaticProps<
   IdeaPageProps,
   { slug: string }
 > = async ({ params }) => {
-  const cache = await ideaCache();
+  await initCache();
+  const cache = ideaCache();
   const slug = params!.slug;
   let meta = await getPostMetaOrReload(cache, slug);
   const prevNextInfo = cache.slugToPrevNextInfo(slug);
 
-  const tagIndex = await getTagIndex();
+  const tagIndex = getTagIndex();
   const tags = tagIndex.getTagsOf(meta.tags);
   const source = await parseMdx(meta.content, {
     remarkObsidianRichOptions: {

@@ -1,3 +1,4 @@
+import { getAliasIndex } from "@/statics";
 import { BASE_PATH } from "@/utils/env-var";
 import { Paragraph, Text } from "mdast";
 import { MdxJsxFlowElement } from "mdast-util-mdx-jsx";
@@ -73,9 +74,11 @@ const parseObsidianRichProp = (
     label = file;
   }
 
+  const path = getAliasIndex().resolve(file);
+
   return {
     file: file,
-    url: `${basePath}/${baseDir}/${file}`,
+    url: `${basePath}${path}`,
     label: label,
   };
 };
@@ -94,6 +97,7 @@ const remarkObsidianRich: unified.Plugin<[RemarkObsidianRichOptions?]> = (
 ) => {
   const opts = { ...DEFAULT_OPTIONS, ...options };
   return (tree) => {
+    const promises: Promise<void>[] = [];
     visit(
       tree,
       isObsidianRich,
