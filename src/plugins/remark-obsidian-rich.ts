@@ -1,3 +1,4 @@
+import { BASE_PATH } from "@/utils/env-var";
 import { Paragraph, Text } from "mdast";
 import { MdxJsxFlowElement } from "mdast-util-mdx-jsx";
 import unified from "unified";
@@ -18,9 +19,7 @@ import { visit } from "unist-util-visit";
  */
 
 const syntax = /^\!\[\[(.+)\]\]$/;
-const basePath = process.env.SITE_URL_BASE_PATH
-  ? `/${process.env.SITE_URL_BASE_PATH}`
-  : "";
+const basePath = BASE_PATH;
 
 export type ObsidianRichProps = {
   file: string;
