@@ -45,7 +45,7 @@ export const getStaticProps: GetStaticProps<
   const tags = (await getTagIndex()).getTagsOf(meta.tags);
 
   const source = await parseMdx(meta.content, {
-    remarkVsmemoImgOptions: {
+    remarkObsidianRichOptions: {
       baseDir: cache.slugToMediaDir(slug),
     },
   });

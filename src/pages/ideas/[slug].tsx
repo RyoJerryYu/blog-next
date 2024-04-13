@@ -3,10 +3,10 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
 import parseMdx from "@/plugins";
 import {
+  PrevNextInfo,
   getPostMetaOrReload,
   getTagIndex,
   ideaCache,
-  PrevNextInfo,
 } from "@/statics";
 import { PostMeta } from "@/statics/loader";
 import { TagInfo } from "@/statics/tag-index";
@@ -42,7 +42,7 @@ export const getStaticProps: GetStaticProps<
   const tagIndex = await getTagIndex();
   const tags = tagIndex.getTagsOf(meta.tags);
   const source = await parseMdx(meta.content, {
-    remarkVsmemoImgOptions: {
+    remarkObsidianRichOptions: {
       baseDir: cache.slugToMediaDir(slug),
     },
   });

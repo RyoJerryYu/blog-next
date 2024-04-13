@@ -24,6 +24,10 @@ const components: MDXComponents = {
   Bar,
   // Mermaid,
   License,
+  // ObsidianRich: (props: any) => {
+  //   // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+  //   return <img {...props} />;
+  // },
   // code: (props: any) => {
   //   if (props.className === "language-mermaid") {
   //     return <Mermaid {...props} />;
