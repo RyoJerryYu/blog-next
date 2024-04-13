@@ -1,3 +1,4 @@
+import { ObsidianRichProps } from "@/plugins/remark-obsidian-rich";
 import {
   BarElement,
   CategoryScale,
@@ -24,10 +25,11 @@ const components: MDXComponents = {
   Bar,
   // Mermaid,
   License,
-  // ObsidianRich: (props: any) => {
-  //   // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-  //   return <img {...props} />;
-  // },
+  ObsidianRich: (props: ObsidianRichProps) => {
+    console.log("ObsidianRich:", props);
+    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+    return <img src={props.url} alt={props.label} />;
+  },
   // code: (props: any) => {
   //   if (props.className === "language-mermaid") {
   //     return <Mermaid {...props} />;

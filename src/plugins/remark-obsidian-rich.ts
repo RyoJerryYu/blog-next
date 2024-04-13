@@ -1,4 +1,5 @@
-import { Image, Paragraph, Text } from "mdast";
+import { Paragraph, Text } from "mdast";
+import { MdxJsxFlowElement } from "mdast-util-mdx-jsx";
 import unified from "unified";
 import { Parent } from "unist";
 import { is } from "unist-util-is";
@@ -10,10 +11,10 @@ import { visit } from "unist-util-visit";
  * For Obsidian rich content syntax:
  *
  * ```
- * ![[src|label]]
+ * ![[file|label]]
  * ```
  *
- * It will transform to MDX Node: <ObsidianRich src="src" label="label" />
+ * It will transform to MDX Node: <ObsidianRich file="file" label="label" />
  */
 
 const syntax = /^\!\[\[(.+)\]\]$/;
@@ -22,19 +23,13 @@ const basePath = process.env.SITE_URL_BASE_PATH
   : "";
 
 export type ObsidianRichProps = {
-  type: string;
-  src: string;
+  file: string;
+  url: string;
   label?: string;
 };
 
 /**
  * test if node is a obsidian rich content paragraph
- *
- * node should be like below:
- *
- * ```
- * ![[file|label]]
- * ```
  *
  * node should be a paragraph with only one text child
  * and the text should match the syntax: `![[file|label]]`
@@ -53,7 +48,20 @@ const isObsidianRich = (node: unknown): node is Paragraph => {
   return syntax.test(text.value);
 };
 
-const parseObsidianRichProp = (node: Paragraph): ObsidianRichProps => {
+/**
+ * parse props from an obsidian rich content paragraph
+ *
+ * returning props object, containing:
+ * - type: "ObsidianRich"
+ * - file: file path
+ * - label: label
+ * @param node
+ * @returns
+ */
+const parseObsidianRichProp = (
+  node: Paragraph,
+  baseDir: string
+): ObsidianRichProps => {
   let text = (node.children[0] as Text).value;
   // console.log("text:", text);
   let [_, matched] = syntax.exec(text)!;
@@ -67,8 +75,8 @@ const parseObsidianRichProp = (node: Paragraph): ObsidianRichProps => {
   }
 
   return {
-    type: "ObsidianRich",
-    src: file,
+    file: file,
+    url: `${basePath}/${baseDir}/${file}`,
     label: label,
   };
 };
@@ -91,15 +99,19 @@ const remarkObsidianRich: unified.Plugin<[RemarkObsidianRichOptions?]> = (
       tree,
       isObsidianRich,
       (node: Paragraph, index: number, parent: Parent) => {
-        const props = parseObsidianRichProp(node);
-        const img: Image = {
-          type: "image",
-          title: props.label,
-          url: `${basePath}/${opts.baseDir}/${props.src}`,
-          alt: props.label,
+        const props = parseObsidianRichProp(node, opts.baseDir);
+        const obsidianRichElement: MdxJsxFlowElement = {
+          type: "mdxJsxFlowElement",
+          name: "ObsidianRich",
+          attributes: [
+            { type: "mdxJsxAttribute", name: "file", value: props.file },
+            { type: "mdxJsxAttribute", name: "url", value: props.url },
+            { type: "mdxJsxAttribute", name: "label", value: props.label },
+          ],
+          children: [],
         };
 
-        parent.children.splice(index, 1, img);
+        parent.children.splice(index, 1, obsidianRichElement);
       }
     );
   };
