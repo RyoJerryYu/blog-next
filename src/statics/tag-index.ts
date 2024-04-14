@@ -1,3 +1,18 @@
+/**
+ * Tag Index
+ *
+ * Reverse index of tags to posts
+ *
+ * One post would have multiple tags,
+ * and one tag would have multiple posts.
+ *
+ * Tag also need a path to show all posts with this tag
+ * Thus, one tag would have one slug, and slug is the identifier id for a tag
+ *
+ * For now in the index, we use PostType and PostSlug to identify a post,
+ * Maybe we could use path as identifier for a post in the future
+ */
+
 const tagToTagSlug = (tag: string) => {
   return tag.toLowerCase().replace(" ", "-").replace("/", "-");
 };
@@ -68,8 +83,5 @@ export class TagIndex {
       }
     }
     return result;
-  }
-  getTagSlugs() {
-    return Array.from(this.index.keys());
   }
 }

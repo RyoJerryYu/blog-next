@@ -1,6 +1,3 @@
-import remarkVsmemoImg, {
-  RemarkVsmemoImgOptions,
-} from "@/plugins/remark-vsmemo-img";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeKatex, { Options as KatexOptions } from "rehype-katex";
@@ -12,9 +9,12 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkUnwrapImages from "remark-unwrap-images";
 import remarkMermaid from "./remark-mermaid";
+import remarkObsidianRich, {
+  RemarkObsidianRichOptions,
+} from "./remark-obsidian-rich";
 
 type ParseMdxConfig = {
-  remarkVsmemoImgOptions?: RemarkVsmemoImgOptions;
+  remarkObsidianRichOptions?: RemarkObsidianRichOptions;
 };
 
 // make serialized file for mdx renderer
@@ -25,7 +25,7 @@ const parseMdx = async (content: string, config?: ParseMdxConfig) => {
         remarkGfm,
         remarkMath,
         [remarkMermaid, { wrap: true, className: ["mermaid"] }],
-        [remarkVsmemoImg, config?.remarkVsmemoImgOptions],
+        [remarkObsidianRich, config?.remarkObsidianRichOptions],
         remarkUnwrapImages,
       ],
       rehypePlugins: [

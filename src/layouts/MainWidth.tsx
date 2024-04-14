@@ -7,7 +7,7 @@ export type MainWidthProps = {
 
 export default function MainWidth(props: MainWidthProps) {
   return (
-    <div className={clsx("max-w-2xl mx-auto p-2", props.className)}>
+    <div className={clsx("max-w-3xl mx-auto p-2", props.className)}>
       {props.children}
     </div>
   );

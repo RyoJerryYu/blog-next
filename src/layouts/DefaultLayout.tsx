@@ -157,7 +157,9 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
       ) : (
         <>
           <div className={style.headerBg}></div>
-          <div className={style.contentHeight}>{children}</div>
+          <MainWidth>
+            <div className={style.contentHeight}>{children}</div>
+          </MainWidth>
         </>
       )}
 

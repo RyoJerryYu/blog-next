@@ -6,17 +6,15 @@
  */
 
 import dayjs from "dayjs";
+import {
+  AliasIndex,
+  AliasIndexBuilder,
+  listAllStaticFiles,
+} from "./alias-index";
 import { ClipData, loadClipData } from "./data";
 import { mergeGitMeta, mergeMockGitMeta } from "./git-meta";
-import { articleLoader, ideaLoader, PostMeta, StaticsLoader } from "./loader";
+import { PostMeta, StaticsLoader, articleLoader, ideaLoader } from "./loader";
 import { TagIndex, TagIndexBuilder } from "./tag-index";
-
-/**
- * Some terms:
- * - file: local location to a file, e.g. `/public/content/posts/xxx.md`
- * - path: url path to a file, e.g. `/posts/xxx`
- * - slug: the last part of a path, e.g. `xxx`
- */
 
 export type Post = {
   slug: string;
@@ -159,6 +157,32 @@ const buildTagIndex = (articleCache: PostCache, ideaCache: PostCache) => {
   addPostSlugs(ideaCache, "idea");
   return tagIndexBuilder.build();
 };
+/**
+ * Build a alias index from a post cache.
+ * Mainly used for
+ * This function has no side effects too.
+ */
+const buildAliasIndex = (articleCache: PostCache, ideaCache: PostCache) => {
+  const aliasIndexBuilder = new AliasIndexBuilder();
+  const addPostAliases = (postCache: PostCache) => {
+    postCache.getSlugs().forEach((slug) => {
+      const path = postCache.slugToPath(slug);
+      aliasIndexBuilder.add(path);
+    });
+  };
+  addPostAliases(articleCache);
+  addPostAliases(ideaCache);
+
+  const staticFiles = listAllStaticFiles();
+  staticFiles.forEach((file) => {
+    const path = file.replace("public/", "/");
+    console.log(`add static file: ${path}`); // debug
+
+    aliasIndexBuilder.add(path);
+  });
+
+  return aliasIndexBuilder.build();
+};
 
 /**
  * The module variable as a lazy init singleton
@@ -168,38 +192,51 @@ type Cache = {
   articleCache: PostCache;
   ideaCache: PostCache;
   tagIndex: TagIndex;
+  aliasIndex: AliasIndex;
   clipData: ClipData[];
 };
 let cache: Cache | undefined = undefined;
-const init = async () => {
+export const initCache = async () => {
   if (cache) {
     return cache;
   }
   const articleCache = await loadPostCache(articleLoader());
   const ideaCache = await loadPostCache(ideaLoader());
   const tagIndex = buildTagIndex(articleCache, ideaCache);
+  const aliasIndex = buildAliasIndex(articleCache, ideaCache);
   const clipData = loadClipData();
 
   cache = {
     articleCache,
     ideaCache,
     tagIndex,
+    aliasIndex,
     clipData,
   };
   return cache;
 };
 
-export const articleCache = async () => {
-  return (await init()).articleCache;
+const mustGetCache = () => {
+  if (!cache) {
+    throw new Error("Cache not initialized");
+  }
+  return cache;
 };
-export const ideaCache = async () => {
-  return (await init()).ideaCache;
+
+export const articleCache = () => {
+  return mustGetCache().articleCache;
 };
-export const getTagIndex = async () => {
-  return (await init()).tagIndex;
+export const ideaCache = () => {
+  return mustGetCache().ideaCache;
 };
-export const getClipData = async () => {
-  return (await init()).clipData;
+export const getTagIndex = () => {
+  return mustGetCache().tagIndex;
+};
+export const getAliasIndex = () => {
+  return mustGetCache().aliasIndex;
+};
+export const getClipData = () => {
+  return mustGetCache().clipData;
 };
 
 // a helper function to get meta from cache or reload when development

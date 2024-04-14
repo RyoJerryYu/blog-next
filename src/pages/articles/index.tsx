@@ -1,18 +1,19 @@
 import PostList from "@/components/PostList";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import { articleCache, getTagIndex, Post } from "@/statics";
+import { articleCache, getTagIndex, initCache, Post } from "@/statics";
 import { TagInfo, tagInfoListToMap } from "@/statics/tag-index";
-import { GetStaticProps } from "next";
 import { sortPostsByDate } from "@/statics/utils";
+import { GetStaticProps } from "next";
 
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
-  const cache = await articleCache();
+  await initCache();
+  const cache = articleCache();
   const slugs = cache.getSlugs();
   const posts = sortPostsByDate(slugs.map(cache.slugToPost));
 
-  const allTagsList = (await getTagIndex()).getTags();
+  const allTagsList = getTagIndex().getTags();
 
   return {
     props: {

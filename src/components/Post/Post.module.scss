@@ -1,8 +1,8 @@
 @tailwind components;
 
 .post {
-  @apply flex flex-col max-w-2xl mx-auto min-h-screen;
-  @apply p-4;
+  @apply flex flex-col mx-auto min-h-screen;
+  @apply p-2;
 }
 .postTitle {
   @apply text-4xl font-bold text-slate-900;
@@ -15,4 +15,5 @@
   // this used for first paragraph not too close to title
   // but if it was a subtitle, it will be too far from title
   // @apply mt-4;
+  @apply mb-16;
 }

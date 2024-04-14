@@ -1,3 +1,4 @@
+import { ObsidianRichProps } from "@/plugins/remark-obsidian-rich";
 import {
   BarElement,
   CategoryScale,
@@ -9,6 +10,7 @@ import {
 } from "chart.js";
 import { MDXComponents } from "mdx/types";
 import { Bar } from "react-chartjs-2";
+import EmbededExcalidraw from "./ExcalidrawScene/EmbededExcalidraw";
 import License from "./License";
 
 ChartJS.register(
@@ -24,6 +26,17 @@ const components: MDXComponents = {
   Bar,
   // Mermaid,
   License,
+  ObsidianRich: (props: ObsidianRichProps) => {
+    console.log("ObsidianRich:", props);
+    if (
+      props.file.endsWith(".excalidraw") ||
+      props.file.endsWith(".excalidraw.md")
+    ) {
+      return <EmbededExcalidraw {...props} />;
+    }
+    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+    return <img src={props.url} alt={props.label} />;
+  },
   // code: (props: any) => {
   //   if (props.className === "language-mermaid") {
   //     return <Mermaid {...props} />;

@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { Post } from ".";
 import { sortPostsByDate } from "./utils";
 
 const postInfoOtherOfDate = {
@@ -18,9 +19,9 @@ const postInfoOtherOfDate = {
 };
 
 test("should sorted", () => {
-  const postOfDate = (date: string) => ({
+  const postOfDate = (date: string): Post => ({
     ...postInfoOtherOfDate,
-    meta: { ...postInfoOtherOfDate.meta, created_at: date },
+    meta: { ...postInfoOtherOfDate.meta, created_at: date, updated_at: date },
   });
   const res = sortPostsByDate([
     postOfDate("2020-01-03"),
