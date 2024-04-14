@@ -1,15 +1,18 @@
 "use client";
 import { Excalidraw } from "@excalidraw/excalidraw";
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
+import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
+import { useRef } from "react";
 
 type ExcalidrawSceneProps = {
   elements: ExcalidrawElement[];
 };
 
 export function ExcalidrawScene({ elements }: ExcalidrawSceneProps) {
+  const excalidrawAPIRef = useRef<ExcalidrawImperativeAPI>();
   return (
     <>
-      <div className="h-96">
+      <div className="w-full h-full">
         <Excalidraw
           initialData={{
             elements,
@@ -18,7 +21,6 @@ export function ExcalidrawScene({ elements }: ExcalidrawSceneProps) {
           UIOptions={{
             canvasActions: {
               changeViewBackgroundColor: false,
-              clearCanvas: false,
               export: false,
               loadScene: false,
               saveToActiveFile: false,
@@ -26,9 +28,18 @@ export function ExcalidrawScene({ elements }: ExcalidrawSceneProps) {
               saveAsImage: false,
             },
           }}
-          viewModeEnabled
-          zenModeEnabled={false}
+          theme="light"
+          viewModeEnabled={true}
+          zenModeEnabled={true}
           gridModeEnabled={false}
+          detectScroll={false}
+          excalidrawAPI={(api) => {
+            excalidrawAPIRef.current = api;
+
+            setTimeout(() => {
+              api.scrollToContent(undefined, { fitToContent: true });
+            }, 1000);
+          }}
         ></Excalidraw>
       </div>
     </>
