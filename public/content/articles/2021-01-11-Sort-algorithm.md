@@ -1,6 +1,6 @@
 ---
 created_at: 2021-01-11 22:57:10
-updated_at: 2022-03-27 21:30:33+08:00
+updated_at: 2024-04-14 21:30:33+08:00
 layout:     post
 title:      "排序算法"
 subtitle:   "来讲讲我所理解的排序算法"
@@ -121,11 +121,13 @@ tags:
 
     则有：
 
-    $$\begin{aligned}
+    $$
+    \begin{aligned}
     T(n)&=(n+1)\times O(logn)\\
     &=O(n)\times O(logn)\\
     &=O(nlogn)
-    \end{aligned}$$
+    \end{aligned}
+    $$
 
 ### 额外空间复杂度
 
@@ -284,13 +286,16 @@ tags:
 
             每次插入时间：
 
-            $$\begin{aligned} T(i) &= h\\
+            $$
+            \begin{aligned} T(i) &= h\\
             &= logi
-            \end{aligned}$$
+            \end{aligned}
+            $$
 
             则有总时间：
 
-            $$\begin{aligned}
+            $$
+            \begin{aligned}
             T(n) &= \sum_{i=0}^{n}logi\\
             &= 1\times1 + 2\times2+ 3\times4 + ...+h\times \frac{n}{2} \\
             \\
@@ -301,7 +306,8 @@ tags:
             \\
             T(n) &= nlogn - O(2^h) \\
             &= O(nlogn)
-            \end{aligned}$$
+            \end{aligned}
+            $$
 
             即时间复杂度为 $$O(nlogn)$$
 
@@ -311,13 +317,16 @@ tags:
 
             第i个元素合并时，时间为：
 
-            $$\begin{aligned}
+            $$
+            \begin{aligned}
             T(i) &= h_{子堆}
-            \end{aligned}$$
+            \end{aligned}
+            $$
 
             则有总时间：
 
-            $$\begin{aligned}
+            $$
+            \begin{aligned}
             T(n) &= \sum_{i=0}^{n} (h_{子堆}) \\
             &= h + (h-1)\times2 + ... + 2 \times \frac{n}{4} + 1 \times\frac{n}{2}\\
             \\
@@ -327,7 +336,8 @@ tags:
             \\
             T(n) &= O(n) - h \\ 
             &= O(n)
-            \end{aligned}$$
+            \end{aligned}
+            $$
 
             即时间复杂度为 $$O(n)$$ 
 
