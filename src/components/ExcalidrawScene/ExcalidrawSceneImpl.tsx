@@ -8,7 +8,7 @@ type ExcalidrawSceneProps = {
   elements: ExcalidrawElement[];
 };
 
-export function ExcalidrawScene({ elements }: ExcalidrawSceneProps) {
+export function ExcalidrawSceneImpl({ elements }: ExcalidrawSceneProps) {
   const excalidrawAPIRef = useRef<ExcalidrawImperativeAPI>();
   return (
     <>

@@ -8,7 +8,7 @@ import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkUnwrapImages from "remark-unwrap-images";
-import remarkMermaid from "./remark-mermaid";
+import remarkExcalidrawMermaid from "./remark-excalidraw-mermaid";
 import remarkObsidianRich, {
   RemarkObsidianRichOptions,
 } from "./remark-obsidian-rich";
@@ -24,7 +24,8 @@ const parseMdx = async (content: string, config?: ParseMdxConfig) => {
       remarkPlugins: [
         remarkGfm,
         remarkMath,
-        [remarkMermaid, { wrap: true, className: ["mermaid"] }],
+        remarkExcalidrawMermaid,
+        // [remarkMermaid, { wrap: true, className: ["mermaid"] }],
         [remarkObsidianRich, config?.remarkObsidianRichOptions],
         remarkUnwrapImages,
       ],

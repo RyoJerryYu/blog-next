@@ -1,13 +1,6 @@
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
-import dynamic from "next/dynamic";
 import useSWR from "swr";
-
-const ExcalidrawScene = dynamic(
-  async () => (await import("./index")).ExcalidrawScene,
-  {
-    ssr: false,
-  }
-);
+import { ExcalidrawScene } from "./ExcalidrawScene";
 
 export type EmbededExcalidrawProps = {
   file: string;
