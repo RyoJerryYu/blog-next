@@ -16,13 +16,6 @@ import { mergeGitMeta, mergeMockGitMeta } from "./git-meta";
 import { PostMeta, StaticsLoader, articleLoader, ideaLoader } from "./loader";
 import { TagIndex, TagIndexBuilder } from "./tag-index";
 
-/**
- * Some terms:
- * - file: local location to a file, e.g. `/public/content/posts/xxx.md`
- * - path: url path to a file, e.g. `/posts/xxx`
- * - slug: the last part of a path, e.g. `xxx`
- */
-
 export type Post = {
   slug: string;
   file: string;
