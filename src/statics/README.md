@@ -44,3 +44,22 @@ e.g. For the post of `/articles/hello-world`, the `file` is `public/articles/hel
 The directory for media files attached from a post, relative to the project root directory. Relative from `SITE_BASE_PATH`, always start with `/`, is the directory for media files attached from a post.
 
 Now we have static file alias index, `mediaDir` can be deprecated in the future.
+
+
+## MD for post and statics
+
+An path without extension is an page, with extension `.md` is a static resource for md.
+
+e.g. for file `public/content/articles/hello-world.md`:
+
+- `/articles/hello-world` is a page.
+- `content/articles/hello-world.md` is a static resource for md.
+
+### Reference
+
+Obsidian Rich Syntax means sth like `![[file|label]]`.
+
+After resolved, always refer to the path of the static resource.
+
+For md file reference, file in syntax would allow omitting the `.md` extension. If omitted extension not found, will try to find the file with `.md` extension.
+

@@ -176,6 +176,7 @@ const buildAliasIndex = (articleCache: PostCache, ideaCache: PostCache) => {
   const staticFiles = listAllStaticFiles();
   staticFiles.forEach((file) => {
     const path = file.replace("public/", "/");
+    console.log(`add static file: ${path}`); // debug
 
     aliasIndexBuilder.add(path);
   });

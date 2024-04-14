@@ -74,7 +74,13 @@ const parseObsidianRichProp = (
     label = file;
   }
 
-  const path = getAliasIndex().resolve(file);
+  let path = getAliasIndex().resolve(file);
+  if (!path) {
+    path = getAliasIndex().resolve(`${file}.md`);
+  }
+  if (!path) {
+    throw new Error("Invalid file path: " + file);
+  }
 
   return {
     file: file,
