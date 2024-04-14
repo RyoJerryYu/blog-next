@@ -1,6 +1,6 @@
 ---
 created_at: 2021-08-28 23:09:14
-updated_at: 2022-03-27 21:30:33+08:00
+updated_at: 2024-04-14 21:30:33+08:00
 layout:     post
 title:      "如何手撕一个堆"
 subtitle:   "如果哪一天你把编程语言的类库全忘光了，又遇到一题明知到要用堆的题目，咋办？对着一道自己明显会的题干着急,愣是想不起PriorityQueue的名字。这时候只能自己实现一个堆出来了。"
@@ -95,11 +95,13 @@ $$T(i) = logi$$
 
 那么把所有元素上浮，则总时间复杂度为：
 
-$$\begin{aligned}
+$$
+\begin{aligned}
 T(n) &= \sum_{i=1}^{n}logi\\
 &= 1\times0 + 2\times1 + ... + 2^{logn}\times{logn} \\
 &=O(nlogn)
-\end{aligned}$$
+\end{aligned}
+$$
 
 通过把元素逐个入堆来建堆时，元素的时间复杂度可以用下图直观显示：
 
@@ -115,15 +117,19 @@ T(n) &= \sum_{i=1}^{n}logi\\
 
 下沉第i个元素（从顶到底数）时，以其为顶点的树高度约为$logn-logi$，则有下沉时间复杂度为：
 
-$$T(i) = logn-logi$$
+$$
+T(i) = logn-logi
+$$
 
 那么把所有元素下沉，则总时间复杂度为：
 
-$$\begin{aligned}
+$$
+\begin{aligned}
 T(n) &= \sum_{i=1}^{n}logn-logi \\
 &= \frac{n}{2^{logn}}\times{logn}+ ... + \frac{n}{4}\times2+\frac{n}{2}\times1 \\
 &= O(n)
-\end{aligned}$$
+\end{aligned}
+$$
 
 同样的，我们也可以把逐个元素下沉所耗费的时间用下图来示意：
 
