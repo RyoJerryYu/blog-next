@@ -34,7 +34,7 @@ const Post = ({ meta, source, tags, prevNextInfo }: PostProps) => {
       {meta.license && <License />}
       {meta.tags.length > 0 && <TagsBox className="mt-4" tags={tags} />}
       {(prevInfo || nextInfo) && (
-        <div className="mt-4 flex justify-center">
+        <div className="mt-4 mb-4 flex justify-center">
           {prevInfo && (
             <div className="ml-0 mr-auto">
               <Link href={prevInfo.path}>{`<- ${prevInfo.title}`}</Link>
@@ -47,6 +47,7 @@ const Post = ({ meta, source, tags, prevNextInfo }: PostProps) => {
           )}
         </div>
       )}
+      <hr className="mt-4" />
     </article>
   );
 };
