@@ -1,34 +1,32 @@
 "use client";
+export {};
 
-import mermaid from "mermaid";
-import React, { useEffect, useLayoutEffect, useMemo } from "react";
+// // mermaid.init({
+// //   startOnLoad: false,
+// // });
 
-mermaid.init({
-  startOnLoad: false,
-});
+// type MermaidProps = {
+//   name?: string;
+//   children: string;
+//   className?: string;
+// };
 
-type MermaidProps = {
-  name?: string;
-  children: string;
-  className?: string;
-};
+// const Mermaid = ({ name = "mermaid", children, className }: MermaidProps) => {
+//   const [svg, setSvg] = React.useState("");
+//   useEffect(() => {
+//     const res = mermaid.render(name, children);
+//     setSvg(res);
+//   }, [name, children]);
 
-const Mermaid = ({ name = "mermaid", children, className }: MermaidProps) => {
-  const [svg, setSvg] = React.useState("");
-  useEffect(() => {
-    const res = mermaid.render(name, children);
-    setSvg(res);
-  }, [name, children]);
+//   // TODO maybe caculate simple size and set default size
+//   return svg === "" ? (
+//     <code>{children}</code>
+//   ) : (
+//     <div
+//       className={className ? `mermaid ${className}` : `mermaid`}
+//       dangerouslySetInnerHTML={{ __html: svg }}
+//     />
+//   );
+// };
 
-  // TODO maybe caculate simple size and set default size
-  return svg === "" ? (
-    <code>{children}</code>
-  ) : (
-    <div
-      className={className ? `mermaid ${className}` : `mermaid`}
-      dangerouslySetInnerHTML={{ __html: svg }}
-    />
-  );
-};
-
-export default Mermaid;
+// export default Mermaid;

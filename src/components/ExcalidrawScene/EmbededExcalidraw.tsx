@@ -1,13 +1,6 @@
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
-import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
-
-const ExcalidrawScene = dynamic(
-  async () => (await import("./index")).ExcalidrawScene,
-  {
-    ssr: false,
-  }
-);
+import useSWR from "swr";
+import { ExcalidrawScene } from "./ExcalidrawScene";
 
 export type EmbededExcalidrawProps = {
   file: string;
@@ -20,13 +13,19 @@ export default function EmbededExcalidraw({
   url,
   label,
 }: EmbededExcalidrawProps) {
-  const [elements, setElements] = useState<ExcalidrawElement[]>([]);
-  useEffect(() => {
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        setElements(data.elements);
-      });
-  }, [file, url, label]);
-  return <ExcalidrawScene elements={elements} />;
+  const { data: refData, isLoading } = useSWR(url, async (url) => {
+    const res = await fetch(url).then((res) => res.json());
+    return res.elements as ExcalidrawElement[];
+  });
+  return (
+    <div className="relative h-[600px] py-4">
+      {isLoading ? (
+        <div className="absolute inset-0 flex items-center justify-center">
+          Loading...
+        </div>
+      ) : (
+        <ExcalidrawScene elements={refData!} />
+      )}
+    </div>
+  );
 }

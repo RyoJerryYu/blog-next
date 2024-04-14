@@ -11,6 +11,7 @@ import {
 import { MDXComponents } from "mdx/types";
 import { Bar } from "react-chartjs-2";
 import EmbededExcalidraw from "./ExcalidrawScene/EmbededExcalidraw";
+import { MermaidCodeBlock } from "./ExcalidrawScene/MermaidCodeBlock";
 import License from "./License";
 
 ChartJS.register(
@@ -26,6 +27,7 @@ const components: MDXComponents = {
   Bar,
   // Mermaid,
   License,
+  MermaidCodeBlock,
   ObsidianRich: (props: ObsidianRichProps) => {
     console.log("ObsidianRich:", props);
     if (

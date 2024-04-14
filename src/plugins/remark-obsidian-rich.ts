@@ -103,7 +103,6 @@ const remarkObsidianRich: unified.Plugin<[RemarkObsidianRichOptions?]> = (
 ) => {
   const opts = { ...DEFAULT_OPTIONS, ...options };
   return (tree) => {
-    const promises: Promise<void>[] = [];
     visit(
       tree,
       isObsidianRich,
