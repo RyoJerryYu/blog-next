@@ -1,14 +1,15 @@
 "use client";
+export {};
 
-// mermaid.init({
-//   startOnLoad: false,
-// });
+// // mermaid.init({
+// //   startOnLoad: false,
+// // });
 
-type MermaidProps = {
-  name?: string;
-  children: string;
-  className?: string;
-};
+// type MermaidProps = {
+//   name?: string;
+//   children: string;
+//   className?: string;
+// };
 
 // const Mermaid = ({ name = "mermaid", children, className }: MermaidProps) => {
 //   const [svg, setSvg] = React.useState("");
