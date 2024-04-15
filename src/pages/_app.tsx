@@ -1,4 +1,5 @@
 import components from "@/components";
+import { MutexProvider } from "@/hooks/use-mutex";
 import UniversalHead from "@/layouts/UniversalHead";
 import "@/styles/globals.scss";
 import { MDXProvider } from "@mdx-js/react";
@@ -21,9 +22,11 @@ export default function App({ Component, pageProps }: AppProps) {
           gtag('js', new Date());
           gtag('config', 'G-1Y0XYKX8HY');`}
       </Script>
-      <MDXProvider components={components}>
-        <Component {...pageProps} />
-      </MDXProvider>
+      <MutexProvider>
+        <MDXProvider components={components}>
+          <Component {...pageProps} />
+        </MDXProvider>
+      </MutexProvider>
     </>
   );
 }
