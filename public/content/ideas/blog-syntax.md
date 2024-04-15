@@ -139,6 +139,15 @@ graph LR
   C -->|a=3| F[结果3]
 ```
 
+另一个 mermaid 流程图，同样类型不会冲突
+
+```mermaid
+graph TD
+  A((圆)) --> B([圆边])
+  B --> C[(DB)]
+```
+
+
 mermaid 时序图
 
 ```mermaid
