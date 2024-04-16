@@ -5,6 +5,11 @@
  * And ensure: init once, no modification after init.
  */
 
+import {
+  PostPathMapper,
+  articlePostPathMapper,
+  ideaPostPathMapper,
+} from "@/core/indexing/path-mapping/post-path-mapper";
 import dayjs from "dayjs";
 import {
   AliasIndex,
@@ -13,7 +18,7 @@ import {
 } from "./alias-index";
 import { ClipData, loadClipData } from "./data";
 import { mergeGitMeta, mergeMockGitMeta } from "./git-meta";
-import { PostMeta, StaticsLoader, articleLoader, ideaLoader } from "./loader";
+import { PostMeta, StaticsLoader } from "./loader";
 import { TagIndex, TagIndexBuilder } from "./tag-index";
 
 export type Post = {
@@ -115,21 +120,21 @@ class PostCache {
  * This function has no side effect,
  * but it is very slow.
  */
-const loadPostCache = async (loader: StaticsLoader) => {
+const loadPostCache = async (pathMapper: PostPathMapper) => {
   const post: Post[] = [];
   const slugCache: Set<string> = new Set();
-  const filePaths = loader.listFilePaths();
+  const loader = new StaticsLoader();
+  const filePaths = pathMapper.listFilePaths();
   for (let i = 0; i < filePaths.length; i++) {
     const filePath = filePaths[i];
-    const slug = loader.getSlugFromFilePath(filePath);
+    const { slug, pagePath } = pathMapper.filePath2PathMapping(filePath);
     if (slugCache.has(slug)) {
       throw new Error(`Duplicate slug: ${slug}`);
     }
     const mediaDir = loader.getMediaDirFromFile(filePath);
-    const pagePath = loader.getPagePathFromSlug(slug);
     let meta = loader.parseMetaFromFile(filePath);
     meta = await mergeGitMeta(filePath, meta);
-    post.push({ slug, filePath: filePath, mediaDir, pagePath: pagePath, meta });
+    post.push({ slug, filePath, mediaDir, pagePath, meta });
   }
   post.sort((a, b) => {
     return dayjs(a.meta.created_at).isBefore(b.meta.created_at) ? 1 : -1;
@@ -200,8 +205,8 @@ export const initCache = async () => {
   if (cache) {
     return cache;
   }
-  const articleCache = await loadPostCache(articleLoader());
-  const ideaCache = await loadPostCache(ideaLoader());
+  const articleCache = await loadPostCache(articlePostPathMapper());
+  const ideaCache = await loadPostCache(ideaPostPathMapper());
   const tagIndex = buildTagIndex(articleCache, ideaCache);
   const aliasIndex = buildAliasIndex(articleCache, ideaCache);
   const clipData = loadClipData();
@@ -244,7 +249,7 @@ export const getPostMetaOrReload = async (cache: PostCache, slug: string) => {
   if (process.env.NODE_ENV === "development") {
     // for reloading in development
     console.log(`reloading on dev ${slug}`);
-    const loader = articleLoader();
+    const loader = new StaticsLoader();
     let meta = loader.parseMetaFromFile(cache.slugToFile(slug));
     meta = await mergeMockGitMeta(cache.slugToFile(slug), meta);
     return meta;
