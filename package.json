@@ -58,7 +58,7 @@
     "svgo": "^3.0.2",
     "swr": "^2.2.5",
     "typescript": "4.9.5",
-    "unified": "^10.1.2",
+    "unified": "^11.0.4",
     "unist-util-visit": "5.0.0"
   },
   "devDependencies": {
