@@ -1,7 +1,8 @@
 "use client";
-import { Excalidraw } from "@excalidraw/excalidraw";
+import { Excalidraw, MainMenu } from "@excalidraw/excalidraw";
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
+import { Refresh } from "@mui/icons-material";
 import { useRef } from "react";
 
 export type ExcalidrawSceneProps = {
@@ -40,7 +41,20 @@ export function ExcalidrawSceneImpl({ elements }: ExcalidrawSceneProps) {
               api.scrollToContent(undefined, { fitToContent: true });
             }, 1000);
           }}
-        ></Excalidraw>
+        >
+          <MainMenu>
+            <MainMenu.Item
+              icon={<Refresh />}
+              onSelect={() => {
+                excalidrawAPIRef.current?.scrollToContent(undefined, {
+                  fitToContent: true,
+                });
+              }}
+            >
+              Reset
+            </MainMenu.Item>
+          </MainMenu>
+        </Excalidraw>
       </div>
     </>
   );
