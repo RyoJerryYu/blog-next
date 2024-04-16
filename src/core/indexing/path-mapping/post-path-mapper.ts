@@ -1,5 +1,6 @@
 import glob from "glob";
 import path from "path";
+import { promisify } from "util";
 import { PagePathMapping, PathMapper } from "./path-mapping";
 
 export type PostPathMapperProps = {
@@ -27,8 +28,8 @@ export class PostPathMapper implements PathMapper<PagePathMapping> {
     this.pathPrefix = pathPrefix;
   }
 
-  listFilePaths = () => {
-    return glob.sync(this.fileGlobPattern);
+  listFilePaths = async () => {
+    return await promisify(glob)(this.fileGlobPattern);
   };
 
   filePath2PathMapping = (filePath: string) => {

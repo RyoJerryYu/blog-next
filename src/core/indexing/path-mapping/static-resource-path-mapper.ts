@@ -1,4 +1,5 @@
 import glob from "glob";
+import { promisify } from "util";
 import { PathMapper, ResourcePathMapping } from "./path-mapping";
 
 export type StaticResourcePathMapperProps = {
@@ -26,8 +27,8 @@ export class StaticResourcePathMapper
     this.filePathPrefix = filePathPrefix;
   }
 
-  listFilePaths = () => {
-    return glob.sync(this.fileGlobPattern);
+  listFilePaths = async () => {
+    return await promisify(glob)(this.fileGlobPattern);
   };
 
   filePath2PathMapping = (filePath: string) => {

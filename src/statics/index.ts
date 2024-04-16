@@ -5,17 +5,15 @@
  * And ensure: init once, no modification after init.
  */
 
+import { listPathMappings } from "@/core/indexing/path-mapping/path-mapping";
 import {
   PostPathMapper,
   articlePostPathMapper,
   ideaPostPathMapper,
 } from "@/core/indexing/path-mapping/post-path-mapper";
+import { defaultStaticResourcePathMapper } from "@/core/indexing/path-mapping/static-resource-path-mapper";
 import dayjs from "dayjs";
-import {
-  AliasIndex,
-  AliasIndexBuilder,
-  listAllStaticFiles,
-} from "./alias-index";
+import { AliasIndex, AliasIndexBuilder } from "./alias-index";
 import { ClipData, loadClipData } from "./data";
 import { mergeGitMeta, mergeMockGitMeta } from "./git-meta";
 import { PostMeta, StaticsLoader } from "./loader";
@@ -122,15 +120,10 @@ class PostCache {
  */
 const loadPostCache = async (pathMapper: PostPathMapper) => {
   const post: Post[] = [];
-  const slugCache: Set<string> = new Set();
   const loader = new StaticsLoader();
-  const filePaths = pathMapper.listFilePaths();
-  for (let i = 0; i < filePaths.length; i++) {
-    const filePath = filePaths[i];
-    const { slug, pagePath } = pathMapper.filePath2PathMapping(filePath);
-    if (slugCache.has(slug)) {
-      throw new Error(`Duplicate slug: ${slug}`);
-    }
+  const pathMappings = await listPathMappings(pathMapper);
+  for (let i = 0; i < pathMappings.length; i++) {
+    const { filePath, slug, pagePath } = pathMappings[i];
     const mediaDir = loader.getMediaDirFromFile(filePath);
     let meta = loader.parseMetaFromFile(filePath);
     meta = await mergeGitMeta(filePath, meta);
@@ -167,7 +160,10 @@ const buildTagIndex = (articleCache: PostCache, ideaCache: PostCache) => {
  * Mainly used for
  * This function has no side effects too.
  */
-const buildAliasIndex = (articleCache: PostCache, ideaCache: PostCache) => {
+const buildAliasIndex = async (
+  articleCache: PostCache,
+  ideaCache: PostCache
+) => {
   const aliasIndexBuilder = new AliasIndexBuilder();
   const addPostAliases = (postCache: PostCache) => {
     postCache.getSlugs().forEach((slug) => {
@@ -178,12 +174,14 @@ const buildAliasIndex = (articleCache: PostCache, ideaCache: PostCache) => {
   addPostAliases(articleCache);
   addPostAliases(ideaCache);
 
-  const staticFiles = listAllStaticFiles();
-  staticFiles.forEach((file) => {
-    const path = file.replace("public/", "/");
-    console.log(`add static file: ${path}`); // debug
+  const staticResourcePathMapping = await listPathMappings(
+    defaultStaticResourcePathMapper()
+  );
+  staticResourcePathMapping.forEach((mapping) => {
+    const pagePath = mapping.pagePath;
+    console.log(`add static file: ${pagePath}`); // debug
 
-    aliasIndexBuilder.add(path);
+    aliasIndexBuilder.add(pagePath);
   });
 
   return aliasIndexBuilder.build();
@@ -208,7 +206,7 @@ export const initCache = async () => {
   const articleCache = await loadPostCache(articlePostPathMapper());
   const ideaCache = await loadPostCache(ideaPostPathMapper());
   const tagIndex = buildTagIndex(articleCache, ideaCache);
-  const aliasIndex = buildAliasIndex(articleCache, ideaCache);
+  const aliasIndex = await buildAliasIndex(articleCache, ideaCache);
   const clipData = loadClipData();
 
   cache = {

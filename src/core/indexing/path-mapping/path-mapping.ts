@@ -38,6 +38,19 @@ export type PagePathMapping = ResourcePathMapping & {
  * @template PathMapping the type of path mapping for this type of resource
  */
 export interface PathMapper<PathMapping extends ResourcePathMapping> {
-  listFilePaths: () => string[];
+  listFilePaths: () => Promise<string[]>;
   filePath2PathMapping: (filePath: string) => PathMapping;
 }
+
+export const listPathMappings = async <PathMapping extends ResourcePathMapping>(
+  pathMapper: PathMapper<PathMapping>
+) => {
+  const existPath: Set<string> = new Set();
+  const filePaths = await pathMapper.listFilePaths();
+  return filePaths.map((filePath) => {
+    if (existPath.has(filePath)) {
+      throw new Error(`Duplicate filePath: ${filePath}`);
+    }
+    return pathMapper.filePath2PathMapping(filePath);
+  });
+};
