@@ -18,9 +18,9 @@ import { TagIndex, TagIndexBuilder } from "./tag-index";
 
 export type Post = {
   slug: string;
-  file: string;
+  filePath: string; // start with slash
+  pagePath: string; // start with slash
   mediaDir: string;
-  path: string;
   meta: PostMeta;
 };
 export type PrevNextInfo = {
@@ -63,13 +63,13 @@ class PostCache {
     return Array.from(this.index.keys());
   };
   slugToFile = (slug: string) => {
-    return this.slugToPost(slug).file;
+    return this.slugToPost(slug).filePath;
   };
   slugToMediaDir = (slug: string) => {
     return this.slugToPost(slug).mediaDir;
   };
   slugToPath = (slug: string) => {
-    return this.slugToPost(slug).path;
+    return this.slugToPost(slug).pagePath;
   };
   slugToMeta = (slug: string) => {
     return this.slugToPost(slug)!.meta;
@@ -88,7 +88,7 @@ class PostCache {
       resInfo.prevInfo = {
         slug: prevPost.slug,
         title: prevPost.meta.title,
-        path: prevPost.path,
+        path: prevPost.pagePath,
       };
     }
     if (index !== this.cache.length - 1) {
@@ -96,7 +96,7 @@ class PostCache {
       resInfo.nextInfo = {
         slug: nextPost.slug,
         title: nextPost.meta.title,
-        path: nextPost.path,
+        path: nextPost.pagePath,
       };
     }
     return resInfo;
@@ -118,18 +118,18 @@ class PostCache {
 const loadPostCache = async (loader: StaticsLoader) => {
   const post: Post[] = [];
   const slugCache: Set<string> = new Set();
-  const files = loader.listFiles();
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const slug = loader.getSlugFromFile(file);
+  const filePaths = loader.listFilePaths();
+  for (let i = 0; i < filePaths.length; i++) {
+    const filePath = filePaths[i];
+    const slug = loader.getSlugFromFilePath(filePath);
     if (slugCache.has(slug)) {
       throw new Error(`Duplicate slug: ${slug}`);
     }
-    const mediaDir = loader.getMediaDirFromFile(file);
-    const path = loader.getPathFromSlug(slug);
-    let meta = loader.parseMetaFromFile(file);
-    meta = await mergeGitMeta(file, meta);
-    post.push({ slug, file, mediaDir, path, meta });
+    const mediaDir = loader.getMediaDirFromFile(filePath);
+    const pagePath = loader.getPagePathFromSlug(slug);
+    let meta = loader.parseMetaFromFile(filePath);
+    meta = await mergeGitMeta(filePath, meta);
+    post.push({ slug, filePath: filePath, mediaDir, pagePath: pagePath, meta });
   }
   post.sort((a, b) => {
     return dayjs(a.meta.created_at).isBefore(b.meta.created_at) ? 1 : -1;

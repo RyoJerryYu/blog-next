@@ -82,7 +82,7 @@ const TagPage = (props: TagPageProps) => {
           <PostList
             posts={props.posts}
             allTags={tagInfoMap}
-            getUrl={(post) => post.path}
+            getUrl={(post) => post.pagePath}
           />
         </MainWidth>
       </DefaultLayout>

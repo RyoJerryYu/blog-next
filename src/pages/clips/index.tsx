@@ -29,9 +29,9 @@ export default function ClipsPage(props: ClipsProps) {
   const clipDataToPostCompatible = (clipData: ClipData): Post => {
     return {
       slug: clipData.id,
-      file: clipData.url,
+      filePath: clipData.url,
       mediaDir: "",
-      path: clipData.url,
+      pagePath: clipData.url,
       meta: {
         title: clipData.title,
         created_at: clipData.created_time,
@@ -56,7 +56,7 @@ export default function ClipsPage(props: ClipsProps) {
           <PostList
             posts={posts}
             allTags={allTagsMap}
-            getUrl={(clipData) => clipData.path}
+            getUrl={(clipData) => clipData.pagePath}
           />
         </MainWidth>
       </DefaultLayout>

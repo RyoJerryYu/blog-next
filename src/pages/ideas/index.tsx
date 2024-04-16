@@ -37,7 +37,7 @@ const IdeasPage = (props: IdeasProps) => {
           <PostList
             posts={props.posts}
             allTags={allTagsMap}
-            getUrl={(idea) => idea.path}
+            getUrl={(idea) => idea.pagePath}
           />
         </MainWidth>
       </DefaultLayout>

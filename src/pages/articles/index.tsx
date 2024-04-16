@@ -39,7 +39,7 @@ const ArticlesPage = (props: ArticlesProps) => {
           <PostList
             posts={props.posts}
             allTags={allTagsMap}
-            getUrl={(post) => post.path}
+            getUrl={(post) => post.pagePath}
           />
         </MainWidth>
       </DefaultLayout>

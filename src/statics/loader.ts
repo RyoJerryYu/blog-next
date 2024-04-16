@@ -45,12 +45,12 @@ export class StaticsLoader {
     this.pathPrefix = pathPrefix;
   }
 
-  listFiles = () => {
+  listFilePaths = () => {
     return glob.sync(this.fileGlobPattern);
   };
 
-  getSlugFromFile = (file: string) => {
-    const filename = path.basename(file, path.extname(file));
+  getSlugFromFilePath = (filePath: string) => {
+    const filename = path.basename(filePath, path.extname(filePath));
     const slug = filename.match(this.filenameSlugRegex)?.[2];
     if (!slug) {
       throw new Error(`Invalid slug: ${slug}`);
@@ -65,8 +65,8 @@ export class StaticsLoader {
     return dir;
   };
 
-  getPathFromSlug = (path: string) => {
-    return this.pathPrefix + path;
+  getPagePathFromSlug = (slug: string) => {
+    return this.pathPrefix + slug;
   };
 
   // export for test
@@ -90,9 +90,9 @@ export class StaticsLoader {
     return result;
   };
 
-  parseMetaFromFile = (file: string) => {
-    console.log("parseMetaFromFile", file);
-    const raw = fs.readFileSync(file, "utf-8");
+  parseMetaFromFile = (filePath: string) => {
+    console.log("parseMetaFromFile", filePath);
+    const raw = fs.readFileSync(filePath, "utf-8");
     return this.parseMetaFromRaw(raw);
   };
 }

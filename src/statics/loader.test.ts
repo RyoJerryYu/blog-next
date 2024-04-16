@@ -23,7 +23,7 @@ describe("test get slug from file", () => {
 
   for (const { name, input, output } of cases) {
     it(name, () => {
-      expect(loader.getSlugFromFile(input)).toBe(output);
+      expect(loader.getSlugFromFilePath(input)).toBe(output);
     });
   }
 });
