@@ -1,8 +1,10 @@
-import dynamic from "next/dynamic";
+import { dynamicLoading } from "../Loading/dynamic-loading";
+import { ExcalidrawSceneProps } from "./ExcalidrawSceneImpl";
 
-export const ExcalidrawScene = dynamic(
-  async () => (await import("./ExcalidrawSceneImpl")).ExcalidrawSceneImpl,
-  {
-    ssr: false,
-  }
+const ExcalidrawSceneImpl = dynamicLoading(
+  async () => (await import("./ExcalidrawSceneImpl")).ExcalidrawSceneImpl
 );
+
+export function ExcalidrawScene(props: ExcalidrawSceneProps) {
+  return <ExcalidrawSceneImpl {...props} />;
+}

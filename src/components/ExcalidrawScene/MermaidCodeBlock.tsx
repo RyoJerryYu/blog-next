@@ -1,6 +1,14 @@
-import dynamic from "next/dynamic";
+import { dynamicLoading } from "../Loading/dynamic-loading";
+import { MermaidCodeBlockProps } from "./MermaidCodeBlockImpl";
 
-export const MermaidCodeBlock = dynamic(
-  async () => (await import("./MermaidCodeBlockImpl")).MermaidCodeBlockImpl,
-  { ssr: false }
+const MermaidCodeBlockImpl = dynamicLoading(
+  async () => (await import("./MermaidCodeBlockImpl")).MermaidCodeBlockImpl
 );
+
+export function MermaidCodeBlock(props: MermaidCodeBlockProps) {
+  return (
+    <div className="relative h-[600px] py-4">
+      <MermaidCodeBlockImpl {...props} />
+    </div>
+  );
+}
