@@ -5,6 +5,7 @@ import { ExcalidrawElementSkeleton } from "@excalidraw/excalidraw/types/data/tra
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import { parseMermaidToExcalidraw } from "@excalidraw/mermaid-to-excalidraw";
 import { useEffect, useState } from "react";
+import { Loading } from "../Loading/Loading";
 import { ExcalidrawSceneImpl } from "./ExcalidrawSceneImpl";
 
 /**
@@ -90,38 +91,6 @@ export function MermaidCodeBlockImpl({
   }, [children, parseDone]);
 
   return (
-    <div className="relative h-[600px] py-4">
-      {parseDone ? (
-        <ExcalidrawSceneImpl elements={elements} />
-      ) : (
-        <div className="absolute inset-0 flex items-center justify-center">
-          Loading...
-        </div>
-      )}
-    </div>
+    <>{parseDone ? <ExcalidrawSceneImpl elements={elements} /> : <Loading />}</>
   );
-}
-function parseMermaidFlowChartDiagram(
-  diagram: any,
-  svgContainer: HTMLDivElement
-): any {
-  throw new Error("Function not implemented.");
-}
-
-function parseMermaidSequenceDiagram(
-  diagram: any,
-  svgContainer: HTMLDivElement
-): any {
-  throw new Error("Function not implemented.");
-}
-
-function parseMermaidClassDiagram(
-  diagram: any,
-  svgContainer: HTMLDivElement
-): any {
-  throw new Error("Function not implemented.");
-}
-
-function convertSvgToGraphImage(svgContainer: HTMLDivElement): any {
-  throw new Error("Function not implemented.");
 }

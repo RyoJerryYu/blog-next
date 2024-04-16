@@ -1,5 +1,7 @@
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import useSWR from "swr";
+import { LoadError } from "../Loading/LoadError";
+import { Loading } from "../Loading/Loading";
 import { ExcalidrawScene } from "./ExcalidrawScene";
 
 export type EmbededExcalidrawProps = {
@@ -17,14 +19,15 @@ export default function EmbededExcalidraw({
     const res = await fetch(url).then((res) => res.json());
     return res.elements as ExcalidrawElement[];
   });
+
   return (
     <div className="relative h-[600px] py-4">
       {isLoading ? (
-        <div className="absolute inset-0 flex items-center justify-center">
-          Loading...
-        </div>
+        <Loading />
+      ) : refData ? (
+        <ExcalidrawScene elements={refData} />
       ) : (
-        <ExcalidrawScene elements={refData!} />
+        <LoadError />
       )}
     </div>
   );

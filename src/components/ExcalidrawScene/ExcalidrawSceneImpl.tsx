@@ -4,7 +4,7 @@ import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { useRef } from "react";
 
-type ExcalidrawSceneProps = {
+export type ExcalidrawSceneProps = {
   elements: ExcalidrawElement[];
 };
 
