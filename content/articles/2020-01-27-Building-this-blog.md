@@ -1,6 +1,6 @@
 ---
 created_at: 2020-01-27 14:00:00
-updated_at: 2022-03-27 21:30:33+08:00
+updated_at: 2024-04-16 21:30:33+08:00
 layout:     post
 title:      "搭建博客的过程"
 subtitle:   "记录这个博客搭建的过程，以及遇到的坑。"
@@ -217,7 +217,8 @@ README.md为Github仓库的介绍，可以在README.md中写上这个博客主�
 文章主要放在_posts文件夹中，用`git push`的方式推送到GitHub仓库，即可完成文章上传。
 
 文章正文以**markdown**语法书写，在文本头部增加如下格式的信息：
-```
+
+```yaml
 ---
 layout:     post
 title:      "Welcome to Ryo's Blog!"
@@ -230,6 +231,7 @@ tags:
     - 杂谈
 ---
 ```
+
 其中：
 - `layout`为文章所用的模板，可选`post`或`keynote`，也可自己写一个模板html放在`_layouts`文件夹下。
 - `title`为文章标题，`subtitle`为文章副标题。
