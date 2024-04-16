@@ -7,7 +7,7 @@ import BgKasumiHanabi, {
 } from "@/components/imgs/BgKasumiHanabi";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { BASE_PATH } from "@/utils/env-var";
-import { Inter } from "@next/font/google";
+import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
