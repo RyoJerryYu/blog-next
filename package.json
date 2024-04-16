@@ -11,13 +11,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@excalidraw/excalidraw": "^0.17.3",
     "@excalidraw/mermaid-to-excalidraw": "^0.3.0",
     "@mdx-js/mdx": "^2.3.0",
     "@mdx-js/react": "^2.3.0",
     "@mui/base": "5.0.0-beta.40",
     "@mui/icons-material": "^5.15.15",
-    "@mui/material": "5.15.15",
+    "@mui/material": "^5.15.15",
     "@types/mdast": "4.0.3",
     "@types/node": "18.14.2",
     "@types/react": "^18.2.79",
