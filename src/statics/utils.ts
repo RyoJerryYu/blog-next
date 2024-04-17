@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import { Post } from ".";
-import { TagInfo } from "./tag-index";
 
 // a helper function to sort posts by created at desc
 export const sortPostsByDate = (posts: Post[]) => {

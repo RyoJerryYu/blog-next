@@ -13,9 +13,9 @@ const postInfoOtherOfDate = {
     license: false,
   },
   slug: "xxx",
-  file: "xxx",
+  filePath: "xxx",
   mediaDir: "xxx",
-  path: "xxx",
+  pagePath: "xxx",
 };
 
 test("should sorted", () => {
