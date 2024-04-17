@@ -2,6 +2,17 @@
 
 ## Terms
 
+example:
+
+Consider an `.md` file `public/content/articles/2020-02-02-hello-world.md`:
+
+- The page could be accessed by `https://xx.xx.x/articles/hello-world` is a `Page`. What this page shows is the content of the `Post`.
+- `https://xx.xx.x/articles` is also a `Page`, but it is not a `Post`.
+- The static resource could be accessed by `https://xx.xx.x/content/articles/2020-02-02-hello-world.md` is not a `Page`, but a static resource.
+- The `filePath` is `public/content/articles/2020-02-02-hello-world.md`.
+- The `pagePath` is `/articles/hello-world`.
+- The `slug` is `hello-world`.
+
 ### Page
 
 Represent a page on the website.
