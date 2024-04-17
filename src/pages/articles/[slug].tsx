@@ -1,5 +1,6 @@
 import Comments from "@/components/Comments";
 import Post from "@/components/Post";
+import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import parseMdx from "@/plugins";
@@ -10,7 +11,6 @@ import {
   getTagIndex,
   initCache,
 } from "@/statics";
-import { PostMeta } from "@/statics/loader";
 import { TagInfo } from "@/statics/tag-index";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";

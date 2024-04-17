@@ -1,5 +1,5 @@
+import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
 import { PrevNextInfo } from "@/statics";
-import { PostMeta } from "@/statics/loader";
 import { TagInfo } from "@/statics/tag-index";
 import clsx from "clsx";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";

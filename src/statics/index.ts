@@ -5,6 +5,14 @@
  * And ensure: init once, no modification after init.
  */
 
+import {
+  defaultChain,
+  devReloadingChain,
+} from "@/core/indexing/indexing-settings";
+import {
+  PostMeta,
+  collectMetaForFilePath,
+} from "@/core/indexing/meta-collecting/meta-collecting";
 import { listPathMappings } from "@/core/indexing/path-mapping/path-mapping";
 import {
   PostPathMapper,
@@ -15,8 +23,6 @@ import { defaultStaticResourcePathMapper } from "@/core/indexing/path-mapping/st
 import dayjs from "dayjs";
 import { AliasIndex, AliasIndexBuilder } from "./alias-index";
 import { ClipData, loadClipData } from "./data";
-import { mergeGitMeta, mergeMockGitMeta } from "./git-meta";
-import { PostMeta, StaticsLoader } from "./loader";
 import { TagIndex, TagIndexBuilder } from "./tag-index";
 
 export type Post = {
@@ -75,7 +81,7 @@ class PostCache {
     return this.slugToPost(slug).pagePath;
   };
   slugToMeta = (slug: string) => {
-    return this.slugToPost(slug)!.meta;
+    return this.slugToPost(slug).meta;
   };
   slugToPrevNextInfo = (slug: string) => {
     const index = this.index.get(slug);
@@ -120,13 +126,12 @@ class PostCache {
  */
 const loadPostCache = async (pathMapper: PostPathMapper) => {
   const post: Post[] = [];
-  const loader = new StaticsLoader();
   const pathMappings = await listPathMappings(pathMapper);
+  const chain = defaultChain;
   for (let i = 0; i < pathMappings.length; i++) {
     const { filePath, slug, pagePath } = pathMappings[i];
-    const mediaDir = loader.getMediaDirFromFile(filePath);
-    let meta = loader.parseMetaFromFile(filePath);
-    meta = await mergeGitMeta(filePath, meta);
+    const mediaDir = "";
+    const meta = await collectMetaForFilePath(chain, filePath);
     post.push({ slug, filePath, mediaDir, pagePath, meta });
   }
   post.sort((a, b) => {
@@ -145,6 +150,7 @@ const buildTagIndex = (articleCache: PostCache, ideaCache: PostCache) => {
   const addPostSlugs = (postCache: PostCache, postType: "article" | "idea") => {
     postCache.getSlugs().forEach((slug) => {
       const meta = postCache.slugToMeta(slug);
+      console.log(`add post ${slug}, meta ${JSON.stringify(meta)}`); // debug
       meta.tags.forEach((tag) => {
         tagIndexBuilder.addPostSlug(tag, postType, slug);
       });
@@ -247,9 +253,9 @@ export const getPostMetaOrReload = async (cache: PostCache, slug: string) => {
   if (process.env.NODE_ENV === "development") {
     // for reloading in development
     console.log(`reloading on dev ${slug}`);
-    const loader = new StaticsLoader();
-    let meta = loader.parseMetaFromFile(cache.slugToFile(slug));
-    meta = await mergeMockGitMeta(cache.slugToFile(slug), meta);
+    const filePath = cache.slugToFile(slug);
+    const chain = devReloadingChain;
+    const meta = await collectMetaForFilePath(chain, filePath);
     return meta;
   } else {
     return cache.slugToMeta(slug);

@@ -1,5 +1,5 @@
+import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
 import { Post } from "@/statics";
-import { PostMeta } from "@/statics/loader";
 import { TagInfo } from "@/statics/tag-index";
 import Link from "next/link";
 import React from "react";
@@ -40,13 +40,6 @@ export function PostListElement({
   url,
   tags,
 }: PostListElementProps) {
-  const renderTags = () => {
-    if (!postMeta.tags || postMeta.tags.length === 0) {
-      return null;
-    }
-    return;
-  };
-
   return (
     <div className={className}>
       <Link href={url}>
