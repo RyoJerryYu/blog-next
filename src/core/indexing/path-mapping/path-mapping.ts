@@ -30,7 +30,7 @@ export type PagePathMapping = ResourcePathMapping & {
 };
 
 /**
- * A type of PageMapper responsible for mapping for a type of resource
+ * A type of PathMapper responsible for mapping for a type of resource
  * Though filePath is not unique between two types of resources,
  * it should be unique for one type of resource.
  * So filePath is used as the key for the mapping.
