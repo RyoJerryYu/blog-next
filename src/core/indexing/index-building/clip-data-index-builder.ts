@@ -16,8 +16,8 @@ export class ClipDataIndexBuilder
     IndexBuilder<ResourcePathMapping, ResourceMeta, ClipData[], "clipData">
 {
   addResource = (resource: Resource<ResourcePathMapping, ResourceMeta>) => {};
-  buildIndex = (): { clipData: ClipData[] } => {
-    const data = fs.readFileSync("public/data/clips.json", "utf-8");
+  buildIndex = async (): Promise<{ clipData: ClipData[] }> => {
+    const data = await fs.promises.readFile("public/data/clips.json", "utf-8");
     const clipData = JSON.parse(data).pages;
     return { clipData: clipData };
   };

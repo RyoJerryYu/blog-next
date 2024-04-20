@@ -81,7 +81,7 @@ export class TagIndexBuilder
       return;
     });
   };
-  buildIndex = () => {
+  buildIndex = async () => {
     return {
       tag: new TagIndex(this.index),
     };

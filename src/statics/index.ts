@@ -153,7 +153,7 @@ const loadPostCache = async (pathMapper: PostPathMapper) => {
  * Build a tag index (map<tagParam,slugs[]>) from a post cache.
  * This function has no side effects too.
  */
-const buildTagIndex = (articleCache: PostCache, ideaCache: PostCache) => {
+const buildTagIndex = async (articleCache: PostCache, ideaCache: PostCache) => {
   const tagIndexBuilder = new TagIndexBuilder();
 
   const addPostSlugs = (postCache: PostCache, postType: "article" | "idea") => {
@@ -175,7 +175,7 @@ const buildTagIndex = (articleCache: PostCache, ideaCache: PostCache) => {
 
   addPostSlugs(articleCache, "article");
   addPostSlugs(ideaCache, "idea");
-  return tagIndexBuilder.buildIndex();
+  return await tagIndexBuilder.buildIndex();
 };
 /**
  * Build a alias index from a post cache.
@@ -239,10 +239,10 @@ export const initCache = async () => {
   }
   const articleCache = await loadPostCache(articlePostPathMapper());
   const ideaCache = await loadPostCache(ideaPostPathMapper());
-  const tagIndex = buildTagIndex(articleCache, ideaCache);
+  const tagIndex = await buildTagIndex(articleCache, ideaCache);
   const aliasIndex = await buildAliasIndex(articleCache, ideaCache);
   const clipDataIndexBuilder = new ClipDataIndexBuilder();
-  const clipData = clipDataIndexBuilder.buildIndex();
+  const clipData = await clipDataIndexBuilder.buildIndex();
 
   cache = {
     articleCache,
