@@ -1,10 +1,13 @@
 import PostList from "@/components/PostList";
+import { ClipData } from "@/core/indexing/index-building/clip-data-index-builder";
+import {
+  TagInfo,
+  tagInfoListToMap,
+} from "@/core/indexing/index-building/tag-index-builder";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import { getClipData, getTagIndex, initCache, Post } from "@/statics";
-import { ClipData } from "@/statics/data";
-import { TagInfo, tagInfoListToMap } from "@/statics/tag-index";
+import { Post, getClipData, getTagIndex, initCache } from "@/statics";
 import { GetStaticProps } from "next";
 
 type ClipsProps = {

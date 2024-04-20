@@ -30,6 +30,9 @@
 
 import { glob } from "glob";
 import path from "path";
+import { ResourceMeta } from "../meta-collecting/meta-collecting";
+import { ResourcePathMapping } from "../path-mapping/path-mapping";
+import { IndexBuilder, Resource } from "./index-building";
 
 export function listAllStaticFiles() {
   return glob.sync("public/content/**/*.*");
@@ -63,14 +66,17 @@ export const aliasesFromPagePath = (pagePath: string) => {
   return aliases;
 };
 
-export class AliasIndexBuilder {
+export class AliasIndexBuilder
+  implements
+    IndexBuilder<ResourcePathMapping, ResourceMeta, AliasIndex, "alias">
+{
   // alias -> path
   private readonly index: Map<string, string>;
   constructor() {
     this.index = new Map();
   }
-
-  add = (pagePath: string) => {
+  addResource = (resource: Resource<ResourcePathMapping, ResourceMeta>) => {
+    const { pagePath } = resource.pathMapping;
     const aliases = aliasesFromPagePath(pagePath);
     for (const alias of aliases) {
       if (!this.index.has(alias)) {
@@ -90,9 +96,10 @@ export class AliasIndexBuilder {
       );
     }
   };
-
-  build = () => {
-    return new AliasIndex(this.index);
+  buildIndex = (): { alias: AliasIndex } => {
+    return {
+      alias: new AliasIndex(this.index),
+    };
   };
 }
 

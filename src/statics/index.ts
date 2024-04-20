@@ -6,6 +6,14 @@
  */
 
 import {
+  AliasIndex,
+  AliasIndexBuilder,
+} from "@/core/indexing/index-building/alias-index-builder";
+import {
+  ClipData,
+  ClipDataIndexBuilder,
+} from "@/core/indexing/index-building/clip-data-index-builder";
+import {
   TagIndex,
   TagIndexBuilder,
 } from "@/core/indexing/index-building/tag-index-builder";
@@ -25,8 +33,6 @@ import {
 } from "@/core/indexing/path-mapping/post-path-mapper";
 import { defaultStaticResourcePathMapper } from "@/core/indexing/path-mapping/static-resource-path-mapper";
 import dayjs from "dayjs";
-import { AliasIndex, AliasIndexBuilder } from "./alias-index";
-import { ClipData, loadClipData } from "./data";
 
 export type Post = {
   slug: string;
@@ -183,8 +189,17 @@ const buildAliasIndex = async (
   const aliasIndexBuilder = new AliasIndexBuilder();
   const addPostAliases = (postCache: PostCache) => {
     postCache.getSlugs().forEach((slug) => {
-      const path = postCache.slugToPath(slug);
-      aliasIndexBuilder.add(path);
+      const pagePath = postCache.slugToPath(slug);
+      const filePath = postCache.slugToFile(slug);
+      const meta = postCache.slugToMeta(slug);
+
+      aliasIndexBuilder.addResource({
+        pathMapping: {
+          filePath,
+          pagePath,
+        },
+        meta,
+      });
     });
   };
   addPostAliases(articleCache);
@@ -197,10 +212,13 @@ const buildAliasIndex = async (
     const pagePath = mapping.pagePath;
     console.log(`add static file: ${pagePath}`); // debug
 
-    aliasIndexBuilder.add(pagePath);
+    aliasIndexBuilder.addResource({
+      pathMapping: mapping,
+      meta: {},
+    });
   });
 
-  return aliasIndexBuilder.build();
+  return aliasIndexBuilder.buildIndex();
 };
 
 /**
@@ -223,14 +241,15 @@ export const initCache = async () => {
   const ideaCache = await loadPostCache(ideaPostPathMapper());
   const tagIndex = buildTagIndex(articleCache, ideaCache);
   const aliasIndex = await buildAliasIndex(articleCache, ideaCache);
-  const clipData = loadClipData();
+  const clipDataIndexBuilder = new ClipDataIndexBuilder();
+  const clipData = clipDataIndexBuilder.buildIndex();
 
   cache = {
     articleCache,
     ideaCache,
     tagIndex: tagIndex.tag,
-    aliasIndex,
-    clipData,
+    aliasIndex: aliasIndex.alias,
+    clipData: clipData.clipData,
   };
   return cache;
 };

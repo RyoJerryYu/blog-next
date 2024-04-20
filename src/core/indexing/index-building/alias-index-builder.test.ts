@@ -1,4 +1,4 @@
-import { AliasIndexBuilder } from "./alias-index";
+import { AliasIndexBuilder } from "./alias-index-builder";
 
 describe("test alias index", () => {
   const input = [
@@ -7,9 +7,15 @@ describe("test alias index", () => {
   ];
   const builder = new AliasIndexBuilder();
   input.forEach((item) => {
-    builder.add(item.path);
+    builder.addResource({
+      pathMapping: {
+        pagePath: item.path,
+        filePath: "do not care",
+      },
+      meta: {},
+    });
   });
-  const index = builder.build();
+  const { alias: index } = builder.buildIndex();
 
   const resolveCases = [
     {
