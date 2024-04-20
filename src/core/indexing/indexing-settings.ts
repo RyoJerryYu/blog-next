@@ -2,8 +2,17 @@ import {
   MockGitMetaCollector,
   defaultGitMetaCollector,
 } from "./meta-collecting/git-meta-collector";
-import { CollectorChain, PostMeta } from "./meta-collecting/meta-collecting";
+import {
+  CollectorChain,
+  PostMeta,
+  ResourceMeta,
+} from "./meta-collecting/meta-collecting";
 import { PostRawMetaCollector } from "./meta-collecting/post-raw-meta-collector";
+
+export const staticResourceChain: CollectorChain<ResourceMeta> = {
+  collectors: [],
+  defaultMeta: {},
+};
 
 export const defaultChain: CollectorChain<PostMeta> = {
   collectors: [new PostRawMetaCollector(), defaultGitMetaCollector()],

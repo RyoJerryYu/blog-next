@@ -47,13 +47,15 @@ Could be accessible from the browser by `${SITE_BASE_PATH}${pagePath}`.
 
 ### slug
 
-The path argument used for a post.
+The path argument used for a page.
 
 e.g. For `src/pages/articles/[slug].tsx`, for the post of `/articles/hello-world`, the slug is `hello-world`.
 
 For one type of post (article or ideas), the slug should be unique for a post.
 
 Should have no any `/` in the slug.
+
+Not only a post should could have a slug. e.g. a tag page could have a slug too.
 
 ### meta
 
@@ -84,3 +86,10 @@ Something should not be an index:
 
 
 
+# TODO
+
+名称不对， path mapping 没有做真正的 mapping 工作，与外部 mapping 重名
+- path-resolving, ResourcePath, Resolver
+
+
+pipeline -> ResourceList

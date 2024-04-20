@@ -55,8 +55,8 @@ export interface MetaCollector<Meta extends ResourceMeta> {
  * A chain defines how meta of one type of resource should be collected.
  */
 export type CollectorChain<Meta extends ResourceMeta> = {
-  collectors: MetaCollector<Meta>[];
-  defaultMeta: Meta;
+  readonly collectors: MetaCollector<Meta>[];
+  readonly defaultMeta: Meta;
 };
 
 /**
