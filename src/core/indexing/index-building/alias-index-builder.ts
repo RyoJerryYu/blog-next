@@ -96,7 +96,7 @@ export class AliasIndexBuilder
       );
     }
   };
-  buildIndex = (): { alias: AliasIndex } => {
+  buildIndex = async (): Promise<{ alias: AliasIndex }> => {
     return {
       alias: new AliasIndex(this.index),
     };

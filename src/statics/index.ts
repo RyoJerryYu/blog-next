@@ -14,6 +14,10 @@ import {
   ClipDataIndexBuilder,
 } from "@/core/indexing/index-building/clip-data-index-builder";
 import {
+  Resource,
+  buildIndex,
+} from "@/core/indexing/index-building/index-building";
+import {
   TagIndex,
   TagIndexBuilder,
 } from "@/core/indexing/index-building/tag-index-builder";
@@ -23,9 +27,14 @@ import {
 } from "@/core/indexing/indexing-settings";
 import {
   PostMeta,
+  ResourceMeta,
   collectMetaForFilePath,
 } from "@/core/indexing/meta-collecting/meta-collecting";
-import { listPathMappings } from "@/core/indexing/path-mapping/path-mapping";
+import {
+  PagePathMapping,
+  ResourcePathMapping,
+  listPathMappings,
+} from "@/core/indexing/path-mapping/path-mapping";
 import {
   PostPathMapper,
   articlePostPathMapper,
@@ -92,6 +101,19 @@ class PostCache {
   slugToMeta = (slug: string) => {
     return this.slugToPost(slug).meta;
   };
+  slugToResource = (slug: string): Resource<PagePathMapping, PostMeta> => {
+    return {
+      pathMapping: {
+        pagePath: this.slugToPath(slug),
+        filePath: this.slugToFile(slug),
+        slug: slug,
+      },
+      meta: this.slugToMeta(slug),
+    };
+  };
+  listResources = () => {
+    return this.getSlugs().map((slug) => this.slugToResource(slug));
+  };
   slugToPrevNextInfo = (slug: string) => {
     const index = this.index.get(slug);
     if (index === undefined || index < 0 || index >= this.cache.length) {
@@ -154,28 +176,12 @@ const loadPostCache = async (pathMapper: PostPathMapper) => {
  * This function has no side effects too.
  */
 const buildTagIndex = async (articleCache: PostCache, ideaCache: PostCache) => {
+  const resources: Resource<PagePathMapping, PostMeta>[] = [];
+  resources.push(...articleCache.listResources());
+  resources.push(...ideaCache.listResources());
+
   const tagIndexBuilder = new TagIndexBuilder();
-
-  const addPostSlugs = (postCache: PostCache, postType: "article" | "idea") => {
-    postCache.getSlugs().forEach((slug) => {
-      const path = postCache.slugToPath(slug);
-      const file = postCache.slugToFile(slug);
-      const meta = postCache.slugToMeta(slug);
-      console.log(`add post ${slug}, meta ${JSON.stringify(meta)}`); // debug
-      tagIndexBuilder.addResource({
-        pathMapping: {
-          filePath: file,
-          slug,
-          pagePath: path,
-        },
-        meta,
-      });
-    });
-  };
-
-  addPostSlugs(articleCache, "article");
-  addPostSlugs(ideaCache, "idea");
-  return await tagIndexBuilder.buildIndex();
+  return await buildIndex(resources, tagIndexBuilder);
 };
 /**
  * Build a alias index from a post cache.
@@ -186,39 +192,23 @@ const buildAliasIndex = async (
   articleCache: PostCache,
   ideaCache: PostCache
 ) => {
-  const aliasIndexBuilder = new AliasIndexBuilder();
-  const addPostAliases = (postCache: PostCache) => {
-    postCache.getSlugs().forEach((slug) => {
-      const pagePath = postCache.slugToPath(slug);
-      const filePath = postCache.slugToFile(slug);
-      const meta = postCache.slugToMeta(slug);
-
-      aliasIndexBuilder.addResource({
-        pathMapping: {
-          filePath,
-          pagePath,
-        },
-        meta,
-      });
-    });
-  };
-  addPostAliases(articleCache);
-  addPostAliases(ideaCache);
+  const resources: Resource<ResourcePathMapping, ResourceMeta>[] = [];
+  resources.push(...articleCache.listResources());
+  resources.push(...ideaCache.listResources());
 
   const staticResourcePathMapping = await listPathMappings(
     defaultStaticResourcePathMapper()
   );
-  staticResourcePathMapping.forEach((mapping) => {
-    const pagePath = mapping.pagePath;
-    console.log(`add static file: ${pagePath}`); // debug
-
-    aliasIndexBuilder.addResource({
+  const staticResources = staticResourcePathMapping.map((mapping) => {
+    return {
       pathMapping: mapping,
       meta: {},
-    });
+    };
   });
+  resources.push(...staticResources);
 
-  return aliasIndexBuilder.buildIndex();
+  const aliasIndexBuilder = new AliasIndexBuilder();
+  return await buildIndex(resources, aliasIndexBuilder);
 };
 
 /**
@@ -242,7 +232,7 @@ export const initCache = async () => {
   const tagIndex = await buildTagIndex(articleCache, ideaCache);
   const aliasIndex = await buildAliasIndex(articleCache, ideaCache);
   const clipDataIndexBuilder = new ClipDataIndexBuilder();
-  const clipData = await clipDataIndexBuilder.buildIndex();
+  const clipData = await buildIndex([], clipDataIndexBuilder);
 
   cache = {
     articleCache,
