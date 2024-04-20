@@ -1,9 +1,9 @@
 import TagSelector from "@/components/TagSelector";
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
 import { getTagIndex, initCache } from "@/statics";
-import { TagInfo } from "@/statics/tag-index";
 import { GetStaticProps } from "next";
 
 type TagsProps = {

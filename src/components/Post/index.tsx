@@ -1,6 +1,6 @@
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
 import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
 import { PrevNextInfo } from "@/statics";
-import { TagInfo } from "@/statics/tag-index";
 import clsx from "clsx";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import Link from "next/link";

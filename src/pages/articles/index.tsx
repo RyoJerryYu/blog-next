@@ -1,9 +1,12 @@
 import PostList from "@/components/PostList";
+import {
+  TagInfo,
+  tagInfoListToMap,
+} from "@/core/indexing/index-building/tag-index-builder";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
 import { articleCache, getTagIndex, initCache, Post } from "@/statics";
-import { TagInfo, tagInfoListToMap } from "@/statics/tag-index";
 import { sortPostsByDate } from "@/statics/utils";
 import { GetStaticProps } from "next";
 

@@ -1,6 +1,6 @@
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
 import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
 import { Post } from "@/statics";
-import { TagInfo } from "@/statics/tag-index";
 import Link from "next/link";
 import React from "react";
 import RelativeTime from "../RelativeTime";

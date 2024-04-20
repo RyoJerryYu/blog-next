@@ -1,4 +1,5 @@
 import Post from "@/components/Post";
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
 import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
@@ -10,7 +11,6 @@ import {
   ideaCache,
   initCache,
 } from "@/statics";
-import { TagInfo } from "@/statics/tag-index";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 

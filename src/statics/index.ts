@@ -6,6 +6,10 @@
  */
 
 import {
+  TagIndex,
+  TagIndexBuilder,
+} from "@/core/indexing/index-building/tag-index-builder";
+import {
   defaultChain,
   devReloadingChain,
 } from "@/core/indexing/indexing-settings";
@@ -23,7 +27,6 @@ import { defaultStaticResourcePathMapper } from "@/core/indexing/path-mapping/st
 import dayjs from "dayjs";
 import { AliasIndex, AliasIndexBuilder } from "./alias-index";
 import { ClipData, loadClipData } from "./data";
-import { TagIndex, TagIndexBuilder } from "./tag-index";
 
 export type Post = {
   slug: string;
@@ -149,17 +152,24 @@ const buildTagIndex = (articleCache: PostCache, ideaCache: PostCache) => {
 
   const addPostSlugs = (postCache: PostCache, postType: "article" | "idea") => {
     postCache.getSlugs().forEach((slug) => {
+      const path = postCache.slugToPath(slug);
+      const file = postCache.slugToFile(slug);
       const meta = postCache.slugToMeta(slug);
       console.log(`add post ${slug}, meta ${JSON.stringify(meta)}`); // debug
-      meta.tags.forEach((tag) => {
-        tagIndexBuilder.addPostSlug(tag, postType, slug);
+      tagIndexBuilder.addResource({
+        pathMapping: {
+          filePath: file,
+          slug,
+          pagePath: path,
+        },
+        meta,
       });
     });
   };
 
   addPostSlugs(articleCache, "article");
   addPostSlugs(ideaCache, "idea");
-  return tagIndexBuilder.build();
+  return tagIndexBuilder.buildIndex();
 };
 /**
  * Build a alias index from a post cache.
@@ -218,7 +228,7 @@ export const initCache = async () => {
   cache = {
     articleCache,
     ideaCache,
-    tagIndex,
+    tagIndex: tagIndex.tag,
     aliasIndex,
     clipData,
   };
