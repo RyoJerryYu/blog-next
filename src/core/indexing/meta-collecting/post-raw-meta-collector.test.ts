@@ -1,7 +1,8 @@
+import { describeNoCI } from "@/utils/utils.test";
 import dayjs from "dayjs";
 import { PostRawMetaCollector } from "./post-raw-meta-collector";
 
-xdescribe("test parse from real", () => {
+describeNoCI("test parse from real", () => {
   const collector = new PostRawMetaCollector();
   it("should parse right path", async () => {
     const filePath = "public/content/articles/2020-01-27-Building-this-blog.md";

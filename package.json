@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "test": "jest",
+    "test-ci": "TEST_ENV=ci jest",
     "build": "next build && next export",
     "postbuild": "next-sitemap",
     "start": "next start",
