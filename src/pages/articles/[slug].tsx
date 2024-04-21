@@ -1,14 +1,15 @@
 import Comments from "@/components/Comments";
 import Post from "@/components/Post";
+import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
 import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import parseMdx from "@/plugins";
 import {
-  PrevNextInfo,
   articleCache,
   getPostMetaOrReload,
+  getPrevNextIndex,
   getTagIndex,
   initCache,
 } from "@/statics";
@@ -43,7 +44,12 @@ export const getStaticProps: GetStaticProps<
   const cache = articleCache();
   const slug = params!.slug;
   const meta = await getPostMetaOrReload(cache, slug);
-  const prevNextInfo = cache.slugToPrevNextInfo(slug);
+  const pagePath = cache.slugToPath(slug);
+  const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
+    "articles",
+    pagePath
+  );
+  // const prevNextInfo = cache.slugToPrevNextInfo(slug);
 
   const tags = getTagIndex().getTagsOf(meta.tags);
 

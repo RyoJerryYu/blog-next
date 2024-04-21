@@ -1,12 +1,13 @@
 import Post from "@/components/Post";
+import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
 import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
 import parseMdx from "@/plugins";
 import {
-  PrevNextInfo,
   getPostMetaOrReload,
+  getPrevNextIndex,
   getTagIndex,
   ideaCache,
   initCache,
@@ -40,7 +41,11 @@ export const getStaticProps: GetStaticProps<
   const cache = ideaCache();
   const slug = params!.slug;
   let meta = await getPostMetaOrReload(cache, slug);
-  const prevNextInfo = cache.slugToPrevNextInfo(slug);
+  const pagePath = cache.slugToPath(slug);
+  const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
+    "ideas",
+    pagePath
+  );
 
   const tagIndex = getTagIndex();
   const tags = tagIndex.getTagsOf(meta.tags);

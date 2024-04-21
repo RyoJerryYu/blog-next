@@ -18,6 +18,10 @@ import {
   buildIndex,
 } from "@/core/indexing/index-building/index-building";
 import {
+  PrevNextIndex,
+  PrevNextIndexBuilder,
+} from "@/core/indexing/index-building/prev-next-index-builder";
+import {
   TagIndex,
   TagIndexBuilder,
 } from "@/core/indexing/index-building/tag-index-builder";
@@ -49,18 +53,6 @@ export type Post = {
   pagePath: string; // start with slash
   mediaDir: string;
   meta: PostMeta;
-};
-export type PrevNextInfo = {
-  prevInfo: {
-    slug: string;
-    title: string;
-    path: string;
-  } | null;
-  nextInfo: {
-    slug: string;
-    title: string;
-    path: string;
-  } | null;
 };
 
 /**
@@ -114,33 +106,6 @@ class PostCache {
   listResources = () => {
     return this.getSlugs().map((slug) => this.slugToResource(slug));
   };
-  slugToPrevNextInfo = (slug: string) => {
-    const index = this.index.get(slug);
-    if (index === undefined || index < 0 || index >= this.cache.length) {
-      throw new Error(`Invalid slug: ${slug}`);
-    }
-    const resInfo: PrevNextInfo = {
-      prevInfo: null,
-      nextInfo: null,
-    };
-    if (index !== 0) {
-      const prevPost = this.cache[index - 1];
-      resInfo.prevInfo = {
-        slug: prevPost.slug,
-        title: prevPost.meta.title,
-        path: prevPost.pagePath,
-      };
-    }
-    if (index !== this.cache.length - 1) {
-      const nextPost = this.cache[index + 1];
-      resInfo.nextInfo = {
-        slug: nextPost.slug,
-        title: nextPost.meta.title,
-        path: nextPost.pagePath,
-      };
-    }
-    return resInfo;
-  };
   slugToPost = (slug: string) => {
     const index = this.index.get(slug);
     if (index === undefined || index < 0 || index >= this.cache.length) {
@@ -177,8 +142,8 @@ const loadPostCache = async (pathMapper: PostPathMapper) => {
  */
 const buildTagIndex = async (articleCache: PostCache, ideaCache: PostCache) => {
   const resources = {
-    article: articleCache.listResources(),
-    idea: ideaCache.listResources(),
+    articles: articleCache.listResources(),
+    ideas: ideaCache.listResources(),
   };
 
   const tagIndexBuilder = new TagIndexBuilder();
@@ -206,13 +171,26 @@ const buildAliasIndex = async (
   const resources: {
     [key in string]: Resource<ResourcePathMapping, ResourceMeta>[];
   } = {
-    article: articleCache.listResources(),
-    idea: ideaCache.listResources(),
-    staticResource: staticResources,
+    articles: articleCache.listResources(),
+    ideas: ideaCache.listResources(),
+    staticResources: staticResources,
   };
 
   const aliasIndexBuilder = new AliasIndexBuilder();
   return await buildIndex(resources, aliasIndexBuilder);
+};
+
+const buildPrevNextIndex = async (
+  articleCache: PostCache,
+  ideaCache: PostCache
+) => {
+  const resources = {
+    articles: articleCache.listResources(),
+    ideas: ideaCache.listResources(),
+  };
+
+  const prevNextIndexBuilder = new PrevNextIndexBuilder();
+  return await buildIndex(resources, prevNextIndexBuilder);
 };
 
 /**
@@ -225,6 +203,7 @@ type Cache = {
   tagIndex: TagIndex;
   aliasIndex: AliasIndex;
   clipData: ClipData[];
+  prevNexxtIndex: PrevNextIndex;
 };
 let cache: Cache | undefined = undefined;
 export const initCache = async () => {
@@ -237,6 +216,7 @@ export const initCache = async () => {
   const aliasIndex = await buildAliasIndex(articleCache, ideaCache);
   const clipDataIndexBuilder = new ClipDataIndexBuilder();
   const clipData = await buildIndex({}, clipDataIndexBuilder);
+  const prevNextIndex = await buildPrevNextIndex(articleCache, ideaCache);
 
   cache = {
     articleCache,
@@ -244,6 +224,7 @@ export const initCache = async () => {
     tagIndex: tagIndex.tag,
     aliasIndex: aliasIndex.alias,
     clipData: clipData.clipData,
+    prevNexxtIndex: prevNextIndex.prevNext,
   };
   return cache;
 };
@@ -269,6 +250,9 @@ export const getAliasIndex = () => {
 };
 export const getClipData = () => {
   return mustGetCache().clipData;
+};
+export const getPrevNextIndex = () => {
+  return mustGetCache().prevNexxtIndex;
 };
 
 // a helper function to get meta from cache or reload when development

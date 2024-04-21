@@ -1,6 +1,6 @@
+import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
 import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
-import { PrevNextInfo } from "@/statics";
 import clsx from "clsx";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import Link from "next/link";
@@ -37,12 +37,16 @@ const Post = ({ meta, source, tags, prevNextInfo }: PostProps) => {
         <div className="mt-4 mb-4 flex justify-center">
           {prevInfo && (
             <div className="ml-0 mr-auto">
-              <Link href={prevInfo.path}>{`<- ${prevInfo.title}`}</Link>
+              <Link
+                href={prevInfo.pathMapping.pagePath}
+              >{`<- ${prevInfo.meta.title}`}</Link>
             </div>
           )}
           {nextInfo && (
             <div className="mr-0 ml-auto">
-              <Link href={nextInfo.path}>{`${nextInfo.title} ->`}</Link>
+              <Link
+                href={nextInfo.pathMapping.pagePath}
+              >{`${nextInfo.meta.title} ->`}</Link>
             </div>
           )}
         </div>
