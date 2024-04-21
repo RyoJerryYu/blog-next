@@ -54,20 +54,22 @@ export type TagInfo = {
   postSlugs: PostSlugInfo[];
 };
 
-export type TagIndexBuilderMeta = ResourceMeta & {
+export type TagIndexMeta = ResourceMeta & {
   tags: string[];
 };
 
 export class TagIndexBuilder
-  implements
-    IndexBuilder<PagePathMapping, TagIndexBuilderMeta, TagIndex, "tag">
+  implements IndexBuilder<PagePathMapping, TagIndexMeta, TagIndex, "tag">
 {
   private readonly index: Map<string, TagInfo>;
   constructor() {
     this.index = new Map();
   }
 
-  addResource = (resource: Resource<PagePathMapping, TagIndexBuilderMeta>) => {
+  addResource = (
+    resourceType: string,
+    resource: Resource<PagePathMapping, TagIndexMeta>
+  ) => {
     const { slug: postSlug } = resource.pathMapping;
     const { tags } = resource.meta;
     tags.forEach((tag) => {

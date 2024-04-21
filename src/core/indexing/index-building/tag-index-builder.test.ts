@@ -1,9 +1,9 @@
 import { PagePathMapping } from "../path-mapping/path-mapping";
 import { Resource } from "./index-building";
-import { TagIndexBuilder, TagIndexBuilderMeta } from "./tag-index-builder";
+import { TagIndexBuilder, TagIndexMeta } from "./tag-index-builder";
 
 describe("test tag index", () => {
-  const input: Array<Resource<PagePathMapping, TagIndexBuilderMeta>> = [
+  const input: Array<Resource<PagePathMapping, TagIndexMeta>> = [
     {
       pathMapping: {
         filePath: "/content/articles/001.md",
@@ -37,7 +37,7 @@ describe("test tag index", () => {
   ];
   const builder = new TagIndexBuilder();
   input.forEach((item) => {
-    builder.addResource(item);
+    builder.addResource("articles", item);
   });
 
   const getSlugCases = [
@@ -61,8 +61,8 @@ describe("test tag index", () => {
       output: [],
     },
   ];
-  it.each(getSlugCases)("$name", ({ input, output }) => {
-    const tagIndex = builder.buildIndex();
+  it.each(getSlugCases)("$name", async ({ input, output }) => {
+    const tagIndex = await builder.buildIndex();
     const result = tagIndex.tag.getPostSlugs(input);
     expect(result).toEqual(output);
   });
@@ -76,8 +76,8 @@ describe("test tag index", () => {
       ],
     },
   ];
-  it.each(getTagsCases)("$name", ({ output }) => {
-    const tagIndex = builder.buildIndex();
+  it.each(getTagsCases)("$name", async ({ output }) => {
+    const tagIndex = await builder.buildIndex();
     const result = tagIndex.tag.getTags();
     for (let i = 0; i < result.length; i++) {
       let resultCompare = {
@@ -110,8 +110,8 @@ describe("test tag index", () => {
       output: [{ tag: "abc", slug: "abc", path: "/tags/abc", postCnt: 3 }],
     },
   ];
-  it.each(getTagsOfCases)("$name", ({ input, output }) => {
-    const tagIndex = builder.buildIndex();
+  it.each(getTagsOfCases)("$name", async ({ input, output }) => {
+    const tagIndex = await builder.buildIndex();
     const result = tagIndex.tag.getTagsOf(input);
     for (let i = 0; i < result.length; i++) {
       let resultCompare = {

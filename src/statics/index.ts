@@ -176,9 +176,10 @@ const loadPostCache = async (pathMapper: PostPathMapper) => {
  * This function has no side effects too.
  */
 const buildTagIndex = async (articleCache: PostCache, ideaCache: PostCache) => {
-  const resources: Resource<PagePathMapping, PostMeta>[] = [];
-  resources.push(...articleCache.listResources());
-  resources.push(...ideaCache.listResources());
+  const resources = {
+    article: articleCache.listResources(),
+    idea: ideaCache.listResources(),
+  };
 
   const tagIndexBuilder = new TagIndexBuilder();
   return await buildIndex(resources, tagIndexBuilder);
@@ -192,10 +193,6 @@ const buildAliasIndex = async (
   articleCache: PostCache,
   ideaCache: PostCache
 ) => {
-  const resources: Resource<ResourcePathMapping, ResourceMeta>[] = [];
-  resources.push(...articleCache.listResources());
-  resources.push(...ideaCache.listResources());
-
   const staticResourcePathMapping = await listPathMappings(
     defaultStaticResourcePathMapper()
   );
@@ -205,7 +202,14 @@ const buildAliasIndex = async (
       meta: {},
     };
   });
-  resources.push(...staticResources);
+
+  const resources: {
+    [key in string]: Resource<ResourcePathMapping, ResourceMeta>[];
+  } = {
+    article: articleCache.listResources(),
+    idea: ideaCache.listResources(),
+    staticResource: staticResources,
+  };
 
   const aliasIndexBuilder = new AliasIndexBuilder();
   return await buildIndex(resources, aliasIndexBuilder);
@@ -232,7 +236,7 @@ export const initCache = async () => {
   const tagIndex = await buildTagIndex(articleCache, ideaCache);
   const aliasIndex = await buildAliasIndex(articleCache, ideaCache);
   const clipDataIndexBuilder = new ClipDataIndexBuilder();
-  const clipData = await buildIndex([], clipDataIndexBuilder);
+  const clipData = await buildIndex({}, clipDataIndexBuilder);
 
   cache = {
     articleCache,

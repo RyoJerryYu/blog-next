@@ -9,7 +9,10 @@ export type Resource<PathMapping, Meta> = {
 };
 
 export type IndexBuilder<PathMapping, Meta, Index, Key extends string> = {
-  addResource: (resource: Resource<PathMapping, Meta>) => void;
+  addResource: (
+    resourceType: string,
+    resource: Resource<PathMapping, Meta>
+  ) => void;
   /**
    * Build the index object.
    * return object that would merge on the site index.
@@ -21,11 +24,13 @@ export type IndexBuilder<PathMapping, Meta, Index, Key extends string> = {
 };
 
 export const buildIndex = async <PathMapping, Meta, Index, Key extends string>(
-  resources: Resource<PathMapping, Meta>[],
+  resourcesMap: { [key in string]: Resource<PathMapping, Meta>[] },
   indexBuilder: IndexBuilder<PathMapping, Meta, Index, Key>
 ) => {
-  resources.forEach((resource) => {
-    indexBuilder.addResource(resource);
-  });
+  for (const [resourceType, resources] of Object.entries(resourcesMap)) {
+    resources.forEach((resource) => {
+      indexBuilder.addResource(resourceType, resource);
+    });
+  }
   return await indexBuilder.buildIndex();
 };

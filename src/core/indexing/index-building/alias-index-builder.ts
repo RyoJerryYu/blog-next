@@ -75,7 +75,10 @@ export class AliasIndexBuilder
   constructor() {
     this.index = new Map();
   }
-  addResource = (resource: Resource<ResourcePathMapping, ResourceMeta>) => {
+  addResource = (
+    resourceType: string,
+    resource: Resource<ResourcePathMapping, ResourceMeta>
+  ) => {
     const { pagePath } = resource.pathMapping;
     const aliases = aliasesFromPagePath(pagePath);
     for (const alias of aliases) {
