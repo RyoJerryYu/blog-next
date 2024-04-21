@@ -26,8 +26,10 @@ import {
   TagIndexBuilder,
 } from "@/core/indexing/index-building/tag-index-builder";
 import {
+  articlePostPathMapper,
   defaultChain,
   devReloadingChain,
+  ideaPostPathMapper,
 } from "@/core/indexing/indexing-settings";
 import {
   PostMeta,
@@ -39,11 +41,7 @@ import {
   ResourcePathMapping,
   listPathMappings,
 } from "@/core/indexing/path-mapping/path-mapping";
-import {
-  PostPathMapper,
-  articlePostPathMapper,
-  ideaPostPathMapper,
-} from "@/core/indexing/path-mapping/post-path-mapper";
+import { PostPathMapper } from "@/core/indexing/path-mapping/post-path-mapper";
 import { defaultStaticResourcePathMapper } from "@/core/indexing/path-mapping/static-resource-path-mapper";
 import dayjs from "dayjs";
 

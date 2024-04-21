@@ -42,19 +42,3 @@ export class PostPathMapper implements PathMapper<PagePathMapping> {
     return { filePath, pagePath, slug };
   };
 }
-
-export function articlePostPathMapper() {
-  return new PostPathMapper({
-    fileGlobPattern: "public/content/articles/*.md*",
-    slugFromFilename: (filename) => filename.match(/(\d*-)*(.*)/)?.[2],
-    pathPrefix: "/articles/",
-  });
-}
-
-export function ideaPostPathMapper() {
-  return new PostPathMapper({
-    fileGlobPattern: "public/content/ideas/*.md*",
-    slugFromFilename: (filename) => filename.match(/(\d*-)*(.*)/)?.[2],
-    pathPrefix: "/ideas/",
-  });
-}

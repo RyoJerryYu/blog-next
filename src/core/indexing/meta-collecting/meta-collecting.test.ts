@@ -1,6 +1,6 @@
 import {
-  CollectorChain,
   MetaCollector,
+  MetaCollectorChain,
   collectMetaForFilePath,
 } from "./meta-collecting";
 
@@ -60,7 +60,7 @@ describe("collectMetaForFilePath", () => {
       a: "5",
       c: "6",
     });
-    const chain: CollectorChain<A & B & C> = {
+    const chain: MetaCollectorChain<A & B & C> = {
       collectors: [abCollector, bcCollector, acCollector],
       defaultMeta: { a: "", b: "", c: "" },
     };

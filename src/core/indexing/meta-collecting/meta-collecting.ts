@@ -54,7 +54,7 @@ export interface MetaCollector<Meta extends ResourceMeta> {
 /**
  * A chain defines how meta of one type of resource should be collected.
  */
-export type CollectorChain<Meta extends ResourceMeta> = {
+export type MetaCollectorChain<Meta extends ResourceMeta> = {
   readonly collectors: MetaCollector<Meta>[];
   readonly defaultMeta: Meta;
 };
@@ -69,7 +69,7 @@ export type CollectorChain<Meta extends ResourceMeta> = {
  * @param defaultMeta the default meta data will be merged with the collected meta data
  */
 export async function collectMetaForFilePath<Meta extends ResourceMeta>(
-  { collectors, defaultMeta }: CollectorChain<Meta>,
+  { collectors, defaultMeta }: MetaCollectorChain<Meta>,
   filePath: string
 ): Promise<Meta> {
   let meta: Partial<Meta> = {};

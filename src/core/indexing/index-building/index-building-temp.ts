@@ -3,9 +3,14 @@
  * Indexes are isomerism. It should hold the data in thereseves.
  */
 
-import { defaultChain, staticResourceChain } from "../indexing-settings";
 import {
-  CollectorChain,
+  articlePostPathMapper,
+  defaultChain,
+  defaultStaticResourceChain,
+  ideaPostPathMapper,
+} from "../indexing-settings";
+import {
+  MetaCollectorChain,
   PostMeta,
   ResourceMeta,
   collectMetaForFilePath,
@@ -16,10 +21,7 @@ import {
   ResourcePathMapping,
   listPathMappings,
 } from "../path-mapping/path-mapping";
-import {
-  articlePostPathMapper,
-  ideaPostPathMapper,
-} from "../path-mapping/post-path-mapper";
+import {} from "../path-mapping/post-path-mapper";
 import { defaultStaticResourcePathMapper } from "../path-mapping/static-resource-path-mapper";
 import { Resource } from "./index-building";
 
@@ -108,7 +110,7 @@ type ResourcePipeline<
 > = {
   key: Key;
   pathMapper: PathMapper<PathMapping>;
-  collectorChain: CollectorChain<Meta>;
+  collectorChain: MetaCollectorChain<Meta>;
 };
 
 const articlePipeline: ResourcePipeline<"article", PagePathMapping, PostMeta> =
@@ -131,7 +133,7 @@ const staticPipeline: ResourcePipeline<
 > = {
   key: "static",
   pathMapper: defaultStaticResourcePathMapper(),
-  collectorChain: staticResourceChain,
+  collectorChain: defaultStaticResourceChain,
 };
 
 type ResourcePipelineListBase = readonly ResourcePipeline<string, any, any>[];
