@@ -16,6 +16,7 @@ Consider an `.md` file `public/content/articles/2020-02-02-hello-world.md`:
 ### Resource
 
 Anything that could be accessed by the browser, including pages and static resources.
+A resource would have a path mapping and a meta data.
 
 ### Page
 
