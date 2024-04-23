@@ -38,7 +38,11 @@ export class PostPathMapper implements PathMapper<PagePathMapping> {
     if (!slug) {
       throw new Error(`Invalid slug: ${slug}`);
     }
-    const pagePath = `${this.pathPrefix}${slug}`;
+    const pagePath = this.slugToPagePath(slug);
     return { filePath, pagePath, slug };
+  };
+
+  slugToPagePath = (slug: string) => {
+    return `${this.pathPrefix}${slug}`;
   };
 }
