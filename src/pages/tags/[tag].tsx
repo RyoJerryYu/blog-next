@@ -1,6 +1,10 @@
 import PostList from "@/components/PostList";
 import TagSelector from "@/components/TagSelector";
+import { Resource } from "@/core/indexing/index-building/index-building";
+import { sortPostsByDate } from "@/core/indexing/index-building/prev-next-index-builder";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
+import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
+import { PagePathMapping } from "@/core/indexing/path-mapping/path-mapping";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
@@ -12,7 +16,6 @@ import {
   Post,
   resourceToPost,
 } from "@/statics";
-import { sortPostsByDate } from "@/statics/utils";
 import { GetStaticPaths, GetStaticProps } from "next";
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -42,22 +45,22 @@ export const getStaticProps: GetStaticProps<
   const selectedTagInfo = tagIndex.getTagsOf([params!.tag])[0];
   const postSlugInfos = selectedTagInfo.postSlugs;
 
-  const posts: Set<Post> = new Set();
+  const posts: Set<Resource<PagePathMapping, PostMeta>> = new Set();
   const articleMap = articleResourceMap();
   const ideaMap = ideaResourceMap();
 
   postSlugInfos.forEach((slugInfo) => {
     if (slugInfo.postType === "article") {
       const resource = articleMap.pagePathToResource(slugInfo.postPagePath);
-      posts.add(resourceToPost(resource));
+      posts.add(resource);
     }
     if (slugInfo.postType === "idea") {
       const resource = ideaMap.pagePathToResource(slugInfo.postPagePath);
-      posts.add(resourceToPost(resource));
+      posts.add(resource);
     }
   });
 
-  const postArray = sortPostsByDate(Array.from(posts));
+  const postArray = sortPostsByDate(Array.from(posts)).map(resourceToPost);
 
   return {
     props: {

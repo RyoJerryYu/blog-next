@@ -17,7 +17,9 @@ export type PrevNextInfo = {
   nextInfo: PrevNextIndexResource | null;
 };
 // a helper function to sort posts by created at desc
-export const sortPostsByDate = (posts: PrevNextIndexResource[]) => {
+export const sortPostsByDate = <Resource extends PrevNextIndexResource>(
+  posts: Resource[]
+) => {
   return posts.sort((a, b) => {
     return dayjs(b.meta.created_at).unix() - dayjs(a.meta.created_at).unix();
   });
