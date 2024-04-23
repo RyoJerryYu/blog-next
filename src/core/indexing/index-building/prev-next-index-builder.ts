@@ -96,18 +96,19 @@ export class PrevNextIndexBuilder
   };
 
   buildIndex = async (): Promise<{ prevNext: PrevNextIndex }> => {
-    const prevNextList: { [resourceType: string]: SubPrevNextIndex } = {};
+    const subIndexByResourceType: { [resourceType: string]: SubPrevNextIndex } =
+      {};
     for (const resourceType in this.subPrevNextIndexBuilders) {
-      prevNextList[resourceType] =
+      subIndexByResourceType[resourceType] =
         this.subPrevNextIndexBuilders[resourceType].buildIndex();
     }
-    return { prevNext: new PrevNextIndex(prevNextList) };
+    return { prevNext: new PrevNextIndex(subIndexByResourceType) };
   };
 }
 
 export class PrevNextIndex {
   constructor(
-    readonly subIndexByResourceType: {
+    private readonly subIndexByResourceType: {
       [resourceType: string]: SubPrevNextIndex;
     }
   ) {}

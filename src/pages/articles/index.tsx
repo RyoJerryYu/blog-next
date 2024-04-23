@@ -9,23 +9,24 @@ import { Title } from "@/layouts/UniversalHead";
 import {
   Post,
   articleResourceMap,
+  getPrevNextIndex,
   getTagIndex,
   initCache,
   resourceToPost,
 } from "@/statics";
-import { sortPostsByDate } from "@/statics/utils";
 import { GetStaticProps } from "next";
 
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   await initCache();
   const articleMap = articleResourceMap();
-  const pagePaths = articleMap.listPagePaths();
+  const prevNextIndex = getPrevNextIndex();
 
-  // TODO: use prevNextIndex
-  const unsortedPosts = pagePaths
+  const pagePaths = prevNextIndex
+    .listResources("articles")
+    .map((r) => r.pathMapping.pagePath);
+  const posts = pagePaths
     .map(articleMap.pagePathToResource)
     .map(resourceToPost);
-  const posts = sortPostsByDate(unsortedPosts);
 
   const allTagsList = getTagIndex().getTags();
 

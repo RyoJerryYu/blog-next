@@ -8,12 +8,12 @@ import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
 import {
   Post,
+  getPrevNextIndex,
   getTagIndex,
   ideaResourceMap,
   initCache,
   resourceToPost,
 } from "@/statics";
-import { sortPostsByDate } from "@/statics/utils";
 import { GetStaticProps } from "next";
 
 type IdeasProps = {
@@ -24,11 +24,12 @@ type IdeasProps = {
 export const getStaticProps: GetStaticProps<IdeasProps> = async () => {
   await initCache();
   const ideaMap = ideaResourceMap();
-  const pagePaths = ideaMap.listPagePaths();
-  const unsortedPosts = pagePaths
-    .map(ideaMap.pagePathToResource)
-    .map(resourceToPost);
-  const posts = sortPostsByDate(unsortedPosts);
+  const prevNextIndex = getPrevNextIndex();
+
+  const pagePaths = prevNextIndex
+    .listResources("ideas")
+    .map((r) => r.pathMapping.pagePath);
+  const posts = pagePaths.map(ideaMap.pagePathToResource).map(resourceToPost);
 
   const allTags = getTagIndex().getTags();
   return {
