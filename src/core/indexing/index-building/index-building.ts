@@ -24,10 +24,10 @@ export type IndexBuilder<PathMapping, Meta, Index, Key extends string> = {
 };
 
 export const buildIndex = async <PathMapping, Meta, Index, Key extends string>(
-  resourcesMap: { [key in string]: Resource<PathMapping, Meta>[] },
+  resourceMapWithTypes: [string, Resource<PathMapping, Meta>[]][],
   indexBuilder: IndexBuilder<PathMapping, Meta, Index, Key>
 ) => {
-  for (const [resourceType, resources] of Object.entries(resourcesMap)) {
+  for (const [resourceType, resources] of resourceMapWithTypes) {
     resources.forEach((resource) => {
       indexBuilder.addResource(resourceType, resource);
     });

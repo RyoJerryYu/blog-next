@@ -1,4 +1,8 @@
-import { Resource, buildIndex } from "../index-building/index-building";
+import {
+  IndexBuilder,
+  Resource,
+  buildIndex,
+} from "../index-building/index-building";
 import {
   articlePostPathMapper,
   defaultChain,
@@ -139,6 +143,23 @@ export class ResourceMap<
   };
 }
 
+export const buildIndexFromResourceMaps = async <
+  PathMapping extends ResourcePathMapping,
+  Meta extends ResourceMeta,
+  Index,
+  IndexKey extends string
+>(
+  resourceMapsWithResourceType: [string, ResourceMap<PathMapping, Meta>][], // [resourceType, resourceMap]
+  indexBuilder: IndexBuilder<PathMapping, Meta, Index, IndexKey>
+) => {
+  const resourcesByType: [string, Readonly<Resource<PathMapping, Meta>>[]][] =
+    resourceMapsWithResourceType.map(([key, map]) => [
+      key,
+      map.listResources(),
+    ]);
+  return await buildIndex(resourcesByType, indexBuilder);
+};
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const pipeline_looks_like = {
@@ -202,8 +223,8 @@ const executePipeline = async (
   const indexPool: { [key: string]: any } = {};
   for (let { handleResources, builder } of pipline.indexBuilders) {
     // TODO: use resourceMaps in build index directly
-    const resources = Object.fromEntries(
-      handleResources.map((key) => [key, resourcePool[key].listResources()])
+    const resources: [string, Resource<any, any>[]][] = handleResources.map(
+      (key) => [key, resourcePool[key].listResources()]
     );
     const index = await buildIndex(resources, builder);
     indexPool[builder.key] = index;

@@ -13,10 +13,7 @@ import {
   ClipData,
   ClipDataIndexBuilder,
 } from "@/core/indexing/index-building/clip-data-index-builder";
-import {
-  Resource,
-  buildIndex,
-} from "@/core/indexing/index-building/index-building";
+import { Resource } from "@/core/indexing/index-building/index-building";
 import {
   PrevNextIndex,
   PrevNextIndexBuilder,
@@ -28,22 +25,19 @@ import {
 import {
   articlePostPathMapper,
   defaultChain,
+  defaultStaticResourceChain,
   devReloadingChain,
   ideaPostPathMapper,
 } from "@/core/indexing/indexing-settings";
 import {
   PostMeta,
-  ResourceMeta,
   collectMetaForFilePath,
 } from "@/core/indexing/meta-collecting/meta-collecting";
-import {
-  PagePathMapping,
-  ResourcePathMapping,
-  listPathMappings,
-} from "@/core/indexing/path-mapping/path-mapping";
+import { PagePathMapping } from "@/core/indexing/path-mapping/path-mapping";
 import { defaultStaticResourcePathMapper } from "@/core/indexing/path-mapping/static-resource-path-mapper";
 import {
   ResourceMap,
+  buildIndexFromResourceMaps,
   collectResourcesAsMap,
 } from "@/core/indexing/pipeline/pipeline";
 
@@ -71,66 +65,6 @@ export const resourceToPost = (
 };
 
 /**
- * Build a tag index (map<tagParam,slugs[]>) from a post cache.
- * This function has no side effects too.
- */
-const buildTagIndex = async (
-  articleCache: ResourceMap<PagePathMapping, PostMeta>,
-  ideaCache: ResourceMap<PagePathMapping, PostMeta>
-) => {
-  const resources = {
-    articles: articleCache.listResources(),
-    ideas: ideaCache.listResources(),
-  };
-
-  const tagIndexBuilder = new TagIndexBuilder();
-  return await buildIndex(resources, tagIndexBuilder);
-};
-/**
- * Build a alias index from a post cache.
- * Mainly used for
- * This function has no side effects too.
- */
-const buildAliasIndex = async (
-  articleCache: ResourceMap<PagePathMapping, PostMeta>,
-  ideaCache: ResourceMap<PagePathMapping, PostMeta>
-) => {
-  const staticResourcePathMapping = await listPathMappings(
-    defaultStaticResourcePathMapper()
-  );
-  const staticResources = staticResourcePathMapping.map((mapping) => {
-    return {
-      pathMapping: mapping,
-      meta: {},
-    };
-  });
-
-  const resources: {
-    [key in string]: Resource<ResourcePathMapping, ResourceMeta>[];
-  } = {
-    articles: articleCache.listResources(),
-    ideas: ideaCache.listResources(),
-    staticResources: staticResources,
-  };
-
-  const aliasIndexBuilder = new AliasIndexBuilder();
-  return await buildIndex(resources, aliasIndexBuilder);
-};
-
-const buildPrevNextIndex = async (
-  articleCache: ResourceMap<PagePathMapping, PostMeta>,
-  ideaCache: ResourceMap<PagePathMapping, PostMeta>
-) => {
-  const resources = {
-    articles: articleCache.listResources(),
-    ideas: ideaCache.listResources(),
-  };
-
-  const prevNextIndexBuilder = new PrevNextIndexBuilder();
-  return await buildIndex(resources, prevNextIndexBuilder);
-};
-
-/**
  * The module variable as a lazy init singleton
  * Init once, and all types of caches are inited.
  */
@@ -155,13 +89,38 @@ export const initCache = async () => {
     pathMapper: ideaPostPathMapper(),
     collectorChain: defaultChain,
   });
-  const tagIndex = await buildTagIndex(articleResourceMap, ideaResourceMap);
-  const aliasIndex = await buildAliasIndex(articleResourceMap, ideaResourceMap);
-  const clipDataIndexBuilder = new ClipDataIndexBuilder();
-  const clipData = await buildIndex({}, clipDataIndexBuilder);
-  const prevNextIndex = await buildPrevNextIndex(
-    articleResourceMap,
-    ideaResourceMap
+  const staticResourceMap = await collectResourcesAsMap({
+    pathMapper: defaultStaticResourcePathMapper(),
+    collectorChain: defaultStaticResourceChain,
+  });
+
+  const tagIndex = await buildIndexFromResourceMaps(
+    [
+      ["articles", articleResourceMap],
+      ["ideas", ideaResourceMap],
+    ],
+    new TagIndexBuilder()
+  );
+
+  const aliasIndex = await buildIndexFromResourceMaps(
+    [
+      ["articles", articleResourceMap],
+      ["ideas", ideaResourceMap],
+      ["staticResources", staticResourceMap],
+    ],
+    new AliasIndexBuilder()
+  );
+  const clipData = await buildIndexFromResourceMaps(
+    [],
+    new ClipDataIndexBuilder()
+  );
+
+  const prevNextIndex = await buildIndexFromResourceMaps(
+    [
+      ["articles", articleResourceMap],
+      ["ideas", ideaResourceMap],
+    ],
+    new PrevNextIndexBuilder()
   );
 
   cache = {
