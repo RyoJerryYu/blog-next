@@ -143,6 +143,9 @@ export class ResourceMap<
   };
 }
 
+/**
+ * Build index from a list of resourceMaps.
+ */
 export const buildIndexFromResourceMaps = async <
   PathMapping extends ResourcePathMapping,
   Meta extends ResourceMeta,
