@@ -119,7 +119,7 @@ export class ResourceMap<
     return Array.from(this.listResources(), (resource) => resource.meta);
   };
 
-  private pagePathToResource = (
+  pagePathToResource = (
     pagePath: string
   ): Readonly<Resource<PathMapping, Meta>> => {
     const resource = this.pagePath2Resource.get(pagePath);
@@ -130,12 +130,12 @@ export class ResourceMap<
   };
   pagePathTo = <T extends keyof PathMapping>(
     key: T,
-    path: string
+    pagePath: string
   ): PathMapping[T] => {
-    return this.pagePathToResource(path).pathMapping[key];
+    return this.pagePathToResource(pagePath).pathMapping[key];
   };
-  pagePathToMeta = (path: string): Meta => {
-    return this.pagePathToResource(path).meta;
+  pagePathToMeta = (pagePath: string): Meta => {
+    return this.pagePathToResource(pagePath).meta;
   };
 }
 

@@ -1,6 +1,7 @@
 import Post from "@/components/Post";
 import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
+import { ideaPostPathMapper } from "@/core/indexing/indexing-settings";
 import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
@@ -9,7 +10,7 @@ import {
   getPostMetaOrReload,
   getPrevNextIndex,
   getTagIndex,
-  ideaCache,
+  ideaResourceMap,
   initCache,
 } from "@/statics";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -17,10 +18,10 @@ import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   await initCache();
-  const cache = ideaCache();
-  const path = cache.getSlugs().map(cache.slugToPath);
+  const ideaMap = ideaResourceMap();
+  const pagePaths = ideaMap.listPagePaths();
   return {
-    paths: path,
+    paths: pagePaths,
     fallback: false,
   };
 };
@@ -38,10 +39,10 @@ export const getStaticProps: GetStaticProps<
   { slug: string }
 > = async ({ params }) => {
   await initCache();
-  const cache = ideaCache();
+  const ideaMap = ideaResourceMap();
   const slug = params!.slug;
-  let meta = await getPostMetaOrReload(cache, slug);
-  const pagePath = cache.slugToPath(slug);
+  const pagePath = ideaPostPathMapper().slugToPagePath(slug);
+  let meta = await getPostMetaOrReload(ideaMap, pagePath);
   const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
     "ideas",
     pagePath
@@ -51,7 +52,7 @@ export const getStaticProps: GetStaticProps<
   const tags = tagIndex.getTagsOf(meta.tags);
   const source = await parseMdx(meta.content, {
     remarkObsidianRichOptions: {
-      baseDir: cache.slugToMediaDir(slug),
+      baseDir: "",
     },
   });
   return {

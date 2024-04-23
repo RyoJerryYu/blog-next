@@ -29,6 +29,7 @@ type PostType = "article" | "idea";
 type PostSlugInfo = {
   postType: PostType;
   postSlug: string;
+  postPagePath: string;
 };
 
 /**
@@ -38,13 +39,19 @@ type PostSlugInfo = {
  *
  * 先保持接口不变性，后续再进行外部重构
  */
-const postPathMappingToPostSlugInfo = (pathMapping: PagePathMapping) => {
+const postPathMappingToPostSlugInfo = (
+  pathMapping: PagePathMapping
+): PostSlugInfo => {
   const postType: "article" | "idea" = pathMapping.pagePath.startsWith(
     "/articles"
   )
     ? "article"
     : "idea";
-  return { postType, postSlug: pathMapping.slug };
+  return {
+    postType,
+    postSlug: pathMapping.slug,
+    postPagePath: pathMapping.pagePath,
+  };
 };
 
 export type TagInfo = {

@@ -43,7 +43,7 @@ import {
 } from "@/core/indexing/path-mapping/path-mapping";
 import { PostPathMapper } from "@/core/indexing/path-mapping/post-path-mapper";
 import { defaultStaticResourcePathMapper } from "@/core/indexing/path-mapping/static-resource-path-mapper";
-import dayjs from "dayjs";
+import { ResourceMap } from "@/core/indexing/pipeline/pipeline";
 
 export type Post = {
   slug: string;
@@ -54,64 +54,19 @@ export type Post = {
 };
 
 /**
- * A class holding the cache of all pages,
- * with some helper methods.
- * It is immutable, so that it can be safely shared.
- *
- * Note that PageCache is not a "traditional singleton class",
- * but ensuring singleton by using a module variable.
- * Doing so could provide better testability.
- *
- * (Well, mostly because I don't like the traditional singleton
- * pattern.)
+ * Temp function to convert a resource to a post
  */
-class PostCache {
-  cache: Post[]; // posts in order
-  index: Map<string, number>; // map<slug, index>
-  constructor(c: Post[]) {
-    this.cache = c;
-    this.index = new Map();
-    for (let i = 0; i < c.length; i++) {
-      this.index.set(c[i].slug, i);
-    }
-  }
-
-  getSlugs = () => {
-    return Array.from(this.index.keys());
+export const resourceToPost = (
+  resource: Resource<PagePathMapping, PostMeta>
+): Post => {
+  return {
+    slug: resource.pathMapping.slug,
+    filePath: resource.pathMapping.filePath,
+    pagePath: resource.pathMapping.pagePath,
+    mediaDir: "",
+    meta: resource.meta,
   };
-  slugToFile = (slug: string) => {
-    return this.slugToPost(slug).filePath;
-  };
-  slugToMediaDir = (slug: string) => {
-    return this.slugToPost(slug).mediaDir;
-  };
-  slugToPath = (slug: string) => {
-    return this.slugToPost(slug).pagePath;
-  };
-  slugToMeta = (slug: string) => {
-    return this.slugToPost(slug).meta;
-  };
-  slugToResource = (slug: string): Resource<PagePathMapping, PostMeta> => {
-    return {
-      pathMapping: {
-        pagePath: this.slugToPath(slug),
-        filePath: this.slugToFile(slug),
-        slug: slug,
-      },
-      meta: this.slugToMeta(slug),
-    };
-  };
-  listResources = () => {
-    return this.getSlugs().map((slug) => this.slugToResource(slug));
-  };
-  slugToPost = (slug: string) => {
-    const index = this.index.get(slug);
-    if (index === undefined || index < 0 || index >= this.cache.length) {
-      throw new Error(`Invalid slug: ${slug}`);
-    }
-    return this.cache[index];
-  };
-}
+};
 
 /**
  * create a cache of static files
@@ -119,26 +74,28 @@ class PostCache {
  * but it is very slow.
  */
 const loadPostCache = async (pathMapper: PostPathMapper) => {
-  const post: Post[] = [];
+  const post: Resource<PagePathMapping, PostMeta>[] = [];
   const pathMappings = await listPathMappings(pathMapper);
   const chain = defaultChain;
   for (let i = 0; i < pathMappings.length; i++) {
-    const { filePath, slug, pagePath } = pathMappings[i];
-    const mediaDir = "";
+    const { filePath } = pathMappings[i];
     const meta = await collectMetaForFilePath(chain, filePath);
-    post.push({ slug, filePath, mediaDir, pagePath, meta });
+    post.push({
+      pathMapping: pathMappings[i],
+      meta: meta,
+    });
   }
-  post.sort((a, b) => {
-    return dayjs(a.meta.created_at).isBefore(b.meta.created_at) ? 1 : -1;
-  });
-  return new PostCache(post);
+  return new ResourceMap(post);
 };
 
 /**
  * Build a tag index (map<tagParam,slugs[]>) from a post cache.
  * This function has no side effects too.
  */
-const buildTagIndex = async (articleCache: PostCache, ideaCache: PostCache) => {
+const buildTagIndex = async (
+  articleCache: ResourceMap<PagePathMapping, PostMeta>,
+  ideaCache: ResourceMap<PagePathMapping, PostMeta>
+) => {
   const resources = {
     articles: articleCache.listResources(),
     ideas: ideaCache.listResources(),
@@ -153,8 +110,8 @@ const buildTagIndex = async (articleCache: PostCache, ideaCache: PostCache) => {
  * This function has no side effects too.
  */
 const buildAliasIndex = async (
-  articleCache: PostCache,
-  ideaCache: PostCache
+  articleCache: ResourceMap<PagePathMapping, PostMeta>,
+  ideaCache: ResourceMap<PagePathMapping, PostMeta>
 ) => {
   const staticResourcePathMapping = await listPathMappings(
     defaultStaticResourcePathMapper()
@@ -179,8 +136,8 @@ const buildAliasIndex = async (
 };
 
 const buildPrevNextIndex = async (
-  articleCache: PostCache,
-  ideaCache: PostCache
+  articleCache: ResourceMap<PagePathMapping, PostMeta>,
+  ideaCache: ResourceMap<PagePathMapping, PostMeta>
 ) => {
   const resources = {
     articles: articleCache.listResources(),
@@ -196,8 +153,8 @@ const buildPrevNextIndex = async (
  * Init once, and all types of caches are inited.
  */
 type Cache = {
-  articleCache: PostCache;
-  ideaCache: PostCache;
+  articleResourceMap: ResourceMap<PagePathMapping, PostMeta>;
+  ideaResourceMap: ResourceMap<PagePathMapping, PostMeta>;
   tagIndex: TagIndex;
   aliasIndex: AliasIndex;
   clipData: ClipData[];
@@ -208,17 +165,20 @@ export const initCache = async () => {
   if (cache) {
     return cache;
   }
-  const articleCache = await loadPostCache(articlePostPathMapper());
-  const ideaCache = await loadPostCache(ideaPostPathMapper());
-  const tagIndex = await buildTagIndex(articleCache, ideaCache);
-  const aliasIndex = await buildAliasIndex(articleCache, ideaCache);
+  const articleResourceMap = await loadPostCache(articlePostPathMapper());
+  const ideaResourceMap = await loadPostCache(ideaPostPathMapper());
+  const tagIndex = await buildTagIndex(articleResourceMap, ideaResourceMap);
+  const aliasIndex = await buildAliasIndex(articleResourceMap, ideaResourceMap);
   const clipDataIndexBuilder = new ClipDataIndexBuilder();
   const clipData = await buildIndex({}, clipDataIndexBuilder);
-  const prevNextIndex = await buildPrevNextIndex(articleCache, ideaCache);
+  const prevNextIndex = await buildPrevNextIndex(
+    articleResourceMap,
+    ideaResourceMap
+  );
 
   cache = {
-    articleCache,
-    ideaCache,
+    articleResourceMap: articleResourceMap,
+    ideaResourceMap: ideaResourceMap,
     tagIndex: tagIndex.tag,
     aliasIndex: aliasIndex.alias,
     clipData: clipData.clipData,
@@ -234,11 +194,11 @@ const mustGetCache = () => {
   return cache;
 };
 
-export const articleCache = () => {
-  return mustGetCache().articleCache;
+export const articleResourceMap = () => {
+  return mustGetCache().articleResourceMap;
 };
-export const ideaCache = () => {
-  return mustGetCache().ideaCache;
+export const ideaResourceMap = () => {
+  return mustGetCache().ideaResourceMap;
 };
 export const getTagIndex = () => {
   return mustGetCache().tagIndex;
@@ -254,15 +214,18 @@ export const getPrevNextIndex = () => {
 };
 
 // a helper function to get meta from cache or reload when development
-export const getPostMetaOrReload = async (cache: PostCache, slug: string) => {
+export const getPostMetaOrReload = async (
+  cache: ResourceMap<PagePathMapping, PostMeta>,
+  pagePath: string
+) => {
   if (process.env.NODE_ENV === "development") {
     // for reloading in development
-    console.log(`reloading on dev ${slug}`);
-    const filePath = cache.slugToFile(slug);
+    console.log(`reloading on dev ${pagePath}`);
+    const filePath = cache.pagePathTo("filePath", pagePath);
     const chain = devReloadingChain;
     const meta = await collectMetaForFilePath(chain, filePath);
     return meta;
   } else {
-    return cache.slugToMeta(slug);
+    return cache.pagePathToMeta(pagePath);
   }
 };

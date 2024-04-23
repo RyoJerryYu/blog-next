@@ -5,11 +5,12 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
 import {
-  articleCache,
+  articleResourceMap,
   getTagIndex,
-  ideaCache,
+  ideaResourceMap,
   initCache,
   Post,
+  resourceToPost,
 } from "@/statics";
 import { sortPostsByDate } from "@/statics/utils";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -42,15 +43,17 @@ export const getStaticProps: GetStaticProps<
   const postSlugInfos = selectedTagInfo.postSlugs;
 
   const posts: Set<Post> = new Set();
-  const articleCaches = articleCache();
-  const ideaCaches = ideaCache();
+  const articleMap = articleResourceMap();
+  const ideaMap = ideaResourceMap();
 
   postSlugInfos.forEach((slugInfo) => {
     if (slugInfo.postType === "article") {
-      posts.add(articleCaches.slugToPost(slugInfo.postSlug));
+      const resource = articleMap.pagePathToResource(slugInfo.postPagePath);
+      posts.add(resourceToPost(resource));
     }
     if (slugInfo.postType === "idea") {
-      posts.add(ideaCaches.slugToPost(slugInfo.postSlug));
+      const resource = ideaMap.pagePathToResource(slugInfo.postPagePath);
+      posts.add(resourceToPost(resource));
     }
   });
 

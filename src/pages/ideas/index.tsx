@@ -6,7 +6,13 @@ import {
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import { getTagIndex, ideaCache, initCache, Post } from "@/statics";
+import {
+  Post,
+  getTagIndex,
+  ideaResourceMap,
+  initCache,
+  resourceToPost,
+} from "@/statics";
 import { sortPostsByDate } from "@/statics/utils";
 import { GetStaticProps } from "next";
 
@@ -17,9 +23,12 @@ type IdeasProps = {
 
 export const getStaticProps: GetStaticProps<IdeasProps> = async () => {
   await initCache();
-  const cache = ideaCache();
-  const slugs = cache.getSlugs();
-  const posts = sortPostsByDate(slugs.map(cache.slugToPost));
+  const ideaMap = ideaResourceMap();
+  const pagePaths = ideaMap.listPagePaths();
+  const unsortedPosts = pagePaths
+    .map(ideaMap.pagePathToResource)
+    .map(resourceToPost);
+  const posts = sortPostsByDate(unsortedPosts);
 
   const allTags = getTagIndex().getTags();
   return {

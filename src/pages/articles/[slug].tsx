@@ -2,12 +2,13 @@ import Comments from "@/components/Comments";
 import Post from "@/components/Post";
 import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
+import { articlePostPathMapper } from "@/core/indexing/indexing-settings";
 import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import parseMdx from "@/plugins";
 import {
-  articleCache,
+  articleResourceMap,
   getPostMetaOrReload,
   getPrevNextIndex,
   getTagIndex,
@@ -19,10 +20,10 @@ import { MDXRemoteSerializeResult } from "next-mdx-remote";
 export const getStaticPaths: GetStaticPaths = async () => {
   console.log(`onGetStaticPaths:`);
   await initCache();
-  const cache = articleCache();
-  const paths = cache.getSlugs().map(cache.slugToPath);
+  const articleMap = articleResourceMap();
+  const pagePaths = articleMap.listPagePaths();
   return {
-    paths,
+    paths: pagePaths,
     fallback: false,
   };
 };
@@ -41,21 +42,20 @@ export const getStaticProps: GetStaticProps<
 > = async ({ params }) => {
   console.log(`onGetStaticProps: ${params?.slug}`);
   await initCache();
-  const cache = articleCache();
+  const articleMap = articleResourceMap();
   const slug = params!.slug;
-  const meta = await getPostMetaOrReload(cache, slug);
-  const pagePath = cache.slugToPath(slug);
+  const pagePath = articlePostPathMapper().slugToPagePath(slug);
+  const meta = await getPostMetaOrReload(articleMap, pagePath);
   const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
     "articles",
     pagePath
   );
-  // const prevNextInfo = cache.slugToPrevNextInfo(slug);
 
   const tags = getTagIndex().getTagsOf(meta.tags);
 
   const source = await parseMdx(meta.content, {
     remarkObsidianRichOptions: {
-      baseDir: cache.slugToMediaDir(slug),
+      baseDir: "",
     },
   });
 

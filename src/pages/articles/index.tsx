@@ -6,15 +6,26 @@ import {
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import { articleCache, getTagIndex, initCache, Post } from "@/statics";
+import {
+  Post,
+  articleResourceMap,
+  getTagIndex,
+  initCache,
+  resourceToPost,
+} from "@/statics";
 import { sortPostsByDate } from "@/statics/utils";
 import { GetStaticProps } from "next";
 
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   await initCache();
-  const cache = articleCache();
-  const slugs = cache.getSlugs();
-  const posts = sortPostsByDate(slugs.map(cache.slugToPost));
+  const articleMap = articleResourceMap();
+  const pagePaths = articleMap.listPagePaths();
+
+  // TODO: use prevNextIndex
+  const unsortedPosts = pagePaths
+    .map(articleMap.pagePathToResource)
+    .map(resourceToPost);
+  const posts = sortPostsByDate(unsortedPosts);
 
   const allTagsList = getTagIndex().getTags();
 
