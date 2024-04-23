@@ -41,9 +41,11 @@ import {
   ResourcePathMapping,
   listPathMappings,
 } from "@/core/indexing/path-mapping/path-mapping";
-import { PostPathMapper } from "@/core/indexing/path-mapping/post-path-mapper";
 import { defaultStaticResourcePathMapper } from "@/core/indexing/path-mapping/static-resource-path-mapper";
-import { ResourceMap } from "@/core/indexing/pipeline/pipeline";
+import {
+  ResourceMap,
+  collectResourcesAsMap,
+} from "@/core/indexing/pipeline/pipeline";
 
 export type Post = {
   slug: string;
@@ -66,26 +68,6 @@ export const resourceToPost = (
     mediaDir: "",
     meta: resource.meta,
   };
-};
-
-/**
- * create a cache of static files
- * This function has no side effect,
- * but it is very slow.
- */
-const loadPostCache = async (pathMapper: PostPathMapper) => {
-  const post: Resource<PagePathMapping, PostMeta>[] = [];
-  const pathMappings = await listPathMappings(pathMapper);
-  const chain = defaultChain;
-  for (let i = 0; i < pathMappings.length; i++) {
-    const { filePath } = pathMappings[i];
-    const meta = await collectMetaForFilePath(chain, filePath);
-    post.push({
-      pathMapping: pathMappings[i],
-      meta: meta,
-    });
-  }
-  return new ResourceMap(post);
 };
 
 /**
@@ -165,8 +147,14 @@ export const initCache = async () => {
   if (cache) {
     return cache;
   }
-  const articleResourceMap = await loadPostCache(articlePostPathMapper());
-  const ideaResourceMap = await loadPostCache(ideaPostPathMapper());
+  const articleResourceMap = await collectResourcesAsMap({
+    pathMapper: articlePostPathMapper(),
+    collectorChain: defaultChain,
+  });
+  const ideaResourceMap = await collectResourcesAsMap({
+    pathMapper: ideaPostPathMapper(),
+    collectorChain: defaultChain,
+  });
   const tagIndex = await buildTagIndex(articleResourceMap, ideaResourceMap);
   const aliasIndex = await buildAliasIndex(articleResourceMap, ideaResourceMap);
   const clipDataIndexBuilder = new ClipDataIndexBuilder();
