@@ -1,3 +1,4 @@
+import { MergeList } from "@/utils/type-utils";
 import {
   IndexBuilder,
   Resource,
@@ -271,37 +272,95 @@ const staticPipeline: ResourceChain<ResourcePathMapping, ResourceMeta> = {
   pathMapper: defaultStaticResourcePathMapper(),
   collectorChain: defaultStaticResourceChain,
 };
-
-type ResourcePipelineListBase = readonly ResourceChain<any, any>[];
-
 const pipelines = [articlePipeline, ideaPipeline, staticPipeline] as const;
 
-// type MergeList<L extends readonly any[]> = L extends readonly [
-//   infer First,
-//   ...infer Remains
-// ]
-//   ? First & MergeList<Remains>
-//   : {};
+//////////////////////
 
-// type ResourcePipelineByKey<
-//   Key extends string,
-//   PathMapping extends ResourcePathMapping,
-//   Meta extends ResourceMeta
-// > = {
-//   [K in Key]: ResourceChain<K, PathMapping, Meta>;
-// };
+/**
+ * {resourceType: ResourceChain<PathMapping, Meta>}
+ */
+type ResourceChainByResourceType<
+  ResourceType extends string,
+  PathMapping extends ResourcePathMapping,
+  Meta extends ResourceMeta
+> = { [resourceType in ResourceType]: ResourceChain<PathMapping, Meta> };
 
-// type ResourcePipelinesMapByKey<
-//   ResourcePipelineList extends ResourcePipelineListBase
-// > = MergeList<{
-//   [I in keyof ResourcePipelineList]: ResourcePipelineList[I] extends ResourceChain<
-//     infer Key,
-//     infer PathMapping,
-//     infer Meta
-//   >
-//     ? ResourcePipelineByKey<Key, PathMapping, Meta>
-//     : never;
-// }>;
+/**
+ * The base type of a tuple, Used for extending.
+ * [{resourceType: ResourceChain<PathMapping, Meta>}, ...] as const;
+ */
+type ResourceChainListBase = readonly ResourceChainByResourceType<
+  string,
+  any,
+  any
+>[];
+
+/**
+ * {
+ *   resource_type1: ResourceChain1,
+ *   resource_type2: ResourceChain2,
+ * }
+ */
+type ResourceChainsByKey<ResourceChainList extends ResourceChainListBase> =
+  MergeList<ResourceChainList>;
+
+/**
+ * {
+ *   resource_type1: ResourceMap<PathMapping1, Meta1>,
+ *   resource_type2: ResourceMap<PathMapping2, Meta2>,
+ * }
+ */
+type ResourceMapsByKey<ResourceChainList extends ResourceChainListBase> =
+  MergeList<{
+    [I in keyof ResourceChainList]: ResourceChainList[I] extends ResourceChainByResourceType<
+      infer ResourceType,
+      infer PathMapping,
+      infer Meta
+    >
+      ? { [resourceType in ResourceType]: ResourceMap<PathMapping, Meta> }
+      : never;
+  }>;
+
+const collectResourcesAsMapByKey = async <
+  ResourceChainList extends ResourceChainListBase
+>(
+  resourceChainsWithKey: ResourceChainsByKey<ResourceChainList>
+): Promise<ResourceMapsByKey<ResourceChainList>> => {
+  const resourcePool: { [key: string]: ResourceMap<any, any> } = {};
+  for (let [resourceType, resourceChain] of Object.entries(
+    resourceChainsWithKey
+  )) {
+    const t = await collectResourcesAsMap(resourceChain);
+    resourcePool[resourceType] = t;
+  }
+  return resourcePool as any;
+};
+
+/////////////////////////////////////////////
+const resourcePoolArg = {
+  article: {
+    pathMapper: articlePostPathMapper(),
+    collectorChain: defaultChain,
+  },
+  idea: {
+    pathMapper: ideaPostPathMapper(),
+    collectorChain: defaultChain,
+  },
+  static: {
+    pathMapper: defaultStaticResourcePathMapper(),
+    collectorChain: defaultStaticResourceChain,
+  },
+};
+const resourcePool =
+  collectResourcesAsMapByKey<
+    readonly [
+      { article: typeof articlePipeline },
+      { idea: typeof ideaPipeline },
+      { static: typeof staticPipeline }
+    ]
+  >(resourcePoolArg);
+
+///////////////////////////////////////////////////////////////////////
 
 // const resourcePipelinesMapByKeyExample: ResourcePipelinesMapByKey<
 //   typeof pipelines
