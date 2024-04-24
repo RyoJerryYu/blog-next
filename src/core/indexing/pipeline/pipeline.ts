@@ -362,6 +362,41 @@ const resourcePool =
 
 ///////////////////////////////////////////////////////////////////////
 
+const pipeline_looks_like_again = {
+  resourceChains: {
+    resource_type1: {
+      pathMapper: articlePostPathMapper(),
+      collectorChain: defaultChain,
+    },
+    resource_type2: {
+      pathMapper: ideaPostPathMapper(),
+      collectorChain: defaultChain,
+    },
+  },
+  indexBuilders: [
+    {
+      handleResources: ["resource_type1"],
+      builder: {},
+    },
+  ],
+};
+
+// TODO: Here Start
+// type IndexBuilderWithHandleResources<
+//   ResourceChainList extends ResourceChainListBase,
+//   HandleResourceType extends keyof ResourceChainsByKey<ResourceChainList>
+// > = {
+//   handleResources: HandleResourceType[];
+//   builder: ResourceChainList[HandleResourceType] extends ResourceChain<>;
+// };
+
+// type Pipeline<ResourceChainList extends ResourceChainListBase> = {
+//   resourceChains: ResourceChainsByKey<ResourceChainList>;
+//   indexBuilders: {
+//     handleResources: (keyof ResourceChainsByKey<ResourceChainList>)[];
+//     builder: IndexBuilder<any, any, any, any>;
+//   }[];
+// };
 // const resourcePipelinesMapByKeyExample: ResourcePipelinesMapByKey<
 //   typeof pipelines
 // > = {
