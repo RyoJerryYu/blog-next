@@ -7,7 +7,7 @@ import {
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import { Post, getClipData, getTagIndex, initCache } from "@/statics";
+import { PostResource, getClipData, getTagIndex, initCache } from "@/statics";
 import { GetStaticProps } from "next";
 
 type ClipsProps = {
@@ -29,12 +29,13 @@ export const getStaticProps: GetStaticProps<ClipsProps> = async () => {
 };
 
 export default function ClipsPage(props: ClipsProps) {
-  const clipDataToPostCompatible = (clipData: ClipData): Post => {
+  const clipDataToPostCompatible = (clipData: ClipData): PostResource => {
     return {
-      slug: clipData.id,
-      filePath: clipData.url,
-      mediaDir: "",
-      pagePath: clipData.url,
+      pathMapping: {
+        slug: clipData.id,
+        filePath: clipData.url,
+        pagePath: clipData.url,
+      },
       meta: {
         title: clipData.title,
         created_at: clipData.created_time,
@@ -56,11 +57,7 @@ export default function ClipsPage(props: ClipsProps) {
       <Title>Clips</Title>
       <DefaultLayout>
         <MainWidth>
-          <PostList
-            posts={posts}
-            allTags={allTagsMap}
-            getUrl={(clipData) => clipData.pagePath}
-          />
+          <PostList posts={posts} allTags={allTagsMap} />
         </MainWidth>
       </DefaultLayout>
     </>

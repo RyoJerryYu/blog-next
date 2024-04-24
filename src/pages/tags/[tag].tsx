@@ -13,8 +13,7 @@ import {
   getTagIndex,
   ideaResourceMap,
   initCache,
-  Post,
-  resourceToPost,
+  PostResource,
 } from "@/statics";
 import { GetStaticPaths, GetStaticProps } from "next";
 
@@ -33,7 +32,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 type TagPageProps = {
   allTagInfos: TagInfo[];
   selectedTagInfo: TagInfo;
-  posts: Post[];
+  posts: PostResource[];
 };
 export const getStaticProps: GetStaticProps<
   TagPageProps,
@@ -60,7 +59,7 @@ export const getStaticProps: GetStaticProps<
     }
   });
 
-  const postArray = sortPostsByDate(Array.from(posts)).map(resourceToPost);
+  const postArray = sortPostsByDate(Array.from(posts));
 
   return {
     props: {
@@ -85,11 +84,7 @@ const TagPage = (props: TagPageProps) => {
             tags={props.allTagInfos}
             selectedTagSlug={props.selectedTagInfo.slug}
           />
-          <PostList
-            posts={props.posts}
-            allTags={tagInfoMap}
-            getUrl={(post) => post.pagePath}
-          />
+          <PostList posts={props.posts} allTags={tagInfoMap} />
         </MainWidth>
       </DefaultLayout>
     </>

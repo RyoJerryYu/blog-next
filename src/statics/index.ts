@@ -41,28 +41,7 @@ import {
   collectResourcesAsMap,
 } from "@/core/indexing/pipeline/pipeline";
 
-export type Post = {
-  slug: string;
-  filePath: string; // start with slash
-  pagePath: string; // start with slash
-  mediaDir: string;
-  meta: PostMeta;
-};
-
-/**
- * Temp function to convert a resource to a post
- */
-export const resourceToPost = (
-  resource: Resource<PagePathMapping, PostMeta>
-): Post => {
-  return {
-    slug: resource.pathMapping.slug,
-    filePath: resource.pathMapping.filePath,
-    pagePath: resource.pathMapping.pagePath,
-    mediaDir: "",
-    meta: resource.meta,
-  };
-};
+export type PostResource = Resource<PagePathMapping, PostMeta>;
 
 /**
  * The module variable as a lazy init singleton

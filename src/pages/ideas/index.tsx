@@ -7,17 +7,16 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
 import {
-  Post,
+  PostResource,
   getPrevNextIndex,
   getTagIndex,
   ideaResourceMap,
   initCache,
-  resourceToPost,
 } from "@/statics";
 import { GetStaticProps } from "next";
 
 type IdeasProps = {
-  posts: Post[];
+  posts: PostResource[];
   allTags: TagInfo[];
 };
 
@@ -29,7 +28,7 @@ export const getStaticProps: GetStaticProps<IdeasProps> = async () => {
   const pagePaths = prevNextIndex
     .listResources("ideas")
     .map((r) => r.pathMapping.pagePath);
-  const posts = pagePaths.map(ideaMap.pagePathToResource).map(resourceToPost);
+  const posts = pagePaths.map(ideaMap.pagePathToResource);
 
   const allTags = getTagIndex().getTags();
   return {
@@ -47,11 +46,7 @@ const IdeasPage = (props: IdeasProps) => {
       <Title>Ideas</Title>
       <DefaultLayout>
         <MainWidth>
-          <PostList
-            posts={props.posts}
-            allTags={allTagsMap}
-            getUrl={(idea) => idea.pagePath}
-          />
+          <PostList posts={props.posts} allTags={allTagsMap} />
         </MainWidth>
       </DefaultLayout>
     </>
