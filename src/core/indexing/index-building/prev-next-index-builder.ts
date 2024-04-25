@@ -1,15 +1,15 @@
 import dayjs from "dayjs";
-import { PostMeta, ResourceMeta } from "../meta-collecting/meta-collecting";
-import { ResourcePathMapping } from "../path-mapping/path-mapping";
+import { BaseMeta, PostMeta } from "../meta-collecting/meta-collecting";
+import { BasePathMapping } from "../path-mapping/path-mapping";
 import { IndexBuilder, Resource } from "./index-building";
 
-export type PrevNextIndexMeta = ResourceMeta & {
+export type PrevNextIndexMeta = BaseMeta & {
   title: string;
   created_at: string | null;
   updated_at: string | null;
 };
 export type PrevNextIndexResource = Resource<
-  ResourcePathMapping,
+  BasePathMapping,
   PrevNextIndexMeta
 >;
 export type PrevNextInfo = {
@@ -76,8 +76,7 @@ export class SubPrevNextIndex {
 }
 
 export class PrevNextIndexBuilder
-  implements
-    IndexBuilder<ResourcePathMapping, PostMeta, PrevNextIndex, "prevNext">
+  implements IndexBuilder<BasePathMapping, PostMeta, PrevNextIndex, "prevNext">
 {
   private subPrevNextIndexBuilders: {
     [resourceType: string]: SubPrevNextIndexBuilder;
@@ -88,7 +87,7 @@ export class PrevNextIndexBuilder
 
   addResource = (
     resourceType: string,
-    resource: Resource<ResourcePathMapping, PostMeta>
+    resource: Resource<BasePathMapping, PostMeta>
   ) => {
     if (!this.subPrevNextIndexBuilders[resourceType]) {
       this.subPrevNextIndexBuilders[resourceType] =

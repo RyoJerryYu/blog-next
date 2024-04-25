@@ -7,9 +7,9 @@ import {
   defaultGitMetaCollector,
 } from "./meta-collecting/git-meta-collector";
 import {
+  BaseMeta,
   MetaCollectorChain,
   PostMeta,
-  ResourceMeta,
 } from "./meta-collecting/meta-collecting";
 import { PostRawMetaCollector } from "./meta-collecting/post-raw-meta-collector";
 import { PostPathMapper } from "./path-mapping/post-path-mapper";
@@ -31,7 +31,7 @@ export function ideaPostPathMapper() {
   });
 }
 
-export const defaultStaticResourceChain: MetaCollectorChain<ResourceMeta> = {
+export const defaultStaticResourceChain: MetaCollectorChain<BaseMeta> = {
   collectors: [],
   defaultMeta: {},
 };

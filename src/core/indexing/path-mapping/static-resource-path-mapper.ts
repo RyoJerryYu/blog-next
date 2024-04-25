@@ -1,6 +1,6 @@
 import glob from "glob";
 import { promisify } from "util";
-import { PathMapper, ResourcePathMapping } from "./path-mapping";
+import { BasePathMapping, PathMapper } from "./path-mapping";
 
 export type StaticResourcePathMapperProps = {
   fileGlobPattern: string; // e.g. "public/content/**/*.*"
@@ -13,9 +13,7 @@ export type StaticResourcePathMapperProps = {
  *
  * So it would simply remove the file path prefix and use the rest as the page path.
  */
-export class StaticResourcePathMapper
-  implements PathMapper<ResourcePathMapping>
-{
+export class StaticResourcePathMapper implements PathMapper<BasePathMapping> {
   private readonly fileGlobPattern: string;
   private readonly filePathPrefix: string;
 

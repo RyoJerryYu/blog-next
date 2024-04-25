@@ -13,7 +13,7 @@
  * Maybe we could use path as identifier for a post in the future
  */
 
-import { ResourceMeta } from "../meta-collecting/meta-collecting";
+import { BaseMeta } from "../meta-collecting/meta-collecting";
 import { PagePathMapping } from "../path-mapping/path-mapping";
 import { IndexBuilder, Resource } from "./index-building";
 
@@ -61,7 +61,7 @@ export type TagInfo = {
   postSlugs: PostSlugInfo[];
 };
 
-export type TagIndexMeta = ResourceMeta & {
+export type TagIndexMeta = BaseMeta & {
   tags: string[];
 };
 

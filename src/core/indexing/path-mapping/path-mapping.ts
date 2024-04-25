@@ -3,7 +3,7 @@
  * attention: filePath may not be unique between two types of resources
  * e.g. a .md file may be both an page resource and a static resource, with different pagePath
  */
-export type ResourcePathMapping = {
+export type BasePathMapping = {
   /**
    * start without slash, relative to project root, mostly start with "public/"
    * e.g. "public/content/articles/2021-01-01-hello-world.md"
@@ -19,7 +19,7 @@ export type ResourcePathMapping = {
   pagePath: string;
 };
 
-export type PagePathMapping = ResourcePathMapping & {
+export type PagePathMapping = BasePathMapping & {
   /**
    * the nextjs route param, should be unique for a type of resource
    * no prefix slash and no suffix file extension
@@ -37,12 +37,12 @@ export type PagePathMapping = ResourcePathMapping & {
  *
  * @template PathMapping the type of path mapping for this type of resource
  */
-export interface PathMapper<PathMapping extends ResourcePathMapping> {
+export interface PathMapper<PathMapping extends BasePathMapping> {
   listFilePaths: () => Promise<string[]>;
   filePath2PathMapping: (filePath: string) => PathMapping;
 }
 
-export const listPathMappings = async <PathMapping extends ResourcePathMapping>(
+export const listPathMappings = async <PathMapping extends BasePathMapping>(
   pathMapper: PathMapper<PathMapping>
 ) => {
   const existPath: Set<string> = new Set();

@@ -8,12 +8,12 @@ import { mergeObjectIgnoreUndefined } from "@/utils/merge-object";
  * So, meta must be json serializable.
  * Optional fields should have type as T | null, not T | undefined.
  */
-export type ResourceMeta = {};
+export type BaseMeta = {};
 
 /**
  * The meta data for a post should have.
  */
-export type PostMeta = ResourceMeta & {
+export type PostMeta = BaseMeta & {
   content: string;
   title: string;
   abstract: string;
@@ -41,7 +41,7 @@ export type PostMeta = ResourceMeta & {
  *
  * @template Meta the type of meta data for this type of resource
  */
-export interface MetaCollector<Meta extends ResourceMeta> {
+export interface MetaCollector<Meta extends BaseMeta> {
   /**
    * The keys of meta data that this collector can handle.
    * return "*" if this collector can handle all keys.
@@ -54,7 +54,7 @@ export interface MetaCollector<Meta extends ResourceMeta> {
 /**
  * A chain defines how meta of one type of resource should be collected.
  */
-export type MetaCollectorChain<Meta extends ResourceMeta> = {
+export type MetaCollectorChain<Meta extends BaseMeta> = {
   readonly collectors: MetaCollector<Meta>[];
   readonly defaultMeta: Meta;
 };
@@ -68,7 +68,7 @@ export type MetaCollectorChain<Meta extends ResourceMeta> = {
  * @param collectors the chain of meta collectors, will be executed in order
  * @param defaultMeta the default meta data will be merged with the collected meta data
  */
-export async function collectMetaForFilePath<Meta extends ResourceMeta>(
+export async function collectMetaForFilePath<Meta extends BaseMeta>(
   { collectors, defaultMeta }: MetaCollectorChain<Meta>,
   filePath: string
 ): Promise<Meta> {

@@ -61,14 +61,17 @@ export const initCache = async () => {
     return cache;
   }
   const articleResourceMap = await collectResourcesAsMap({
+    resourceType: "articles",
     pathMapper: articlePostPathMapper(),
     collectorChain: defaultChain,
   });
   const ideaResourceMap = await collectResourcesAsMap({
+    resourceType: "ideas",
     pathMapper: ideaPostPathMapper(),
     collectorChain: defaultChain,
   });
   const staticResourceMap = await collectResourcesAsMap({
+    resourceType: "staticResources",
     pathMapper: defaultStaticResourcePathMapper(),
     collectorChain: defaultStaticResourceChain,
   });

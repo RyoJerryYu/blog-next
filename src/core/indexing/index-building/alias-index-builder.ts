@@ -30,8 +30,8 @@
 
 import { glob } from "glob";
 import path from "path";
-import { ResourceMeta } from "../meta-collecting/meta-collecting";
-import { ResourcePathMapping } from "../path-mapping/path-mapping";
+import { BaseMeta } from "../meta-collecting/meta-collecting";
+import { BasePathMapping } from "../path-mapping/path-mapping";
 import { IndexBuilder, Resource } from "./index-building";
 
 export function listAllStaticFiles() {
@@ -67,8 +67,7 @@ export const aliasesFromPagePath = (pagePath: string) => {
 };
 
 export class AliasIndexBuilder
-  implements
-    IndexBuilder<ResourcePathMapping, ResourceMeta, AliasIndex, "alias">
+  implements IndexBuilder<BasePathMapping, BaseMeta, AliasIndex, "alias">
 {
   // alias -> path
   private readonly index: Map<string, string>;
@@ -77,7 +76,7 @@ export class AliasIndexBuilder
   }
   addResource = (
     resourceType: string,
-    resource: Resource<ResourcePathMapping, ResourceMeta>
+    resource: Resource<BasePathMapping, BaseMeta>
   ) => {
     const { pagePath } = resource.pathMapping;
     const aliases = aliasesFromPagePath(pagePath);
