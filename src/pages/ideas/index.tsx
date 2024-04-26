@@ -3,11 +3,11 @@ import {
   TagInfo,
   tagInfoListToMap,
 } from "@/core/indexing/index-building/tag-index-builder";
+import { PostResource } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
 import {
-  PostResource,
   getPrevNextIndex,
   getTagIndex,
   ideaResourceMap,

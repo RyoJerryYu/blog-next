@@ -1,6 +1,6 @@
 import * as fs from "fs";
-import { BaseMeta, BasePathMapping } from "../../types/indexing";
-import { IndexBuilder, Resource } from "./index-building";
+import { BaseMeta, BasePathMapping, Resource } from "../../types/indexing";
+import { IndexBuilder } from "./index-building";
 
 export type ClipData = {
   id: string;

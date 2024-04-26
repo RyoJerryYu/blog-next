@@ -1,9 +1,5 @@
-import { BaseMeta, BasePathMapping } from "../../types/indexing";
-import {
-  IndexBuilder,
-  Resource,
-  buildIndex,
-} from "../index-building/index-building";
+import { BaseMeta, BasePathMapping, Resource } from "../../types/indexing";
+import { IndexBuilder, buildIndex } from "../index-building/index-building";
 import {
   MetaCollectorChain,
   collectMetaForFilePath,

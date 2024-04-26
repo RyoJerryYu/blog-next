@@ -1,14 +1,17 @@
 import PostList from "@/components/PostList";
 import TagSelector from "@/components/TagSelector";
-import { Resource } from "@/core/indexing/index-building/index-building";
 import { sortPostsByDate } from "@/core/indexing/index-building/prev-next-index-builder";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
-import { PagePathMapping, PostMeta } from "@/core/types/indexing";
+import {
+  PagePathMapping,
+  PostMeta,
+  PostResource,
+  Resource,
+} from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
 import {
-  PostResource,
   articleResourceMap,
   getTagIndex,
   ideaResourceMap,

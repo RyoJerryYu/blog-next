@@ -3,14 +3,7 @@
  * Indexes are isomerism. It should hold the data in thereseves.
  */
 
-/**
- * A type of resource that can be indexed.
- * A resource should have a pathMapping and a meta.
- */
-export type Resource<PathMapping, Meta> = {
-  readonly pathMapping: Readonly<PathMapping>;
-  readonly meta: Readonly<Meta>;
-};
+import { Resource } from "@/core/types/indexing";
 
 export type IndexBuilder<PathMapping, Meta, Index, Key extends string> = {
   addResource: (

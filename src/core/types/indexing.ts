@@ -60,3 +60,17 @@ export type PostMeta = BaseMeta & {
   tags: string[];
   license: boolean;
 };
+
+/****************
+ * Resource
+ */
+/**
+ * A type of resource that can be indexed.
+ * A resource should have a pathMapping and a meta.
+ */
+export type Resource<PathMapping, Meta> = {
+  readonly pathMapping: Readonly<PathMapping>;
+  readonly meta: Readonly<Meta>;
+};
+
+export type PostResource = Resource<PagePathMapping, PostMeta>;

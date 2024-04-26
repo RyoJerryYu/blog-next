@@ -13,7 +13,6 @@ import {
   ClipData,
   ClipDataIndexBuilder,
 } from "@/core/indexing/index-building/clip-data-index-builder";
-import { Resource } from "@/core/indexing/index-building/index-building";
 import {
   PrevNextIndex,
   PrevNextIndexBuilder,
@@ -37,8 +36,6 @@ import {
   collectResourcesAsMap,
 } from "@/core/indexing/pipeline/pipeline";
 import { PagePathMapping, PostMeta } from "@/core/types/indexing";
-
-export type PostResource = Resource<PagePathMapping, PostMeta>;
 
 /**
  * The module variable as a lazy init singleton

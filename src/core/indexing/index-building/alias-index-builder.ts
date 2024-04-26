@@ -30,8 +30,8 @@
 
 import { glob } from "glob";
 import path from "path";
-import { BaseMeta, BasePathMapping } from "../../types/indexing";
-import { IndexBuilder, Resource } from "./index-building";
+import { BaseMeta, BasePathMapping, Resource } from "../../types/indexing";
+import { IndexBuilder } from "./index-building";
 
 export function listAllStaticFiles() {
   return glob.sync("public/content/**/*.*");

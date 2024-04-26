@@ -13,8 +13,8 @@
  * Maybe we could use path as identifier for a post in the future
  */
 
-import { BaseMeta, PagePathMapping } from "../../types/indexing";
-import { IndexBuilder, Resource } from "./index-building";
+import { BaseMeta, PagePathMapping, Resource } from "../../types/indexing";
+import { IndexBuilder } from "./index-building";
 
 const tagToTagSlug = (tag: string) => {
   return tag.toLowerCase().replace(" ", "-").replace("/", "-");
