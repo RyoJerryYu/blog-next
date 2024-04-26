@@ -3,9 +3,14 @@
  * Indexes are isomerism. It should hold the data in thereseves.
  */
 
-import { Resource } from "@/core/types/indexing";
+import { BaseMeta, BasePathMapping, Resource } from "@/core/types/indexing";
 
-export type IndexBuilder<PathMapping, Meta, Index, Key extends string> = {
+export type IndexBuilder<
+  PathMapping extends BasePathMapping,
+  Meta extends BaseMeta,
+  Index,
+  Key extends string
+> = {
   addResource: (
     resourceType: string,
     resource: Resource<PathMapping, Meta>
@@ -20,7 +25,25 @@ export type IndexBuilder<PathMapping, Meta, Index, Key extends string> = {
   }>;
 };
 
-export const buildIndex = async <PathMapping, Meta, Index, Key extends string>(
+// represent a static method on index
+export type GetIndexFromIndexPool<Index> = (indexPool: {
+  [key: string]: any;
+}) => Index;
+type IndexPool = {
+  [key: string]: any;
+};
+export const getIndexFromIndexPool: <Index>(
+  key: string
+) => GetIndexFromIndexPool<Index> = (key: string) => {
+  return (indexPool: IndexPool) => indexPool[key];
+};
+
+export const buildIndex = async <
+  PathMapping extends BasePathMapping,
+  Meta extends BaseMeta,
+  Index,
+  Key extends string
+>(
   resourceMapWithTypes: [string, Resource<PathMapping, Meta>[]][],
   indexBuilder: IndexBuilder<PathMapping, Meta, Index, Key>
 ) => {

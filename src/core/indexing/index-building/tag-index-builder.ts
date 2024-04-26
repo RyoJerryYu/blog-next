@@ -14,7 +14,7 @@
  */
 
 import { BaseMeta, PagePathMapping, Resource } from "../../types/indexing";
-import { IndexBuilder } from "./index-building";
+import { IndexBuilder, getIndexFromIndexPool } from "./index-building";
 
 const tagToTagSlug = (tag: string) => {
   return tag.toLowerCase().replace(" ", "-").replace("/", "-");
@@ -129,4 +129,6 @@ export class TagIndex {
     }
     return result;
   }
+
+  static fromPool = getIndexFromIndexPool<TagIndex>("tag");
 }

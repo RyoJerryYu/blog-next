@@ -1,0 +1,15 @@
+import { testNoCI } from "@/utils/utils.test";
+import { pipeline } from "../indexing-settings";
+import { executePipeline } from "./pipeline";
+
+testNoCI("execute pipeline", async () => {
+  const p = pipeline;
+  const res = await executePipeline(p);
+  const indexKeys = Object.keys(res.indexPool);
+  expect(indexKeys.length).toBeGreaterThan(0);
+  indexKeys.forEach((key) => {
+    expect(key).toBeDefined();
+    expect(res.indexPool[key]).toBeDefined();
+  });
+  expect(res).toBe(true);
+});

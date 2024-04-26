@@ -31,7 +31,7 @@
 import { glob } from "glob";
 import path from "path";
 import { BaseMeta, BasePathMapping, Resource } from "../../types/indexing";
-import { IndexBuilder } from "./index-building";
+import { IndexBuilder, getIndexFromIndexPool } from "./index-building";
 
 export function listAllStaticFiles() {
   return glob.sync("public/content/**/*.*");
@@ -113,4 +113,6 @@ export class AliasIndex {
   resolve = (alias: string) => {
     return this.index.get(alias);
   };
+
+  static fromPool = getIndexFromIndexPool<AliasIndex>("alias");
 }

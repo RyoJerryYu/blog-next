@@ -5,7 +5,7 @@ import {
   PostMeta,
   Resource,
 } from "../../types/indexing";
-import { IndexBuilder } from "./index-building";
+import { IndexBuilder, getIndexFromIndexPool } from "./index-building";
 
 export type PrevNextIndexMeta = BaseMeta & {
   title: string;
@@ -138,4 +138,6 @@ export class PrevNextIndex {
     const subIndex = this.getSubIndex(resourceType);
     return subIndex.listResources();
   };
+
+  static fromPool = getIndexFromIndexPool<PrevNextIndex>("prevNext");
 }

@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import { BaseMeta, BasePathMapping, Resource } from "../../types/indexing";
-import { IndexBuilder } from "./index-building";
+import { IndexBuilder, getIndexFromIndexPool } from "./index-building";
 
 export type ClipData = {
   id: string;
@@ -23,3 +23,5 @@ export class ClipDataIndexBuilder
     return { clipData: clipData };
   };
 }
+
+export const clipDataFromPool = getIndexFromIndexPool<ClipData[]>("clipData");

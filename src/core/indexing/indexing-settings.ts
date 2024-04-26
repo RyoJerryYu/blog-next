@@ -62,35 +62,38 @@ export const devReloadingChain: MetaCollectorChain<PostMeta> = {
 };
 
 export const pipeline = {
-  chains: {
-    staticResources: {
+  resourceChains: [
+    {
+      resourceType: "staticResources",
       pathMapper: defaultStaticResourcePathMapper(),
       collectorChain: defaultStaticResourceChain,
     },
-    articles: {
+    {
+      resourceType: "articles",
       pathMapper: articlePostPathMapper(),
       collectorChain: defaultChain,
     },
-    ideas: {
+    {
+      resourceType: "ideas",
       pathMapper: ideaPostPathMapper(),
       collectorChain: defaultChain,
     },
-  },
+  ],
   indexBuilders: [
     {
-      resources: ["articles", "ideas"],
+      handleResources: ["articles", "ideas"],
       builder: new TagIndexBuilder(),
     },
     {
-      resources: ["articles", "ideas", "staticResources"],
+      handleResources: ["articles", "ideas", "staticResources"],
       builder: new AliasIndexBuilder(),
     },
     {
-      resources: ["articles", "ideas"],
+      handleResources: ["articles", "ideas"],
       builder: new PrevNextIndexBuilder(),
     },
     {
-      resources: [],
+      handleResources: [],
       builder: new ClipDataIndexBuilder(),
     },
   ],

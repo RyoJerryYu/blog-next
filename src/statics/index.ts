@@ -5,108 +5,35 @@
  * And ensure: init once, no modification after init.
  */
 
-import {
-  AliasIndex,
-  AliasIndexBuilder,
-} from "@/core/indexing/index-building/alias-index-builder";
-import {
-  ClipData,
-  ClipDataIndexBuilder,
-} from "@/core/indexing/index-building/clip-data-index-builder";
-import {
-  PrevNextIndex,
-  PrevNextIndexBuilder,
-} from "@/core/indexing/index-building/prev-next-index-builder";
-import {
-  TagIndex,
-  TagIndexBuilder,
-} from "@/core/indexing/index-building/tag-index-builder";
-import {
-  articlePostPathMapper,
-  defaultChain,
-  defaultStaticResourceChain,
-  devReloadingChain,
-  ideaPostPathMapper,
-} from "@/core/indexing/indexing-settings";
+import { AliasIndex } from "@/core/indexing/index-building/alias-index-builder";
+import { clipDataFromPool } from "@/core/indexing/index-building/clip-data-index-builder";
+import { PrevNextIndex } from "@/core/indexing/index-building/prev-next-index-builder";
+import { TagIndex } from "@/core/indexing/index-building/tag-index-builder";
+import { devReloadingChain, pipeline } from "@/core/indexing/indexing-settings";
 import { collectMetaForFilePath } from "@/core/indexing/meta-collecting/meta-collecting";
-import { defaultStaticResourcePathMapper } from "@/core/indexing/path-mapping/static-resource-path-mapper";
+import {
+  PipelineResult,
+  executePipeline,
+} from "@/core/indexing/pipeline/pipeline";
 import {
   ResourceMap,
-  buildIndexFromResourceMaps,
-  collectResourcesAsMap,
-} from "@/core/indexing/pipeline/pipeline";
+  getResourceMap,
+} from "@/core/indexing/pipeline/resource-pool";
 import { PagePathMapping, PostMeta } from "@/core/types/indexing";
 
+const pipline = pipeline;
 /**
  * The module variable as a lazy init singleton
  * Init once, and all types of caches are inited.
  */
-type Cache = {
-  articleResourceMap: ResourceMap<PagePathMapping, PostMeta>;
-  ideaResourceMap: ResourceMap<PagePathMapping, PostMeta>;
-  tagIndex: TagIndex;
-  aliasIndex: AliasIndex;
-  clipData: ClipData[];
-  prevNexxtIndex: PrevNextIndex;
-};
+type Cache = PipelineResult;
 let cache: Cache | undefined = undefined;
 export const initCache = async () => {
   if (cache) {
     return cache;
   }
-  const articleResourceMap = await collectResourcesAsMap({
-    resourceType: "articles",
-    pathMapper: articlePostPathMapper(),
-    collectorChain: defaultChain,
-  });
-  const ideaResourceMap = await collectResourcesAsMap({
-    resourceType: "ideas",
-    pathMapper: ideaPostPathMapper(),
-    collectorChain: defaultChain,
-  });
-  const staticResourceMap = await collectResourcesAsMap({
-    resourceType: "staticResources",
-    pathMapper: defaultStaticResourcePathMapper(),
-    collectorChain: defaultStaticResourceChain,
-  });
+  cache = await executePipeline(pipline);
 
-  const tagIndex = await buildIndexFromResourceMaps(
-    [
-      ["articles", articleResourceMap],
-      ["ideas", ideaResourceMap],
-    ],
-    new TagIndexBuilder()
-  );
-
-  const aliasIndex = await buildIndexFromResourceMaps(
-    [
-      ["articles", articleResourceMap],
-      ["ideas", ideaResourceMap],
-      ["staticResources", staticResourceMap],
-    ],
-    new AliasIndexBuilder()
-  );
-  const clipData = await buildIndexFromResourceMaps(
-    [],
-    new ClipDataIndexBuilder()
-  );
-
-  const prevNextIndex = await buildIndexFromResourceMaps(
-    [
-      ["articles", articleResourceMap],
-      ["ideas", ideaResourceMap],
-    ],
-    new PrevNextIndexBuilder()
-  );
-
-  cache = {
-    articleResourceMap: articleResourceMap,
-    ideaResourceMap: ideaResourceMap,
-    tagIndex: tagIndex.tag,
-    aliasIndex: aliasIndex.alias,
-    clipData: clipData.clipData,
-    prevNexxtIndex: prevNextIndex.prevNext,
-  };
   return cache;
 };
 
@@ -118,22 +45,28 @@ const mustGetCache = () => {
 };
 
 export const articleResourceMap = () => {
-  return mustGetCache().articleResourceMap;
+  return getResourceMap<PagePathMapping, PostMeta>(
+    mustGetCache().resourcePool,
+    "articles"
+  );
 };
 export const ideaResourceMap = () => {
-  return mustGetCache().ideaResourceMap;
+  return getResourceMap<PagePathMapping, PostMeta>(
+    mustGetCache().resourcePool,
+    "ideas"
+  );
 };
 export const getTagIndex = () => {
-  return mustGetCache().tagIndex;
+  return TagIndex.fromPool(mustGetCache().indexPool);
 };
 export const getAliasIndex = () => {
-  return mustGetCache().aliasIndex;
+  return AliasIndex.fromPool(mustGetCache().indexPool);
 };
 export const getClipData = () => {
-  return mustGetCache().clipData;
+  return clipDataFromPool(mustGetCache().indexPool);
 };
 export const getPrevNextIndex = () => {
-  return mustGetCache().prevNexxtIndex;
+  return PrevNextIndex.fromPool(mustGetCache().indexPool);
 };
 
 // a helper function to get meta from cache or reload when development
