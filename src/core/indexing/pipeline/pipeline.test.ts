@@ -9,6 +9,7 @@ testNoCI("execute pipeline", async () => {
   expect(indexKeys.length).toBeGreaterThan(0);
   indexKeys.forEach((key) => {
     expect(key).toBeDefined();
+    expect(key).not.toEqual("undefined");
     expect(res.indexPool[key]).toBeDefined();
   });
   expect(res).toBe(true);
