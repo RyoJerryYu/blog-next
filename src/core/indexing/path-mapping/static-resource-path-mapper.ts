@@ -1,6 +1,7 @@
 import glob from "glob";
 import { promisify } from "util";
-import { BasePathMapping, PathMapper } from "./path-mapping";
+import { BasePathMapping } from "../../types/indexing";
+import { PathMapper } from "./path-mapping";
 
 export type StaticResourcePathMapperProps = {
   fileGlobPattern: string; // e.g. "public/content/**/*.*"

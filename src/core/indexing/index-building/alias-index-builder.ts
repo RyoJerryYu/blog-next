@@ -30,8 +30,8 @@
 
 import { glob } from "glob";
 import path from "path";
+import { BasePathMapping } from "../../types/indexing";
 import { BaseMeta } from "../meta-collecting/meta-collecting";
-import { BasePathMapping } from "../path-mapping/path-mapping";
 import { IndexBuilder, Resource } from "./index-building";
 
 export function listAllStaticFiles() {

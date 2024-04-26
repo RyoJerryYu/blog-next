@@ -1,4 +1,4 @@
-import { PagePathMapping } from "../path-mapping/path-mapping";
+import { PagePathMapping } from "../../types/indexing";
 import { Resource } from "./index-building";
 import { TagIndexBuilder, TagIndexMeta } from "./tag-index-builder";
 

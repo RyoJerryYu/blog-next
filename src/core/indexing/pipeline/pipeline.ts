@@ -1,29 +1,16 @@
+import { BasePathMapping } from "../../types/indexing";
 import {
   IndexBuilder,
   Resource,
   buildIndex,
 } from "../index-building/index-building";
-import { TagIndexBuilder } from "../index-building/tag-index-builder";
-import {
-  articlePostPathMapper,
-  defaultChain,
-  defaultStaticResourceChain,
-  ideaPostPathMapper,
-} from "../indexing-settings";
 import {
   BaseMeta,
   MetaCollectorChain,
-  PostMeta,
   collectMetaForFilePath,
 } from "../meta-collecting/meta-collecting";
-import {
-  BasePathMapping,
-  PagePathMapping,
-  PathMapper,
-  listPathMappings,
-} from "../path-mapping/path-mapping";
+import { PathMapper, listPathMappings } from "../path-mapping/path-mapping";
 import {} from "../path-mapping/post-path-mapper";
-import { defaultStaticResourcePathMapper } from "../path-mapping/static-resource-path-mapper";
 
 /**
  * A pipeline is a set of rules, organizing the process of indexing resources.
@@ -72,29 +59,6 @@ export type ResourceChain<
   collectorChain: MetaCollectorChain<Meta>;
 };
 
-export const collectResourcesAsMap = async <
-  ResourceType extends string,
-  PathMapping extends BasePathMapping,
-  Meta extends BaseMeta
->({
-  pathMapper,
-  collectorChain,
-}: ResourceChain<ResourceType, PathMapping, Meta>): Promise<
-  ResourceMap<PathMapping, Meta>
-> => {
-  const pathMappings = await listPathMappings(pathMapper);
-  const resources: Resource<PathMapping, Meta>[] = [];
-  for (let i = 0; i < pathMappings.length; i++) {
-    const pathMapping = pathMappings[i];
-    const meta = await collectMetaForFilePath(
-      collectorChain,
-      pathMapping.filePath
-    );
-    resources.push({ pathMapping, meta });
-  }
-
-  return new ResourceMap(resources);
-};
 /**
  * Represents a map of resources.
  *
@@ -196,6 +160,29 @@ export class ResourceMap<
     return this.pagePathToResource(pagePath).meta;
   };
 }
+export const collectResourcesAsMap = async <
+  ResourceType extends string,
+  PathMapping extends BasePathMapping,
+  Meta extends BaseMeta
+>({
+  pathMapper,
+  collectorChain,
+}: ResourceChain<ResourceType, PathMapping, Meta>): Promise<
+  ResourceMap<PathMapping, Meta>
+> => {
+  const pathMappings = await listPathMappings(pathMapper);
+  const resources: Resource<PathMapping, Meta>[] = [];
+  for (let i = 0; i < pathMappings.length; i++) {
+    const pathMapping = pathMappings[i];
+    const meta = await collectMetaForFilePath(
+      collectorChain,
+      pathMapping.filePath
+    );
+    resources.push({ pathMapping, meta });
+  }
+
+  return new ResourceMap(resources);
+};
 
 /**
  * Builds the index from a list of resource maps.
@@ -262,114 +249,37 @@ type IndexBuilderWithHandleResources<
       : never
     : never;
 };
-////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const staticResource: Resource<BasePathMapping, BaseMeta> = {
-  pathMapping: {
-    pagePath: "/",
-    filePath: "/",
-  },
-  meta: {},
-};
+/**
+ * Represents a list of index builders with handleable resources.
+ * Useful for extending as a tuple.
+ */
+type IndexBuilderListBase<ResourceChainList extends ResourceChainListBase> =
+  readonly IndexBuilderWithHandleResources<ResourceChainList, any>[];
 
-const articleResource: Resource<PagePathMapping, PostMeta> = {
-  pathMapping: {
-    filePath: "/",
-    pagePath: "/",
-    slug: "/",
-  },
-  meta: {
-    title: "title",
-    tags: ["tag1", "tag2"],
-    content: "content",
-    abstract: "abstract",
-    created_at: null,
-    updated_at: null,
-    license: false,
-    length: 0,
-  },
-};
-
-const articleChain: ResourceChain<"article", PagePathMapping, PostMeta> = {
-  resourceType: "article",
-  pathMapper: articlePostPathMapper(),
-  collectorChain: defaultChain,
-};
-
-const ideaChain: ResourceChain<"idea", PagePathMapping, PostMeta> = {
-  resourceType: "idea",
-  pathMapper: ideaPostPathMapper(),
-  collectorChain: defaultChain,
-};
-
-const staticChain: ResourceChain<"staticResource", BasePathMapping, BaseMeta> =
-  {
-    resourceType: "staticResource",
-    pathMapper: defaultStaticResourcePathMapper(),
-    collectorChain: defaultStaticResourceChain,
-  };
-const pagePathBaseMetaResourceChain: ResourceChain<
-  "pagePathBaseMeta",
-  PagePathMapping,
-  BaseMeta
+/**
+ * Represents a pipeline.
+ */
+type Pipeline<
+  ResourceChainList extends ResourceChainListBase,
+  IndexBuilderList extends readonly IndexBuilderWithHandleResources<
+    ResourceChainList,
+    any
+  >[]
 > = {
-  resourceType: "pagePathBaseMeta",
-  pathMapper: articlePostPathMapper(),
-  collectorChain: defaultStaticResourceChain,
+  resourceChains: ResourceChainList;
+  indexBuilders: IndexBuilderList;
 };
-const basePathPostMetaResourceChain: ResourceChain<
-  "basePathPostMeta",
-  BasePathMapping,
-  PostMeta
+
+// TODO better type definition
+type PipelineResult<
+  ResourceChainList extends ResourceChainListBase,
+  IndexBuilderList extends readonly IndexBuilderWithHandleResources<
+    ResourceChainList,
+    any
+  >[]
 > = {
-  resourceType: "basePathPostMeta",
-  pathMapper: articlePostPathMapper(),
-  collectorChain: defaultChain,
-};
-
-const resourceChains = [articleChain, ideaChain, staticChain] as const;
-
-const pipeline_looks_like = {
-  resourceChains: {
-    resource_type1: {
-      pathMapper: articlePostPathMapper(),
-      collectorChain: defaultChain,
-    },
-    resource_type2: {
-      pathMapper: ideaPostPathMapper(),
-      collectorChain: defaultChain,
-    },
-  },
-  indexBuilders: [
-    {
-      handleResources: ["resource_type1"],
-      builder: {},
-    },
-  ],
-};
-const results_looks_like = {
-  resourceTypeMap: {}, // Map<pagePath, ResourceType>
-  resourcePool: {
-    resource_type1: {}, // Map<pagePath, Resource>
-    resource_type2: {}, // Map<pagePath, Resource>
-  },
-  indexPool: {
-    index_type1: {}, // Index
-    index_type2: {}, // Index
-  },
-};
-
-type TempTypePipeline = {
-  resourceChains: ResourceChain<any, any, any>[];
-
-  indexBuilders: {
-    handleResources: string[];
-    builder: any;
-  }[];
-};
-
-type TempTypeResults = {
-  resourceTypeMap: Map<string, string>; // Map<pagePath, ResourceType>
+  resourceTypeMap: Map<string, string>;
   resourcePool: {
     [key: string]: ResourceMap<any, any>;
   };
@@ -378,24 +288,37 @@ type TempTypeResults = {
   };
 };
 
-const executePipeline = async (
-  pipline: TempTypePipeline
-): Promise<TempTypeResults> => {
+/**
+ * Executes the pipeline.
+ * - Collect each type of resources as resource maps.
+ * - Build indexes from the resource maps.
+ */
+export const executePipeline = async <
+  ResourceChainList extends ResourceChainListBase,
+  IndexBuilderList extends readonly IndexBuilderWithHandleResources<
+    ResourceChainList,
+    any
+  >[]
+>(
+  pipline: Pipeline<ResourceChainList, IndexBuilderList>
+) => {
+  // Collect resources
   const resourcePool: { [key: string]: ResourceMap<any, any> } = {};
   for (let [key, chain] of Object.entries(pipline.resourceChains)) {
     resourcePool[key] = await collectResourcesAsMap(chain);
   }
 
+  // Build indexes
   const indexPool: { [key: string]: any } = {};
   for (let { handleResources, builder } of pipline.indexBuilders) {
-    // TODO: use resourceMaps in build index directly
-    const resources: [string, Resource<any, any>[]][] = handleResources.map(
-      (key) => [key, resourcePool[key].listResources()]
+    const resourceMaps: [string, ResourceMap<any, any>][] = handleResources.map(
+      (key) => [key, resourcePool[key]]
     );
-    const index = await buildIndex(resources, builder);
+    const index = await buildIndexFromResourceMaps(resourceMaps, builder);
     indexPool[builder.key] = index;
   }
 
+  // a map for finding resource type by pagePath
   const resourceTypeMap = new Map<string, string>();
   for (let [key, resourceMap] of Object.entries(resourcePool)) {
     for (let pagePath of resourceMap.listPagePaths()) {
@@ -409,196 +332,3 @@ const executePipeline = async (
     indexPool,
   };
 };
-
-//////////////////////////////////////////////////////////
-
-//////////////////////////
-
-const a: IndexBuilderWithHandleResources<
-  readonly [
-    typeof articleChain,
-    typeof ideaChain,
-    typeof staticChain,
-    typeof pagePathBaseMetaResourceChain
-  ],
-  TagIndexBuilder
-  // AliasIndexBuilder
-> = {
-  handleResources: ["idea"],
-  builder: new TagIndexBuilder(),
-  // builder: new AliasIndexBuilder(),
-};
-
-////////////
-type IndexBuilderListBase<ResourceChainList extends ResourceChainListBase> =
-  readonly IndexBuilderWithHandleResources<ResourceChainList, any>[];
-
-type Pipeline<
-  ResourceChainList extends ResourceChainListBase,
-  IndexBuilderList extends readonly IndexBuilderWithHandleResources<
-    ResourceChainList,
-    any
-  >[]
-> = {
-  resourceChains: ResourceChainList;
-  indexBuilders: IndexBuilderList;
-};
-
-const consumePipeline = <
-  ResourceChainList extends ResourceChainListBase,
-  IndexBuilderList extends IndexBuilderListBase<ResourceChainList>
->(
-  param: Pipeline<ResourceChainList, IndexBuilderList>
-) => {};
-
-consumePipeline({
-  resourceChains: [
-    articleChain,
-    ideaChain,
-    staticChain,
-    // pagePathBaseMetaResourceChain,
-    // basePathPostMetaResourceChain,
-  ],
-  indexBuilders: [
-    {
-      handleResources: ["idea"],
-      builder: new TagIndexBuilder(),
-    },
-    {
-      handleResources: ["idea"],
-      builder: new TagIndexBuilder(),
-    },
-    {
-      handleResources: [
-        "idea",
-        "article",
-        // "pagePathBaseMeta",
-        "staticResource",
-      ],
-      builder: new TagIndexBuilder(),
-    },
-  ],
-});
-
-////////////
-
-type Test1 = ResourceChain<
-  "article",
-  PagePathMapping,
-  PostMeta
-> extends ResourceChain<"article", BasePathMapping, BaseMeta>
-  ? true
-  : false;
-
-type Test2 = PathMapper<PagePathMapping> extends PathMapper<BasePathMapping>
-  ? true
-  : false;
-
-type Test3 = MetaCollectorChain<PostMeta> extends MetaCollectorChain<BaseMeta>
-  ? true
-  : false;
-
-type Test4 = ResourceChain<
-  "article",
-  PagePathMapping,
-  PostMeta
-> extends ResourceChain<"article", infer PathMapping, infer Meta>
-  ? PathMapping extends PagePathMapping
-    ? Meta extends PostMeta
-      ? true
-      : false
-    : "PathMapping is not PagePathMapping"
-  : never;
-
-type Test5 = ResourceChain<"article", PagePathMapping, PostMeta> extends {
-  pathMapper: PathMapper<BasePathMapping>;
-}
-  ? true
-  : false;
-
-type Test6 =
-  | ResourceChain<"article", PagePathMapping, PostMeta>
-  | ResourceChain<"idea", PagePathMapping, PostMeta>
-  | ResourceChain<"static", BasePathMapping, BaseMeta> extends {
-  pathMapper: PathMapper<PagePathMapping>;
-}
-  ? true
-  : false;
-type Test7 = Extract<
-  | ResourceChain<"article", PagePathMapping, PostMeta>
-  | ResourceChain<"idea", PagePathMapping, PostMeta>
-  | ResourceChain<"static", BasePathMapping, BaseMeta>,
-  { pathMapper: PathMapper<PagePathMapping> }
->;
-// type Pipeline<ResourceChainList extends ResourceChainListBase> = {
-//   resourceChains: ResourceChainsByKey<ResourceChainList>;
-//   indexBuilders: IndexBuilderWithHandleResources<
-//     ResourceChainList,
-//     keyof ResourceChainsByKey<ResourceChainList>,
-//     any,
-//     any
-//   >[];
-// };
-// const resourcePipelinesMapByKeyExample: ResourcePipelinesMapByKey<
-//   typeof pipelines
-// > = {
-//   article: articlePipeline,
-//   idea: ideaPipeline,
-//   static: staticPipeline,
-// };
-
-// type ResourceCacheByKey<
-//   Key extends string,
-//   PathMapping extends ResourcePathMapping,
-//   Meta extends ResourceMeta
-// > = {
-//   [K in Key]: ResourceMap<PathMapping, Meta>;
-// };
-
-// /**
-//  * Type of cache for all types of resources.
-//  */
-// type SiteCache<ResourcePipelineList extends ResourcePipelineListBase> =
-//   MergeList<{
-//     [I in keyof ResourcePipelineList]: ResourcePipelineList[I] extends ResourceChain<
-//       infer Key,
-//       infer PathMapping,
-//       infer Meta
-//     >
-//       ? ResourceCacheByKey<Key, PathMapping, Meta>
-//       : never;
-//   }>;
-
-// type SiteIndex = { [key: string]: any };
-
-// type SiteUniverse<ResourcePiplineList extends ResourcePipelineListBase> = {
-//   resource: SiteCache<ResourcePiplineList>;
-//   index: SiteIndex;
-// };
-
-// const buildSiteCache = async <
-//   ResourcePipelineList extends ResourcePipelineListBase
-// >(
-//   piplines: ResourcePipelineList
-// ): Promise<SiteCache<ResourcePipelineList>> => {
-//   const cache: any = {};
-//   for (let pipeline of piplines) {
-//     const resourceCache = await loadPathMappingAndMeta(pipeline);
-//     cache[pipeline.key] = resourceCache;
-//   }
-//   return cache;
-// };
-// export type IndexGetter<Index> = (siteUniverse: { index: SiteIndex }) => Index;
-
-// async () => {
-//   const cache = await buildSiteCache(pipelines);
-//   const articleCache = cache.article;
-//   const ideaCache = cache.idea;
-//   const staticCache = cache.static;
-
-//   const siteCache = {
-//     article: articleCache,
-//     idea: ideaCache,
-//     static: staticCache,
-//   };
-// };

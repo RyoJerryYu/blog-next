@@ -1,7 +1,8 @@
 import glob from "glob";
 import path from "path";
 import { promisify } from "util";
-import { PagePathMapping, PathMapper } from "./path-mapping";
+import { PagePathMapping } from "../../types/indexing";
+import { PathMapper } from "./path-mapping";
 
 export type PostPathMapperProps = {
   fileGlobPattern: string;

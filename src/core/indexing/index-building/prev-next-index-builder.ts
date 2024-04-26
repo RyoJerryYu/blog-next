@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
+import { BasePathMapping } from "../../types/indexing";
 import { BaseMeta, PostMeta } from "../meta-collecting/meta-collecting";
-import { BasePathMapping } from "../path-mapping/path-mapping";
 import { IndexBuilder, Resource } from "./index-building";
 
 export type PrevNextIndexMeta = BaseMeta & {

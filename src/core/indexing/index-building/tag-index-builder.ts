@@ -13,8 +13,8 @@
  * Maybe we could use path as identifier for a post in the future
  */
 
+import { PagePathMapping } from "../../types/indexing";
 import { BaseMeta } from "../meta-collecting/meta-collecting";
-import { PagePathMapping } from "../path-mapping/path-mapping";
 import { IndexBuilder, Resource } from "./index-building";
 
 const tagToTagSlug = (tag: string) => {

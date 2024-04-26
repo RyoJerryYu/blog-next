@@ -4,7 +4,7 @@ import { Resource } from "@/core/indexing/index-building/index-building";
 import { sortPostsByDate } from "@/core/indexing/index-building/prev-next-index-builder";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
 import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
-import { PagePathMapping } from "@/core/indexing/path-mapping/path-mapping";
+import { PagePathMapping } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
