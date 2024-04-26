@@ -3,7 +3,7 @@ import Post from "@/components/Post";
 import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
 import { articlePostPathMapper } from "@/core/indexing/indexing-settings";
-import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
+import { PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import parseMdx from "@/plugins";

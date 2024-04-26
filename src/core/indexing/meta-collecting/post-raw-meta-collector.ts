@@ -1,8 +1,9 @@
+import { PostMeta } from "@/core/types/indexing";
 import dayjs from "dayjs";
 import fs from "fs";
 import matter from "gray-matter";
 import { promisify } from "util";
-import { MetaCollector, PostMeta } from "./meta-collecting";
+import { MetaCollector } from "./meta-collecting";
 
 export class PostRawMetaCollector implements MetaCollector<PostMeta> {
   handleAbleKeys = (): "*" | (keyof PostMeta)[] => {

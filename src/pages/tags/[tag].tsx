@@ -3,17 +3,16 @@ import TagSelector from "@/components/TagSelector";
 import { Resource } from "@/core/indexing/index-building/index-building";
 import { sortPostsByDate } from "@/core/indexing/index-building/prev-next-index-builder";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
-import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
-import { PagePathMapping } from "@/core/types/indexing";
+import { PagePathMapping, PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
 import {
+  PostResource,
   articleResourceMap,
   getTagIndex,
   ideaResourceMap,
   initCache,
-  PostResource,
 } from "@/statics";
 import { GetStaticPaths, GetStaticProps } from "next";
 

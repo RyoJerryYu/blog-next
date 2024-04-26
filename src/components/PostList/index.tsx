@@ -1,5 +1,5 @@
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
-import { PostMeta } from "@/core/indexing/meta-collecting/meta-collecting";
+import { PostMeta } from "@/core/types/indexing";
 import { PostResource } from "@/statics";
 import Link from "next/link";
 import React from "react";

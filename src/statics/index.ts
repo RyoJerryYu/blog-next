@@ -29,17 +29,14 @@ import {
   devReloadingChain,
   ideaPostPathMapper,
 } from "@/core/indexing/indexing-settings";
-import {
-  PostMeta,
-  collectMetaForFilePath,
-} from "@/core/indexing/meta-collecting/meta-collecting";
+import { collectMetaForFilePath } from "@/core/indexing/meta-collecting/meta-collecting";
 import { defaultStaticResourcePathMapper } from "@/core/indexing/path-mapping/static-resource-path-mapper";
 import {
   ResourceMap,
   buildIndexFromResourceMaps,
   collectResourcesAsMap,
 } from "@/core/indexing/pipeline/pipeline";
-import { PagePathMapping } from "@/core/types/indexing";
+import { PagePathMapping, PostMeta } from "@/core/types/indexing";
 
 export type PostResource = Resource<PagePathMapping, PostMeta>;
 

@@ -1,28 +1,5 @@
+import { BaseMeta } from "@/core/types/indexing";
 import { mergeObjectIgnoreUndefined } from "@/utils/merge-object";
-
-/**
- * One resource on the site could have it's own meta data.
- * Different types of resources may have different type of meta data.
- *
- * Mostly meta will be a parameter of it's page component and used for rendering.
- * So, meta must be json serializable.
- * Optional fields should have type as T | null, not T | undefined.
- */
-export type BaseMeta = {};
-
-/**
- * The meta data for a post should have.
- */
-export type PostMeta = BaseMeta & {
-  content: string;
-  title: string;
-  abstract: string;
-  length: number;
-  created_at: string | null;
-  updated_at: string | null;
-  tags: string[];
-  license: boolean;
-};
 
 /**
  * A type responsible for parsing meta data for a resource.

@@ -1,3 +1,4 @@
+import { BaseMeta, PostMeta } from "../types/indexing";
 import { AliasIndexBuilder } from "./index-building/alias-index-builder";
 import { ClipDataIndexBuilder } from "./index-building/clip-data-index-builder";
 import { PrevNextIndexBuilder } from "./index-building/prev-next-index-builder";
@@ -6,11 +7,7 @@ import {
   MockGitMetaCollector,
   defaultGitMetaCollector,
 } from "./meta-collecting/git-meta-collector";
-import {
-  BaseMeta,
-  MetaCollectorChain,
-  PostMeta,
-} from "./meta-collecting/meta-collecting";
+import { MetaCollectorChain } from "./meta-collecting/meta-collecting";
 import { PostRawMetaCollector } from "./meta-collecting/post-raw-meta-collector";
 import { PostPathMapper } from "./path-mapping/post-path-mapper";
 import { defaultStaticResourcePathMapper } from "./path-mapping/static-resource-path-mapper";
