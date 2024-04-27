@@ -2,18 +2,18 @@ import Comments from "@/components/Comments";
 import Post from "@/components/Post";
 import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
-import { articlePostPathMapper } from "@/core/indexing/indexing-settings";
-import { PostMeta } from "@/core/types/indexing";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
-import parseMdx from "@/plugins";
 import {
   articleResourceMap,
   getPostMetaOrReload,
   getPrevNextIndex,
   getTagIndex,
   initCache,
-} from "@/statics";
+} from "@/core/indexing/indexing-cache";
+import { articlePostPathMapper } from "@/core/indexing/indexing-settings";
+import { PostMeta } from "@/core/types/indexing";
+import DefaultLayout from "@/layouts/DefaultLayout";
+import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
+import parseMdx from "@/plugins";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 

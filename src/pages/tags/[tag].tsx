@@ -3,6 +3,12 @@ import TagSelector from "@/components/TagSelector";
 import { sortPostsByDate } from "@/core/indexing/index-building/prev-next-index-builder";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
 import {
+  articleResourceMap,
+  getTagIndex,
+  ideaResourceMap,
+  initCache,
+} from "@/core/indexing/indexing-cache";
+import {
   PagePathMapping,
   PostMeta,
   PostResource,
@@ -11,12 +17,6 @@ import {
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import {
-  articleResourceMap,
-  getTagIndex,
-  ideaResourceMap,
-  initCache,
-} from "@/statics";
 import { GetStaticPaths, GetStaticProps } from "next";
 
 export const getStaticPaths: GetStaticPaths = async () => {

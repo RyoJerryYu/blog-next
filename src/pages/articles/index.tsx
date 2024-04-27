@@ -3,16 +3,16 @@ import {
   TagInfo,
   tagInfoListToMap,
 } from "@/core/indexing/index-building/tag-index-builder";
-import { PostResource } from "@/core/types/indexing";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import MainWidth from "@/layouts/MainWidth";
-import { Title } from "@/layouts/UniversalHead";
 import {
   articleResourceMap,
   getPrevNextIndex,
   getTagIndex,
   initCache,
-} from "@/statics";
+} from "@/core/indexing/indexing-cache";
+import { PostResource } from "@/core/types/indexing";
+import DefaultLayout from "@/layouts/DefaultLayout";
+import MainWidth from "@/layouts/MainWidth";
+import { Title } from "@/layouts/UniversalHead";
 import { GetStaticProps } from "next";
 
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {

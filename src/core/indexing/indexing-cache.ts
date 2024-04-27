@@ -5,34 +5,26 @@
  * And ensure: init once, no modification after init.
  */
 
-import { AliasIndex } from "@/core/indexing/index-building/alias-index-builder";
-import { clipDataFromPool } from "@/core/indexing/index-building/clip-data-index-builder";
-import { PrevNextIndex } from "@/core/indexing/index-building/prev-next-index-builder";
-import { TagIndex } from "@/core/indexing/index-building/tag-index-builder";
-import { devReloadingChain, pipeline } from "@/core/indexing/indexing-settings";
-import { collectMetaForFilePath } from "@/core/indexing/meta-collecting/meta-collecting";
-import {
-  PipelineResult,
-  executePipeline,
-} from "@/core/indexing/pipeline/pipeline";
-import {
-  ResourceMap,
-  getResourceMap,
-} from "@/core/indexing/pipeline/resource-pool";
-import { PagePathMapping, PostMeta } from "@/core/types/indexing";
+import { PagePathMapping, PostMeta } from "../types/indexing";
+import { AliasIndex } from "./index-building/alias-index-builder";
+import { clipDataFromPool } from "./index-building/clip-data-index-builder";
+import { PrevNextIndex } from "./index-building/prev-next-index-builder";
+import { TagIndex } from "./index-building/tag-index-builder";
+import { devReloadingChain, pipeline } from "./indexing-settings";
+import { collectMetaForFilePath } from "./meta-collecting/meta-collecting";
+import { PipelineResult, executePipeline } from "./pipeline/pipeline";
+import { ResourceMap, getResourceMap } from "./pipeline/resource-pool";
 
-const pipline = pipeline;
 /**
  * The module variable as a lazy init singleton
  * Init once, and all types of caches are inited.
  */
-type Cache = PipelineResult;
-let cache: Cache | undefined = undefined;
+let cache: PipelineResult | undefined = undefined;
 export const initCache = async () => {
   if (cache) {
     return cache;
   }
-  cache = await executePipeline(pipline);
+  cache = await executePipeline(pipeline);
 
   return cache;
 };

@@ -4,11 +4,15 @@ import {
   TagInfo,
   tagInfoListToMap,
 } from "@/core/indexing/index-building/tag-index-builder";
+import {
+  getClipData,
+  getTagIndex,
+  initCache,
+} from "@/core/indexing/indexing-cache";
 import { PostResource } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import { getClipData, getTagIndex, initCache } from "@/statics";
 import { GetStaticProps } from "next";
 
 type ClipsProps = {
