@@ -1,25 +1,23 @@
 import dayjs from "dayjs";
-import { Post } from ".";
-import { sortPostsByDate } from "./utils";
+import {
+  PrevNextIndexResource,
+  sortPostsByDate,
+} from "./prev-next-index-builder";
 
-const postInfoOtherOfDate = {
+const postInfoOtherOfDate: PrevNextIndexResource = {
+  pathMapping: {
+    pagePath: "xxx",
+    filePath: "xxx",
+  },
   meta: {
     created_at: "2020-01-01",
-    content: "xxx",
+    updated_at: null,
     title: "xxx",
-    tags: [],
-    abstract: "xxx",
-    length: 0,
-    license: false,
   },
-  slug: "xxx",
-  file: "xxx",
-  mediaDir: "xxx",
-  path: "xxx",
 };
 
 test("should sorted", () => {
-  const postOfDate = (date: string): Post => ({
+  const postOfDate = (date: string): PrevNextIndexResource => ({
     ...postInfoOtherOfDate,
     meta: { ...postInfoOtherOfDate.meta, created_at: date, updated_at: date },
   });

@@ -1,4 +1,4 @@
-import { AliasIndexBuilder } from "./alias-index";
+import { AliasIndexBuilder } from "./alias-index-builder";
 
 describe("test alias index", () => {
   const input = [
@@ -7,9 +7,15 @@ describe("test alias index", () => {
   ];
   const builder = new AliasIndexBuilder();
   input.forEach((item) => {
-    builder.add(item.path);
+    builder.addResource("articles", {
+      pathMapping: {
+        pagePath: item.path,
+        filePath: "do not care",
+      },
+      meta: {},
+    });
   });
-  const index = builder.build();
+  const futureIndex = builder.buildIndex();
 
   const resolveCases = [
     {
@@ -23,7 +29,8 @@ describe("test alias index", () => {
     { name: "# path without layers", alias: "2020-01-01-Blog-01.jpg" },
     // { name: "# path without date", alias: "Blog-01.jpg" }, # not implemented yet
   ];
-  it.each(resolveCases)("resolve not md $name", ({ alias }) => {
+  it.each(resolveCases)("resolve not md $name", async ({ alias }) => {
+    const { alias: index } = await futureIndex;
     const path = index.resolve(alias);
     expect(path).not.toBeUndefined();
   });
@@ -53,7 +60,8 @@ describe("test alias index", () => {
     },
     // { name: "path without date and extension", alias: "Blog-02" }, # not implemented yet
   ];
-  it.each(resolveMDCases)("resolve md $name", ({ alias }) => {
+  it.each(resolveMDCases)("resolve md $name", async ({ alias }) => {
+    const { alias: index } = await futureIndex;
     const path = index.resolve(alias);
     expect(path).not.toBeUndefined();
   });

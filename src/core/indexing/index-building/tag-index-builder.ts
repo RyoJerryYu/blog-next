@@ -13,6 +13,9 @@
  * Maybe we could use path as identifier for a post in the future
  */
 
+import { BaseMeta, PagePathMapping, Resource } from "../../types/indexing";
+import { IndexBuilder, getIndexFromIndexPool } from "./index-building";
+
 const tagToTagSlug = (tag: string) => {
   return tag.toLowerCase().replace(" ", "-").replace("/", "-");
 };
@@ -21,9 +24,33 @@ const tagSlugToPath = (tagSlug: string) => {
 };
 
 type PostType = "article" | "idea";
+
 type PostSlugInfo = {
   postType: PostType;
   postSlug: string;
+  postPagePath: string;
+};
+
+/**
+ * 不合理，
+ * 1. tagInfo 本身应与 post 无关
+ * 2. 应用 path 作键而不是 slug 或 name 作键
+ *
+ * 先保持接口不变性，后续再进行外部重构
+ */
+const postPathMappingToPostSlugInfo = (
+  pathMapping: PagePathMapping
+): PostSlugInfo => {
+  const postType: "article" | "idea" = pathMapping.pagePath.startsWith(
+    "/articles"
+  )
+    ? "article"
+    : "idea";
+  return {
+    postType,
+    postSlug: pathMapping.slug,
+    postPagePath: pathMapping.pagePath,
+  };
 };
 
 export type TagInfo = {
@@ -33,6 +60,42 @@ export type TagInfo = {
   postSlugs: PostSlugInfo[];
 };
 
+export type TagIndexMeta = BaseMeta & {
+  tags: string[];
+};
+
+export class TagIndexBuilder
+  implements IndexBuilder<PagePathMapping, TagIndexMeta, TagIndex, "tag">
+{
+  private readonly index: Map<string, TagInfo>;
+  constructor() {
+    this.index = new Map();
+  }
+
+  addResource = (
+    resourceType: string,
+    resource: Resource<PagePathMapping, TagIndexMeta>
+  ) => {
+    const { slug: postSlug } = resource.pathMapping;
+    const { tags } = resource.meta;
+    tags.forEach((tag) => {
+      const slug = tagToTagSlug(tag);
+      if (!this.index.has(slug)) {
+        const tagPath = tagSlugToPath(slug);
+        this.index.set(slug, { tag, slug, path: tagPath, postSlugs: [] });
+      }
+      const postSlugInfo = postPathMappingToPostSlugInfo(resource.pathMapping);
+      this.index.get(slug)?.postSlugs.push(postSlugInfo);
+      return;
+    });
+  };
+  buildIndex = async () => {
+    return {
+      tag: new TagIndex(this.index),
+    };
+  };
+}
+
 // return map<tag, TagInfo>, the key is tag name, not tag slug!
 export const tagInfoListToMap = (tagInfoList: TagInfo[]) => {
   const map = new Map<string, TagInfo>();
@@ -41,24 +104,6 @@ export const tagInfoListToMap = (tagInfoList: TagInfo[]) => {
   });
   return map;
 };
-
-export class TagIndexBuilder {
-  private readonly index: Map<string, TagInfo>;
-  constructor() {
-    this.index = new Map();
-  }
-  addPostSlug(tag: string, postType: PostType, postSlug: string) {
-    const slug = tagToTagSlug(tag);
-    if (!this.index.has(slug)) {
-      const path = tagSlugToPath(slug);
-      this.index.set(slug, { tag, slug, path, postSlugs: [] });
-    }
-    this.index.get(slug)?.postSlugs.push({ postSlug, postType });
-  }
-  build() {
-    return new TagIndex(this.index);
-  }
-}
 
 export class TagIndex {
   // tagSlug -> TagInfo
@@ -84,4 +129,6 @@ export class TagIndex {
     }
     return result;
   }
+
+  static fromPool = getIndexFromIndexPool<TagIndex>("tag");
 }

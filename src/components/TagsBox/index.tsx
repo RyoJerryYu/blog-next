@@ -1,4 +1,4 @@
-import { TagInfo } from "@/statics/tag-index";
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
 import clsx from "clsx";
 import Link from "next/link";
 import style from "./TagsBox.module.scss";

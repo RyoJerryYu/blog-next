@@ -1,17 +1,22 @@
 import PostList from "@/components/PostList";
 import TagSelector from "@/components/TagSelector";
+import { sortPostsByDate } from "@/core/indexing/index-building/prev-next-index-builder";
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
+import {
+  articleResourceMap,
+  getTagIndex,
+  ideaResourceMap,
+  initCache,
+} from "@/core/indexing/indexing-cache";
+import {
+  PagePathMapping,
+  PostMeta,
+  PostResource,
+  Resource,
+} from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import {
-  articleCache,
-  getTagIndex,
-  ideaCache,
-  initCache,
-  Post,
-} from "@/statics";
-import { TagInfo } from "@/statics/tag-index";
-import { sortPostsByDate } from "@/statics/utils";
 import { GetStaticPaths, GetStaticProps } from "next";
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -29,7 +34,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 type TagPageProps = {
   allTagInfos: TagInfo[];
   selectedTagInfo: TagInfo;
-  posts: Post[];
+  posts: PostResource[];
 };
 export const getStaticProps: GetStaticProps<
   TagPageProps,
@@ -41,16 +46,18 @@ export const getStaticProps: GetStaticProps<
   const selectedTagInfo = tagIndex.getTagsOf([params!.tag])[0];
   const postSlugInfos = selectedTagInfo.postSlugs;
 
-  const posts: Set<Post> = new Set();
-  const articleCaches = articleCache();
-  const ideaCaches = ideaCache();
+  const posts: Set<Resource<PagePathMapping, PostMeta>> = new Set();
+  const articleMap = articleResourceMap();
+  const ideaMap = ideaResourceMap();
 
   postSlugInfos.forEach((slugInfo) => {
     if (slugInfo.postType === "article") {
-      posts.add(articleCaches.slugToPost(slugInfo.postSlug));
+      const resource = articleMap.pagePathToResource(slugInfo.postPagePath);
+      posts.add(resource);
     }
     if (slugInfo.postType === "idea") {
-      posts.add(ideaCaches.slugToPost(slugInfo.postSlug));
+      const resource = ideaMap.pagePathToResource(slugInfo.postPagePath);
+      posts.add(resource);
     }
   });
 
@@ -79,11 +86,7 @@ const TagPage = (props: TagPageProps) => {
             tags={props.allTagInfos}
             selectedTagSlug={props.selectedTagInfo.slug}
           />
-          <PostList
-            posts={props.posts}
-            allTags={tagInfoMap}
-            getUrl={(post) => post.path}
-          />
+          <PostList posts={props.posts} allTags={tagInfoMap} />
         </MainWidth>
       </DefaultLayout>
     </>

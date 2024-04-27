@@ -1,33 +1,42 @@
-import { TagIndexBuilder } from "./tag-index";
+import { PagePathMapping, Resource } from "../../types/indexing";
+import { TagIndexBuilder, TagIndexMeta } from "./tag-index-builder";
 
 describe("test tag index", () => {
-  const input: Array<
-    { postType: "article" | "idea" } & Record<string, string>
-  > = [
+  const input: Array<Resource<PagePathMapping, TagIndexMeta>> = [
     {
-      tag: "abc",
-      postType: "article",
-      postSlug: "001",
+      pathMapping: {
+        filePath: "/content/articles/001.md",
+        slug: "001",
+        pagePath: "/articles/001",
+      },
+      meta: {
+        tags: ["abc", "cde"],
+      },
     },
     {
-      tag: "cde",
-      postType: "article",
-      postSlug: "001",
+      pathMapping: {
+        filePath: "/content/ideas/001.md",
+        slug: "001",
+        pagePath: "/ideas/001",
+      },
+      meta: {
+        tags: ["abc"],
+      },
     },
     {
-      tag: "abc",
-      postType: "idea",
-      postSlug: "001",
-    },
-    {
-      tag: "abc",
-      postType: "idea",
-      postSlug: "002",
+      pathMapping: {
+        filePath: "/content/ideas/002.md",
+        slug: "002",
+        pagePath: "/ideas/002",
+      },
+      meta: {
+        tags: ["abc"],
+      },
     },
   ];
   const builder = new TagIndexBuilder();
   input.forEach((item) => {
-    builder.addPostSlug(item.tag, item.postType, item.postSlug);
+    builder.addResource("articles", item);
   });
 
   const getSlugCases = [
@@ -51,9 +60,9 @@ describe("test tag index", () => {
       output: [],
     },
   ];
-  it.each(getSlugCases)("$name", ({ input, output }) => {
-    const tagIndex = builder.build();
-    const result = tagIndex.getPostSlugs(input);
+  it.each(getSlugCases)("$name", async ({ input, output }) => {
+    const tagIndex = await builder.buildIndex();
+    const result = tagIndex.tag.getPostSlugs(input);
     expect(result).toEqual(output);
   });
 
@@ -66,9 +75,9 @@ describe("test tag index", () => {
       ],
     },
   ];
-  it.each(getTagsCases)("$name", ({ output }) => {
-    const tagIndex = builder.build();
-    const result = tagIndex.getTags();
+  it.each(getTagsCases)("$name", async ({ output }) => {
+    const tagIndex = await builder.buildIndex();
+    const result = tagIndex.tag.getTags();
     for (let i = 0; i < result.length; i++) {
       let resultCompare = {
         tag: result[i].tag,
@@ -100,9 +109,9 @@ describe("test tag index", () => {
       output: [{ tag: "abc", slug: "abc", path: "/tags/abc", postCnt: 3 }],
     },
   ];
-  it.each(getTagsOfCases)("$name", ({ input, output }) => {
-    const tagIndex = builder.build();
-    const result = tagIndex.getTagsOf(input);
+  it.each(getTagsOfCases)("$name", async ({ input, output }) => {
+    const tagIndex = await builder.buildIndex();
+    const result = tagIndex.tag.getTagsOf(input);
     for (let i = 0; i < result.length; i++) {
       let resultCompare = {
         tag: result[i].tag,

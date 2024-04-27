@@ -1,6 +1,5 @@
-import { Post } from "@/statics";
-import { PostMeta } from "@/statics/loader";
-import { TagInfo } from "@/statics/tag-index";
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
+import { PostMeta, PostResource } from "@/core/types/indexing";
 import Link from "next/link";
 import React from "react";
 import RelativeTime from "../RelativeTime";
@@ -40,13 +39,6 @@ export function PostListElement({
   url,
   tags,
 }: PostListElementProps) {
-  const renderTags = () => {
-    if (!postMeta.tags || postMeta.tags.length === 0) {
-      return null;
-    }
-    return;
-  };
-
   return (
     <div className={className}>
       <Link href={url}>
@@ -70,18 +62,17 @@ export function PostListElement({
 }
 
 type PostListProps = {
-  posts: Post[];
+  posts: PostResource[];
   allTags: Map<string, TagInfo>; // Map<tag, TagInfo>
-  getUrl?: (post: Post) => string;
 };
 
-export default function PostList({ posts, getUrl, allTags }: PostListProps) {
+export default function PostList({ posts, allTags }: PostListProps) {
   if (posts.length === 0) {
     return <div>No posts</div>;
   }
 
   const elementsProps = posts.map((post) => {
-    const url = getUrl ? getUrl(post) : `/posts/${post.slug}`;
+    const pagePath = post.pathMapping.pagePath;
     const tags = post.meta.tags.map((tag): TagInfo => {
       const tagInfo = allTags.get(tag);
       if (!tagInfo) {
@@ -97,7 +88,7 @@ export default function PostList({ posts, getUrl, allTags }: PostListProps) {
 
     return {
       post: post,
-      url: url,
+      url: pagePath,
       tags: tags,
     };
   });
@@ -106,7 +97,7 @@ export default function PostList({ posts, getUrl, allTags }: PostListProps) {
     <div className={style.postList}>
       {elementsProps.map(({ post, url, tags }) => (
         <PostListElement
-          key={post.slug}
+          key={post.pathMapping.pagePath}
           className={style.postListElement}
           postMeta={post.meta}
           tags={tags}

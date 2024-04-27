@@ -1,10 +1,18 @@
 import PostList from "@/components/PostList";
+import { ClipData } from "@/core/indexing/index-building/clip-data-index-builder";
+import {
+  TagInfo,
+  tagInfoListToMap,
+} from "@/core/indexing/index-building/tag-index-builder";
+import {
+  getClipData,
+  getTagIndex,
+  initCache,
+} from "@/core/indexing/indexing-cache";
+import { PostResource } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
-import { getClipData, getTagIndex, initCache, Post } from "@/statics";
-import { ClipData } from "@/statics/data";
-import { TagInfo, tagInfoListToMap } from "@/statics/tag-index";
 import { GetStaticProps } from "next";
 
 type ClipsProps = {
@@ -26,12 +34,13 @@ export const getStaticProps: GetStaticProps<ClipsProps> = async () => {
 };
 
 export default function ClipsPage(props: ClipsProps) {
-  const clipDataToPostCompatible = (clipData: ClipData): Post => {
+  const clipDataToPostCompatible = (clipData: ClipData): PostResource => {
     return {
-      slug: clipData.id,
-      file: clipData.url,
-      mediaDir: "",
-      path: clipData.url,
+      pathMapping: {
+        slug: clipData.id,
+        filePath: clipData.url,
+        pagePath: clipData.url,
+      },
       meta: {
         title: clipData.title,
         created_at: clipData.created_time,
@@ -53,11 +62,7 @@ export default function ClipsPage(props: ClipsProps) {
       <Title>Clips</Title>
       <DefaultLayout>
         <MainWidth>
-          <PostList
-            posts={posts}
-            allTags={allTagsMap}
-            getUrl={(clipData) => clipData.path}
-          />
+          <PostList posts={posts} allTags={allTagsMap} />
         </MainWidth>
       </DefaultLayout>
     </>

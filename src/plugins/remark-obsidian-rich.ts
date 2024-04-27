@@ -1,4 +1,4 @@
-import { getAliasIndex } from "@/statics";
+import { getAliasIndex } from "@/core/indexing/indexing-cache";
 import { BASE_PATH } from "@/utils/env-var";
 import { Paragraph, Text } from "mdast";
 import { MdxJsxFlowElement } from "mdast-util-mdx-jsx";

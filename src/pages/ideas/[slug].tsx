@@ -1,25 +1,27 @@
 import Post from "@/components/Post";
+import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder";
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
+import {
+  getPostMetaOrReload,
+  getPrevNextIndex,
+  getTagIndex,
+  ideaResourceMap,
+  initCache,
+} from "@/core/indexing/indexing-cache";
+import { ideaPostPathMapper } from "@/core/indexing/indexing-settings";
+import { PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
 import parseMdx from "@/plugins";
-import {
-  PrevNextInfo,
-  getPostMetaOrReload,
-  getTagIndex,
-  ideaCache,
-  initCache,
-} from "@/statics";
-import { PostMeta } from "@/statics/loader";
-import { TagInfo } from "@/statics/tag-index";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   await initCache();
-  const cache = ideaCache();
-  const path = cache.getSlugs().map(cache.slugToPath);
+  const ideaMap = ideaResourceMap();
+  const pagePaths = ideaMap.listPagePaths();
   return {
-    paths: path,
+    paths: pagePaths,
     fallback: false,
   };
 };
@@ -37,16 +39,20 @@ export const getStaticProps: GetStaticProps<
   { slug: string }
 > = async ({ params }) => {
   await initCache();
-  const cache = ideaCache();
+  const ideaMap = ideaResourceMap();
   const slug = params!.slug;
-  let meta = await getPostMetaOrReload(cache, slug);
-  const prevNextInfo = cache.slugToPrevNextInfo(slug);
+  const pagePath = ideaPostPathMapper().slugToPagePath(slug);
+  let meta = await getPostMetaOrReload(ideaMap, pagePath);
+  const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
+    "ideas",
+    pagePath
+  );
 
   const tagIndex = getTagIndex();
   const tags = tagIndex.getTagsOf(meta.tags);
   const source = await parseMdx(meta.content, {
     remarkObsidianRichOptions: {
-      baseDir: cache.slugToMediaDir(slug),
+      baseDir: "",
     },
   });
   return {
