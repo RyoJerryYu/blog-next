@@ -1,18 +1,7 @@
+import { RederingOptions } from "@/core/types/rendering";
+import { copyNullableArray } from "@/utils/merge-object";
 import { CompileOptions } from "@mdx-js/mdx";
 import { MDXComponents } from "mdx/types";
-import { Pluggable } from "unified";
-
-export type RederingOptions = {
-  mdxOptions: Omit<CompileOptions, "outputFormat" | "providerImportSource">;
-  mdxComponents: MDXComponents;
-  complexPlugins: ComplexPlugin[];
-};
-
-export type ComplexPlugin = {
-  remarkPlugin?: () => Pluggable;
-  rehypePlugin?: () => Pluggable;
-  mdxComponent?: () => [string, MDXComponents[keyof MDXComponents]];
-};
 
 /**
  * Generates MDX options based on the provided rendering options.
@@ -26,7 +15,10 @@ export const genMdxOptions = (options: RederingOptions) => {
   const mdxOptions: Omit<
     CompileOptions,
     "outputFormat" | "providerImportSource"
-  > = options.mdxOptions;
+  > = {
+    remarkPlugins: copyNullableArray(options.mdxOptions?.remarkPlugins),
+    rehypePlugins: copyNullableArray(options.mdxOptions?.rehypePlugins),
+  };
   for (const complexPlugin of options.complexPlugins) {
     if (complexPlugin.remarkPlugin) {
       if (!mdxOptions.remarkPlugins) {
@@ -46,7 +38,7 @@ export const genMdxOptions = (options: RederingOptions) => {
 };
 
 export const genMdxComponents = (options: RederingOptions) => {
-  const mdxComponents: MDXComponents = options.mdxComponents;
+  const mdxComponents: MDXComponents = { ...options.mdxComponents };
   for (const complexPlugin of options.complexPlugins) {
     if (complexPlugin.mdxComponent) {
       const [name, component] = complexPlugin.mdxComponent();

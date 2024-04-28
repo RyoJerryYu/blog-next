@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "test": "jest",
-    "test-ci": "TEST_ENV=ci jest",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test-ci": "TEST_ENV=ci yarn test",
     "build": "next build && next export",
     "postbuild": "next-sitemap",
     "start": "next start",

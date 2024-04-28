@@ -12,3 +12,12 @@ export const mergeObjectIgnoreUndefined = <T>(...objects: Partial<T>[]): T => {
   }
   return result as T;
 };
+
+export const copyNullableArray = <T>(
+  array: T[] | null | undefined
+): T[] | null | undefined => {
+  if (array === null || array === undefined) {
+    return array;
+  }
+  return [...array];
+};
