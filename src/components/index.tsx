@@ -1,4 +1,4 @@
-import { ObsidianRichProps } from "@/plugins/remark-obsidian-rich";
+import { ObsidianRichProps } from "@/core/rendering/remark-plugins/remark-obsidian-rich";
 import {
   BarElement,
   CategoryScale,
@@ -10,8 +10,8 @@ import {
 } from "chart.js";
 import { MDXComponents } from "mdx/types";
 import { Bar } from "react-chartjs-2";
-import EmbededExcalidraw from "./ExcalidrawScene/EmbededExcalidraw";
-import { MermaidCodeBlock } from "./ExcalidrawScene/MermaidCodeBlock";
+import EmbededExcalidraw from "../core/rendering/component-plugins/ExcalidrawScene/EmbededExcalidraw";
+import { MermaidCodeBlock } from "../core/rendering/component-plugins/ExcalidrawScene/MermaidCodeBlock";
 import License from "./License";
 
 ChartJS.register(

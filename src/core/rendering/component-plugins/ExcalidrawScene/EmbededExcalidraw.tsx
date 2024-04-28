@@ -1,7 +1,7 @@
+import { LoadError } from "@/components/Loading/LoadError";
+import { Loading } from "@/components/Loading/Loading";
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import useSWR from "swr";
-import { LoadError } from "../Loading/LoadError";
-import { Loading } from "../Loading/Loading";
 import { ExcalidrawScene } from "./ExcalidrawScene";
 
 export type EmbededExcalidrawProps = {

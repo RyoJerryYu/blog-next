@@ -37,6 +37,11 @@ export const genMdxOptions = (options: RederingOptions) => {
   return mdxOptions;
 };
 
+/**
+ * Generates MDX components based on the provided rendering options.
+ * @param options - The rendering options.
+ * @returns The generated MDX components.
+ */
 export const genMdxComponents = (options: RederingOptions) => {
   const mdxComponents: MDXComponents = { ...options.mdxComponents };
   for (const complexPlugin of options.complexPlugins) {

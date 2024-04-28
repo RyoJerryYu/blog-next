@@ -8,10 +8,10 @@ import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkUnwrapImages from "remark-unwrap-images";
-import remarkExcalidrawMermaid from "./remark-excalidraw-mermaid";
+import remarkExcalidrawMermaid from "../core/rendering/remark-plugins/remark-excalidraw-mermaid";
 import remarkObsidianRich, {
   RemarkObsidianRichOptions,
-} from "./remark-obsidian-rich";
+} from "../core/rendering/remark-plugins/remark-obsidian-rich";
 
 type ParseMdxConfig = {
   remarkObsidianRichOptions?: RemarkObsidianRichOptions;

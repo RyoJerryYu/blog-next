@@ -1,7 +1,7 @@
 import { is } from "unist-util-is";
 import { visit } from "unist-util-visit";
 
-import { MermaidCodeBlockProps } from "@/components/ExcalidrawScene/MermaidCodeBlockImpl";
+import { MermaidCodeBlockProps } from "@/core/rendering/component-plugins/ExcalidrawScene/MermaidCodeBlockImpl";
 import type { Code } from "mdast";
 import { MdxJsxFlowElement } from "mdast-util-mdx-jsx/lib";
 import type { Plugin, Transformer } from "unified";

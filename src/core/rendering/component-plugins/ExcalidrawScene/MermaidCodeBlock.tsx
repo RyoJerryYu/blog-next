@@ -1,4 +1,4 @@
-import { dynamicLoading } from "../Loading/dynamic-loading";
+import { dynamicLoading } from "@/components/Loading/dynamic-loading";
 import { MermaidCodeBlockProps } from "./MermaidCodeBlockImpl";
 
 const MermaidCodeBlockImpl = dynamicLoading(
