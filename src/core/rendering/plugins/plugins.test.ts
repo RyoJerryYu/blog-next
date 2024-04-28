@@ -1,11 +1,13 @@
 import {
+  BackendPlugins,
   ComplexPlugin,
+  FrontendPlugins,
   ParseMdxProps,
-  RenderingOptions,
 } from "@/core/types/rendering";
 import { FC, createElement } from "react";
 import { Plugin } from "unified";
-import { genMdxComponents, genMdxOptions } from "./plugins";
+import { genMdxOptions } from "./backend-plugins";
+import { genMdxComponents } from "./frontend-plugins";
 
 const emptyPlugin: Plugin = () => {};
 const EmptyComponent: FC = () => {
@@ -23,21 +25,26 @@ const emptyComplexPlugin: ComplexPlugin = {
   },
 };
 
-const newDefaultOption = (): RenderingOptions => {
+const newFrontendPlugins = (): FrontendPlugins => {
   return {
-    mdxOptions: {
-      remarkPlugins: [emptyPlugin],
-      rehypePlugins: [emptyPlugin],
-    },
     mdxComponents: {
       EmptyComponent,
     },
     complexPlugins: [emptyComplexPlugin],
   };
 };
+const newBackendPlugins = (): BackendPlugins => {
+  return {
+    mdxOptions: {
+      remarkPlugins: [emptyPlugin],
+      rehypePlugins: [emptyPlugin],
+    },
+    complexPlugins: [emptyComplexPlugin],
+  };
+};
 
 describe("genMdxOpitons", () => {
-  const defaultOption = newDefaultOption();
+  const defaultOption = newBackendPlugins();
   const props: ParseMdxProps = {
     pagePath: "",
   };
@@ -52,7 +59,7 @@ describe("genMdxOpitons", () => {
 });
 
 describe("genMdxComponents", () => {
-  const defaultOption = newDefaultOption();
+  const defaultOption = newFrontendPlugins();
   const mdxComponents = genMdxComponents(defaultOption);
   it("should return the correct mdxComponents", () => {
     expect(mdxComponents.EmptyComponent).toBeDefined();

@@ -12,8 +12,12 @@ export type ComplexPlugin = {
   mdxComponent?: () => [string, MDXComponents[keyof MDXComponents]];
 };
 
-export type RenderingOptions = {
-  mdxOptions: Omit<CompileOptions, "outputFormat" | "providerImportSource">;
+export type FrontendPlugins = {
   mdxComponents: MDXComponents;
+  complexPlugins: ComplexPlugin[];
+};
+
+export type BackendPlugins = {
+  mdxOptions: Omit<CompileOptions, "outputFormat" | "providerImportSource">;
   complexPlugins: ComplexPlugin[];
 };

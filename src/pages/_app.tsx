@@ -1,4 +1,4 @@
-import components from "@/components";
+import { components } from "@/core/rendering/rendering-component";
 import { MutexProvider } from "@/hooks/use-mutex";
 import UniversalHead from "@/layouts/UniversalHead";
 import "@/styles/globals.scss";

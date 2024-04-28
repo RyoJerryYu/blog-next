@@ -1,31 +1,13 @@
-import { ObsidianRichProps } from "@/core/rendering/remark-plugins/remark-obsidian-rich";
-import {
-  BarElement,
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  Title,
-  Tooltip,
-} from "chart.js";
+import License from "@/components/License";
 import { MDXComponents } from "mdx/types";
-import { Bar } from "react-chartjs-2";
-import EmbededExcalidraw from "../core/rendering/component-plugins/ExcalidrawScene/EmbededExcalidraw";
-import { MermaidCodeBlock } from "../core/rendering/component-plugins/ExcalidrawScene/MermaidCodeBlock";
-import License from "./License";
+import EmbededExcalidraw from "./component-plugins/ExcalidrawScene/EmbededExcalidraw";
+import { MermaidCodeBlock } from "./component-plugins/ExcalidrawScene/MermaidCodeBlock";
+import { Bar } from "./component-plugins/component-chartjs";
+import { genMdxComponents } from "./plugins/frontend-plugins";
+import { ObsidianRichProps } from "./remark-plugins/remark-obsidian-rich";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-const components: MDXComponents = {
+const defaultMdxComponents: MDXComponents = {
   Bar,
-  // Mermaid,
   License,
   MermaidCodeBlock,
   ObsidianRich: (props: ObsidianRichProps) => {
@@ -48,4 +30,7 @@ const components: MDXComponents = {
   // },
 };
 
-export default components;
+export const components = genMdxComponents({
+  mdxComponents: defaultMdxComponents,
+  complexPlugins: [],
+});

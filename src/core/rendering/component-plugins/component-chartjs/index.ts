@@ -18,8 +18,4 @@ ChartJS.register(
   Legend
 );
 
-const chartjsComponents = {
-  Bar,
-};
-
-export default chartjsComponents;
+export { Bar };

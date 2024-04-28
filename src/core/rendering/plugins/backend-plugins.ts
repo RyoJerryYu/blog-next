@@ -1,7 +1,6 @@
-import { ParseMdxProps, RenderingOptions } from "@/core/types/rendering";
+import { BackendPlugins, ParseMdxProps } from "@/core/types/rendering";
 import { copyNullableArray } from "@/utils/merge-object";
 import { CompileOptions } from "@mdx-js/mdx";
-import { MDXComponents } from "mdx/types";
 
 /**
  * Generates MDX options based on the provided rendering options.
@@ -13,16 +12,16 @@ import { MDXComponents } from "mdx/types";
  */
 export const genMdxOptions = (
   props: ParseMdxProps,
-  options: RenderingOptions
+  backendPlugins: BackendPlugins
 ) => {
   const mdxOptions: Omit<
     CompileOptions,
     "outputFormat" | "providerImportSource"
   > = {
-    remarkPlugins: copyNullableArray(options.mdxOptions?.remarkPlugins),
-    rehypePlugins: copyNullableArray(options.mdxOptions?.rehypePlugins),
+    remarkPlugins: copyNullableArray(backendPlugins.mdxOptions?.remarkPlugins),
+    rehypePlugins: copyNullableArray(backendPlugins.mdxOptions?.rehypePlugins),
   };
-  for (const complexPlugin of options.complexPlugins) {
+  for (const complexPlugin of backendPlugins.complexPlugins) {
     if (complexPlugin.remarkPlugin) {
       if (!mdxOptions.remarkPlugins) {
         mdxOptions.remarkPlugins = [];
@@ -38,21 +37,4 @@ export const genMdxOptions = (
   }
 
   return mdxOptions;
-};
-
-/**
- * Generates MDX components based on the provided rendering options.
- * @param options - The rendering options.
- * @returns The generated MDX components.
- */
-export const genMdxComponents = (options: RenderingOptions) => {
-  const mdxComponents: MDXComponents = { ...options.mdxComponents };
-  for (const complexPlugin of options.complexPlugins) {
-    if (complexPlugin.mdxComponent) {
-      const [name, component] = complexPlugin.mdxComponent();
-      mdxComponents[name] = component;
-    }
-  }
-
-  return mdxComponents;
 };
