@@ -1,4 +1,8 @@
-import { ComplexPlugin, RederingOptions } from "@/core/types/rendering";
+import {
+  ComplexPlugin,
+  ParseMdxProps,
+  RenderingOptions,
+} from "@/core/types/rendering";
 import { FC, createElement } from "react";
 import { Plugin } from "unified";
 import { genMdxComponents, genMdxOptions } from "./plugins";
@@ -19,7 +23,7 @@ const emptyComplexPlugin: ComplexPlugin = {
   },
 };
 
-const newDefaultOption = (): RederingOptions => {
+const newDefaultOption = (): RenderingOptions => {
   return {
     mdxOptions: {
       remarkPlugins: [emptyPlugin],
@@ -34,11 +38,14 @@ const newDefaultOption = (): RederingOptions => {
 
 describe("genMdxOpitons", () => {
   const defaultOption = newDefaultOption();
-  const mdxOptions = genMdxOptions(defaultOption);
+  const props: ParseMdxProps = {
+    pagePath: "",
+  };
+  const mdxOptions = genMdxOptions(props, defaultOption);
   it("should return the correct mdxOptions", () => {
     expect(mdxOptions.remarkPlugins?.length).toBe(2);
   });
-  const newMdxOptions = genMdxOptions(defaultOption);
+  const newMdxOptions = genMdxOptions(props, defaultOption);
   it("defaultOption should be statics", () => {
     expect(newMdxOptions.rehypePlugins?.length).toBe(2);
   });

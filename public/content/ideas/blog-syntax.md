@@ -85,7 +85,7 @@ def func_echo(s: str):
 
 [链接](https://blog.ryo-okami.xyz)
 
-[站内链接](/ideas/blog-syntax)
+[站内链接](/ideas/using-chart-js)
 
 ## 图片
 
@@ -170,7 +170,7 @@ sequenceDiagram
 
 [文章内标题引用](#一级标题)
 
-[跨文章标题引用](/ideas/blog-syntax#一级标题)
+[跨文章标题引用](/ideas/using-chart-js#react-chartjs-2)
 
 # Obsidian 短引用
 

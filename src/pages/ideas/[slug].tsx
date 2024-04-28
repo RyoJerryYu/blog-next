@@ -9,10 +9,10 @@ import {
   initCache,
 } from "@/core/indexing/indexing-cache";
 import { ideaPostPathMapper } from "@/core/indexing/indexing-settings";
+import { parseMdx } from "@/core/rendering/rendering-parse";
 import { PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
-import parseMdx from "@/plugins";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
@@ -51,9 +51,7 @@ export const getStaticProps: GetStaticProps<
   const tagIndex = getTagIndex();
   const tags = tagIndex.getTagsOf(meta.tags);
   const source = await parseMdx(meta.content, {
-    remarkObsidianRichOptions: {
-      baseDir: "",
-    },
+    pagePath: pagePath,
   });
   return {
     props: {

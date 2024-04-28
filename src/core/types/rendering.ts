@@ -2,14 +2,18 @@ import { CompileOptions } from "@mdx-js/mdx";
 import { MDXComponents } from "mdx/types";
 import { Pluggable } from "unified";
 
-export type RederingOptions = {
-  mdxOptions: Omit<CompileOptions, "outputFormat" | "providerImportSource">;
-  mdxComponents: MDXComponents;
-  complexPlugins: ComplexPlugin[];
+export type ParseMdxProps = {
+  pagePath: string;
 };
 
 export type ComplexPlugin = {
-  remarkPlugin?: () => Pluggable;
-  rehypePlugin?: () => Pluggable;
+  remarkPlugin?: (props: ParseMdxProps) => Pluggable;
+  rehypePlugin?: (props: ParseMdxProps) => Pluggable;
   mdxComponent?: () => [string, MDXComponents[keyof MDXComponents]];
+};
+
+export type RenderingOptions = {
+  mdxOptions: Omit<CompileOptions, "outputFormat" | "providerImportSource">;
+  mdxComponents: MDXComponents;
+  complexPlugins: ComplexPlugin[];
 };
