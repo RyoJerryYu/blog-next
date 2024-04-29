@@ -10,9 +10,10 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkUnwrapImages from "remark-unwrap-images";
 import { ParseMdxProps } from "../types/rendering";
+import remarkObsidianRich from "./complex-plugins/obsidian-rich/remark-obsidian-rich";
+import { ObsidianRichProps } from "./complex-plugins/obsidian-rich/types";
 import { genMdxOptions } from "./plugins/backend-plugins";
 import remarkExcalidrawMermaid from "./remark-plugins/remark-excalidraw-mermaid";
-import remarkObsidianRich from "./remark-plugins/remark-obsidian-rich";
 
 const defaultMdxOptions: Omit<
   CompileOptions,
@@ -23,7 +24,19 @@ const defaultMdxOptions: Omit<
     remarkMath,
     remarkExcalidrawMermaid,
     // [remarkMermaid, { wrap: true, className: ["mermaid"] }],
-    [remarkObsidianRich],
+    [
+      remarkObsidianRich,
+      {
+        matchers: [
+          [
+            (props: ObsidianRichProps) =>
+              props.file.endsWith(".excalidraw") ||
+              props.file.endsWith(".excalidraw.md"),
+            "ObsidianRichExcalidraw",
+          ],
+        ],
+      },
+    ],
     remarkUnwrapImages,
   ],
   rehypePlugins: [
