@@ -115,7 +115,11 @@ const remarkObsidianRich: unified.Plugin<[RemarkObsidianRichOptions?]> = (
     visit(
       tree,
       isObsidianRich,
-      (node: Paragraph, index: number, parent: Parent) => {
+      (node: Paragraph, index: number | undefined, parent: Parent) => {
+        if (index === undefined) {
+          console.error("index is undefined", node, parent);
+          throw new Error("index is undefined");
+        }
         const props = parseObsidianRichProp(node);
         for (let [matcher, componentName] of opts.matchers) {
           if (!testMatcher(matcher, props)) {
