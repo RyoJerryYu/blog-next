@@ -10,10 +10,10 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkUnwrapImages from "remark-unwrap-images";
 import { ParseMdxProps } from "../types/rendering";
+import { remarkCodeBlockEscape } from "./complex-plugins/code-block-escape/remark-code-block-escape";
 import remarkObsidianRich from "./complex-plugins/obsidian-rich/remark-obsidian-rich";
 import { ObsidianRichProps } from "./complex-plugins/obsidian-rich/types";
 import { genMdxOptions } from "./plugins/backend-plugins";
-import remarkExcalidrawMermaid from "./remark-plugins/remark-excalidraw-mermaid";
 
 const defaultMdxOptions: Omit<
   CompileOptions,
@@ -22,7 +22,8 @@ const defaultMdxOptions: Omit<
   remarkPlugins: [
     remarkGfm,
     remarkMath,
-    remarkExcalidrawMermaid,
+    // remarkExcalidrawMermaid,
+    [remarkCodeBlockEscape, { escapes: [["mermaid", "CodeBlockMermaid"]] }],
     // [remarkMermaid, { wrap: true, className: ["mermaid"] }],
     [
       remarkObsidianRich,

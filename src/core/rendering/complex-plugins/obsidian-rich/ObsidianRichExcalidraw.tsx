@@ -1,4 +1,4 @@
-import EmbededExcalidraw from "../../component-plugins/ExcalidrawScene/EmbededExcalidraw";
+import EmbededExcalidraw from "@/components/ExcalidrawScene/EmbededExcalidraw";
 import { ObsidianRichProps } from "./types";
 
 export const ObsidianRichExcalidraw = (props: ObsidianRichProps) => {

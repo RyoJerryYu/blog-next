@@ -1,14 +1,14 @@
 import License from "@/components/License";
 import { MDXComponents } from "mdx/types";
+import { CodeBlockMermaid } from "./complex-plugins/code-block-escape/CodeBlockMermaid";
 import { ObsidianRichExcalidraw } from "./complex-plugins/obsidian-rich/ObsidianRichExcalidraw";
-import { MermaidCodeBlock } from "./component-plugins/ExcalidrawScene/MermaidCodeBlock";
 import { Bar } from "./component-plugins/component-chartjs";
 import { genMdxComponents } from "./plugins/frontend-plugins";
 
 const defaultMdxComponents: MDXComponents = {
   Bar,
   License,
-  MermaidCodeBlock,
+  CodeBlockMermaid,
   ObsidianRichExcalidraw,
   // code: (props: any) => {
   //   if (props.className === "language-mermaid") {

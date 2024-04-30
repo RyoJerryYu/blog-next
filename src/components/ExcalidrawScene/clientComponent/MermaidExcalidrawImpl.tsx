@@ -56,7 +56,7 @@ export type MermaidCodeBlockProps = {
   children: string;
   className?: string;
 };
-export function MermaidCodeBlockImpl({
+export function MermaidExcalidrawImpl({
   name = "mermaid",
   children,
   className,
