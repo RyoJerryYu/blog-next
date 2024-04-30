@@ -6,6 +6,7 @@ import unified from "unified";
 import { Parent } from "unist";
 import { is } from "unist-util-is";
 import { visit } from "unist-util-visit";
+import { propsToMdxJsxAttributes } from "../utils/utils";
 import { ObsidianRichProps } from "./types";
 
 /**
@@ -129,11 +130,7 @@ const remarkObsidianRich: unified.Plugin<[RemarkObsidianRichOptions?]> = (
           const obsidianRichElement: MdxJsxFlowElement = {
             type: "mdxJsxFlowElement",
             name: componentName,
-            attributes: [
-              { type: "mdxJsxAttribute", name: "file", value: props.file },
-              { type: "mdxJsxAttribute", name: "url", value: props.url },
-              { type: "mdxJsxAttribute", name: "label", value: props.label },
-            ],
+            attributes: propsToMdxJsxAttributes(props),
             children: [],
           };
           parent.children.splice(index, 1, obsidianRichElement);
