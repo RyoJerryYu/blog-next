@@ -36,23 +36,47 @@ describe("test tag index", () => {
   ];
   const builder = new TagIndexBuilder();
   input.forEach((item) => {
-    builder.addResource("articles", item);
+    builder.addResource("articles", item); // TODO 不合理，后面修改 tagIndex 时需修改
   });
 
-  const getSlugCases = [
+  type GetSlugCase = {
+    name: string;
+    input: string;
+    output: Array<{
+      postType: "article" | "idea";
+      postSlug: string;
+      postPagePath: string;
+    }>;
+  };
+
+  const getSlugCases: GetSlugCase[] = [
     {
       name: "should parse tag index",
       input: "abc",
       output: [
-        { postType: "article", postSlug: "001" },
-        { postType: "idea", postSlug: "001" },
-        { postType: "idea", postSlug: "002" },
+        {
+          postType: "article",
+          postSlug: "001",
+          postPagePath: "/articles/001",
+        },
+        {
+          postType: "idea",
+          postSlug: "001",
+          postPagePath: "/ideas/001",
+        },
+        { postType: "idea", postSlug: "002", postPagePath: "/ideas/002" },
       ],
     },
     {
       name: "should parse tag 2",
       input: "cde",
-      output: [{ postType: "article", postSlug: "001" }],
+      output: [
+        {
+          postType: "article",
+          postSlug: "001",
+          postPagePath: "/articles/001",
+        },
+      ],
     },
     {
       name: "should not exist tag",

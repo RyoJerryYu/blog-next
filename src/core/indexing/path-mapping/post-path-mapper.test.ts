@@ -1,4 +1,4 @@
-import { articlePostPathMapper } from "./post-path-mapper";
+import { PostPathMapper } from "./post-path-mapper";
 
 describe("test get slug from file", () => {
   const cases = [
@@ -30,7 +30,11 @@ describe("test get slug from file", () => {
       },
     },
   ];
-  const loader = articlePostPathMapper();
+  const loader = new PostPathMapper({
+    fileGlobPattern: "public/content/articles/*.md*",
+    slugFromFilename: (filename) => filename.match(/(\d*-)*(.*)/)?.[2],
+    pathPrefix: "/articles/",
+  });
 
   for (const { name, input, want } of cases) {
     it(name, () => {
