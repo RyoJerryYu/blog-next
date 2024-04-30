@@ -1,11 +1,13 @@
 import { getAliasIndex } from "@/core/indexing/indexing-cache";
 import { BASE_PATH } from "@/utils/env-var";
-import { Paragraph, Text } from "mdast";
+import { Image, Paragraph, Text } from "mdast";
 import { MdxJsxFlowElement } from "mdast-util-mdx-jsx";
 import unified from "unified";
 import { Parent } from "unist";
 import { is } from "unist-util-is";
 import { visit } from "unist-util-visit";
+import { propsToMdxJsxAttributes } from "../utils/utils";
+import { ObsidianRichProps } from "./types";
 
 /**
  * remark-obsidian-rich plugin
@@ -21,12 +23,6 @@ import { visit } from "unist-util-visit";
 
 const syntax = /^\!\[\[(.+)\]\]$/;
 const basePath = BASE_PATH;
-
-export type ObsidianRichProps = {
-  file: string;
-  url: string;
-  label?: string;
-};
 
 /**
  * test if node is a obsidian rich content paragraph
@@ -58,10 +54,7 @@ const isObsidianRich = (node: unknown): node is Paragraph => {
  * @param node
  * @returns
  */
-const parseObsidianRichProp = (
-  node: Paragraph,
-  baseDir: string
-): ObsidianRichProps => {
+const parseObsidianRichProp = (node: Paragraph): ObsidianRichProps => {
   let text = (node.children[0] as Text).value;
   // console.log("text:", text);
   let [_, matched] = syntax.exec(text)!;
@@ -76,6 +69,8 @@ const parseObsidianRichProp = (
 
   let path = getAliasIndex().resolve(file);
   if (!path) {
+    // allow .md file shorttened
+    // if not found, try resolve it as was shorttened
     path = getAliasIndex().resolve(`${file}.md`);
   }
   if (!path) {
@@ -89,13 +84,28 @@ const parseObsidianRichProp = (
   };
 };
 
+export type Matcher = RegExp | ((props: ObsidianRichProps) => boolean);
+
+/**
+ * Test if the props parsed from `![[]]` syntax match the matcher.
+ */
+const testMatcher = (matcher: Matcher, props: ObsidianRichProps) => {
+  if (typeof matcher === "function") {
+    return matcher(props);
+  }
+  return matcher.test(props.file);
+};
+
 // need slug passed here
 export type RemarkObsidianRichOptions = {
-  baseDir: string;
+  /**
+   * list of [matcher, componentName]
+   */
+  matchers: [Matcher, string][];
 };
 
 const DEFAULT_OPTIONS: RemarkObsidianRichOptions = {
-  baseDir: ".",
+  matchers: [],
 };
 
 const remarkObsidianRich: unified.Plugin<[RemarkObsidianRichOptions?]> = (
@@ -106,17 +116,33 @@ const remarkObsidianRich: unified.Plugin<[RemarkObsidianRichOptions?]> = (
     visit(
       tree,
       isObsidianRich,
-      (node: Paragraph, index: number, parent: Parent) => {
-        const props = parseObsidianRichProp(node, opts.baseDir);
-        const obsidianRichElement: MdxJsxFlowElement = {
-          type: "mdxJsxFlowElement",
-          name: "ObsidianRich",
-          attributes: [
-            { type: "mdxJsxAttribute", name: "file", value: props.file },
-            { type: "mdxJsxAttribute", name: "url", value: props.url },
-            { type: "mdxJsxAttribute", name: "label", value: props.label },
-          ],
-          children: [],
+      (node: Paragraph, index: number | undefined, parent: Parent) => {
+        if (index === undefined) {
+          console.error("index is undefined", node, parent);
+          throw new Error("index is undefined");
+        }
+        const props = parseObsidianRichProp(node);
+        for (let [matcher, componentName] of opts.matchers) {
+          if (!testMatcher(matcher, props)) {
+            continue;
+          }
+
+          const obsidianRichElement: MdxJsxFlowElement = {
+            type: "mdxJsxFlowElement",
+            name: componentName,
+            attributes: propsToMdxJsxAttributes(props),
+            children: [],
+          };
+          parent.children.splice(index, 1, obsidianRichElement);
+          return;
+        }
+
+        // all matchers failed, fallback to markdown image
+        const obsidianRichElement: Image = {
+          type: "image",
+          url: props.url,
+          alt: props.label,
+          title: props.label,
         };
 
         parent.children.splice(index, 1, obsidianRichElement);

@@ -17,11 +17,11 @@ const nextConfig = {
     unoptimized: true,
     remotePatterns: [
       {
-        protocol: "https", 
-        hostname: "i.creativecommons.org"
-      }
-    ]
-  }
-}
+        protocol: "https",
+        hostname: "i.creativecommons.org",
+      },
+    ],
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

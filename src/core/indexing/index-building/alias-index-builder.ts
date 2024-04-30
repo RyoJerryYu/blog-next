@@ -28,14 +28,9 @@
  * - Building-this-blog.md
  */
 
-import { glob } from "glob";
 import path from "path";
 import { BaseMeta, BasePathMapping, Resource } from "../../types/indexing";
 import { IndexBuilder, getIndexFromIndexPool } from "./index-building";
-
-export function listAllStaticFiles() {
-  return glob.sync("public/content/**/*.*");
-}
 
 const isPages = (urlpath: string) => {
   return path.extname(urlpath) === "";
