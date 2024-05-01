@@ -1,5 +1,5 @@
-import dayjs from "dayjs";
 import { BasePathMapping, PostMeta, Resource } from "../../../types/indexing";
+import { timeStrToUnix } from "../../utils/git-utils";
 import { IndexBuilder, getIndexFromIndexPool } from "../index-building";
 import { PrevNextIndexResource, PrevNextInfo } from "./types";
 
@@ -8,7 +8,7 @@ export const sortPostsByDate = <Resource extends PrevNextIndexResource>(
   posts: Resource[]
 ) => {
   return posts.sort((a, b) => {
-    return dayjs(b.meta.created_at).unix() - dayjs(a.meta.created_at).unix();
+    return timeStrToUnix(b.meta.created_at) - timeStrToUnix(a.meta.created_at);
   });
 };
 

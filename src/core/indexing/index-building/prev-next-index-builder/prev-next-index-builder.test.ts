@@ -1,8 +1,6 @@
 import dayjs from "dayjs";
-import {
-  PrevNextIndexResource,
-  sortPostsByDate,
-} from "./prev-next-index-builder";
+import { sortPostsByDate } from "./prev-next-index-builder";
+import { PrevNextIndexResource } from "./types";
 
 const postInfoOtherOfDate: PrevNextIndexResource = {
   pathMapping: {
