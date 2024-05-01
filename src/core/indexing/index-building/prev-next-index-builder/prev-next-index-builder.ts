@@ -4,8 +4,8 @@ import {
   BasePathMapping,
   PostMeta,
   Resource,
-} from "../../types/indexing";
-import { IndexBuilder, getIndexFromIndexPool } from "./index-building";
+} from "../../../types/indexing";
+import { IndexBuilder, getIndexFromIndexPool } from "../index-building";
 
 export type PrevNextIndexMeta = BaseMeta & {
   title: string;

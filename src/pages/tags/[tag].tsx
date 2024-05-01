@@ -1,7 +1,7 @@
 import PostList from "@/components/PostList";
 import TagSelector from "@/components/TagSelector";
-import { sortPostsByDate } from "@/core/indexing/index-building/prev-next-index-builder";
-import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
+import { sortPostsByDate } from "@/core/indexing/index-building/prev-next-index-builder/prev-next-index-builder";
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/tag-index-builder";
 import {
   articleResourceMap,
   getTagIndex,

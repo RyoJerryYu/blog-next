@@ -29,8 +29,8 @@
  */
 
 import path from "path";
-import { BaseMeta, BasePathMapping, Resource } from "../../types/indexing";
-import { IndexBuilder, getIndexFromIndexPool } from "./index-building";
+import { BaseMeta, BasePathMapping, Resource } from "../../../types/indexing";
+import { IndexBuilder, getIndexFromIndexPool } from "../index-building";
 
 const isPages = (urlpath: string) => {
   return path.extname(urlpath) === "";

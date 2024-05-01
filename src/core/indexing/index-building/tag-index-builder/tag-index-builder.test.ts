@@ -1,4 +1,4 @@
-import { PagePathMapping, Resource } from "../../types/indexing";
+import { PagePathMapping, Resource } from "../../../types/indexing";
 import { TagIndexBuilder, TagIndexMeta } from "./tag-index-builder";
 
 describe("test tag index", () => {
