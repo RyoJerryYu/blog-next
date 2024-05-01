@@ -1,8 +1,5 @@
-import { components } from "@/components-parsing/component-parsing";
-import { MutexProvider } from "@/hooks/use-mutex";
 import UniversalHead from "@/layouts/UniversalHead";
 import "@/styles/globals.scss";
-import { MDXProvider } from "@mdx-js/react";
 import "katex/dist/katex.min.css";
 import type { AppProps } from "next/app";
 import Script from "next/script";
@@ -22,11 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
           gtag('js', new Date());
           gtag('config', 'G-1Y0XYKX8HY');`}
       </Script>
-      <MutexProvider>
-        <MDXProvider components={components}>
-          <Component {...pageProps} />
-        </MDXProvider>
-      </MutexProvider>
+      <Component {...pageProps} />
     </>
   );
 }

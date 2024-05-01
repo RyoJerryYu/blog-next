@@ -1,3 +1,4 @@
+import { ParsingProvider } from "@/components-parsing/component-parsing";
 import Comments from "@/components/Comments";
 import Post from "@/components/Post";
 import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/types";
@@ -82,12 +83,14 @@ const ArticlePage = (props: ArticlePageProps) => {
         }}
       />
       <DefaultLayout>
-        <Post
-          meta={props.meta}
-          tags={props.tags}
-          source={props.source}
-          prevNextInfo={props.prevNextInfo}
-        />
+        <ParsingProvider>
+          <Post
+            meta={props.meta}
+            tags={props.tags}
+            source={props.source}
+            prevNextInfo={props.prevNextInfo}
+          />
+        </ParsingProvider>
         <Comments issue-term={props.slug} />
       </DefaultLayout>
     </>
