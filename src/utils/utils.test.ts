@@ -7,3 +7,9 @@ export const describeNoCI = env.TEST_ENV === "ci" ? describe.skip : describe;
 testNoCI("should skip", () => {
   expect(true).toBe(false);
 });
+
+describe("it should fail", () => {
+  it("should fail", () => {
+    expect(true).toBe(false);
+  });
+});
