@@ -1,13 +1,9 @@
 "use client";
 import { Excalidraw, MainMenu } from "@excalidraw/excalidraw";
-import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { Refresh } from "@mui/icons-material";
 import { useRef } from "react";
-
-export type ExcalidrawSceneProps = {
-  elements: ExcalidrawElement[];
-};
+import { ExcalidrawSceneProps } from "../types/ExcalidrawSceneProps";
 
 export function ExcalidrawSceneImpl({ elements }: ExcalidrawSceneProps) {
   const excalidrawAPIRef = useRef<ExcalidrawImperativeAPI>();

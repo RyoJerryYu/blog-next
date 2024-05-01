@@ -1,5 +1,5 @@
 import { dynamicLoading } from "@/components/Loading/dynamic-loading";
-import { MermaidCodeBlockProps } from "./clientComponent/MermaidExcalidrawImpl";
+import { MermaidCodeBlockProps } from "./types/MermaidExcalidrawProps";
 
 const MermaidExcalidrawImpl = dynamicLoading(
   async () =>
