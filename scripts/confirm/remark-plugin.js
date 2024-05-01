@@ -1,11 +1,10 @@
-import { unified } from "unified";
-import parser from "remark-parse";
+import { compile } from "@mdx-js/mdx";
+import compiler from "rehype-stringify";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import parser from "remark-parse";
 import toHast from "remark-rehype";
-import rehypeKatex from "rehype-katex";
-import {compile} from "@mdx-js/mdx";
-import compiler from "rehype-stringify";
+import { unified } from "unified";
 import { inspect } from "unist-util-inspect";
 import { visit } from "unist-util-visit";
 
@@ -101,7 +100,6 @@ async function serimdx() {
         remarkEscape,
       ],
       rehypePlugins: [
-        rehypeKatex,
       ],
   });
   console.log(mdxSource);
