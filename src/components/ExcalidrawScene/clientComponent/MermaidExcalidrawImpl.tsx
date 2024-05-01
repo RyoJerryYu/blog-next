@@ -6,6 +6,7 @@ import { ExcalidrawElementSkeleton } from "@excalidraw/excalidraw/types/data/tra
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import { parseMermaidToExcalidraw } from "@excalidraw/mermaid-to-excalidraw";
 import { useEffect, useState } from "react";
+import { MermaidCodeBlockProps } from "../types/MermaidExcalidrawProps";
 import { ExcalidrawSceneImpl } from "./ExcalidrawSceneImpl";
 
 /**
@@ -51,11 +52,6 @@ async function parseMermaidToExcalidrawElementSkeletons(code: string) {
 
 const parseMermaidMutexKey = "MermaidCodeBlockImpl_parseMermaid";
 
-export type MermaidCodeBlockProps = {
-  name?: string;
-  children: string;
-  className?: string;
-};
 export function MermaidExcalidrawImpl({
   name = "mermaid",
   children,

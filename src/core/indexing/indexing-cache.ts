@@ -6,10 +6,10 @@
  */
 
 import { PagePathMapping, PostMeta } from "../types/indexing";
-import { AliasIndex } from "./index-building/alias-index-builder";
-import { clipDataFromPool } from "./index-building/clip-data-index-builder";
-import { PrevNextIndex } from "./index-building/prev-next-index-builder";
-import { TagIndex } from "./index-building/tag-index-builder";
+import { AliasIndex } from "./index-building/alias-index-builder/alias-index-builder";
+import { clipDataFromPool } from "./index-building/clip-data-index-builder/clip-data-index-builder";
+import { PrevNextIndex } from "./index-building/prev-next-index-builder/prev-next-index-builder";
+import { TagIndex } from "./index-building/tag-index-builder/tag-index-builder";
 import { devReloadingChain, pipeline } from "./indexing-settings";
 import { collectMetaForFilePath } from "./meta-collecting/meta-collecting";
 import { PipelineResult, executePipeline } from "./pipeline/pipeline";

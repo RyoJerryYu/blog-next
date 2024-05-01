@@ -1,5 +1,5 @@
-import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder";
-import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
+import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/types";
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import { PostMeta } from "@/core/types/indexing";
 import clsx from "clsx";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";

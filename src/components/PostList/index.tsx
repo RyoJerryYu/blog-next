@@ -1,4 +1,4 @@
-import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import { PostMeta, PostResource } from "@/core/types/indexing";
 import Link from "next/link";
 import React from "react";

@@ -1,25 +1,8 @@
 import dayjs from "dayjs";
-import {
-  BaseMeta,
-  BasePathMapping,
-  PostMeta,
-  Resource,
-} from "../../types/indexing";
-import { IndexBuilder, getIndexFromIndexPool } from "./index-building";
+import { BasePathMapping, PostMeta, Resource } from "../../../types/indexing";
+import { IndexBuilder, getIndexFromIndexPool } from "../index-building";
+import { PrevNextIndexResource, PrevNextInfo } from "./types";
 
-export type PrevNextIndexMeta = BaseMeta & {
-  title: string;
-  created_at: string | null;
-  updated_at: string | null;
-};
-export type PrevNextIndexResource = Resource<
-  BasePathMapping,
-  PrevNextIndexMeta
->;
-export type PrevNextInfo = {
-  prevInfo: PrevNextIndexResource | null;
-  nextInfo: PrevNextIndexResource | null;
-};
 // a helper function to sort posts by created at desc
 export const sortPostsByDate = <Resource extends PrevNextIndexResource>(
   posts: Resource[]

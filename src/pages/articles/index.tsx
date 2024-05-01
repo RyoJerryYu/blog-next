@@ -2,7 +2,7 @@ import PostList from "@/components/PostList";
 import {
   TagInfo,
   tagInfoListToMap,
-} from "@/core/indexing/index-building/tag-index-builder";
+} from "@/core/indexing/index-building/tag-index-builder/types";
 import {
   articleResourceMap,
   getPrevNextIndex,

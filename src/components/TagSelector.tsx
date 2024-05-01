@@ -1,4 +1,4 @@
-import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import TagsBox from "./TagsBox";
 
 export type TagSelectorProps = {

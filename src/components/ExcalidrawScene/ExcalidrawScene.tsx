@@ -1,5 +1,5 @@
 import { dynamicLoading } from "@/components/Loading/dynamic-loading";
-import { ExcalidrawSceneProps } from "./clientComponent/ExcalidrawSceneImpl";
+import { ExcalidrawSceneProps } from "./types/ExcalidrawSceneProps";
 
 const ExcalidrawSceneImpl = dynamicLoading(
   async () =>

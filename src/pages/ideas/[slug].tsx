@@ -1,6 +1,7 @@
+import { ParsingProvider } from "@/components-parsing/component-parsing";
 import Post from "@/components/Post";
-import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder";
-import { TagInfo } from "@/core/indexing/index-building/tag-index-builder";
+import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/types";
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import {
   getPostMetaOrReload,
   getPrevNextIndex,
@@ -70,12 +71,14 @@ const IdeaPage = (props: IdeaPageProps) => {
       <Title>{props.meta.title}</Title>
       <Description>{props.meta.abstract}</Description>
       <DefaultLayout>
-        <Post
-          meta={props.meta}
-          tags={props.tags}
-          source={props.source}
-          prevNextInfo={props.prevNextInfo}
-        />
+        <ParsingProvider>
+          <Post
+            meta={props.meta}
+            tags={props.tags}
+            source={props.source}
+            prevNextInfo={props.prevNextInfo}
+          />
+        </ParsingProvider>
       </DefaultLayout>
     </>
   );

@@ -1,8 +1,8 @@
 import { BaseMeta, PostMeta } from "../types/indexing";
-import { AliasIndexBuilder } from "./index-building/alias-index-builder";
-import { ClipDataIndexBuilder } from "./index-building/clip-data-index-builder";
-import { PrevNextIndexBuilder } from "./index-building/prev-next-index-builder";
-import { TagIndexBuilder } from "./index-building/tag-index-builder";
+import { AliasIndexBuilder } from "./index-building/alias-index-builder/alias-index-builder";
+import { ClipDataIndexBuilder } from "./index-building/clip-data-index-builder/clip-data-index-builder";
+import { PrevNextIndexBuilder } from "./index-building/prev-next-index-builder/prev-next-index-builder";
+import { TagIndexBuilder } from "./index-building/tag-index-builder/tag-index-builder";
 import {
   MockGitMetaCollector,
   defaultGitMetaCollector,
