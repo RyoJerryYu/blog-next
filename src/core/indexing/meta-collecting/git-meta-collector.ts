@@ -32,10 +32,10 @@ export class GitMetaCollector implements MetaCollector<GitMeta> {
     };
 
     const res: GitMeta = {
-      created_at: timeStrFromCommit(commits[0]),
+      created_at: timeStrFromCommit(commits[commits.length - 1]),
     };
     if (commits.length > 1) {
-      res.updated_at = timeStrFromCommit(commits[commits.length - 1]);
+      res.updated_at = timeStrFromCommit(commits[0]);
     }
     return res;
   };
