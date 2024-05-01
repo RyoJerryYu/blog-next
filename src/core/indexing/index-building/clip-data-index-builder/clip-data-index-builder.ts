@@ -1,14 +1,7 @@
 import * as fs from "fs";
 import { BaseMeta, BasePathMapping, Resource } from "../../../types/indexing";
 import { IndexBuilder, getIndexFromIndexPool } from "../index-building";
-
-export type ClipData = {
-  id: string;
-  title: string;
-  url: string;
-  tags: string[];
-  created_time: string;
-};
+import { ClipData } from "./types";
 
 export class ClipDataIndexBuilder
   implements IndexBuilder<BasePathMapping, BaseMeta, ClipData[], "clipData">

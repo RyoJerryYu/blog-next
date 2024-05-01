@@ -1,6 +1,6 @@
 import Post from "@/components/Post";
-import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/prev-next-index-builder";
-import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/tag-index-builder";
+import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/types";
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import {
   getPostMetaOrReload,
   getPrevNextIndex,

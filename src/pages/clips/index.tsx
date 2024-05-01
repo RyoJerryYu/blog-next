@@ -1,9 +1,9 @@
 import PostList from "@/components/PostList";
-import { ClipData } from "@/core/indexing/index-building/clip-data-index-builder/clip-data-index-builder";
+import { ClipData } from "@/core/indexing/index-building/clip-data-index-builder/types";
 import {
   TagInfo,
   tagInfoListToMap,
-} from "@/core/indexing/index-building/tag-index-builder/tag-index-builder";
+} from "@/core/indexing/index-building/tag-index-builder/types";
 import {
   getClipData,
   getTagIndex,

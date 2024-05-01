@@ -1,5 +1,5 @@
 import TagSelector from "@/components/TagSelector";
-import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/tag-index-builder";
+import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import { getTagIndex, initCache } from "@/core/indexing/indexing-cache";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
