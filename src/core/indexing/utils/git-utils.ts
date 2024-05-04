@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { ReadCommitResult } from "isomorphic-git";
 
-function dayJsFromCommit(commit: ReadCommitResult): dayjs.Dayjs {
+export function dayJsFromCommit(commit: ReadCommitResult): dayjs.Dayjs {
   return dayjs(commit.commit.committer.timestamp * 1000);
 }
 

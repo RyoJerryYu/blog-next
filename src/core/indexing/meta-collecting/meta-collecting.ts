@@ -25,7 +25,7 @@ export interface MetaCollector<Meta extends BaseMeta> {
    */
   handleAbleKeys(): Array<keyof Meta> | "*";
   collectMeta(filePath: string): Promise<Partial<Meta>>;
-  defer?(meta: Meta): void;
+  defer?(filePath: string, meta: Meta): Promise<void>;
 }
 
 /**
@@ -77,7 +77,7 @@ export async function collectMetaForFilePath<Meta extends BaseMeta>(
     if (collectorExecuteds[i]) {
       // only execute defer if the collector is executed
       const collector = collectors[i];
-      collector.defer?.(fullMeta);
+      await collector.defer?.(filePath, fullMeta);
     }
   }
 

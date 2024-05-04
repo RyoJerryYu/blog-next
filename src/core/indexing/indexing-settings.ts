@@ -34,7 +34,11 @@ export const defaultStaticResourceChain: MetaCollectorChain<BaseMeta> = {
 };
 
 export const defaultChain: MetaCollectorChain<PostMeta> = {
-  collectors: [new PostRawMetaCollector(), defaultGitMetaCollector()],
+  collectors: [
+    // new CacheMetaCollector(".", "cache", ["content"]),
+    new PostRawMetaCollector(),
+    defaultGitMetaCollector(),
+  ],
   defaultMeta: {
     content: "",
     title: "<No Title>",
