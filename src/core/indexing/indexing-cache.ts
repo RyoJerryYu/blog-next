@@ -24,7 +24,9 @@ export const initCache = async () => {
   if (cache) {
     return cache;
   }
+  console.log("init cache");
   cache = await executePipeline(pipeline);
+  console.log("cache inited");
 
   return cache;
 };
