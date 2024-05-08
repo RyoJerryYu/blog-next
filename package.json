@@ -21,7 +21,7 @@
     "@mdx-js/react": "^3.0.1",
     "@mui/base": "5.0.0-beta.40",
     "@mui/icons-material": "^5.15.15",
-    "@mui/material": "^5.15.15",
+    "@mui/material": "^5.15.17",
     "@types/mdast": "4.0.3",
     "@types/node": "18.14.2",
     "@types/react": "^18.2.79",
