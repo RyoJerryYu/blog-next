@@ -50,7 +50,7 @@ jobs:
           NEXT_PUBLIC_SITE_BASE_PATH: ${{ inputs.site-base-path }}
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: blog-next
           path: out
