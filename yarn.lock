@@ -6104,10 +6104,10 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==
 
-next-mdx-remote@0.0.0-canary-20240321205249:
-  version "0.0.0-canary-20240321205249"
-  resolved "https://registry.yarnpkg.com/next-mdx-remote/-/next-mdx-remote-0.0.0-canary-20240321205249.tgz#cdcf5ccf7928c159bdb184c940c77bf91324c8ab"
-  integrity sha512-vqerW3tdmFCLtmENseqAF2GPRV6ka/b39//Rhl7zkAMalJ/OpQ6MYqrnLYFlyOc1aVyV/D5IpxjK4Uw071jq2A==
+next-mdx-remote@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/next-mdx-remote/-/next-mdx-remote-5.0.0.tgz#028a2cf5cf7f814d988d7ab11a401bed0f31b4ee"
+  integrity sha512-RNNbqRpK9/dcIFZs/esQhuLA8jANqlH694yqoDBK8hkVdJUndzzGmnPHa2nyi90N4Z9VmzuSWNRpr5ItT3M7xQ==
   dependencies:
     "@babel/code-frame" "^7.23.5"
     "@mdx-js/mdx" "^3.0.1"
