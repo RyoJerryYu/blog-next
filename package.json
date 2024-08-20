@@ -25,7 +25,7 @@
     "async-mutex": "^0.5.0",
     "chart.js": "^4.4.3",
     "clsx": "^2.1.1",
-    "dayjs": "^1.11.11",
+    "dayjs": "^1.11.13",
     "gray-matter": "^4.0.3",
     "isomorphic-git": "^1.25.10",
     "mdast-util-mdx-jsx": "^3.1.2",
