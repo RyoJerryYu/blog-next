@@ -30,7 +30,7 @@
     "isomorphic-git": "^1.25.10",
     "mdast-util-mdx-jsx": "^3.1.2",
     "mermaid": "10.9.3",
-    "next": "13.2.1",
+    "next": "14.2.10",
     "next-mdx-remote": "5.0.0",
     "next-sitemap": "4.2.3",
     "next-themes": "^0.3.0",
