@@ -1,4 +1,4 @@
-import { MdxJsxAttribute } from "mdast-util-mdx-jsx/lib";
+import { MdxJsxAttribute } from "mdast-util-mdx-jsx";
 
 /**
  * Converts props to an array of MdxJsxAttribute objects.

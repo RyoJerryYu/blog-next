@@ -6,7 +6,7 @@ on:
       - master
   pull_request:
     branches:
-      - '**'
+      - "**"
   workflow_dispatch:
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
           cache: yarn
 
       - name: Install dependencies
