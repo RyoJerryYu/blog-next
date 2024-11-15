@@ -14,6 +14,12 @@ on:
           default empty
         required: false
         type: string
+      is-ci-build:
+        description: |
+          indicate this is a CI build, skip uploading artifacts
+          default false
+        required: false
+        type: boolean
 
 jobs:
   build:
@@ -21,12 +27,21 @@ jobs:
     steps:
       # https://github.com/actions/checkout
       - uses: actions/checkout@v4
+        if: inputs.is-ci-build == false
+        # if not a CI build, fetch all history for full build
         with:
           # git-restore-mtime-bare uses the ref log to find the correct timestamp
           # for each file. This requires a full git history. The default value (1)
           # creates a shallow checkout.
           fetch-depth: 0
           lfs: true
+      - name: Checkout without history
+        uses: actions/checkout@v4
+        if: inputs.is-ci-build == true
+        # if CI build, fetch minimal history
+        with:
+          fetch-depth: 1
+          # lfs: true
       # Fix timestamps
       - name: restore timestamps
         uses: chetan/git-restore-mtime-action@v2
@@ -50,6 +65,7 @@ jobs:
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
+        if: ${{ !inputs.is-ci-build }}
         with:
           name: blog-next
           path: out
