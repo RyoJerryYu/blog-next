@@ -27,3 +27,12 @@ jobs:
 
       - name: Run tests
         run: yarn test-ci
+
+  build:
+    # call the build job from the build.yaml workflow
+    uses: ./.github/workflows/build.yaml
+    with:
+      site-origin: https://ryojerryyu.github.io
+      site-base-path: /blog-next
+      # a CI build, skip uploading artifacts and fetch minimal history
+      is-ci-build: true
