@@ -2,7 +2,7 @@ import { getAliasIndex } from "@/core/indexing/indexing-cache";
 import { BASE_PATH } from "@/utils/env-var";
 import { Image, Paragraph, Text } from "mdast";
 import { MdxJsxFlowElement } from "mdast-util-mdx-jsx";
-import unified from "unified";
+import { Plugin } from "unified";
 import { Parent } from "unist";
 import { is } from "unist-util-is";
 import { visit } from "unist-util-visit";
@@ -108,9 +108,7 @@ const DEFAULT_OPTIONS: RemarkObsidianRichOptions = {
   matchers: [],
 };
 
-const remarkObsidianRich: unified.Plugin<[RemarkObsidianRichOptions?]> = (
-  options
-) => {
+const remarkObsidianRich: Plugin<[RemarkObsidianRichOptions?]> = (options) => {
   const opts = { ...DEFAULT_OPTIONS, ...options };
   return (tree) => {
     visit(

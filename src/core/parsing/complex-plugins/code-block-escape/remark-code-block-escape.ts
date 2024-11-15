@@ -1,6 +1,6 @@
 import { Code, Parent } from "mdast";
 import { MdxJsxFlowElement } from "mdast-util-mdx-jsx";
-import unified from "unified";
+import { Plugin } from "unified";
 import { visit } from "unist-util-visit";
 import { propsToMdxJsxAttributes } from "../utils/utils";
 import { CodeBlockProps } from "./types";
@@ -59,9 +59,9 @@ const DEFAULT_OPTIONS: RemarkCodeBlockEscapeOptions = {
  * @param options - Optional configuration options for the plugin.
  * @returns A function that can be used as a plugin in a unified processor.
  */
-export const remarkCodeBlockEscape: unified.Plugin<
-  [RemarkCodeBlockEscapeOptions?]
-> = (options) => {
+export const remarkCodeBlockEscape: Plugin<[RemarkCodeBlockEscapeOptions?]> = (
+  options
+) => {
   const opts = { ...DEFAULT_OPTIONS, ...options };
   return (tree) => {
     visit(tree, "code", (node: Code, index: number, parent: Parent) => {

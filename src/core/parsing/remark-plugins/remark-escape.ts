@@ -1,12 +1,12 @@
 import { Text } from "mdast";
-import unified from "unified";
+import { Plugin } from "unified";
 import { visit } from "unist-util-visit";
 /**
  * for escaping the arrow for mdx, which would raise an error
  *
  */
 
-const remarkEscape: unified.Plugin = () => {
+const remarkEscape: Plugin = () => {
   return (tree) => {
     visit(tree, "text", (node: Text) => {
       node.value = node.value.replace(/</g, "&lt;");
