@@ -6,7 +6,7 @@
     "dev": "next dev",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test-ci": "TEST_ENV=ci yarn test",
-    "build": "next build && next export",
+    "build": "next build",
     "postbuild": "next-sitemap",
     "build-analyze": "TEST_ENV=analyze yarn build",
     "start": "next start",
