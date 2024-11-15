@@ -20,6 +20,7 @@ on:
           default false
         required: false
         type: boolean
+        default: false
 
 jobs:
   build:
