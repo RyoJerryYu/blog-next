@@ -3,12 +3,15 @@ import { mergeObjectIgnoreUndefined } from "@/utils/merge-object";
 
 /**
  * A type responsible for parsing meta data for a resource.
+ * Meta data is information that belongs to a specific resource, like a post's title, content, etc.
+ * Meta should only contain data related to the resource itself, never depending on other resources.
+ *
  * A list of collectors will be executed in order to collect meta data for a resource.
- * A collector will be executed only if some of it's handleAbleKeys are not handled yet.
+ * A collector will be executed only if some of its handleAbleKeys are not handled yet.
  *
- * After all collectors iterated, the defaultMeta will be merged with the collected meta data.
+ * After all collectors iterate, the defaultMeta will be merged with the collected meta data.
  *
- * After all collectors iterated, the defer method of each collector
+ * After all collectors iterate, the defer method of each collector
  * will be executed in reverse order.
  * Should never modify the meta data in defer method.
  *
@@ -20,11 +23,26 @@ import { mergeObjectIgnoreUndefined } from "@/utils/merge-object";
  */
 export interface MetaCollector<Meta extends BaseMeta> {
   /**
-   * The keys of meta data that this collector can handle.
-   * return "*" if this collector can handle all keys.
+   * Returns the meta data fields this collector can handle.
+   * Returns "*" if this collector can handle all meta fields.
+   * A collector will be skipped if all its handleable fields are already collected.
    */
   handleAbleKeys(): Array<keyof Meta> | "*";
+
+  /**
+   * Collects meta data for a resource from its file.
+   * @param filePath Path to the resource file, relative to project root
+   * @returns Promise resolving to partial meta data for the resource
+   */
   collectMeta(filePath: string): Promise<Partial<Meta>>;
+
+  /**
+   * Optional deferred processing after all meta is collected.
+   * Called in reverse order after all collectors finish.
+   * Must not modify the meta data.
+   * @param filePath Path to the resource file
+   * @param meta Complete meta data collected for the resource
+   */
   defer?(filePath: string, meta: Meta): Promise<void>;
 }
 
