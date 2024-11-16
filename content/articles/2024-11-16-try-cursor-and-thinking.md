@@ -44,6 +44,7 @@ Cursor 的自动补全功能与 VSCode 中的 GitHub Copilot 有明显的使用�
 还有 Cursor 可以直接将整个项目 Indexing 掉，还能理解代码间的调用关系，一个 prompt 直接出调用关系图，再也不用挠爆头想怎么做 RAG 怎么给文章分块了，爽到。
 
 ![[Pasted image 20241116200220.png]]
+
 ![[Pasted image 20241116200148.png]]
 
 
