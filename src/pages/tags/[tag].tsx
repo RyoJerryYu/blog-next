@@ -6,7 +6,7 @@ import {
   articleResourceMap,
   getTagIndex,
   ideaResourceMap,
-  initCache,
+  loadCache,
 } from "@/core/indexing/indexing-cache";
 import {
   PagePathMapping,
@@ -20,7 +20,7 @@ import { Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  await initCache();
+  await loadCache();
   const tagIndex = getTagIndex();
   const tagInfos = tagIndex.getTags();
   const paths = tagInfos.map((tag) => tag.path);
@@ -40,7 +40,7 @@ export const getStaticProps: GetStaticProps<
   TagPageProps,
   { tag: string }
 > = async ({ params }) => {
-  await initCache();
+  await loadCache();
   const tagIndex = getTagIndex();
   const allTagInfos = tagIndex.getTags();
   const selectedTagInfo = tagIndex.getTagsOf([params!.tag])[0];

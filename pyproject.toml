@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "blog-next"
+version = "0.1.0"
+description = ""
+authors = ["Ryo <36154873+RyoJerryYu@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+python-frontmatter = "^1.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

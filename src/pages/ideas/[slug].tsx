@@ -7,7 +7,7 @@ import {
   getPrevNextIndex,
   getTagIndex,
   ideaResourceMap,
-  initCache,
+  loadCache,
 } from "@/core/indexing/indexing-cache";
 import { ideaPostPathMapper } from "@/core/indexing/indexing-settings";
 import { parseMdx } from "@/core/parsing/rendering-parse";
@@ -18,7 +18,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  await initCache();
+  await loadCache();
   const ideaMap = ideaResourceMap();
   const pagePaths = ideaMap.listPagePaths();
   return {
@@ -39,7 +39,7 @@ export const getStaticProps: GetStaticProps<
   IdeaPageProps,
   { slug: string }
 > = async ({ params }) => {
-  await initCache();
+  await loadCache();
   const ideaMap = ideaResourceMap();
   const slug = params!.slug;
   const pagePath = ideaPostPathMapper().slugToPagePath(slug);

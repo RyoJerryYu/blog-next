@@ -1,3 +1,5 @@
+import fs from "fs/promises";
+import path from "path";
 import { BaseMeta, BasePathMapping, Resource } from "../../types/indexing";
 import { IndexBuilder, buildIndex } from "../index-building/index-building";
 import { PathMapper } from "../path-mapping/path-mapping";
@@ -40,6 +42,7 @@ import {
 
 /**
  * Builds the index from a list of resource maps.
+ * It do not depend on other resources except the given resource maps.
  *
  * @param resourceMapsWithResourceType - An array of tuples containing the resource type and the resource map.
  * @param indexBuilder - The index builder.
@@ -148,13 +151,12 @@ export const executePipeline = async <
     any
   >[]
 >(
-  pipline: Pipeline<ResourceChainList, IndexBuilderList>
-) => {
+  pipline: Pipeline<ResourceChainList, IndexBuilderList>,
+  resourcePoolLoader: ResourcePoolLoader<ResourceChainList, IndexBuilderList>
+): Promise<PipelineResult> => {
   // Collect resources
-  const resourcePool: { [key: string]: ResourceMap<any, any> } = {};
-  for (let chain of pipline.resourceChains) {
-    resourcePool[chain.resourceType] = await collectResourcesAsMap(chain);
-  }
+  const resourcePool: { [key: string]: ResourceMap<any, any> } =
+    await resourcePoolLoader.loadResourcePool(pipline);
 
   // Build indexes
   let indexPool: { [key: string]: any } = {};
@@ -179,4 +181,77 @@ export const executePipeline = async <
     resourcePool,
     indexPool,
   };
+};
+
+interface ResourcePoolLoader<
+  ResourceChainList extends ResourceChainListBase,
+  IndexBuilderList extends readonly IndexBuilderWithHandleResources<
+    ResourceChainList,
+    any
+  >[]
+> {
+  loadResourcePool: (
+    pipeline: Pipeline<ResourceChainList, IndexBuilderList>
+  ) => Promise<{ [key: string]: ResourceMap<any, any> }>;
+}
+
+export class ResourcePoolFromScratch implements ResourcePoolLoader<any, any> {
+  async loadResourcePool(
+    pipeline: Pipeline<any, any>
+  ): Promise<{ [key: string]: ResourceMap<any, any> }> {
+    const resourcePool: { [key: string]: ResourceMap<any, any> } = {};
+    for (let chain of pipeline.resourceChains) {
+      resourcePool[chain.resourceType] = await collectResourcesAsMap(chain);
+    }
+    return resourcePool;
+  }
+}
+
+export class ResourcePoolFromCache implements ResourcePoolLoader<any, any> {
+  constructor(private readonly cacheFileName: string) {}
+
+  async loadResourcePool(
+    pipeline: Pipeline<any, any>
+  ): Promise<{ [key: string]: ResourceMap<any, any> }> {
+    const resourcePoolPersist = JSON.parse(
+      await fs.readFile(this.cacheFileName, "utf8")
+    );
+
+    const resourcePool: { [key: string]: ResourceMap<any, any> } = {};
+    for (let resourceType of Object.keys(resourcePoolPersist)) {
+      resourcePool[resourceType] = new ResourceMap(
+        resourcePoolPersist[resourceType]
+      );
+    }
+    return resourcePool;
+  }
+}
+
+export const cacheResourcePool = async <
+  ResourceChainList extends ResourceChainListBase,
+  IndexBuilderList extends readonly IndexBuilderWithHandleResources<
+    ResourceChainList,
+    any
+  >[]
+>(
+  cacheFilePath: string,
+  pipline: Pipeline<ResourceChainList, IndexBuilderList>
+) => {
+  const resourcePool = await new ResourcePoolFromScratch().loadResourcePool(
+    pipline
+  );
+
+  const persistResourcePool = Object.fromEntries(
+    Object.entries(resourcePool).map(([key, value]) => [key, value.persist()])
+  );
+
+  // make dir
+  const cacheDir = path.dirname(cacheFilePath);
+  await fs.mkdir(cacheDir, { recursive: true });
+
+  await fs.writeFile(
+    cacheFilePath,
+    JSON.stringify(persistResourcePool, null, 2),
+    "utf8"
+  );
 };
