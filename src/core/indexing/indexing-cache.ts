@@ -26,7 +26,7 @@ const cacheFilePath = ".cache/resource-pool.json";
 export const initCache = async () => {
   console.log("init cache");
 
-  await cacheResourcePool(cacheFilePath, pipeline);
+  await cacheResourcePool(cacheFilePath, pipeline());
 
   console.log("cache inited");
   console.log("Cache saved to", cacheFilePath);
@@ -47,7 +47,7 @@ export const loadCache = async () => {
     process.env.NODE_ENV === "development"
       ? new ResourcePoolFromScratch()
       : new ResourcePoolFromCache(cacheFilePath);
-  cache = await executePipeline(pipeline, resourcePoolLoader);
+  cache = await executePipeline(pipeline(), resourcePoolLoader);
 };
 
 const mustGetCache = () => {

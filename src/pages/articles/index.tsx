@@ -18,11 +18,13 @@ import { GetStaticProps } from "next";
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
   await loadCache();
   const articleMap = articleResourceMap();
+  console.log("articleMap.listPagePaths()", articleMap.listPagePaths());
   const prevNextIndex = getPrevNextIndex();
 
   const pagePaths = prevNextIndex
     .listResources("articles")
     .map((r) => r.pathMapping.pagePath);
+  console.log("pagePaths", pagePaths);
   const posts = pagePaths.map(articleMap.pagePathToResource);
 
   const allTagsList = getTagIndex().getTags();
@@ -42,7 +44,6 @@ type ArticlesProps = {
 
 const ArticlesPage = (props: ArticlesProps) => {
   const allTagsMap = tagInfoListToMap(props.allTagsList);
-  console.log(allTagsMap);
   return (
     <>
       <Title>Articles</Title>

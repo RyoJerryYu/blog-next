@@ -85,11 +85,11 @@ export class AliasIndexBuilder
       if (this.index.get(alias) === pagePath) {
         continue;
       }
-      console.log(
-        `Alias ${alias} already exists, path: ${this.index.get(
-          alias
-        )}, new path: ${pagePath}`
-      );
+      // console.log(
+      //   `Alias ${alias} already exists, path: ${this.index.get(
+      //     alias
+      //   )}, new path: ${pagePath}`
+      // );
     }
   };
   buildIndex = async (): Promise<{ alias: AliasIndex }> => {

@@ -65,7 +65,7 @@ export const devReloadingChain: MetaCollectorChain<PostMeta> = {
   },
 };
 
-export const pipeline = {
+export const pipeline = () => ({
   resourceChains: [
     {
       resourceType: "staticResources",
@@ -101,4 +101,4 @@ export const pipeline = {
       builder: new ClipDataIndexBuilder(),
     },
   ],
-};
+});
