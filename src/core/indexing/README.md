@@ -1,5 +1,10 @@
 # `core/indexing`
 
+Indexing responsible for:
+
+- Collecting resources and metadata from file system.
+- Building indexes from resources.
+
 ## Terms
 
 example:
@@ -94,3 +99,83 @@ Something should not be an index:
 
 
 pipeline -> ResourceList
+
+
+## Pipeline
+
+Pipeline is a collection of resource chains.
+
+Pipeline is responsible for:
+
+- Collecting resources from file system.
+- Building indexes from resources.
+
+## Pipeline Process Explained
+
+The indexing pipeline follows these steps:
+
+1. **Entry Point**: 
+   - `init-cache.ts` triggers the indexing process during build
+   - Calls `indexing-cache.ts` to manage the cache state
+
+2. **Pipeline Process**:
+   - **Resource Collection**: 
+     - Scans filesystem for content files (markdown, images, etc.)
+     - Uses path mappers to establish file-to-URL relationships
+   
+   - **Meta Collection**: 
+     - Gathers metadata from multiple sources:
+       - Frontmatter in markdown files
+       - Git history information (dates, authors)
+       - File system stats
+     - Each resource type may have different metadata needs
+   
+   - **Index Building**: 
+     - Creates various indexes for site functionality:
+       - Tag index for content categorization
+       - Post index for blog posts
+       - Resource index for static files
+     - Indexes are derived from collected resources and metadata
+
+3. **Cache Storage**:
+   - Saves complete resource pool to `.cache/resource-pool.json`
+   - Saves indexing cache to `.cache/indexing-cache.json`
+   - Cache is used to speed up subsequent builds
+
+The pipeline ensures all content is properly:
+- Discovered (Resource Collection)
+- Enriched with metadata (Meta Collection)
+- Organized for access (Index Building)
+- Cached for performance (Cache Storage)
+
+This structured approach allows for efficient content management and fast page generation in the Next.js blog.
+
+```mermaid
+flowchart TD
+    A[init-cache.ts] --> B[indexing-cache.ts]
+    B --> C[pipeline.ts]
+    
+    subgraph Pipeline Process
+        C --> D[Resource Collection]
+        D --> E[Meta Collection]
+        E --> F[Index Building]
+        
+        D --> G[static-resource-path-mapper.ts]
+        G --> H[Map file paths to URLs]
+        
+        E --> I[Collect metadata]
+        I --> J[frontmatter]
+        I --> K[git history]
+        I --> L[file stats]
+        
+        F --> M[Build indexes]
+        M --> N[tag index]
+        M --> O[post index]
+        M --> P[resource index]
+    end
+    
+    F --> Q[resource-pool.ts]
+    Q --> R[.cache/resource-pool.json]
+    
+    B --> S[.cache/indexing-cache.json]
+```

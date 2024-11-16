@@ -8,7 +8,7 @@ import {
   getPostMetaOrReload,
   getPrevNextIndex,
   getTagIndex,
-  initCache,
+  loadCache,
 } from "@/core/indexing/indexing-cache";
 import { articlePostPathMapper } from "@/core/indexing/indexing-settings";
 import { parseMdx } from "@/core/parsing/rendering-parse";
@@ -20,7 +20,7 @@ import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   console.log(`onGetStaticPaths:`);
-  await initCache();
+  await loadCache();
   const articleMap = articleResourceMap();
   const pagePaths = articleMap.listPagePaths();
   return {
@@ -42,7 +42,7 @@ export const getStaticProps: GetStaticProps<
   { slug: string }
 > = async ({ params }) => {
   console.log(`onGetStaticProps: ${params?.slug}`);
-  await initCache();
+  await loadCache();
   const articleMap = articleResourceMap();
   const slug = params!.slug;
   const pagePath = articlePostPathMapper().slugToPagePath(slug);

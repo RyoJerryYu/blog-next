@@ -7,7 +7,7 @@ import {
 import {
   getClipData,
   getTagIndex,
-  initCache,
+  loadCache,
 } from "@/core/indexing/indexing-cache";
 import { PostResource } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
@@ -21,7 +21,7 @@ type ClipsProps = {
 };
 
 export const getStaticProps: GetStaticProps<ClipsProps> = async () => {
-  await initCache();
+  await loadCache();
   const data = getClipData();
   const allTags = getTagIndex().getTags();
 

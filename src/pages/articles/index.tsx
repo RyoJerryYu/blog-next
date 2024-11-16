@@ -7,7 +7,7 @@ import {
   articleResourceMap,
   getPrevNextIndex,
   getTagIndex,
-  initCache,
+  loadCache,
 } from "@/core/indexing/indexing-cache";
 import { PostResource } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
@@ -16,7 +16,7 @@ import { Title } from "@/layouts/UniversalHead";
 import { GetStaticProps } from "next";
 
 export const getStaticProps: GetStaticProps<ArticlesProps> = async () => {
-  await initCache();
+  await loadCache();
   const articleMap = articleResourceMap();
   const prevNextIndex = getPrevNextIndex();
 

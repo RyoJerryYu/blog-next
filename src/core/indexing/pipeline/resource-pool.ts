@@ -40,6 +40,10 @@ export class ResourceMap<
     );
   }
 
+  persist = (): Resource<PathMapping, Meta>[] => {
+    return Array.from(this.pagePath2Resource.values());
+  };
+
   /**
    * Returns an array of page paths in the resource map.
    *

@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "pppppprebuildddddd": "NODE_PATH=./ ts-node --esm -r tsconfig-paths/register --project tsconfig.json scripts/init-cache.ts",
+    "prebuild": "tsx scripts/init-cache.ts",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test-ci": "TEST_ENV=ci yarn test",
     "build": "next build",
@@ -80,6 +82,7 @@
     "remark-rehype": "^11.1.0",
     "remark-stringify": "^11.0.0",
     "tailwindcss": "^3.2.7",
+    "tsx": "^4.19.2",
     "typescript": "5.6.3"
   }
 }

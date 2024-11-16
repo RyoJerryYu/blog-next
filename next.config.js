@@ -6,14 +6,15 @@ const nextConfig = {
   trailingSlash: false,
   assetPrefix: basePath,
   basePath: basePath,
-  experimental: {
-    // we load metadata when build-time, which is very very slow.
-    // and those metadata are immutable and could be cached.
-    // however, caching is not available crossing different threads,
-    // so we just use single thread to build,
-    // and it's faster than using multiple threads (because of cache).
-    cpus: 1,
-  },
+  // experimental: {
+  //   // we load metadata when build-time, which is very very slow.
+  //   // and those metadata are immutable and could be cached.
+  //   // however, caching is not available crossing different threads,
+  //   // so we just use single thread to build,
+  //   // and it's faster than using multiple threads (because of cache).
+  //   cpus: 1,
+  //   workerThreads: false,
+  // },
   images: {
     unoptimized: true,
     remotePatterns: [

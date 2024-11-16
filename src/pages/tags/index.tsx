@@ -1,6 +1,6 @@
 import TagSelector from "@/components/TagSelector";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
-import { getTagIndex, initCache } from "@/core/indexing/indexing-cache";
+import { getTagIndex, loadCache } from "@/core/indexing/indexing-cache";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
@@ -11,7 +11,7 @@ type TagsProps = {
 };
 
 export const getStaticProps: GetStaticProps<TagsProps> = async () => {
-  await initCache();
+  await loadCache();
   const tagIndex = getTagIndex();
   const tagInfos = tagIndex.getTags();
 

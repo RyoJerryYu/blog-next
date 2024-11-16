@@ -7,7 +7,7 @@ import {
   getPrevNextIndex,
   getTagIndex,
   ideaResourceMap,
-  initCache,
+  loadCache,
 } from "@/core/indexing/indexing-cache";
 import { PostResource } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
@@ -21,7 +21,7 @@ type IdeasProps = {
 };
 
 export const getStaticProps: GetStaticProps<IdeasProps> = async () => {
-  await initCache();
+  await loadCache();
   const ideaMap = ideaResourceMap();
   const prevNextIndex = getPrevNextIndex();
 

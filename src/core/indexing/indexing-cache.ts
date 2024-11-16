@@ -4,7 +4,6 @@
  * Should be initialized before using.
  * And ensure: init once, no modification after init.
  */
-
 import { PagePathMapping, PostMeta } from "../types/indexing";
 import { AliasIndex } from "./index-building/alias-index-builder/alias-index-builder";
 import { clipDataFromPool } from "./index-building/clip-data-index-builder/clip-data-index-builder";
@@ -12,23 +11,43 @@ import { PrevNextIndex } from "./index-building/prev-next-index-builder/prev-nex
 import { TagIndex } from "./index-building/tag-index-builder/tag-index-builder";
 import { devReloadingChain, pipeline } from "./indexing-settings";
 import { collectMetaForFilePath } from "./meta-collecting/meta-collecting";
-import { PipelineResult, executePipeline } from "./pipeline/pipeline";
+import {
+  PipelineResult,
+  ResourcePoolFromCache,
+  ResourcePoolFromScratch,
+  cacheResourcePool,
+  executePipeline,
+} from "./pipeline/pipeline";
 import { ResourceMap, getResourceMap } from "./pipeline/resource-pool";
+
+const cacheFilePath = ".cache/resource-pool.json";
+
+// init resource pool cache
+export const initCache = async () => {
+  console.log("init cache");
+
+  await cacheResourcePool(cacheFilePath, pipeline);
+
+  console.log("cache inited");
+  console.log("Cache saved to", cacheFilePath);
+};
 
 /**
  * The module variable as a lazy init singleton
  * Init once, and all types of caches are inited.
  */
 let cache: PipelineResult | undefined = undefined;
-export const initCache = async () => {
+export const loadCache = async () => {
   if (cache) {
     return cache;
   }
-  console.log("init cache");
-  cache = await executePipeline(pipeline);
-  console.log("cache inited");
+  console.log("loading cache from file");
 
-  return cache;
+  const resourcePoolLoader =
+    process.env.NODE_ENV === "development"
+      ? new ResourcePoolFromScratch()
+      : new ResourcePoolFromCache(cacheFilePath);
+  cache = await executePipeline(pipeline, resourcePoolLoader);
 };
 
 const mustGetCache = () => {
