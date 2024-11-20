@@ -18,7 +18,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@excalidraw/excalidraw": "^0.17.6",
-    "@excalidraw/mermaid-to-excalidraw": "^1.1.0",
+    "@excalidraw/mermaid-to-excalidraw": "^1.1.2",
     "@mdx-js/mdx": "^3.0.1",
     "@mdx-js/react": "^3.0.1",
     "@mui/base": "5.0.0-beta.61",
