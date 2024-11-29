@@ -1,3 +1,9 @@
+- [ ] Tag slug 页面 hardcoded postType
+- [ ] Obsidian 站内引用
+- [ ] Obsidian Tips Block
+- [ ] 首段引用 block 作为摘要
+- [ ] 正文 tags 加入 tag 索引
+- [ ] 首段 H1 作为标题
 
 plus:
 - [ ] https://conv.denshochan.com/markdown
@@ -28,7 +34,3 @@ plus:
 - [ ] 参考以下链接优化主页
     - [ ] https://meola.booth.pm/items
     - [ ] https://makoto-kaminaga.jimdofree.com/
-
-- [ ] Tag slug 页面 hardcoded postType
-- [ ] Obsidian 站内引用
-- [ ] Obsidian Tips Block
