@@ -36,14 +36,15 @@ describe("test tag index", () => {
   ];
   const builder = new TagIndexBuilder();
   input.forEach((item) => {
-    builder.addResource("articles", item); // TODO 不合理，后面修改 tagIndex 时需修改
+    const resourceType = item.pathMapping.pagePath.split("/")[1];
+    builder.addResource(resourceType, item);
   });
 
   type GetSlugCase = {
     name: string;
     input: string;
     output: Array<{
-      postType: "article" | "idea";
+      postType: string;
       postSlug: string;
       postPagePath: string;
     }>;
@@ -55,16 +56,20 @@ describe("test tag index", () => {
       input: "abc",
       output: [
         {
-          postType: "article",
+          postType: "articles",
           postSlug: "001",
           postPagePath: "/articles/001",
         },
         {
-          postType: "idea",
+          postType: "ideas",
           postSlug: "001",
           postPagePath: "/ideas/001",
         },
-        { postType: "idea", postSlug: "002", postPagePath: "/ideas/002" },
+        {
+          postType: "ideas",
+          postSlug: "002",
+          postPagePath: "/ideas/002",
+        },
       ],
     },
     {
@@ -72,7 +77,7 @@ describe("test tag index", () => {
       input: "cde",
       output: [
         {
-          postType: "article",
+          postType: "articles",
           postSlug: "001",
           postPagePath: "/articles/001",
         },
