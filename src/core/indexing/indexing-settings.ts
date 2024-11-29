@@ -28,6 +28,14 @@ export function ideaPostPathMapper() {
   });
 }
 
+export function learnFromAiPostPathMapper() {
+  return new PostPathMapper({
+    fileGlobPattern: "public/content/learn_from_ai/*.md*",
+    slugFromFilename: (filename) => filename.match(/(\d*-)*(.*)/)?.[2],
+    pathPrefix: "/learn_from_ai/",
+  });
+}
+
 export const defaultStaticResourceChain: MetaCollectorChain<BaseMeta> = {
   collectors: [],
   defaultMeta: {},
@@ -82,18 +90,28 @@ export const pipeline = () => ({
       pathMapper: ideaPostPathMapper(),
       collectorChain: defaultChain,
     },
+    {
+      resourceType: "learn_from_ai",
+      pathMapper: learnFromAiPostPathMapper(),
+      collectorChain: defaultChain,
+    },
   ],
   indexBuilders: [
     {
-      handleResources: ["articles", "ideas"],
+      handleResources: ["articles", "ideas", "learn_from_ai"],
       builder: new TagIndexBuilder(),
     },
     {
-      handleResources: ["articles", "ideas", "staticResources"],
+      handleResources: [
+        "articles",
+        "ideas",
+        "learn_from_ai",
+        "staticResources",
+      ],
       builder: new AliasIndexBuilder(),
     },
     {
-      handleResources: ["articles", "ideas"],
+      handleResources: ["articles", "ideas", "learn_from_ai"],
       builder: new PrevNextIndexBuilder(),
     },
     {
