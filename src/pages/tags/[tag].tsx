@@ -6,6 +6,7 @@ import {
   articleResourceMap,
   getTagIndex,
   ideaResourceMap,
+  learnFromAiResourceMap,
   loadCache,
 } from "@/core/indexing/indexing-cache";
 import {
@@ -49,14 +50,20 @@ export const getStaticProps: GetStaticProps<
   const posts: Set<Resource<PagePathMapping, PostMeta>> = new Set();
   const articleMap = articleResourceMap();
   const ideaMap = ideaResourceMap();
+  const learnFromAiMap = learnFromAiResourceMap();
 
   postSlugInfos.forEach((slugInfo) => {
-    if (slugInfo.postType === "article") {
+    // TODO 使用 resourceType 而不是 hardcode
+    if (slugInfo.postType === "articles") {
       const resource = articleMap.pagePathToResource(slugInfo.postPagePath);
       posts.add(resource);
     }
-    if (slugInfo.postType === "idea") {
+    if (slugInfo.postType === "ideas") {
       const resource = ideaMap.pagePathToResource(slugInfo.postPagePath);
+      posts.add(resource);
+    }
+    if (slugInfo.postType === "learn_from_ai") {
+      const resource = learnFromAiMap.pagePathToResource(slugInfo.postPagePath);
       posts.add(resource);
     }
   });

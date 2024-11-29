@@ -1,5 +1,6 @@
 import fs from "fs";
 import git from "isomorphic-git";
+
 describe("test", () => {
   it("should work", async () => {
     const commits = await git.log({

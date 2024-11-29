@@ -69,6 +69,12 @@ export const ideaResourceMap = () => {
     "ideas"
   );
 };
+export const learnFromAiResourceMap = () => {
+  return getResourceMap<PagePathMapping, PostMeta>(
+    mustGetCache().resourcePool,
+    "learn_from_ai"
+  );
+};
 export const getTagIndex = () => {
   return TagIndex.fromPool(mustGetCache().indexPool);
 };
