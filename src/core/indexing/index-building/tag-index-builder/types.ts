@@ -1,33 +1,7 @@
-import { PagePathMapping } from "@/core/types/indexing";
-
-type PostType = "article" | "idea";
-
-type PostSlugInfo = {
-  postType: PostType;
+export type PostSlugInfo = {
+  postType: string;
   postSlug: string;
   postPagePath: string;
-};
-
-/**
- * 不合理，
- * 1. tagInfo 本身应与 post 无关
- * 2. 应用 path 作键而不是 slug 或 name 作键
- *
- * 先保持接口不变性，后续再进行外部重构
- */
-export const postPathMappingToPostSlugInfo = (
-  pathMapping: PagePathMapping
-): PostSlugInfo => {
-  const postType: "article" | "idea" = pathMapping.pagePath.startsWith(
-    "/articles"
-  )
-    ? "article"
-    : "idea";
-  return {
-    postType,
-    postSlug: pathMapping.slug,
-    postPagePath: pathMapping.pagePath,
-  };
 };
 
 export type TagInfo = {
