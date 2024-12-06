@@ -32,7 +32,6 @@ updates:
         patterns:
           - "@mui/*"
       css:
-        dependency-type: all
         patterns:
           - "sass"
           - "clsx"
@@ -40,7 +39,6 @@ updates:
           - "postcss"
           - "tailwindcss"
       unified:
-        dependency-type: all
         patterns:
           - "unified"
           - "vfile"
