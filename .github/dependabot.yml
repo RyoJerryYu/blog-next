@@ -1,68 +1,68 @@
 version: 2
 updates:
-- package-ecosystem: npm
-  directory: "/"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 20
-  groups:
-    node-react-next:
-      dependency-type: production
-      patterns:
-        - "@types/node"
-        - "@types/react"
-        - "@types/react-dom"
-        - "react"
-        - "react-dom"
-        - "next"
-        - "@types/next"
-        - "@next/*"
-    testing-and-dev:
-      dependency-type: development
-      patterns:
-        - "typescript"
-        - "@testing-library/*"
-        - "eslint"
-        - "eslint*"
-        - "@types/jest"
-        - "jest"
-        - "jest*"
-    mui:
-      dependency-type: production
-      patterns:
-        - "@mui/*"
-    css:
-      dependency-type: production
-      patterns:
-        - "sass"
-        - "clsx"
-        - "postcss-import"
-        - "postcss"
-        - "tailwindcss"
-    unified:
-      dependency-type: development
-      patterns:
-        - "unified"
-        - "vfile"
-        - "next-mdx-remote"
-        - "rehype"
-        - "remark"
-        - "rehype*"
-        - "remark*"
-        - "unist*"
-        - "mdast*"
-        - "@mdx-js/*"
-        - "@types/mdast"
-        - "@types/unist"
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 20
+    groups:
+      node-react-next:
+        dependency-type: production
+        patterns:
+          - "@types/node"
+          - "@types/react"
+          - "@types/react-dom"
+          - "react"
+          - "react-dom"
+          - "next"
+          - "@types/next"
+          - "@next/*"
+      testing-and-dev:
+        dependency-type: development
+        patterns:
+          - "typescript"
+          - "@testing-library/*"
+          - "eslint"
+          - "eslint*"
+          - "@types/jest"
+          - "jest"
+          - "jest*"
+      mui:
+        dependency-type: production
+        patterns:
+          - "@mui/*"
+      css:
+        dependency-type: all
+        patterns:
+          - "sass"
+          - "clsx"
+          - "postcss-import"
+          - "postcss"
+          - "tailwindcss"
+      unified:
+        dependency-type: all
+        patterns:
+          - "unified"
+          - "vfile"
+          - "next-mdx-remote"
+          - "rehype"
+          - "remark"
+          - "rehype*"
+          - "remark*"
+          - "unist*"
+          - "mdast*"
+          - "@mdx-js/*"
+          - "@types/mdast"
+          - "@types/unist"
 
-- package-ecosystem: github-actions
-  directory: /
-  schedule:
-    interval: daily
-  groups:
-    official-actions:
-      patterns:
-        - "actions/*"
-    other-actions:
-      patterns:
-        - "*"
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+    groups:
+      official-actions:
+        patterns:
+          - "actions/*"
+      other-actions:
+        patterns:
+          - "*"
