@@ -154,7 +154,7 @@ int main() {
 考虑以下函数：
 
 ```cpp
-MyClass MyClass() {
+MyClass createMyClass() {
     MyClass temp("Temporary");
     return temp;
 }
