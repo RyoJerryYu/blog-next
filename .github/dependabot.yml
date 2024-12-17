@@ -29,6 +29,7 @@ updates:
       mui:
         patterns:
           - "@mui/*"
+          - "@emotion/*"
       css:
         patterns:
           - "sass"
