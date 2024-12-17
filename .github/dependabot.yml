@@ -7,7 +7,6 @@ updates:
     open-pull-requests-limit: 20
     groups:
       node-react-next:
-        dependency-type: production
         patterns:
           - "@types/node"
           - "@types/react"
@@ -28,7 +27,6 @@ updates:
           - "jest"
           - "jest*"
       mui:
-        dependency-type: production
         patterns:
           - "@mui/*"
       css:
@@ -38,6 +36,7 @@ updates:
           - "postcss-import"
           - "postcss"
           - "tailwindcss"
+          - "next-themes"
       unified:
         patterns:
           - "unified"
@@ -52,6 +51,10 @@ updates:
           - "@mdx-js/*"
           - "@types/mdast"
           - "@types/unist"
+      all-dev:
+        dependency-type: development
+        patterns:
+          - "*"
 
   - package-ecosystem: github-actions
     directory: /
