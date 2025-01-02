@@ -51,7 +51,7 @@
     "remark-mdx-chartjs": "^2.2.0",
     "remark-unwrap-images": "^4.0.0",
     "sass": "^1.83.0",
-    "shiki": "^1.24.0",
+    "shiki": "^1.25.1",
     "svgo": "^3.3.2",
     "swr": "^2.2.5",
     "unified": "^11.0.5",
