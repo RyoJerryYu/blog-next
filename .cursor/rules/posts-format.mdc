@@ -1,0 +1,60 @@
+---
+description: 关于项目中的文章 Markdown 文件，需要遵从一定的格式。
+globs: *.md
+---
+
+# Frontmatter
+
+在文章前可以用 Frontmatter 为文章增加 Meta 信息。 Frontmatter 应使用 Yaml 格式。常见的 Meta 信息有：
+
+|name|type|description|
+|---|---|---|
+|created_at|time|创建时间，创建文章时为当前时间。|
+|updated_at|time|更新时间，每次文章更新 Commit 前都需要将这个时间更新为当前时间。创建文章时为当前时间。|
+|title|string|文章标题，需体现文章的内容|
+|tags|list<string>|文章标签，可通过 tags 来筛选|
+|license|boolean|是否加上 CC BY-NC 标记。一般为 true|
+|summary|string|文章简介，会在文章列表里连同文章标题一同显示，需体现文章内容|
+
+# Heading Summary
+
+如果文章第一段为 Quote Block ，且 Frontmatter 中没有提供 summary 字段，这一段会解析为文章的 summary 。
+
+# Markdown 格式
+
+正文 Markdown 允许使用如下 markdown 格式：
+
+### GitHub Flavored Markdown (GFM)
+
+https://github.github.com/gfm/
+
+### Obsidian Flavored Markdown 
+
+https://help.obsidian.md/obsidian-flavored-markdown
+
+### Mermaid Code Block
+
+例：
+
+````markdown
+```mermaid
+graph LR
+
+ohmy-->coll
+```
+````
+
+
+### KaTeX math block
+
+例：
+
+````markdown
+Lift($$L$$) can be determined by Lift Coefficient ($$C_L$$) like the following
+equation.
+
+$$
+L = \frac{1}{2} \rho v^2 S C_L
+$$
+````
+
