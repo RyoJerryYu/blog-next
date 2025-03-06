@@ -56,6 +56,10 @@ updates:
         dependency-type: development
         patterns:
           - "*"
+      all-prod:
+        dependency-type: production
+        patterns:
+          - "*"
 
   - package-ecosystem: github-actions
     directory: /
