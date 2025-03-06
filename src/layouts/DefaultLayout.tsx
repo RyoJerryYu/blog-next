@@ -6,6 +6,7 @@ import {
 } from "@/components/svgs";
 import clsx from "clsx";
 import Link from "next/link";
+import React, { JSX } from "react";
 import style from "./DefaultLayout.module.scss";
 import MainWidth from "./MainWidth";
 
