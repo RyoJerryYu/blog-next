@@ -6,7 +6,7 @@ import { useRef } from "react";
 import { ExcalidrawSceneProps } from "../types/ExcalidrawSceneProps";
 
 export function ExcalidrawSceneImpl({ elements }: ExcalidrawSceneProps) {
-  const excalidrawAPIRef = useRef<ExcalidrawImperativeAPI>();
+  const excalidrawAPIRef = useRef<ExcalidrawImperativeAPI | null>(null);
   return (
     <>
       <div className="w-full h-full">
