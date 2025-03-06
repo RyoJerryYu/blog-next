@@ -20,6 +20,10 @@ globs: *.md
 
 如果文章第一段为 Quote Block ，且 Frontmatter 中没有提供 summary 字段，这一段会解析为文章的 summary 。
 
+# MDX 兼容
+
+无论 `*.md` 文件还是 `*.mdx` 文件都会交由 MDX 处理器处理。因此 `<` 符号在必要时需要转义，不能与 MDX 语法冲突。
+
 # Markdown 格式
 
 正文 Markdown 允许使用如下 markdown 格式：
