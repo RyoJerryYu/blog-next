@@ -5,6 +5,7 @@ import { MDXComponents } from "mdx/types";
 import { ReactNode } from "react";
 import { Bar } from "./chartjs";
 import { CodeBlockMermaid } from "./complex-plugin-components/code-block-escape/CodeBlockMermaid";
+import { ObsidianCallout } from "./complex-plugin-components/obsidian-callout/ObsidianCallout";
 import { ObsidianRichExcalidraw } from "./complex-plugin-components/obsidian-rich/ObsidianRichExcalidraw";
 
 export const components: MDXComponents = {
@@ -12,6 +13,7 @@ export const components: MDXComponents = {
   License,
   CodeBlockMermaid,
   ObsidianRichExcalidraw,
+  ObsidianCallout,
   // code: (props: any) => {
   //   if (props.className === "language-mermaid") {
   //     return <Mermaid {...props} />;
