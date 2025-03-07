@@ -17,7 +17,7 @@ describe("obsidian callout", () => {
 `;
     const result = processor.processSync(md);
     expect(result.value).toMatchInlineSnapshot(`
-"<ObsidianCallout type="abstract" title="Title" foldable={false}>
+"<ObsidianCallout type="abstract" title="Title">
   Lorem ipsum dolor sit amet
 </ObsidianCallout>
 "
@@ -33,7 +33,7 @@ describe("obsidian callout", () => {
 `;
     const result = processor.processSync(md);
     expect(result.value).toMatchInlineSnapshot(`
-"<ObsidianCallout type="abstract" title="Title" foldable={false}>
+"<ObsidianCallout type="abstract" title="Title">
   Paragraph 1
 
   Paragraph 2
@@ -50,7 +50,7 @@ describe("obsidian callout", () => {
 `;
     const result = processor.processSync(md);
     expect(result.value).toMatchInlineSnapshot(`
-"<ObsidianCallout type="abstract" title="Title" foldable={false}>
+"<ObsidianCallout type="abstract" title="Title">
   Paragraph 1
 </ObsidianCallout>
 "
@@ -63,7 +63,7 @@ describe("obsidian callout", () => {
 `;
     const result = processor.processSync(md);
     expect(result.value).toMatchInlineSnapshot(`
-"<ObsidianCallout type="abstract" title="Title" foldable={false} />
+"<ObsidianCallout type="abstract" title="Title" />
 "
 `);
   });
@@ -75,7 +75,21 @@ describe("obsidian callout", () => {
 `;
     const result = processor.processSync(md);
     expect(result.value).toMatchInlineSnapshot(`
-"<ObsidianCallout type="abstract" title="Title" foldable={true}>
+"<ObsidianCallout type="abstract" title="Title" foldable>
+  Paragraph 1
+</ObsidianCallout>
+"
+`);
+  });
+
+  it("should allow callout with foldable and no title", () => {
+    const md = `
+> [!abstract]-
+> Paragraph 1
+`;
+    const result = processor.processSync(md);
+    expect(result.value).toMatchInlineSnapshot(`
+"<ObsidianCallout type="abstract" title="" foldable>
   Paragraph 1
 </ObsidianCallout>
 "
@@ -90,8 +104,8 @@ describe("obsidian callout", () => {
 `;
     const result = processor.processSync(md);
     expect(result.value).toMatchInlineSnapshot(`
-"<ObsidianCallout type="abstract" title="Title" foldable={false}>
-  <ObsidianCallout type="abstract" title="Nested Title" foldable={false}>
+"<ObsidianCallout type="abstract" title="Title">
+  <ObsidianCallout type="abstract" title="Nested Title">
     Paragraph 1
   </ObsidianCallout>
 </ObsidianCallout>

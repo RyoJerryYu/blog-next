@@ -13,7 +13,7 @@ import { Plugin } from "unified";
 import { is } from "unist-util-is";
 import { SKIP, visit } from "unist-util-visit";
 import { propsToMdxJsxAttributes } from "../utils/utils";
-import { ObsidianCalloutProps } from "./types";
+import { ObsidianCalloutPropsMdx } from "./types";
 
 /**
  * remark-obsidian-callout plugin
@@ -69,7 +69,7 @@ import { ObsidianCalloutProps } from "./types";
  * ```
  */
 
-const syntax = /^\s*\[!([^\]]+)\](-)? (.*)/;
+const syntax = /^\s*\[!([^\]]+)\](-)? ?(.*)/;
 
 const isObsidianCallout = (node: unknown): node is Blockquote => {
   if (!is(node, { type: "blockquote" })) {
@@ -96,7 +96,9 @@ const isObsidianCallout = (node: unknown): node is Blockquote => {
  * @param node
  * @returns
  */
-const parseObsidianCalloutProp = (node: Blockquote): ObsidianCalloutProps => {
+const parseObsidianCalloutProp = (
+  node: Blockquote
+): ObsidianCalloutPropsMdx => {
   const text = node.children[0] as Paragraph;
   const match =
     text.children[0].type === "text"
@@ -151,7 +153,7 @@ const parseObsidianCalloutChildren = (
   };
   const newFirstParagraph = {
     ...firstParagraph,
-    children: [newFirstText],
+    children: [newFirstText, ...firstParagraph.children.slice(1)],
   };
   return [newFirstParagraph, ...node.children.slice(1)];
 };
