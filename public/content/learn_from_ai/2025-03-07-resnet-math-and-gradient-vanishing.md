@@ -1,6 +1,6 @@
 ---
-created_at: 2024-03-07 10:00:00
-updated_at: 2024-03-07 10:00:00
+created_at: 2025-03-07 10:00:00
+updated_at: 2025-03-07 10:00:00
 title: ResNet 的数学原理与梯度消失问题分析
 tags:
   - Deep Learning
