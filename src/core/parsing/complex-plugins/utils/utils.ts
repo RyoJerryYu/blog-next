@@ -12,9 +12,22 @@ export const propsToMdxJsxAttributes = <Props extends { [key: string]: any }>(
 ): MdxJsxAttribute[] => {
   return Object.entries(props)
     .filter(([key, value]) => value !== undefined && value !== null)
-    .map(([key, value]) => ({
-      type: "mdxJsxAttribute",
-      name: key,
-      value: value,
-    }));
+    .filter(([key, value]) => key !== "children")
+    .map(([key, value]): MdxJsxAttribute => {
+      if (typeof value === "string") {
+        return {
+          type: "mdxJsxAttribute",
+          name: key,
+          value: value,
+        };
+      }
+      return {
+        type: "mdxJsxAttribute",
+        name: key,
+        value: {
+          type: "mdxJsxAttributeValueExpression",
+          value: JSON.stringify(value),
+        },
+      };
+    });
 };
