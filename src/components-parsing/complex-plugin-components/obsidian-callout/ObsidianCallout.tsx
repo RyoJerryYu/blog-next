@@ -1,18 +1,19 @@
 import { ObsidianCalloutProps } from "@/core/parsing/complex-plugins/obsidian-callout/types";
 import {
-  Article,
-  BugReport,
-  CheckCircle,
-  Checklist,
-  Close,
-  Code,
-  FormatQuote,
-  Info,
+  AssignmentOutlined,
+  BugReportOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  EditOutlined,
+  FormatQuoteOutlined,
+  HelpOutlineOutlined,
+  InfoOutlined,
   KeyboardArrowRight,
-  Lightbulb,
-  Note,
-  QuestionMark,
-  Warning,
+  LightbulbOutlined,
+  ListOutlined,
+  OfflineBoltOutlined,
+  TaskAltOutlined,
+  WarningAmberOutlined,
 } from "@mui/icons-material";
 import clsx from "clsx";
 import { useState } from "react";
@@ -24,77 +25,94 @@ type CalloutTypeFeature = {
 };
 
 const defaultCalloutTypeFeature: CalloutTypeFeature = {
-  icon: <Note />,
+  icon: <EditOutlined />,
   bgColor: "bg-sky-100",
-  titleColor: "text-sky-600",
+  titleColor: "text-sky-500",
 };
 
 const calloutTypeFeatures: Record<string, CalloutTypeFeature> = {
   note: {
-    icon: <Note />,
+    icon: <EditOutlined />,
     bgColor: "bg-sky-100",
-    titleColor: "text-sky-600",
+    titleColor: "text-sky-500",
   },
   abstract: {
-    icon: <Article />,
+    icon: <AssignmentOutlined />,
     bgColor: "bg-teal-100",
-    titleColor: "text-teal-600",
+    titleColor: "text-teal-500",
   },
   info: {
-    icon: <Info />,
+    icon: <InfoOutlined />,
     bgColor: "bg-sky-100",
-    titleColor: "text-sky-600",
+    titleColor: "text-sky-500",
   },
   todo: {
-    icon: <Checklist />,
+    icon: <TaskAltOutlined />,
     bgColor: "bg-sky-100",
-    titleColor: "text-sky-600",
+    titleColor: "text-sky-500",
   },
   tip: {
-    icon: <Lightbulb />,
-    bgColor: "bg-sky-100",
-    titleColor: "text-sky-600",
+    icon: <LightbulbOutlined />,
+    bgColor: "bg-teal-100",
+    titleColor: "text-teal-500",
   },
   success: {
-    icon: <CheckCircle />,
+    icon: <CheckOutlined />,
     bgColor: "bg-green-100",
-    titleColor: "text-green-600",
+    titleColor: "text-green-500",
   },
   question: {
-    icon: <QuestionMark />,
-    bgColor: "bg-sky-100",
-    titleColor: "text-sky-600",
+    icon: <HelpOutlineOutlined />,
+    bgColor: "bg-amber-100",
+    titleColor: "text-amber-500",
   },
   warning: {
-    icon: <Warning />,
+    icon: <WarningAmberOutlined />,
     bgColor: "bg-orange-100",
-    titleColor: "text-orange-600",
+    titleColor: "text-orange-500",
   },
   failure: {
-    icon: <Close />,
+    icon: <CloseOutlined />,
     bgColor: "bg-red-100",
-    titleColor: "text-red-600",
+    titleColor: "text-red-500",
   },
   danger: {
-    icon: <Warning />,
+    icon: <OfflineBoltOutlined />,
     bgColor: "bg-red-100",
-    titleColor: "text-red-600",
+    titleColor: "text-red-500",
   },
   bug: {
-    icon: <BugReport />,
+    icon: <BugReportOutlined />,
     bgColor: "bg-red-100",
-    titleColor: "text-red-600",
+    titleColor: "text-red-500",
   },
   example: {
-    icon: <Code />,
-    bgColor: "bg-sky-100",
-    titleColor: "text-sky-600",
+    icon: <ListOutlined />,
+    bgColor: "bg-indigo-100",
+    titleColor: "text-indigo-500",
   },
   quote: {
-    icon: <FormatQuote />,
-    bgColor: "bg-sky-100",
-    titleColor: "text-sky-600",
+    icon: <FormatQuoteOutlined />,
+    bgColor: "bg-gray-100",
+    titleColor: "text-gray-500",
   },
+};
+
+const calloutTypeAlias: Record<string, keyof typeof calloutTypeFeatures> = {
+  summary: "abstract",
+  tldr: "abstract",
+  hint: "tip",
+  important: "tip",
+  check: "success",
+  done: "success",
+  help: "question",
+  faq: "question",
+  caution: "warning",
+  attention: "warning",
+  fail: "failure",
+  missing: "failure",
+  error: "danger",
+  cite: "quote",
 };
 
 // feature between foldable and un-foldable callout
@@ -107,8 +125,10 @@ type FoldableFeature = {
 export const ObsidianCallout = (props: ObsidianCalloutProps) => {
   const [isCollapsed, setIsCollapsed] = useState(props.foldable);
 
+  const calloutType = calloutTypeAlias[props.type] || props.type;
+
   const calloutTypeFeature =
-    calloutTypeFeatures[props.type] || defaultCalloutTypeFeature;
+    calloutTypeFeatures[calloutType] || defaultCalloutTypeFeature;
 
   let foldableFeature: FoldableFeature = {
     onClick: () => {},

@@ -244,7 +244,12 @@ sequenceDiagram
 
 > [!info]
 >
-> Info 级
+> Callout 里是正常的 markdown 语法
+> ```markdown
+> > [!info]
+> >
+> > Callout 里是正常的 markdown 语法
+> ```
 
 > [!tip] 标题
 >
@@ -258,8 +263,9 @@ sequenceDiagram
 >
 > > [!todo] 是的，可以。
 > > > [!example] 你可以使用多层嵌套。
+> > > 在最里面也可以使用 markdown 语法
 
-> [!abstract]
+> [!abstract]-
 > Abstract 级
 
 > [!summary]-
