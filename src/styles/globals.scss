@@ -73,7 +73,42 @@
       }
     }
     & p {
-      margin: 1.5rem 0 0 0;
+      @apply my-4;
+    }
+    & blockquote {
+      & p {
+        margin: 0;
+      }
+    }
+    & ul {
+      @apply mb-4;
+      @apply list-disc;
+    }
+    & ol {
+      @apply mb-4;
+      @apply list-decimal;
+    }
+    & li {
+      @apply ml-6;
+      @apply list-outside;
+    }
+    & h1 {
+      @apply mt-12 mb-10;
+    }
+    & h2 {
+      @apply mt-10 mb-8;
+    }
+    & h3 {
+      @apply mt-8 mb-6;
+    }
+    & h4 {
+      @apply mt-6 mb-4;
+    }
+    & h5 {
+      @apply mt-4 mb-4;
+    }
+    & h6 {
+      @apply mt-4 mb-4;
     }
     & table {
       display: block;
@@ -221,39 +256,6 @@
       //     @apply leading-none h-full;
       //   }
       // }
-    }
-    & blockquote {
-      & p {
-        margin: 0;
-      }
-    }
-    & ul {
-      @apply list-disc;
-    }
-    & ol {
-      @apply list-decimal;
-    }
-    & li {
-      @apply ml-6 mt-3;
-      @apply list-outside;
-    }
-    & h1 {
-      @apply mt-12;
-    }
-    & h2 {
-      @apply mt-10;
-    }
-    & h3 {
-      @apply mt-8;
-    }
-    & h4 {
-      @apply mt-6;
-    }
-    & h5 {
-      @apply mt-4;
-    }
-    & h6 {
-      @apply mt-2;
     }
     & .footnotes {
       margin-top: 1.5rem;
