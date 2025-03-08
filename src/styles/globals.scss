@@ -28,22 +28,22 @@
     @apply text-fg bg-bg;
   }
   h1 {
-    @apply text-3xl font-bold leading-normal;
+    @apply text-4xl font-bold leading-normal;
   }
   h2 {
-    @apply text-2xl font-bold leading-normal;
+    @apply text-3xl font-bold leading-normal;
   }
   h3 {
-    @apply text-xl font-bold leading-normal;
+    @apply text-2xl font-bold leading-normal;
   }
   h4 {
-    @apply mt-6 text-lg font-bold leading-normal;
+    @apply text-xl font-bold leading-normal;
   }
   h5 {
-    @apply text-base font-bold leading-normal;
+    @apply text-lg font-bold leading-normal;
   }
   h6 {
-    @apply text-base font-bold leading-normal;
+    @apply text-lg font-bold leading-normal;
   }
   blockquote {
     color: gray;
@@ -73,15 +73,53 @@
       }
     }
     & p {
-      margin: 1.5rem 0 0 0;
+      @apply my-4;
+    }
+    & blockquote {
+      & p {
+        margin: 0;
+      }
+    }
+    & ul {
+      @apply mb-4;
+      @apply list-disc;
+    }
+    & ol {
+      @apply mb-4;
+      @apply list-decimal;
+    }
+    & li {
+      @apply ml-6;
+      @apply list-outside;
+    }
+    & h1 {
+      @apply mt-12 mb-8;
+    }
+    & h2 {
+      @apply mt-12 mb-8;
+    }
+    & h3 {
+      @apply mt-10 mb-6;
+    }
+    & h4 {
+      @apply mt-8 mb-4;
+    }
+    & h5 {
+      @apply mt-6 mb-4;
+    }
+    & h6 {
+      @apply mt-6 mb-4 ml-1;
+    }
+    & hr {
+      @apply my-8;
     }
     & table {
       display: block;
       overflow-x: auto;
-      margin-top: 1.5rem;
       table-layout: fixed;
       border-collapse: collapse;
       text-align: center;
+      @apply my-4;
 
       & th,
       & td {
@@ -221,39 +259,6 @@
       //     @apply leading-none h-full;
       //   }
       // }
-    }
-    & blockquote {
-      & p {
-        margin: 0;
-      }
-    }
-    & ul {
-      @apply list-disc;
-    }
-    & ol {
-      @apply list-decimal;
-    }
-    & li {
-      @apply ml-6 mt-3;
-      @apply list-outside;
-    }
-    & h1 {
-      @apply mt-12;
-    }
-    & h2 {
-      @apply mt-10;
-    }
-    & h3 {
-      @apply mt-8;
-    }
-    & h4 {
-      @apply mt-6;
-    }
-    & h5 {
-      @apply mt-4;
-    }
-    & h6 {
-      @apply mt-2;
     }
     & .footnotes {
       margin-top: 1.5rem;
