@@ -1,4 +1,3 @@
-import License from "@/components/License";
 import { MutexProvider } from "@/hooks/use-mutex";
 import { MDXProvider } from "@mdx-js/react";
 import { MDXComponents } from "mdx/types";
@@ -10,7 +9,6 @@ import { ObsidianRichExcalidraw } from "./complex-plugin-components/obsidian-ric
 
 export const components: MDXComponents = {
   Bar,
-  License,
   CodeBlockMermaid,
   ObsidianRichExcalidraw,
   ObsidianCallout,
