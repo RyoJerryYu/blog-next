@@ -172,7 +172,7 @@ export const ObsidianCallout = (props: ObsidianCalloutProps) => {
     : props.type.charAt(0).toUpperCase() + props.type.slice(1);
 
   return (
-    <div className={clsx("rounded-md p-2 mb-2", calloutTypeFeature.bgColor)}>
+    <div className={clsx("rounded-md p-2 my-4", calloutTypeFeature.bgColor)}>
       <div
         onClick={foldableFeature.onClick}
         className={clsx(
