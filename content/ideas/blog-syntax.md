@@ -345,7 +345,7 @@ sequenceDiagram
 
 自定义 callout 类型
 
-> [!think]
+> [!reasoning]
 > LLM Reasoning
 
 > [!query]
@@ -354,5 +354,8 @@ sequenceDiagram
 > [!ai]
 > AI Generated Content
 
+> [!think]
+> Further thinking by writer
 
-
+> [!idea]
+> Idea 级, 是 think 的 alias
