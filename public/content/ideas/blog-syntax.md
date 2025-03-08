@@ -21,9 +21,15 @@ tags:
 
 *斜体*
 
+_斜体2_
+
 ***加粗斜体***
 
+**_加粗斜体2_**
+
 ~~删除线~~
+
+==高亮==
 
 > 引用
 
@@ -80,6 +86,34 @@ def func_echo(s: str):
 1. 有序列表
 2. 有序列表
 3. 有序列表
+   1. 有序列表
+   2. 有序列表
+      1. 有序列表
+      2. 有序列表
+
+- [ ] 未完成
+- [x] 已完成
+  - [x] 已完成
+    - [ ] 未完成
+
+- 交叉嵌套
+  - [ ] 未完成
+  - [x] 已完成
+    1. 有序列表
+    2. 有序列表
+
+- [ ] 交叉嵌套2
+  1. 有序列表
+  2. 有序列表
+     - 无序列表
+     - 无序列表
+
+1. 交叉嵌套
+2. 交叉嵌套
+   - 无序列表
+   - 无序列表
+     - [ ] 未完成
+     - [x] 已完成
 
 ## 链接
 
@@ -172,9 +206,9 @@ sequenceDiagram
 
 [跨文章标题引用](/ideas/using-chart-js#react-chartjs-2)
 
-# Obsidian 短引用
+# Obsidian
 
-## 图片
+## 图片短引用
 
 短引用图片，纯文件名
 
@@ -196,10 +230,120 @@ sequenceDiagram
 
 ![[/content/ideas/blog-syntax/test-img-show-image.png]]
 
-## Excalidraw
+## Excalidraw 短引用
 
 短引用 Excalidraw
 
 ![[Drawing 2024-04-13 17.33.27.excalidraw]]
+
+## Callouts
+
+> [!note]
+>
+> Note 级
+
+> [!info]
+>
+> Callout 里是正常的 markdown 语法
+> ```markdown
+> > [!info]
+> >
+> > Callout 里是正常的 markdown 语法
+> ```
+
+> [!tip] 标题
+>
+> Tip 级带标题
+
+> [!faq]- 可折叠 Callout
+>
+> 是的，这是 faq 级 callout 。可折叠 Callout 在折叠时隐藏内容。
+
+> [!question] 可以嵌套吗？
+>
+> > [!todo] 是的，可以。
+> > > [!example] 你可以使用多层嵌套。
+> > > 在最里面也可以使用 markdown 语法
+
+> [!abstract]-
+> Abstract 级
+
+> [!summary]-
+> Summary 级, 是 abstract 的 alias
+
+> [!tldr]-
+> TL;DR 级, 是 summary 的 alias
+
+> [!info]-
+> Info 级
+
+> [!todo]-
+> Todo 级
+
+> [!tip]-
+> Tip 级
+
+> [!hint]-
+> Hint 级, 是 tip 的 alias
+
+> [!important]-
+> Important 级, 是 tip 的 alias
+
+> [!success]-
+> Success 级
+
+> [!check]-
+> Check 级, 是 success 的 alias
+
+> [!done]-
+> Done 级, 是 success 的 alias
+
+> [!question]-
+> Question 级
+
+> [!help]-
+> Help 级, 是 question 的 alias
+
+> [!faq]-
+> Faq 级, 是 question 的 alias
+
+> [!warning]-
+> Warning 级
+
+> [!caution]-
+> Caution 级, 是 warning 的 alias
+
+> [!attention]-
+> Attention 级, 是 caution 的 alias
+
+> [!failure]-
+> Failure 级
+
+> [!fail]-
+> Fail 级, 是 failure 的 alias
+
+> [!missing]-
+> Missing 级, 是 failure 的 alias
+
+> [!danger]-
+> Danger 级
+
+> [!error]-
+> Error 级, 是 danger 的 alias
+
+> [!bug]-
+> Bug 级
+
+> [!example]-
+> Example 级
+
+> [!quote]-
+> Quote 级
+
+> [!cite]-
+> Cite 级, 是 quote 的 alias
+
+
+
 
 

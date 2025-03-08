@@ -4,6 +4,9 @@ import { visit } from "unist-util-visit";
 /**
  * for escaping the arrow for mdx, which would raise an error
  *
+ * It's not used in mdx system right now.
+ * Because: serialize mdx will parse mdx before remark plugin.
+ *          so the arrow escape will not work.
  */
 
 const remarkEscape: Plugin = () => {

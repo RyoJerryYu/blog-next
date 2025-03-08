@@ -14,6 +14,7 @@ import {
   RemarkCodeBlockEscapeOptions,
   remarkCodeBlockEscape,
 } from "./complex-plugins/code-block-escape/remark-code-block-escape";
+import { remarkObsidianCallout } from "./complex-plugins/obsidian-callout/remark-obsidian-callout";
 import remarkObsidianRich, {
   RemarkObsidianRichOptions,
 } from "./complex-plugins/obsidian-rich/remark-obsidian-rich";
@@ -27,7 +28,7 @@ const genMdxOptions = (props: ParseMdxProps) => {
     remarkPlugins: [
       remarkGfm,
       remarkMath,
-      // remarkExcalidrawMermaid,
+      remarkObsidianCallout,
       [
         remarkCodeBlockEscape,
         {
