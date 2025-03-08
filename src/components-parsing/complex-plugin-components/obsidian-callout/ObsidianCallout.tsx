@@ -15,6 +15,7 @@ import {
   PsychologyOutlined,
   SmartToyOutlined,
   TaskAltOutlined,
+  TipsAndUpdatesOutlined,
   WarningAmberOutlined,
 } from "@mui/icons-material";
 import clsx from "clsx";
@@ -100,7 +101,7 @@ const calloutTypeFeatures: Record<string, CalloutTypeFeature> = {
   },
 
   // custom callout types
-  think: {
+  reasoning: {
     // for ai conversation llm reasoning
     icon: <PsychologyOutlined />,
     bgColor: "bg-sky-100",
@@ -117,6 +118,12 @@ const calloutTypeFeatures: Record<string, CalloutTypeFeature> = {
     icon: <SmartToyOutlined />,
     bgColor: "bg-indigo-100",
     titleColor: "text-indigo-500",
+  },
+  think: {
+    // further thinking by writer
+    icon: <TipsAndUpdatesOutlined />,
+    bgColor: "bg-violet-100",
+    titleColor: "text-violet-500",
   },
 };
 
@@ -135,6 +142,7 @@ const calloutTypeAlias: Record<string, keyof typeof calloutTypeFeatures> = {
   missing: "failure",
   error: "danger",
   cite: "quote",
+  idea: "think",
 };
 
 // feature between foldable and un-foldable callout

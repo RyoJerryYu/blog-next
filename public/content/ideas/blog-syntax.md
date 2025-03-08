@@ -354,5 +354,8 @@ sequenceDiagram
 > [!ai]
 > AI Generated Content
 
+> [!think]
+> Further thinking by writer
 
-
+> [!idea]
+> Idea 级, 是 think 的 alias
