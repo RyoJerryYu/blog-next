@@ -345,7 +345,7 @@ sequenceDiagram
 
 自定义 callout 类型
 
-> [!think]
+> [!reasoning]
 > LLM Reasoning
 
 > [!query]
