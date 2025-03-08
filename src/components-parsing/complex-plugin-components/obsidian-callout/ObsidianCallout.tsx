@@ -12,6 +12,8 @@ import {
   LightbulbOutlined,
   ListOutlined,
   OfflineBoltOutlined,
+  PsychologyOutlined,
+  SmartToyOutlined,
   TaskAltOutlined,
   WarningAmberOutlined,
 } from "@mui/icons-material";
@@ -93,8 +95,28 @@ const calloutTypeFeatures: Record<string, CalloutTypeFeature> = {
   },
   quote: {
     icon: <FormatQuoteOutlined />,
-    bgColor: "bg-gray-100",
-    titleColor: "text-gray-500",
+    bgColor: "bg-zinc-100",
+    titleColor: "text-zinc-500",
+  },
+
+  // custom callout types
+  think: {
+    // for ai conversation llm reasoning
+    icon: <PsychologyOutlined />,
+    bgColor: "bg-sky-100",
+    titleColor: "text-sky-500",
+  },
+  query: {
+    // for ai conversation user query
+    icon: <HelpOutlineOutlined />,
+    bgColor: "bg-fuchsia-100",
+    titleColor: "text-fuchsia-500",
+  },
+  ai: {
+    // for ai generated content
+    icon: <SmartToyOutlined />,
+    bgColor: "bg-indigo-100",
+    titleColor: "text-indigo-500",
   },
 };
 
