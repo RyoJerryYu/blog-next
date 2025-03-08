@@ -13,7 +13,7 @@ license: true
 
 # Q: PyTorch 中所谓的保存模型/加载模型，指的是保存/加载什么？是 state_dict 吗？
 
-> think
+> [!think]-
 >
 > 嗯，我现在要弄清楚 PyTorch 中保存和加载模型到底是怎么回事。用户问是不是保存和加载 state_dict，我需要仔细想一想这个问题。
 >
@@ -137,7 +137,7 @@ model.eval()
 
 # Q: model 的 config 又是什么东西？是超参吗？
 
-> think
+> [!think]-
 >
 > 嗯，用户之前问过 PyTorch 中保存和加载模型的概念，现在又接着问"model 的 config 是什么东西？是超参吗？"我需要仔细分析这个问题，确保理解用户的真实需求。
 >
@@ -291,7 +291,7 @@ model.load_state_dict(loaded["state_dict"])
 
 # Q: 所谓"权重"就是指 state_dict 中的内容吗？
 
-> think
+> [!think]-
 >
 > 嗯，用户问："所谓'权重'就是指 state_dict 中的内容吗？"这个问题看起来是想确认 PyTorch 中的权重和 state_dict 之间的关系。首先，我需要回顾一下之前的对话，确保回答的一致性。
 >

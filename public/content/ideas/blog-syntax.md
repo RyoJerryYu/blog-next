@@ -343,7 +343,16 @@ sequenceDiagram
 > [!cite]-
 > Cite 级, 是 quote 的 alias
 
+自定义 callout 类型
 
+> [!think]
+> LLM Reasoning
+
+> [!query]
+> User Query
+
+> [!ai]
+> AI Generated Content
 
 
 
