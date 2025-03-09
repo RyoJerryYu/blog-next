@@ -1,5 +1,5 @@
 import { getAliasIndex } from "@/core/indexing/indexing-cache";
-import { BASE_PATH } from "@/utils/env-var";
+import { resourcePath } from "@/utils/path-resolve";
 import { Image, Paragraph, Text } from "mdast";
 import { MdxJsxFlowElement } from "mdast-util-mdx-jsx";
 import { Plugin } from "unified";
@@ -8,7 +8,6 @@ import { is } from "unist-util-is";
 import { visit } from "unist-util-visit";
 import { propsToMdxJsxAttributes } from "../utils/utils";
 import { ObsidianRichProps } from "./types";
-
 /**
  * remark-obsidian-rich plugin
  *
@@ -22,7 +21,6 @@ import { ObsidianRichProps } from "./types";
  */
 
 const syntax = /^\!\[\[(.+)\]\]$/;
-const basePath = BASE_PATH;
 
 /**
  * test if node is a obsidian rich content paragraph
@@ -79,7 +77,7 @@ const parseObsidianRichProp = (node: Paragraph): ObsidianRichProps => {
 
   return {
     file: file,
-    url: `${basePath}${path}`,
+    url: resourcePath(path),
     label: label,
   };
 };
