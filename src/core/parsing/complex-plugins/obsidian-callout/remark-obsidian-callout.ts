@@ -69,7 +69,7 @@ import { ObsidianCalloutPropsMdx } from "./types";
  * ```
  */
 
-const syntax = /^\s*\[!([^\]]+)\](-)? ?(.*)/;
+const syntax = /^\s*\[!([^\]]+)\](-|\+)? ?(.*)/;
 
 const isObsidianCallout = (node: unknown): node is Blockquote => {
   if (!is(node, { type: "blockquote" })) {
@@ -116,6 +116,7 @@ const parseObsidianCalloutProp = (
     type,
     title,
     foldable: !!foldmark,
+    isCollapsed: foldmark === "-", // default is false
   };
 };
 

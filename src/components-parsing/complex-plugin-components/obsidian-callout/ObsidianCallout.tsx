@@ -153,7 +153,10 @@ type FoldableFeature = {
 };
 
 export const ObsidianCallout = (props: ObsidianCalloutProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(props.foldable);
+  // default to collapsed only when foldable and isCollapsed
+  const [isCollapsed, setIsCollapsed] = useState(
+    props.foldable && props.isCollapsed
+  );
 
   const calloutType = calloutTypeAlias[props.type] || props.type;
 
