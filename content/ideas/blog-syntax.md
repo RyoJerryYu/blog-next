@@ -208,7 +208,28 @@ sequenceDiagram
 
 # Obsidian
 
-## 图片短引用
+## Wikilink
+
+### 站内短引用
+
+[[2022-08-13-introduction-for-k8s]]
+
+可以去掉路径中的日期 [[introduction-for-k8s]] 作为 page path 引用
+
+带 label [[2022-08-13-introduction-for-k8s|其他文章]]
+
+带路径 [[articles/2022-08-13-introduction-for-k8s|其他文章]]
+
+Page path 全路径 [[/articles/introduction-for-k8s|其他文章]]
+
+file path 全路径 [[public/content/articles/2022-08-13-introduction-for-k8s|其他文章]]
+
+一行多个 [[2022-08-13-introduction-for-k8s|其他文章]] [[2022-08-20-introduction-for-k8s-2|其他文章2]]
+
+
+## Rich Content 短引用
+
+### 图片短引用
 
 短引用图片，纯文件名
 
@@ -230,7 +251,7 @@ sequenceDiagram
 
 ![[/content/ideas/blog-syntax/test-img-show-image.png]]
 
-## Excalidraw 短引用
+### Excalidraw 短引用
 
 短引用 Excalidraw
 
@@ -268,6 +289,26 @@ sequenceDiagram
 > > [!todo] 是的，可以。
 > > > [!example] 你可以使用多层嵌套。
 > > > 在最里面也可以使用 markdown 语法
+>
+> > [!tip]- 还可以嵌套其他 Obsidian 语法
+> > 也可以嵌套 wikilink [[introduction-for-k8s]]
+> >
+> > 或者嵌套 Embeded 图片
+> >
+> > ![[test-img-show-image.png]]
+> >
+> > 也可以嵌套 mermaid 图表
+> >
+> > ```mermaid
+> > graph TD
+> > A[Start] --> B[Process]
+> > B --> C[End]
+> > ```
+> >
+> > 也可以嵌套 Excalidraw
+> >
+> > ![[Drawing 2024-04-13 17.33.27.excalidraw]]
+>
 
 > [!abstract]-
 > Abstract 级
