@@ -20,6 +20,9 @@ import remarkObsidianRich, {
 } from "./complex-plugins/obsidian-rich/remark-obsidian-rich";
 import { ObsidianRichProps } from "./complex-plugins/obsidian-rich/types";
 import { remarkObsidianTag } from "./complex-plugins/obsidian-tag/remark-obsidian-tag";
+import remarkObsidianWikilink, {
+  RemarkObsidianWikilinkOptions,
+} from "./complex-plugins/obsidian-wikilink/remark-obsidian-wikilink";
 
 const genMdxOptions = (props: ParseMdxProps) => {
   const defaultMdxOptions: Omit<
@@ -30,14 +33,6 @@ const genMdxOptions = (props: ParseMdxProps) => {
       remarkGfm,
       remarkMath,
       remarkObsidianCallout,
-      remarkObsidianTag,
-      [
-        remarkCodeBlockEscape,
-        {
-          escapes: [["mermaid", "CodeBlockMermaid"]],
-        } as RemarkCodeBlockEscapeOptions,
-      ],
-      // [remarkMermaid, { wrap: true, className: ["mermaid"] }],
       [
         remarkObsidianRich,
         {
@@ -50,6 +45,14 @@ const genMdxOptions = (props: ParseMdxProps) => {
             ],
           ],
         } as RemarkObsidianRichOptions,
+      ],
+      [remarkObsidianWikilink, {} as RemarkObsidianWikilinkOptions],
+      remarkObsidianTag,
+      [
+        remarkCodeBlockEscape,
+        {
+          escapes: [["mermaid", "CodeBlockMermaid"]],
+        } as RemarkCodeBlockEscapeOptions,
       ],
       remarkUnwrapImages,
     ],

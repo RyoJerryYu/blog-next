@@ -32,29 +32,30 @@ import path from "path";
 import { BaseMeta, BasePathMapping, Resource } from "../../../types/indexing";
 import { IndexBuilder, getIndexFromIndexPool } from "../index-building";
 
-const isPages = (urlpath: string) => {
-  return path.extname(urlpath) === "";
+const isPageFile = (urlpath: string) => {
+  return path.extname(urlpath) === ".md";
 };
 
 // aliasesFromPath: get all aliases from a path
 // path should pass from post cache, which already parsed and resolvable
-// path should always start with `/`
-export const aliasesFromPagePath = (pagePath: string) => {
-  const parts = pagePath.split("/");
+// path allow start with `/` or not
+// so it could be both a page path or a file path
+export const aliasesFromPath = (path: string) => {
+  const parts = path.split("/");
   if (parts[0] === "") {
     parts.shift(); // always
   }
   const aliases: string[] = [];
-  const needAppendMd = isPages(pagePath);
+  const needRemoveMd = isPageFile(path);
 
-  aliases.push(pagePath); // full path, e.g. /articles/2020-01-27-Building-this-blog
-  if (needAppendMd) {
-    aliases.push(pagePath.concat(".md"));
+  aliases.push(path); // full path, e.g. /articles/2020-01-27-Building-this-blog
+  if (needRemoveMd) {
+    aliases.push(path.replace(".md", ""));
   }
   for (let i = 0; i < parts.length; i++) {
     aliases.push(parts.slice(i).join("/"));
-    if (needAppendMd) {
-      aliases.push(parts.slice(i).join("/").concat(".md"));
+    if (needRemoveMd) {
+      aliases.push(parts.slice(i).join("/").replace(".md", ""));
     }
   }
   return aliases;
@@ -72,8 +73,11 @@ export class AliasIndexBuilder
     resourceType: string,
     resource: Resource<BasePathMapping, BaseMeta>
   ) => {
-    const { pagePath } = resource.pathMapping;
-    const aliases = aliasesFromPagePath(pagePath);
+    const { filePath, pagePath } = resource.pathMapping;
+    const aliases = [
+      ...aliasesFromPath(pagePath),
+      ...aliasesFromPath(filePath),
+    ];
     for (const alias of aliases) {
       if (!this.index.has(alias)) {
         // first add posts, then add static contents
