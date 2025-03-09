@@ -64,7 +64,12 @@ export const remarkObsidianTag: Plugin<[RemarkObsidianTagOptions?]> = (
           throw new Error("index is undefined");
         }
         const match = node.value.match(syntax);
-        if (!match || match.index === undefined || !match.length) {
+        if (
+          !match ||
+          match.index === undefined ||
+          !match.length ||
+          match.length < 3
+        ) {
           return;
         }
 

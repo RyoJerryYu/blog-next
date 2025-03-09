@@ -194,10 +194,8 @@ export const ObsidianCallout = (props: ObsidianCalloutProps) => {
       >
         {calloutTypeFeature.icon} {title} {foldableFeature.arrowIcon}
       </div>
-      {props.children && (
-        <div className={clsx("m-2", isCollapsed && "hidden")}>
-          {props.children}
-        </div>
+      {props.children && !isCollapsed && (
+        <div className={clsx("m-2")}>{props.children}</div>
       )}
     </div>
   );
