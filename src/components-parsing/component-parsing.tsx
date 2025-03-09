@@ -1,6 +1,7 @@
 import { MutexProvider } from "@/hooks/use-mutex";
 import { MDXProvider } from "@mdx-js/react";
 import { MDXComponents } from "mdx/types";
+import Link from "next/link";
 import { ReactNode } from "react";
 import { Bar } from "./chartjs";
 import { CodeBlockMermaid } from "./complex-plugin-components/code-block-escape/CodeBlockMermaid";
@@ -14,6 +15,14 @@ export const components: MDXComponents = {
   ObsidianRichExcalidraw,
   ObsidianCallout,
   ObsidianTag,
+  a: (props) => {
+    const { href, ...rest } = props;
+    if (href?.startsWith("/")) {
+      // relative to root, Next.js will auto handle prefix
+      return <Link href={href} {...rest} />;
+    }
+    return <a href={href} {...rest} />;
+  },
   // code: (props: any) => {
   //   if (props.className === "language-mermaid") {
   //     return <Mermaid {...props} />;
