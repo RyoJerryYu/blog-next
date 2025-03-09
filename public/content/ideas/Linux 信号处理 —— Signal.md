@@ -23,7 +23,7 @@ title: Linux 信号处理 —— Signal
 - `signal.h` 中，调用 `signal` 函数传入一个 `sighandler_t` 类型的 `handler` ，注册信号处理函数 
 - 用 `kill` 函数对一个 pid 发送一个信号。已注册信号， `kill` 发送的信号都能收到
 - `exec` 函数会将原先要捕捉的信号设置为默认动作
-- `fork` 函数的子进程会继承父进程的信号处理方式
+- `fork` 函数的子进程会继承父进程的信号处理方式 [[Linux Clone VS Fork]]
 
 原型：
 ```cpp
