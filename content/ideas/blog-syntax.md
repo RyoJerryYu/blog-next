@@ -259,6 +259,10 @@ sequenceDiagram
 >
 > 是的，这是 faq 级 callout 。可折叠 Callout 在折叠时隐藏内容。
 
+> [!faq]+ 默认打开的可折叠 Callout
+>
+> 可折叠 Callout 也可以设置为默认打开。
+
 > [!question] 可以嵌套吗？
 >
 > > [!todo] 是的，可以。
