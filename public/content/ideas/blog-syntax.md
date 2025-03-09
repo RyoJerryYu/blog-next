@@ -363,3 +363,14 @@ sequenceDiagram
 
 > [!idea]
 > Idea 级, 是 think 的 alias
+
+## 标签
+
+文字里可以有 #Tag ， 会被渲染成标签。
+
+#Tag
+
+#Tag/Tag2
+
+> [!info] Tag 可以与其他组件结合
+> 就像 #Tag 这样
