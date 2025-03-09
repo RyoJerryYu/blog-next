@@ -6,7 +6,7 @@ import BgKasumiHanabi, {
   HomeKasumiGakkou,
 } from "@/components/imgs/BgKasumiHanabi";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import { BASE_PATH } from "@/utils/env-var";
+import { resourcePath } from "@/utils/path-resolve";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -20,7 +20,7 @@ export async function getStaticProps() {
 }
 
 export default function Home() {
-  const bgUrl = `${BASE_PATH}/img/home-bg-kasumi-hanabi.jpg`;
+  const bgUrl = resourcePath("/img/home-bg-kasumi-hanabi.jpg");
 
   const categoryListItems: HomeCategoryItem[] = [
     {

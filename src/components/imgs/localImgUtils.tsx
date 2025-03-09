@@ -1,4 +1,4 @@
-import { BASE_PATH } from "@/utils/env-var";
+import { resourcePath } from "@/utils/path-resolve";
 import Image from "next/image";
 
 type LocalImgProps = {
@@ -13,7 +13,7 @@ export type BgImgMeta = {
   height: number;
 };
 export function makeLocalImgComponent(meta: BgImgMeta): LocalImgComponent {
-  const bgUrl = `${BASE_PATH}/img/${meta.bgUrlSuffix}`;
+  const bgUrl = resourcePath(`/img/${meta.bgUrlSuffix}`);
   return function LocalImg(props: LocalImgProps) {
     return (
       <Image

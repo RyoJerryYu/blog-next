@@ -1,4 +1,5 @@
-import { BASE_PATH, PROD_SITE_URL, SITE_NAME, SITE_URL } from "@/utils/env-var";
+import { PROD_SITE_URL, SITE_NAME, SITE_URL } from "@/utils/env-var";
+import { resourcePath } from "@/utils/path-resolve";
 import dayjs from "dayjs";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -113,7 +114,7 @@ const UniversalHead = () => {
         <meta name="twitter:creator" content="@ryo_okami" />
         {/* Facebook Open Graph: https://developers.facebook.com/docs/sharing/webmasters#markup */}
         {/* Twitter Card: https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/abouts-cards */}
-        <link rel="icon" href={`${BASE_PATH}/favicon.ico`} />
+        <link rel="icon" href={resourcePath("/favicon.ico")} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
           httpEquiv="Content-Security-Policy"
