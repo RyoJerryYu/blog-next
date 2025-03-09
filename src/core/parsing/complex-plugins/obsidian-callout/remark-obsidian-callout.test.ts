@@ -75,7 +75,7 @@ describe("obsidian callout", () => {
 `;
     const result = processor.processSync(md);
     expect(result.value).toMatchInlineSnapshot(`
-"<ObsidianCallout type="abstract" title="Title" foldable>
+"<ObsidianCallout type="abstract" title="Title" foldable isCollapsed>
   Paragraph 1
 </ObsidianCallout>
 "
@@ -85,6 +85,34 @@ describe("obsidian callout", () => {
   it("should allow callout with foldable and no title", () => {
     const md = `
 > [!abstract]-
+> Paragraph 1
+`;
+    const result = processor.processSync(md);
+    expect(result.value).toMatchInlineSnapshot(`
+"<ObsidianCallout type="abstract" title="" foldable isCollapsed>
+  Paragraph 1
+</ObsidianCallout>
+"
+`);
+  });
+
+  it("should allow callout with foldable and not collapsed", () => {
+    const md = `
+> [!abstract]+ Title
+> Paragraph 1
+`;
+    const result = processor.processSync(md);
+    expect(result.value).toMatchInlineSnapshot(`
+"<ObsidianCallout type="abstract" title="Title" foldable>
+  Paragraph 1
+</ObsidianCallout>
+"
+`);
+  });
+
+  it("should allow callout with foldable and not collapsed and no title", () => {
+    const md = `
+> [!abstract]+
 > Paragraph 1
 `;
     const result = processor.processSync(md);

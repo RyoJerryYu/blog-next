@@ -4,7 +4,8 @@ import React from "react";
 type ObsidianCalloutPropsBase = {
   type: string;
   title?: string;
-  foldable?: boolean;
+  foldable?: boolean; // default is false
+  isCollapsed?: boolean; // default is false
 };
 
 export type ObsidianCalloutPropsMdx = ObsidianCalloutPropsBase & {
