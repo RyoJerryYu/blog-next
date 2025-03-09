@@ -370,7 +370,9 @@ sequenceDiagram
 
 #Tag
 
-#Tag/Tag2
+#Tag/Tag2 #Tag3 #Tag4
 
 > [!info] Tag 可以与其他组件结合
 > 就像 #Tag 这样
+
+
