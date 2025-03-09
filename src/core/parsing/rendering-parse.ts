@@ -19,6 +19,7 @@ import remarkObsidianRich, {
   RemarkObsidianRichOptions,
 } from "./complex-plugins/obsidian-rich/remark-obsidian-rich";
 import { ObsidianRichProps } from "./complex-plugins/obsidian-rich/types";
+import { remarkObsidianTag } from "./complex-plugins/obsidian-tag/remark-obsidian-tag";
 
 const genMdxOptions = (props: ParseMdxProps) => {
   const defaultMdxOptions: Omit<
@@ -29,6 +30,7 @@ const genMdxOptions = (props: ParseMdxProps) => {
       remarkGfm,
       remarkMath,
       remarkObsidianCallout,
+      remarkObsidianTag,
       [
         remarkCodeBlockEscape,
         {
