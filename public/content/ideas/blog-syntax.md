@@ -308,6 +308,10 @@ file path 全路径 [[public/content/articles/2022-08-13-introduction-for-k8s|�
 > > 也可以嵌套 Excalidraw
 > >
 > > ![[Drawing 2024-04-13 17.33.27.excalidraw]]
+> >
+> > 也可以是 Tag #Tag1 #Tag2
+> >
+> > #单行Tag
 >
 
 > [!abstract]-
