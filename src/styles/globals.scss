@@ -44,19 +44,10 @@
     @apply text-lg font-bold leading-normal;
   }
   blockquote {
-    color: gray;
-    margin: 1.5rem 0;
-    padding: 0 1.5rem;
+    @apply text-fg-light bg-bg-focus2;
+    @apply border-l-8 border-[--line] rounded-lg bg-clip-border overflow-hidden;
+    @apply my-6 px-5 py-4;
     position: relative;
-
-    &::before {
-      content: "";
-      position: absolute;
-      height: 100%;
-      width: 0.3rem;
-      left: 0;
-      background: var(--line);
-    }
   }
 }
 
