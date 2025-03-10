@@ -54,6 +54,36 @@
     background-color: rgb(from var(--highlighted-bg-color) r g b / 25%);
     border-color: rgb(from var(--highlighted-bg-color) r g b / 30%);
   }
+  .tag-word {
+    --tag-border-size: 1px;
+    --tag-border-opacity: 0%;
+    --tag-base-size: 1rem;
+    --tag-text-color: theme("colors.pink.500");
+    --tag-bg-opacity: 10%;
+
+    font-size: calc(var(--tag-base-size) * 0.875);
+    line-height: calc(var(--tag-base-size) * 1.25);
+    border-radius: calc(var(--tag-base-size) * 0.75);
+    padding-left: calc(var(--tag-base-size) * 0.5);
+    padding-right: calc(var(--tag-base-size) * 0.5);
+    padding-top: calc(var(--tag-base-size) * 0.25);
+    padding-bottom: calc(var(--tag-base-size) * 0.25);
+
+    border-width: var(--tag-border-size);
+    border-color: rgb(
+      from var(--tag-text-color) r g b / var(--tag-border-opacity)
+    );
+
+    background-color: rgb(
+      from var(--tag-text-color) r g b / var(--tag-bg-opacity)
+    );
+    color: rgb(from var(--tag-text-color) r g b);
+    &:hover {
+      background-color: rgb(
+        from var(--tag-text-color) r g b / calc(var(--tag-bg-opacity) * 2)
+      );
+    }
+  }
   .post-body {
     overflow-wrap: break-word;
     word-wrap: break-word;
