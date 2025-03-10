@@ -77,7 +77,7 @@ const genMdxOptions = (props: ParseMdxProps) => {
             }
           },
           onVisitHighlightedLine: (node: any) => {
-            node.properties.className.push("highlighted");
+            // node.properties.className.push("highlighted");
           },
           onVisitHighlightedWord: (node: any, id: string | undefined) => {
             node.properties.className = ["word"];

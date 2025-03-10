@@ -13,8 +13,6 @@
   --prevfg: #1c1b22;
   --codehl: #403d52;
   --codefind: #add7ff40;
-  --codetitlebg: #303340;
-  --codetitlefg: #a6accd;
   --mermaidbg: #edebef;
   --avangard1: #fb0500dd;
   --avangard2: #305157ee;
@@ -152,16 +150,47 @@
     }
 
     // code block
-    & figure[data-rehype-pretty-code-figure] > pre {
-      @apply bg-codeblock/85 text-codeblock-text my-4;
-      @apply py-4 rounded-md;
-      @apply text-sm;
-      @apply overflow-x-auto;
+    & figure[data-rehype-pretty-code-figure] {
+      @apply my-4; // block component margin
+      @apply rounded-md bg-clip-border overflow-hidden;
+      @apply relative; // for title... to be absolute
 
-      & [data-line] {
-        @apply px-4;
-        font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Monaco,
-          Consolas, monospace;
+      > [data-rehype-pretty-code-title] {
+        // when no caption, it will be figcaption
+        // when caption exists, it will be div
+        @apply p-2 w-full;
+        @apply bg-codeblock-titlebg/90 text-codeblock-titletext;
+        @apply whitespace-nowrap text-ellipsis overflow-hidden;
+        @apply text-sm;
+      }
+
+      > pre {
+        @apply bg-codeblock/85 text-codeblock-text;
+        @apply py-4;
+        @apply text-sm;
+        @apply overflow-x-auto;
+
+        & [data-line] {
+          @apply px-4;
+          font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Monaco,
+            Consolas, monospace;
+
+          &[data-highlighted-line] {
+            @apply bg-codeblock-highlightedbg/30;
+          }
+
+          > mark[data-highlighted-chars] {
+            @apply bg-codeblock-highlightedbg/30;
+          }
+        }
+      }
+
+      > [data-rehype-pretty-code-caption] {
+        // it would be a figcaption
+        @apply p-2 w-full;
+        @apply bg-codeblock-titlebg/90 text-codeblock-titletext/75;
+        @apply whitespace-nowrap text-ellipsis overflow-hidden;
+        @apply text-sm italic font-mono;
       }
     }
 
@@ -213,21 +242,6 @@
     //     @apply py-3;
     //   }
     // }
-
-    & div[data-rehype-pretty-code-title] {
-      position: absolute;
-      top: 0;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      padding: 0.375rem 0.75rem;
-      font-size: 0.8em;
-      width: 100%;
-      color: var(--codetitlefg);
-      background: var(--codetitlebg);
-      border-radius: 0.375rem 0.375rem 0 0;
-      z-index: 1;
-    }
 
     /*   @media (prefers-color-scheme: dark) {
      div[data-theme="light"],
