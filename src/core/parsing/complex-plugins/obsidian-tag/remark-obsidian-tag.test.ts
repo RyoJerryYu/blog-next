@@ -1,3 +1,4 @@
+import { loadCache } from "@/core/indexing/indexing-cache";
 import { remarkObsidianTag } from "./remark-obsidian-tag";
 
 import { fromMarkdown } from "mdast-util-from-markdown";
@@ -31,7 +32,8 @@ CDE EEF
     .use(remarkMdx)
     .use(remarkStringify);
 
-  it("should transform obsidian tag", () => {
+  it("should transform obsidian tag", async () => {
+    await loadCache();
     const md = `
 ABC *H* Some #TAG DEF <Dfc /> EFGE
 
@@ -47,7 +49,8 @@ CDE EEF
 `);
   });
 
-  it("should well handle if no prefix text", () => {
+  it("should well handle if no prefix text", async () => {
+    await loadCache();
     const md = `
 #TAG DEF
 `;
@@ -58,7 +61,8 @@ CDE EEF
 `);
   });
 
-  it("should well handle if no suffix text", () => {
+  it("should well handle if no suffix text", async () => {
+    await loadCache();
     const md = `
 ABC #TAG
 `;
@@ -69,7 +73,8 @@ ABC #TAG
 `);
   });
 
-  it("should well handle if no prefix and suffix text", () => {
+  it("should well handle if no prefix and suffix text", async () => {
+    await loadCache();
     const md = `
 #TAG
 `;
@@ -80,7 +85,8 @@ ABC #TAG
 `);
   });
 
-  it("should not transform if a space is between # and tag", () => {
+  it("should not transform if a space is between # and tag", async () => {
+    await loadCache();
     const md = `
 ABC # TAG
 `;
@@ -91,7 +97,8 @@ ABC # TAG
 `);
   });
 
-  it("should transform well if a slash in tag", () => {
+  it("should transform well if a slash in tag", async () => {
+    await loadCache();
     const md = `
 ABC #TAG/TAG2 DEF
 `;
@@ -102,7 +109,8 @@ ABC #TAG/TAG2 DEF
 `);
   });
 
-  it("should work well if a tag is in title", () => {
+  it("should work well if a tag is in title", async () => {
+    await loadCache();
     const md = `
 # Title #TAG
 `;

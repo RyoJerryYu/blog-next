@@ -89,7 +89,7 @@
     word-wrap: break-word;
     & p,
     & li {
-      & a {
+      & a:not(.tag-word) {
         @apply text-[color:var(--link)] underline decoration-[color:var(--link)] decoration-2 underline-offset-2;
       }
     }

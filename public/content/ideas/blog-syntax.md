@@ -476,7 +476,7 @@ file path 全路径 [[public/content/articles/2022-08-13-introduction-for-k8s|�
 
 #Tag
 
-#Tag/Tag2 #Tag3 #Tag4
+一行可以有多个 #Tag/Tag2 #Tag3 如果存在于 Tag 索引，则可点击 #Linux
 
 > [!info] Tag 可以与其他组件结合
 > 就像 #Tag 这样
