@@ -52,7 +52,7 @@ class HelloPrinter:
 
     def __init__(self, printer: Callable[[str]]):
         self.printer = printer
-    
+
     def call(self, s: str):
         self.printer(s)
 
@@ -74,6 +74,61 @@ def func_echo(s: str):
   
 ```markdown
 `段落反引号内的行内反引号`
+```
+
+#### Rehype Pretty 语法：
+
+名称显示，captions 显示：
+
+```python title="main.py" caption="这是一段描述"
+# 代码块
+def func_echo(s: str):
+    print(s)
+
+
+class HelloPrinter:
+    printer: Callable[[str]]
+
+    def __init__(self, printer: Callable[[str]]):
+        self.printer = printer
+
+    def call(self, s: str):
+        self.printer(s)
+
+
+p = HelloPrinter(func_echo)
+p.call("hello world!")
+```
+
+高亮
+
+```python {1-3,5}#a {4}#b {7} /printer/#c "Callable"#a /func_echo/#1
+# 代码块
+def func_echo(s: str):
+    print(s)
+
+
+class HelloPrinter:
+    printer: Callable[[str]]
+
+    def __init__(self, printer: Callable[[str]]):
+        self.printer = printer
+
+    def call(self, s: str):
+        self.printer(s)
+
+
+p = HelloPrinter(func_echo)
+p.call("hello world!")
+```
+
+行号
+
+```python showLineNumbers{998}
+# 代码块
+def func_echo(s: str):
+    print(s)
+
 ```
 
 ## 列表
@@ -181,7 +236,6 @@ graph TD
   B --> C[(DB)]
 ```
 
-
 mermaid 时序图
 
 ```mermaid
@@ -225,7 +279,6 @@ Page path 全路径 [[/articles/introduction-for-k8s|其他文章]]
 file path 全路径 [[public/content/articles/2022-08-13-introduction-for-k8s|其他文章]]
 
 一行多个 [[2022-08-13-introduction-for-k8s|其他文章]] [[2022-08-20-introduction-for-k8s-2|其他文章2]]
-
 
 ## Rich Content 短引用
 
@@ -419,5 +472,3 @@ file path 全路径 [[public/content/articles/2022-08-13-introduction-for-k8s|�
 
 > [!info] Tag 可以与其他组件结合
 > 就像 #Tag 这样
-
-

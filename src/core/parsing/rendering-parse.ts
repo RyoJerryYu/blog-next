@@ -68,15 +68,16 @@ const genMdxOptions = (props: ParseMdxProps) => {
       [
         rehypePrettyCode,
         {
-          theme: "rose-pine-moon",
-          keepBackground: true,
+          theme: "plastic",
+          keepBackground: false,
+          defaultLang: "plaintext",
           onVisitLine: (node: any) => {
             if (node.children.length === 0) {
               node.children = [{ type: "text", value: " " }];
             }
           },
           onVisitHighlightedLine: (node: any) => {
-            node.properties.className.push("highlighted");
+            // node.properties.className.push("highlighted");
           },
           onVisitHighlightedWord: (node: any, id: string | undefined) => {
             node.properties.className = ["word"];
