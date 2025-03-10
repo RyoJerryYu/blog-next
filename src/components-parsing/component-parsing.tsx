@@ -6,12 +6,14 @@ import { ReactNode } from "react";
 import { Bar } from "./chartjs";
 import { CodeBlockMermaid } from "./complex-plugin-components/code-block-escape/CodeBlockMermaid";
 import { ObsidianCallout } from "./complex-plugin-components/obsidian-callout/ObsidianCallout";
+import { ObsidianHighlight } from "./complex-plugin-components/obsidian-highlight/ObsidianHighlight";
 import { ObsidianRichExcalidraw } from "./complex-plugin-components/obsidian-rich/ObsidianRichExcalidraw";
 import { ObsidianTag } from "./complex-plugin-components/obsidian-tag/ObsidianTag";
 
 export const components: MDXComponents = {
   Bar,
   CodeBlockMermaid,
+  ObsidianHighlight,
   ObsidianRichExcalidraw,
   ObsidianCallout,
   ObsidianTag,
