@@ -1,3 +1,4 @@
+import { getTagIndex } from "@/core/indexing/indexing-cache";
 import { Parent, Text } from "mdast";
 import { Plugin } from "unified";
 import { visit } from "unist-util-visit";
@@ -78,9 +79,20 @@ export const remarkObsidianTag: Plugin<[RemarkObsidianTagOptions?]> = (
         const pre = node.value.slice(0, match.index + match[1].length);
         const tag = match[2].slice(1);
         const post = node.value.slice(match.index + match[0].length);
+
         const props: ObsidianTagProps = {
           tag,
         };
+
+        const tagInfos = getTagIndex().getTagsOf([tag]);
+        if (tagInfos.length > 0) {
+          // resolvable tag
+          const tagInfo = tagInfos[0];
+          props.slug = tagInfo.slug;
+          props.path = tagInfo.path;
+        }
+        // if not, just display as unclickable
+
         parent.children.splice(
           index,
           1,
