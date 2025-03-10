@@ -177,17 +177,69 @@
 
           &[data-highlighted-line] {
             // 高亮行
-            @apply bg-codeblock-highlightedbg/30;
+            @apply border-r-4;
+            --highlighted-line-color: theme("colors.codeblock.highlightedbg");
+            background-color: rgb(
+              from var(--highlighted-line-color) r g b / 20%
+            );
+            border-color: rgb(from var(--highlighted-line-color) r g b / 40%);
+            &[data-highlighted-line-id="a"],
+            &[data-highlighted-line-id="1"] {
+              --highlighted-line-color: theme("colors.codeblock.colored.a");
+            }
+            &[data-highlighted-line-id="b"],
+            &[data-highlighted-line-id="2"] {
+              --highlighted-line-color: theme("colors.codeblock.colored.b");
+            }
+            &[data-highlighted-line-id="c"],
+            &[data-highlighted-line-id="3"] {
+              --highlighted-line-color: theme("colors.codeblock.colored.c");
+            }
+            &[data-highlighted-line-id="d"],
+            &[data-highlighted-line-id="4"] {
+              --highlighted-line-color: theme("colors.codeblock.colored.d");
+            }
+            &[data-highlighted-line-id="e"],
+            &[data-highlighted-line-id="5"] {
+              --highlighted-line-color: theme("colors.codeblock.colored.e");
+            }
+            &[data-highlighted-line-id="f"],
+            &[data-highlighted-line-id="6"] {
+              --highlighted-line-color: theme("colors.codeblock.colored.f");
+            }
           }
 
           > mark[data-highlighted-chars] {
             // 高亮字符
-            @apply bg-codeblock-highlightedbg/30;
-          }
+            @apply border-b-2 rounded-md px-0.5;
+            --highlighted-bg-color: theme("colors.codeblock.highlightedbg");
+            background-color: rgb(from var(--highlighted-bg-color) r g b / 25%);
+            border-color: rgb(from var(--highlighted-bg-color) r g b / 30%);
 
-          &[data-line-numbers] {
-            // 行号
-            counter-reset: line;
+            &[data-chars-id="a"],
+            &[data-chars-id="1"] {
+              --highlighted-bg-color: theme("colors.codeblock.colored.a");
+            }
+            &[data-chars-id="b"],
+            &[data-chars-id="2"] {
+              --highlighted-bg-color: theme("colors.codeblock.colored.b");
+            }
+            &[data-chars-id="c"],
+            &[data-chars-id="3"] {
+              --highlighted-bg-color: theme("colors.codeblock.colored.c");
+            }
+            &[data-chars-id="d"],
+            &[data-chars-id="4"] {
+              --highlighted-bg-color: theme("colors.codeblock.colored.d");
+            }
+            &[data-chars-id="e"],
+            &[data-chars-id="5"] {
+              --highlighted-bg-color: theme("colors.codeblock.colored.e");
+            }
+            &[data-chars-id="f"],
+            &[data-chars-id="6"] {
+              --highlighted-bg-color: theme("colors.codeblock.colored.f");
+            }
           }
         }
 

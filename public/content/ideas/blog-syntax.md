@@ -102,7 +102,7 @@ p.call("hello world!")
 
 高亮
 
-```python {1-3,5}#a {6,8}#b {7} /printer/#c "Callable"#a /func_echo/
+```python {1-3,5}#a {4}#b {7} /printer/#c "Callable"#a /func_echo/#1
 # 代码块
 def func_echo(s: str):
     print(s)
