@@ -71,7 +71,7 @@ def func_echo(s: str):
 ````
 
 行内反引号围栏： `` ` `` 或者 ``` `` ``` 的模式
-  
+
 ```markdown
 `段落反引号内的行内反引号`
 ```
@@ -157,7 +157,7 @@ def func_echo(s: str):
     1. 有序列表
     2. 有序列表
 
-- [ ] 交叉嵌套2
+- [ ] 交叉嵌套 2
   1. 有序列表
   2. 有序列表
      - 无序列表
@@ -194,10 +194,10 @@ def func_echo(s: str):
 
 ## 表格
 
-| 表头 | 表头 | 表头 |
-| ---- | ---- | ---- |
+| 表头     | 表头     | 表头     |
+| -------- | -------- | -------- |
 | ~~删除~~ | ==高亮== | **加粗** |
-| 单元 | 单元 | _斜体_ |
+| 单元     | 单元     | _斜体_   |
 
 ## 脚注
 
@@ -285,6 +285,8 @@ Page path 全路径 [[/articles/introduction-for-k8s|其他文章]]
 file path 全路径 [[public/content/articles/2022-08-13-introduction-for-k8s|其他文章]]
 
 一行多个 [[2022-08-13-introduction-for-k8s|其他文章]] [[2022-08-20-introduction-for-k8s-2|其他文章2]]
+
+> 目前未实现 Obsidian Anchor 直接引用到块或标题
 
 ## Rich Content 短引用
 
