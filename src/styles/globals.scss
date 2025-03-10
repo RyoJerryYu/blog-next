@@ -277,55 +277,6 @@
       }
     }
 
-    // & pre {
-    //   & code {
-    //     display: grid;
-    //     counter-reset: line;
-    //   }
-    // }
-
-    // & div[data-rehype-pretty-code-fragment] {
-    //   margin-top: 1.5rem;
-    //   position: relative;
-    //   & code {
-    //     & .line {
-    //       border-left: 3px solid transparent;
-    //       padding: 0 1.25rem;
-    //     }
-
-    //     & > .line::before {
-    //       counter-increment: line;
-    //       content: counter(line);
-
-    //       /* Other styling */
-    //       display: inline-block;
-    //       width: 1rem;
-    //       margin-right: 1.25rem;
-    //       text-align: right;
-    //       @apply text-codeblock-lineno;
-    //     }
-
-    //     & .line.highlighted {
-    //       border-left-color: var(--link);
-    //       background: var(--codehl);
-    //     }
-    //     & .word {
-    //       background: var(--codefind);
-    //       padding: 0.25rem;
-    //       border-radius: 0.25rem;
-    //     }
-    //   }
-    //   & div {
-    //     & + pre {
-    //       @apply pt-12 pb-3 leading-6;
-    //     }
-    //   }
-
-    //   & pre:not(div + pre) {
-    //     @apply py-3;
-    //   }
-    // }
-
     /*   @media (prefers-color-scheme: dark) {
      div[data-theme="light"],
      pre[data-theme="light"],
