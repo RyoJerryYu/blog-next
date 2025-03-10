@@ -21,7 +21,6 @@ module.exports = {
         },
         codeblock: {
           DEFAULT: colors.slate[900],
-          lineno: colors.slate[400],
           text: colors.slate[200], // for default that plain text highlighted
           titletext: colors.slate[100], // for title of code block
           titlebg: colors.slate[900], // for title of code block

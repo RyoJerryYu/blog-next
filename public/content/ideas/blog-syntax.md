@@ -78,7 +78,7 @@ def func_echo(s: str):
 
 #### Rehype Pretty 语法：
 
-高亮，名称显示，captions 显示：
+名称显示，captions 显示：
 
 ```python title="main.py" caption="这是一段描述"
 # 代码块
@@ -100,6 +100,8 @@ p = HelloPrinter(func_echo)
 p.call("hello world!")
 ```
 
+高亮
+
 ```python {1-3,5}#a {6,8}#b {7} /printer/#c "Callable"#a /func_echo/
 # 代码块
 def func_echo(s: str):
@@ -118,6 +120,15 @@ class HelloPrinter:
 
 p = HelloPrinter(func_echo)
 p.call("hello world!")
+```
+
+行号
+
+```python showLineNumbers{998}
+# 代码块
+def func_echo(s: str):
+    print(s)
+
 ```
 
 ## 列表

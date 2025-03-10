@@ -170,17 +170,48 @@
         @apply text-sm;
         @apply overflow-x-auto;
 
-        & [data-line] {
+        & code span[data-line] {
           @apply px-4;
           font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Monaco,
             Consolas, monospace;
 
           &[data-highlighted-line] {
+            // 高亮行
             @apply bg-codeblock-highlightedbg/30;
           }
 
           > mark[data-highlighted-chars] {
+            // 高亮字符
             @apply bg-codeblock-highlightedbg/30;
+          }
+
+          &[data-line-numbers] {
+            // 行号
+            counter-reset: line;
+          }
+        }
+
+        // 专门处理行号
+        & code[data-line-numbers] {
+          counter-reset: line;
+
+          > [data-line]::before {
+            counter-increment: line;
+            content: counter(line);
+
+            /* Other styling */
+            @apply inline-block mr-4 text-right text-codeblock-titletext/20;
+            @apply w-2;
+          }
+
+          &[data-line-numbers-max-digits="2"] > [data-line]::before {
+            @apply w-4;
+          }
+          &[data-line-numbers-max-digits="3"] > [data-line]::before {
+            @apply w-8;
+          }
+          &[data-line-numbers-max-digits="4"] > [data-line]::before {
+            @apply w-10;
           }
         }
       }
