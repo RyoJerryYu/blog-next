@@ -153,7 +153,7 @@
 
     // code block
     & figure[data-rehype-pretty-code-figure] > pre {
-      @apply bg-codeblock/90 text-codeblock-text my-4;
+      @apply bg-codeblock/85 text-codeblock-text my-4;
       @apply py-4 rounded-md;
       @apply text-sm;
       @apply overflow-x-auto;
