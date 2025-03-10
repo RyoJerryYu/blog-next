@@ -2,6 +2,6 @@ import { ObsidianHighlightProps } from "@/core/parsing/complex-plugins/obsidian-
 
 export const ObsidianHighlight = ({ children}: ObsidianHighlightProps) => {
   return (
-    <span className="bg-yellow-100">{children}</span>
+    <span className="highlight-word">{children}</span>
   );
 }
