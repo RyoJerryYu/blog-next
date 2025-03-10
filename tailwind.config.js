@@ -19,10 +19,15 @@ module.exports = {
           DEFAULT: colors.slate[400],
           focus: colors.slate[500],
         },
-        code: {
-          DEFAULT: colors.slate[200],
+        codeblock: {
+          DEFAULT: colors.slate[900],
           lineno: colors.slate[400],
+          text: colors.slate[200], // for default that plain text highlighted
         },
+        codeinline: {
+          DEFAULT: colors.slate[400],
+          text: colors.slate[700],
+        }
       },
     },
   },

@@ -68,8 +68,9 @@ const genMdxOptions = (props: ParseMdxProps) => {
       [
         rehypePrettyCode,
         {
-          theme: "rose-pine-moon",
-          keepBackground: true,
+          theme: "plastic",
+          keepBackground: false,
+          defaultLang: "plaintext",
           onVisitLine: (node: any) => {
             if (node.children.length === 0) {
               node.children = [{ type: "text", value: " " }];
