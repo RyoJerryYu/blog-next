@@ -3,20 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --title: #191724;
-  --secondary: #605f64;
   --hover: #edebef;
   --line: #8a829955;
-  --shadow: #1c1b2266;
   --link: #ec4899;
-  --nextbg: #1c1b22;
-  --prevfg: #1c1b22;
-  --codehl: #403d52;
-  --codefind: #add7ff40;
-  --mermaidbg: #edebef;
-  --avangard1: #fb0500dd;
-  --avangard2: #305157ee;
-  --avangard3: #949587;
 }
 
 @layer base {
@@ -44,23 +33,57 @@
     @apply text-lg font-bold leading-normal;
   }
   blockquote {
-    color: gray;
-    margin: 1.5rem 0;
-    padding: 0 1.5rem;
+    @apply text-fg-light bg-bg-focus2;
+    @apply border-l-8 border-[--line] rounded-lg bg-clip-border overflow-hidden;
+    @apply my-6 px-5 py-4;
     position: relative;
-
-    &::before {
-      content: "";
-      position: absolute;
-      height: 100%;
-      width: 0.3rem;
-      left: 0;
-      background: var(--line);
-    }
   }
 }
 
 @layer utilities {
+  .highlight-word {
+    --highlighted-border-size: 3px;
+    --highlighted-bg-color: theme("colors.yellow.500");
+
+    border-bottom-width: var(--highlighted-border-size);
+    border-radius: calc(var(--highlighted-border-size) * 2);
+    padding-top: calc(var(--highlighted-border-size) * 2 - 3px);
+    padding-left: calc(var(--highlighted-border-size) * 2);
+    padding-right: calc(var(--highlighted-border-size) * 2);
+
+    background-color: rgb(from var(--highlighted-bg-color) r g b / 25%);
+    border-color: rgb(from var(--highlighted-bg-color) r g b / 30%);
+  }
+  .tag-word {
+    --tag-border-size: 1px;
+    --tag-border-opacity: 0%;
+    --tag-base-size: 1rem;
+    --tag-text-color: theme("colors.pink.500");
+    --tag-bg-opacity: 10%;
+
+    font-size: calc(var(--tag-base-size) * 0.875);
+    line-height: calc(var(--tag-base-size) * 1.25);
+    border-radius: calc(var(--tag-base-size) * 0.75);
+    padding-left: calc(var(--tag-base-size) * 0.5);
+    padding-right: calc(var(--tag-base-size) * 0.5);
+    padding-top: calc(var(--tag-base-size) * 0.25);
+    padding-bottom: calc(var(--tag-base-size) * 0.25);
+
+    border-width: var(--tag-border-size);
+    border-color: rgb(
+      from var(--tag-text-color) r g b / var(--tag-border-opacity)
+    );
+
+    background-color: rgb(
+      from var(--tag-text-color) r g b / var(--tag-bg-opacity)
+    );
+    color: rgb(from var(--tag-text-color) r g b);
+    &:hover {
+      background-color: rgb(
+        from var(--tag-text-color) r g b / calc(var(--tag-bg-opacity) * 2)
+      );
+    }
+  }
   .post-body {
     overflow-wrap: break-word;
     word-wrap: break-word;
@@ -211,10 +234,9 @@
 
           > mark[data-highlighted-chars] {
             // 高亮字符
-            @apply border-b-2 rounded-md px-0.5;
+            @apply highlight-word;
+            --highlighted-border-size: 2px;
             --highlighted-bg-color: theme("colors.codeblock.highlightedbg");
-            background-color: rgb(from var(--highlighted-bg-color) r g b / 25%);
-            border-color: rgb(from var(--highlighted-bg-color) r g b / 30%);
 
             &[data-chars-id="a"],
             &[data-chars-id="1"] {
@@ -292,23 +314,6 @@
        display: none;
      }
    } */
-    & .mermaid {
-      margin-top: 1.5rem;
-      background: var(--mermaidbg);
-      border-radius: 0.375rem;
-
-      // for fixing the leading applied to svg
-      // now it fixed by setting mermaid's config
-      // by setting htmlLabel to false
-      // now flowchart, sequence, pie is pretty good
-      // if some other chart have the same issue and
-      // not fixed by setting config, then use this
-      // & svg {
-      //   & div[display="inline-block"] {
-      //     @apply leading-none h-full;
-      //   }
-      // }
-    }
     & .footnotes {
       margin-top: 1.5rem;
       border-top: 1px var(--line) solid;

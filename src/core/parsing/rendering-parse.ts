@@ -15,6 +15,7 @@ import {
   remarkCodeBlockEscape,
 } from "./complex-plugins/code-block-escape/remark-code-block-escape";
 import { remarkObsidianCallout } from "./complex-plugins/obsidian-callout/remark-obsidian-callout";
+import remarkObsidianHighlight from "./complex-plugins/obsidian-highlight/remark-obsidian-highlight";
 import remarkObsidianRich, {
   RemarkObsidianRichOptions,
 } from "./complex-plugins/obsidian-rich/remark-obsidian-rich";
@@ -48,6 +49,7 @@ const genMdxOptions = (props: ParseMdxProps) => {
       ],
       [remarkObsidianWikilink, {} as RemarkObsidianWikilinkOptions],
       remarkObsidianTag,
+      remarkObsidianHighlight,
       [
         remarkCodeBlockEscape,
         {

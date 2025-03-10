@@ -2,11 +2,11 @@
   @apply flex flex-row flex-wrap gap-2;
 }
 .tag {
-  @apply flex-initial py-1 px-2 mb-1 rounded-xl text-center text-xs;
-  @apply border border-border hover:border-border-focus hover:bg-bg-focus2;
+  --tag-text-color: theme("colors.pink.500");
 }
 
 .highlightedTag {
   @extend .tag;
-  @apply border-border-focus bg-bg-focus2;
+  --tag-bg-opacity: 20%;
+  --tag-border-opacity: 80%;
 }

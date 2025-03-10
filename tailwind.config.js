@@ -8,7 +8,7 @@ module.exports = {
       colors: {
         fg: {
           DEFAULT: colors.slate[700],
-          light: colors.slate[600], // light here means light weight, not light color
+          light: colors.slate[500], // light here means light weight, not light color
         },
         bg: {
           DEFAULT: colors.slate[50],
