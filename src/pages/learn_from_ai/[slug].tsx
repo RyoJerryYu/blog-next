@@ -8,6 +8,7 @@ import {
   getTagIndex,
   learnFromAiResourceMap,
   loadCache,
+  mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { learnFromAiPostPathMapper } from "@/core/indexing/indexing-settings";
 import { parseMdx } from "@/core/parsing/rendering-parse";
@@ -44,7 +45,7 @@ export const getStaticProps: GetStaticProps<
   const pagePath = learnFromAiPostPathMapper().slugToPagePath(slug);
   let meta = await getPostMetaOrReload(pagePath);
   const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
-    "learn_from_ai",
+    mustGetResourceType(pagePath),
     pagePath
   );
 

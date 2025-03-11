@@ -9,6 +9,7 @@ import {
   getPrevNextIndex,
   getTagIndex,
   loadCache,
+  mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { articlePostPathMapper } from "@/core/indexing/indexing-settings";
 import { parseMdx } from "@/core/parsing/rendering-parse";
@@ -47,7 +48,7 @@ export const getStaticProps: GetStaticProps<
   const pagePath = articlePostPathMapper().slugToPagePath(slug);
   const meta = await getPostMetaOrReload(pagePath);
   const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
-    "articles",
+    mustGetResourceType(pagePath),
     pagePath
   );
 

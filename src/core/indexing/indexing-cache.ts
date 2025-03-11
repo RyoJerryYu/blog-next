@@ -93,6 +93,16 @@ export const getPrevNextIndex = () => {
   return PrevNextIndex.fromPool(mustGetCache().indexPool);
 };
 
+// a helper function to get resource type from page path
+export const mustGetResourceType = (pagePath: string) => {
+  const cache = mustGetCache();
+  const resourceType = cache.resourceTypeMap.get(pagePath);
+  if (!resourceType) {
+    throw new Error(`Resource type not found for page path: ${pagePath}`);
+  }
+  return resourceType;
+};
+
 // a helper function to get meta from cache or reload when development
 const getMetaOrReload = async <
   PathMapping extends BasePathMapping,
@@ -102,10 +112,7 @@ const getMetaOrReload = async <
   pagePath: string
 ) => {
   const cache = mustGetCache();
-  const resourceType = cache.resourceTypeMap.get(pagePath);
-  if (!resourceType) {
-    throw new Error(`Resource type not found for page path: ${pagePath}`);
-  }
+  const resourceType = mustGetResourceType(pagePath);
   const resourceMap = getResourceMap<PathMapping, Meta>(
     cache.resourcePool,
     resourceType
