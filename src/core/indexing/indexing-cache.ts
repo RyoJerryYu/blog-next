@@ -4,7 +4,12 @@
  * Should be initialized before using.
  * And ensure: init once, no modification after init.
  */
-import { PagePathMapping, PostMeta } from "../types/indexing";
+import {
+  BaseMeta,
+  BasePathMapping,
+  PagePathMapping,
+  PostMeta,
+} from "../types/indexing";
 import { AliasIndex } from "./index-building/alias-index-builder/alias-index-builder";
 import { clipDataFromPool } from "./index-building/clip-data-index-builder/clip-data-index-builder";
 import { PrevNextIndex } from "./index-building/prev-next-index-builder/prev-next-index-builder";
@@ -18,7 +23,7 @@ import {
   cacheResourcePool,
   executePipeline,
 } from "./pipeline/pipeline";
-import { ResourceMap, getResourceMap } from "./pipeline/resource-pool";
+import { getResourceMap } from "./pipeline/resource-pool";
 
 const cacheFilePath = ".cache/resource-pool.json";
 
@@ -89,18 +94,35 @@ export const getPrevNextIndex = () => {
 };
 
 // a helper function to get meta from cache or reload when development
-export const getPostMetaOrReload = async (
-  cache: ResourceMap<PagePathMapping, PostMeta>,
+const getMetaOrReload = async <
+  PathMapping extends BasePathMapping,
+  Meta extends BaseMeta
+>(
+  // cache: ResourceMap<PagePathMapping, PostMeta>,
   pagePath: string
 ) => {
+  const cache = mustGetCache();
+  const resourceType = cache.resourceTypeMap.get(pagePath);
+  if (!resourceType) {
+    throw new Error(`Resource type not found for page path: ${pagePath}`);
+  }
+  const resourceMap = getResourceMap<PathMapping, Meta>(
+    cache.resourcePool,
+    resourceType
+  );
+
   if (process.env.NODE_ENV === "development") {
     // for reloading in development
     console.log(`reloading on dev ${pagePath}`);
-    const filePath = cache.pagePathTo("filePath", pagePath);
+    const filePath = resourceMap.pagePathTo("filePath", pagePath);
     const chain = devReloadingChain;
     const meta = await collectMetaForFilePath(chain, filePath);
     return meta;
   } else {
-    return cache.pagePathToMeta(pagePath);
+    return resourceMap.pagePathToMeta(pagePath);
   }
+};
+
+export const getPostMetaOrReload = async (pagePath: string) => {
+  return getMetaOrReload<PagePathMapping, PostMeta>(pagePath);
 };

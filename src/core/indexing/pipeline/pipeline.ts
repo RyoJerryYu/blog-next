@@ -128,9 +128,8 @@ type Pipeline<
   indexBuilders: IndexBuilderList;
 };
 
-// TODO better type definition
 export type PipelineResult = {
-  resourceTypeMap: Map<string, string>;
+  resourceTypeMap: Map<string, string>; // <pagePath, resourceType>
   resourcePool: {
     [key: string]: ResourceMap<any, any>;
   };

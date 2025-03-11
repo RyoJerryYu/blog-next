@@ -43,10 +43,9 @@ export const getStaticProps: GetStaticProps<
 > = async ({ params }) => {
   console.log(`onGetStaticProps: ${params?.slug}`);
   await loadCache();
-  const articleMap = articleResourceMap();
   const slug = params!.slug;
   const pagePath = articlePostPathMapper().slugToPagePath(slug);
-  const meta = await getPostMetaOrReload(articleMap, pagePath);
+  const meta = await getPostMetaOrReload(pagePath);
   const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
     "articles",
     pagePath

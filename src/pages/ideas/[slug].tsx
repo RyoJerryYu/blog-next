@@ -40,10 +40,9 @@ export const getStaticProps: GetStaticProps<
   { slug: string }
 > = async ({ params }) => {
   await loadCache();
-  const ideaMap = ideaResourceMap();
   const slug = params!.slug;
   const pagePath = ideaPostPathMapper().slugToPagePath(slug);
-  let meta = await getPostMetaOrReload(ideaMap, pagePath);
+  let meta = await getPostMetaOrReload(pagePath);
   const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
     "ideas",
     pagePath

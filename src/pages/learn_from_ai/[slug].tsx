@@ -40,10 +40,9 @@ export const getStaticProps: GetStaticProps<
   { slug: string }
 > = async ({ params }) => {
   await loadCache();
-  const learnFromAiMap = learnFromAiResourceMap();
   const slug = params!.slug;
   const pagePath = learnFromAiPostPathMapper().slugToPagePath(slug);
-  let meta = await getPostMetaOrReload(learnFromAiMap, pagePath);
+  let meta = await getPostMetaOrReload(pagePath);
   const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
     "learn_from_ai",
     pagePath
