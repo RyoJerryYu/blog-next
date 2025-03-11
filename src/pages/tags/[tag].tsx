@@ -3,18 +3,11 @@ import TagSelector from "@/components/TagSelector";
 import { sortPostsByDate } from "@/core/indexing/index-building/prev-next-index-builder/prev-next-index-builder";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import {
-  articleResourceMap,
+  getResource,
   getTagIndex,
-  ideaResourceMap,
-  learnFromAiResourceMap,
   loadCache,
 } from "@/core/indexing/indexing-cache";
-import {
-  PagePathMapping,
-  PostMeta,
-  PostResource,
-  Resource,
-} from "@/core/types/indexing";
+import { PagePathMapping, PostMeta, PostResource } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
@@ -47,25 +40,13 @@ export const getStaticProps: GetStaticProps<
   const selectedTagInfo = tagIndex.getTagsOf([params!.tag])[0];
   const postSlugInfos = selectedTagInfo.postSlugs;
 
-  const posts: Set<Resource<PagePathMapping, PostMeta>> = new Set();
-  const articleMap = articleResourceMap();
-  const ideaMap = ideaResourceMap();
-  const learnFromAiMap = learnFromAiResourceMap();
+  const posts: Set<PostResource> = new Set();
 
   postSlugInfos.forEach((slugInfo) => {
-    // TODO 使用 resourceType 而不是 hardcode
-    if (slugInfo.postType === "articles") {
-      const resource = articleMap.pagePathToResource(slugInfo.postPagePath);
-      posts.add(resource);
-    }
-    if (slugInfo.postType === "ideas") {
-      const resource = ideaMap.pagePathToResource(slugInfo.postPagePath);
-      posts.add(resource);
-    }
-    if (slugInfo.postType === "learn_from_ai") {
-      const resource = learnFromAiMap.pagePathToResource(slugInfo.postPagePath);
-      posts.add(resource);
-    }
+    const resource = getResource<PagePathMapping, PostMeta>(
+      slugInfo.postPagePath
+    );
+    posts.add(resource);
   });
 
   const postArray = sortPostsByDate(Array.from(posts));

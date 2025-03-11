@@ -17,11 +17,11 @@ import { TagIndex } from "./index-building/tag-index-builder/tag-index-builder";
 import { devReloadingChain, pipeline } from "./indexing-settings";
 import { collectMetaForFilePath } from "./meta-collecting/meta-collecting";
 import {
+  cacheResourcePool,
+  executePipeline,
   PipelineResult,
   ResourcePoolFromCache,
   ResourcePoolFromScratch,
-  cacheResourcePool,
-  executePipeline,
 } from "./pipeline/pipeline";
 import { getResourceMap } from "./pipeline/resource-pool";
 
@@ -101,6 +101,21 @@ export const mustGetResourceType = (pagePath: string) => {
     throw new Error(`Resource type not found for page path: ${pagePath}`);
   }
   return resourceType;
+};
+
+// a helper function to get resource from page path
+export const getResource = <
+  PathMapping extends BasePathMapping,
+  Meta extends BaseMeta
+>(
+  pagePath: string
+) => {
+  const resourceType = mustGetResourceType(pagePath);
+  const resourceMap = getResourceMap<PathMapping, Meta>(
+    mustGetCache().resourcePool,
+    resourceType
+  );
+  return resourceMap.pagePathToResource(pagePath);
 };
 
 // a helper function to get meta from cache or reload when development
