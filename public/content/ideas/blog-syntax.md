@@ -258,6 +258,138 @@ sequenceDiagram
   Bob-->>John: Jolly good!
 ```
 
+## Jessie Code 几何图形
+
+简单 Jessie Code
+
+```jessiecode
+A = point(1, 0);
+B = point(-1, 0);
+C = point(0.2, 1.5);
+L_AB = line(A, B);
+L_AC = line(A, C);
+K_ABC = circle(A, B, C);
+```
+
+可以有多个 Jessie Code 代码块
+
+```jessiecode
+$board.setView([-1.5, 2, 1.5, -1]);
+
+// Triangle ABC
+A = point(1, 0);
+B = point(-1, 0);
+C = point(0.2, 1.5);
+pol = polygon(A,B,C) <<
+        fillColor: '#FFFF00',
+        borders: <<
+            strokeWidth: 1,
+            strokeColor: '#C0C000'
+        >>
+    >>;
+ 
+// Perpendiculars and orthocenter i1
+pABC = perpendicular(pol.borders[0], C) << dash: 2, strokeWidth: 1, strokeColor: '#560092' >>;
+pBCA = perpendicular(pol.borders[1], A) << dash: 2, strokeWidth: 1, strokeColor: '#560092' >>;
+pCAB = perpendicular(pol.borders[2], B) << dash: 2, strokeWidth: 1, strokeColor: '#560092' >>;
+i1 = intersection(pABC, pCAB, 0);
+
+// Midpoints of segments
+mAB = midpoint(A, B);
+mBC = midpoint(B, C);
+mCA = midpoint(C, A);
+ 
+// Line bisectors and centroid i2
+ma = segment(mBC, A) << strokeWidth: 1, strokeColor: '#009256' >>;
+mb = segment(mCA, B) << strokeWidth: 1, strokeColor: '#009256' >>;
+mc = segment(mAB, C) << strokeWidth: 1, strokeColor: '#009256' >>;
+i2 = intersection(ma, mc, 0);
+ 
+// Circum circle and circum center
+c = circumcircle(A, B, C) <<
+        strokeColor: '#000000',
+        dash: 3,
+        strokeWidth: 1,
+        center: <<
+            name: 'i_3',
+            withlabel:true,
+            visible: true
+        >>
+    >>;
+ 
+// Euler line 
+euler = line(i1, i2) <<
+        strokeWidth: 2,
+        strokeColor:'#C01B37'
+    >>;
+```
+
+Function Graph 也可在 Jessie Code 中使用
+
+```jessiecode
+FFunc = function(x) {
+    return sin(x);
+};
+F = functiongraph(FFunc, -10, 10);
+
+P1 = point(0, 0);
+P2 = point(1, 2);
+
+a = function () {
+    return P2.X() - P1.X();
+};
+
+b = function () {
+    return P2.Y() - P1.Y();
+};
+
+GFunc = function(x) {
+    return b() * sin(PI * ( x - P1.X() ) / 2 / a() ) + P1.Y();
+};
+G = functiongraph(GFunc, -10, 10);
+
+
+InterFunc = function(i, x) {
+  return FFunc(x) * i / 10 + GFunc(x) * (1 - i / 10);
+};
+
+H1 = functiongraph(function(x) {
+  return InterFunc(1, x);
+}, -10, 10) << strokeOpacity: 0.5 >>;
+
+H2 = functiongraph(function(x) {
+  return InterFunc(2, x);
+}, -10, 10) << strokeOpacity: 0.5 >>;
+
+H3 = functiongraph(function(x) {
+  return InterFunc(3, x);
+}, -10, 10) << strokeOpacity: 0.5 >>;
+
+H4 = functiongraph(function(x) {
+  return InterFunc(4, x);
+}, -10, 10) << strokeOpacity: 0.5 >>;
+
+H5 = functiongraph(function(x) {
+  return InterFunc(5, x);
+}, -10, 10) << strokeOpacity: 0.5 >>;
+
+H6 = functiongraph(function(x) {
+  return InterFunc(6, x);
+}, -10, 10) << strokeOpacity: 0.5 >>;
+
+H7 = functiongraph(function(x) {
+  return InterFunc(7, x);
+}, -10, 10) << strokeOpacity: 0.5 >>;
+
+H8 = functiongraph(function(x) {
+  return InterFunc(8, x);
+}, -10, 10) << strokeOpacity: 0.5 >>;
+
+H9 = functiongraph(function(x) {
+  return InterFunc(9, x);
+}, -10, 10) << strokeOpacity: 0.5 >>;
+```
+
 ## Heading 引用
 
 点击能够跳转：
