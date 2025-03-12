@@ -11,7 +11,6 @@ export const JXGBoardImpl = (props: JXGBoardProps) => {
   useEffect(() => {
     const board = JXG.JSXGraph.initBoard(id.current, {
       boundingbox: [-10, 10, 10, -10],
-      grid: true,
       ...props.boardAttributes,
     });
     setBoard(board);

@@ -7,7 +7,7 @@ const JXGBoardImpl = dynamicLoading(
 
 export function JXGBoard(props: JXGBoardProps) {
   return (
-    <div className="relative h-[600px] py-4">
+    <div className="relative h-[600px] w-[600px] my-4">
       <JXGBoardImpl {...props} />
     </div>
   );

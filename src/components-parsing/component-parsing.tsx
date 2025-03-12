@@ -4,6 +4,7 @@ import { MDXComponents } from "mdx/types";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { Bar } from "./chartjs";
+import { CodeBlockJessieCode } from "./complex-plugin-components/code-block-escape/CodeBlockJessieCode";
 import { CodeBlockMermaid } from "./complex-plugin-components/code-block-escape/CodeBlockMermaid";
 import { ObsidianCallout } from "./complex-plugin-components/obsidian-callout/ObsidianCallout";
 import { ObsidianHighlight } from "./complex-plugin-components/obsidian-highlight/ObsidianHighlight";
@@ -13,6 +14,7 @@ import { ObsidianTag } from "./complex-plugin-components/obsidian-tag/ObsidianTa
 export const components: MDXComponents = {
   Bar,
   CodeBlockMermaid,
+  CodeBlockJessieCode,
   ObsidianHighlight,
   ObsidianRichExcalidraw,
   ObsidianCallout,

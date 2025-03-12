@@ -2,7 +2,7 @@ import JXG from "jsxgraph";
 
 export type JXGBoardProps = {
   className?: string;
-  boardAttributes?: JXG.BoardAttributes;
+  boardAttributes?: Partial<JXG.BoardAttributes>;
 } & (
   | {
       jessieCode?: false;
