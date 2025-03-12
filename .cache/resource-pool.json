@@ -212,6 +212,13 @@
     },
     {
       "pathMapping": {
+        "filePath": "public/content/ideas/blog 画图 Iframe 测试.md",
+        "pagePath": "/content/ideas/blog 画图 Iframe 测试.md"
+      },
+      "meta": {}
+    },
+    {
+      "pathMapping": {
         "filePath": "public/content/ideas/blog-in-next.md",
         "pagePath": "/content/ideas/blog-in-next.md"
       },
@@ -748,6 +755,27 @@
   "ideas": [
     {
       "pathMapping": {
+        "filePath": "public/content/ideas/blog 画图 Iframe 测试.md",
+        "pagePath": "/ideas/blog 画图 Iframe 测试",
+        "slug": "blog 画图 Iframe 测试"
+      },
+      "meta": {
+        "content": "\n\n## Desmos\n\n<iframe src=\"https://www.desmos.com/calculator/jow1xifu4i?embed\" width=\"500\" height=\"500\" style={{border: \"1px solid #ccc\"}} frameborder=\"0\"></iframe>\n\n<iframe src=\"https://www.desmos.com/geometry/42av1rxi4o?embed\" width=\"500\" height=\"500\" style={{border: \"1px solid #ccc\"}} frameborder=\"0\"></iframe>\n\n## GeoGebra\n\n\n<iframe src=\"https://www.geogebra.org/calculator/pcqzzdfj?embed\" allowfullscreen width=\"600px\" height=\"600px\" style={{border: \"1px solid #e4e4e4\", borderRadius: \"4px\"}} frameborder=\"0\"></iframe>\n\n<iframe src=\"https://www.geogebra.org/calculator/egqhydpy?embed\" width=\"600\" height=\"600\" allowfullscreen style={{border: \"1px solid #e4e4e4\", borderRadius: \"4px\"}} frameborder=\"0\"></iframe>\n\n\n\n",
+        "title": "画图 Iframe 测试",
+        "abstract": "<iframe src=\"https://www.desmos.com/calculator/jow1xifu4i?embed\" width=\"500\" height=\"500\" style={{border: \"1px solid #ccc\"}} frameborder=\"0\"></iframe>\n<iframe src=\"https://www.desmos.com/geometry/42av1rxi4o?embed\" width=\"500\" height=\"500\" style={{border: \"1px solid #ccc\"}} frameborder=\"0\"></iframe>\n<iframe src=\"https://www.geogebra.org/calculator/pcqzzdfj?embed\" allowfullscreen width=\"600px\" height=\"600px\" style={{border: \"1px solid #e4e4e4\", borderRadius: \"4px\"}} frameborder=\"0\"></iframe>",
+        "length": 18,
+        "created_at": "2025-03-11T15:54:00.000Z",
+        "updated_at": "2025-03-11T15:54:00.000Z",
+        "tags": [
+          "可视化",
+          "数学",
+          "工具"
+        ],
+        "license": true
+      }
+    },
+    {
+      "pathMapping": {
         "filePath": "public/content/ideas/blog-in-next.md",
         "pagePath": "/ideas/blog-in-next",
         "slug": "blog-in-next"
@@ -778,7 +806,7 @@
         "abstract": "**加粗**\n*斜体*\n_斜体2_",
         "length": 477,
         "created_at": "2024-04-14T11:41:29.000Z",
-        "updated_at": "2025-03-10T15:26:43.000Z",
+        "updated_at": "2025-03-10T16:10:46.000Z",
         "tags": [
           "Blog",
           "Nextjs"

@@ -4,7 +4,12 @@
  * Should be initialized before using.
  * And ensure: init once, no modification after init.
  */
-import { PagePathMapping, PostMeta } from "../types/indexing";
+import {
+  BaseMeta,
+  BasePathMapping,
+  PagePathMapping,
+  PostMeta,
+} from "../types/indexing";
 import { AliasIndex } from "./index-building/alias-index-builder/alias-index-builder";
 import { clipDataFromPool } from "./index-building/clip-data-index-builder/clip-data-index-builder";
 import { PrevNextIndex } from "./index-building/prev-next-index-builder/prev-next-index-builder";
@@ -12,13 +17,13 @@ import { TagIndex } from "./index-building/tag-index-builder/tag-index-builder";
 import { devReloadingChain, pipeline } from "./indexing-settings";
 import { collectMetaForFilePath } from "./meta-collecting/meta-collecting";
 import {
+  cacheResourcePool,
+  executePipeline,
   PipelineResult,
   ResourcePoolFromCache,
   ResourcePoolFromScratch,
-  cacheResourcePool,
-  executePipeline,
 } from "./pipeline/pipeline";
-import { ResourceMap, getResourceMap } from "./pipeline/resource-pool";
+import { getResourceMap } from "./pipeline/resource-pool";
 
 const cacheFilePath = ".cache/resource-pool.json";
 
@@ -88,19 +93,58 @@ export const getPrevNextIndex = () => {
   return PrevNextIndex.fromPool(mustGetCache().indexPool);
 };
 
-// a helper function to get meta from cache or reload when development
-export const getPostMetaOrReload = async (
-  cache: ResourceMap<PagePathMapping, PostMeta>,
+// a helper function to get resource type from page path
+export const mustGetResourceType = (pagePath: string) => {
+  const cache = mustGetCache();
+  const resourceType = cache.resourceTypeMap.get(pagePath);
+  if (!resourceType) {
+    throw new Error(`Resource type not found for page path: ${pagePath}`);
+  }
+  return resourceType;
+};
+
+// a helper function to get resource from page path
+export const getResource = <
+  PathMapping extends BasePathMapping,
+  Meta extends BaseMeta
+>(
   pagePath: string
 ) => {
+  const resourceType = mustGetResourceType(pagePath);
+  const resourceMap = getResourceMap<PathMapping, Meta>(
+    mustGetCache().resourcePool,
+    resourceType
+  );
+  return resourceMap.pagePathToResource(pagePath);
+};
+
+// a helper function to get meta from cache or reload when development
+const getMetaOrReload = async <
+  PathMapping extends BasePathMapping,
+  Meta extends BaseMeta
+>(
+  // cache: ResourceMap<PagePathMapping, PostMeta>,
+  pagePath: string
+) => {
+  const cache = mustGetCache();
+  const resourceType = mustGetResourceType(pagePath);
+  const resourceMap = getResourceMap<PathMapping, Meta>(
+    cache.resourcePool,
+    resourceType
+  );
+
   if (process.env.NODE_ENV === "development") {
     // for reloading in development
     console.log(`reloading on dev ${pagePath}`);
-    const filePath = cache.pagePathTo("filePath", pagePath);
+    const filePath = resourceMap.pagePathTo("filePath", pagePath);
     const chain = devReloadingChain;
     const meta = await collectMetaForFilePath(chain, filePath);
     return meta;
   } else {
-    return cache.pagePathToMeta(pagePath);
+    return resourceMap.pagePathToMeta(pagePath);
   }
+};
+
+export const getPostMetaOrReload = async (pagePath: string) => {
+  return getMetaOrReload<PagePathMapping, PostMeta>(pagePath);
 };
