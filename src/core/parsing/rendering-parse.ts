@@ -53,7 +53,10 @@ const genMdxOptions = (props: ParseMdxProps) => {
       [
         remarkCodeBlockEscape,
         {
-          escapes: [["mermaid", "CodeBlockMermaid"]],
+          escapes: [
+            ["mermaid", "CodeBlockMermaid"],
+            ["jessiecode", "CodeBlockJessieCode"],
+          ],
         } as RemarkCodeBlockEscapeOptions,
       ],
       remarkUnwrapImages,
