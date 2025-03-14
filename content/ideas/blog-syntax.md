@@ -390,6 +390,22 @@ H9 = functiongraph(function(x) {
 }, -10, 10) << strokeOpacity: 0.5 >>;
 ```
 
+可以以 frontmatter 形式指定 board 参数
+
+```jessiecode
+---
+boundingbox: [-1, 2, 2, -1]
+grid: true
+axis: false
+---
+A = point(0, 0);
+B = point(1, 0);
+C = point(0, 1);
+L_AB = line(A, B);
+L_AC = line(A, C);
+K_ABC = circle(A, B, C);
+```
+
 ## Heading 引用
 
 点击能够跳转：
