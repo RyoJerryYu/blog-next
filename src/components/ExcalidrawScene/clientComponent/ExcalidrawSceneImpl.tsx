@@ -1,6 +1,6 @@
 "use client";
 import { Excalidraw, MainMenu } from "@excalidraw/excalidraw";
-import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
+import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/dist/types/excalidraw/types";
 import { Refresh } from "@mui/icons-material";
 import { useRef } from "react";
 import { ExcalidrawSceneProps } from "../types/ExcalidrawSceneProps";

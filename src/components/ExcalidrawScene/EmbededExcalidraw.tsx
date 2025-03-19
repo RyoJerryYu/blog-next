@@ -1,6 +1,6 @@
 import { LoadError } from "@/components/Loading/LoadError";
 import { Loading } from "@/components/Loading/Loading";
-import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
+import { ExcalidrawElement } from "@excalidraw/excalidraw/dist/types/excalidraw/element/types";
 import useSWR from "swr";
 import { ExcalidrawScene } from "./ExcalidrawScene";
 
