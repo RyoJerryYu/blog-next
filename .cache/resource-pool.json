@@ -426,6 +426,41 @@
         "pagePath": "/content/learn_from_ai/2025-03-07-resnet-math-and-gradient-vanishing.md"
       },
       "meta": {}
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/testwiki/index.md",
+        "pagePath": "/content/testwiki/index.md"
+      },
+      "meta": {}
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/testwiki/page1.md",
+        "pagePath": "/content/testwiki/page1.md"
+      },
+      "meta": {}
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/testwiki/page1/subpage1.md",
+        "pagePath": "/content/testwiki/page1/subpage1.md"
+      },
+      "meta": {}
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/testwiki/page2/index.md",
+        "pagePath": "/content/testwiki/page2/index.md"
+      },
+      "meta": {}
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/testwiki/page2/subpage2.md",
+        "pagePath": "/content/testwiki/page2/subpage2.md"
+      },
+      "meta": {}
     }
   ],
   "articles": [
@@ -1234,6 +1269,124 @@
           "Mathematics"
         ],
         "license": true
+      }
+    }
+  ],
+  "testwiki": [
+    {
+      "pathMapping": {
+        "filePath": "public/content/testwiki/index.md",
+        "pagePath": "/testwiki",
+        "slugs": []
+      },
+      "meta": {
+        "content": "\n# Test Wiki\n\n## Page 1\n\n## Page 2\n",
+        "title": "Test Wiki",
+        "abstract": "",
+        "length": 7,
+        "created_at": "2024-01-01T00:00:00.000Z",
+        "updated_at": "2024-01-01T00:00:00.000Z",
+        "tags": [
+          "test",
+          "wiki"
+        ],
+        "license": false
+      }
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/testwiki/page1.md",
+        "pagePath": "/testwiki/page1",
+        "slugs": [
+          "page1"
+        ]
+      },
+      "meta": {
+        "content": "\n# Page 1\n\n## Subpage 1\n",
+        "title": "Page 1",
+        "abstract": "",
+        "length": 5,
+        "created_at": "2024-01-01T00:00:00.000Z",
+        "updated_at": "2024-01-01T00:00:00.000Z",
+        "tags": [
+          "test",
+          "wiki",
+          "page1"
+        ],
+        "license": false
+      }
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/testwiki/page1/subpage1.md",
+        "pagePath": "/testwiki/page1/subpage1",
+        "slugs": [
+          "page1",
+          "subpage1"
+        ]
+      },
+      "meta": {
+        "content": "\n# Subpage 1\n\n[[subpage2]]\n",
+        "title": "Subpage 1",
+        "abstract": "[[subpage2]]",
+        "length": 5,
+        "created_at": "2024-01-01T00:00:00.000Z",
+        "updated_at": "2024-01-01T00:00:00.000Z",
+        "tags": [
+          "test",
+          "wiki",
+          "page1",
+          "subpage1"
+        ],
+        "license": false
+      }
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/testwiki/page2/index.md",
+        "pagePath": "/testwiki/page2",
+        "slugs": [
+          "page2"
+        ]
+      },
+      "meta": {
+        "content": "\n# Page 2\n\n## Subpage 2\n",
+        "title": "Page 2",
+        "abstract": "",
+        "length": 5,
+        "created_at": "2024-01-01T00:00:00.000Z",
+        "updated_at": "2024-01-01T00:00:00.000Z",
+        "tags": [
+          "test",
+          "wiki",
+          "page2"
+        ],
+        "license": false
+      }
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/testwiki/page2/subpage2.md",
+        "pagePath": "/testwiki/page2/subpage2",
+        "slugs": [
+          "page2",
+          "subpage2"
+        ]
+      },
+      "meta": {
+        "content": "\n# Subpage 2\n",
+        "title": "Subpage 2",
+        "abstract": "",
+        "length": 3,
+        "created_at": "2024-01-01T00:00:00.000Z",
+        "updated_at": "2024-01-01T00:00:00.000Z",
+        "tags": [
+          "test",
+          "wiki",
+          "page2",
+          "subpage2"
+        ],
+        "license": false
       }
     }
   ]

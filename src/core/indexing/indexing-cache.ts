@@ -9,6 +9,7 @@ import {
   BasePathMapping,
   PagePathMapping,
   PostMeta,
+  WikiPathMapping,
 } from "../types/indexing";
 import { AliasIndex } from "./index-building/alias-index-builder/alias-index-builder";
 import { clipDataFromPool } from "./index-building/clip-data-index-builder/clip-data-index-builder";
@@ -78,6 +79,12 @@ export const learnFromAiResourceMap = () => {
   return getResourceMap<PagePathMapping, PostMeta>(
     mustGetCache().resourcePool,
     "learn_from_ai"
+  );
+};
+export const testwikiResourceMap = () => {
+  return getResourceMap<WikiPathMapping, PostMeta>(
+    mustGetCache().resourcePool,
+    "testwiki"
   );
 };
 export const getTagIndex = () => {

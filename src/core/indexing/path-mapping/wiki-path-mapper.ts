@@ -32,6 +32,7 @@ export class WikiPathMapper implements PathMapper<WikiPathMapping> {
    * - public/content/testwiki/page1/subpage1.md -> /testwiki/page1/subpage1
    * - public/content/testwiki/page1.md -> /testwiki/page1
    * - public/content/testwiki/page1/index.md -> /testwiki/page1
+   * - public/content/testwiki/01-page1.md -> /testwiki/page1
    * - public/content/testwiki/index.md -> /testwiki
    *
    * @param filePath - The file path to convert.
@@ -57,6 +58,7 @@ export class WikiPathMapper implements PathMapper<WikiPathMapping> {
       slugArray.pop();
     }
     slugArray = slugArray.map((slug) => slug.replace(/\.mdx?$/, "")); // [page1.md] -> [page1]
+    slugArray = slugArray.map((slug) => slug.replace(/^\d+-\s*/, "")); // [01-page1,01-subpage1.md] -> [page1,subpage1]
 
     const slugs: string[] = slugArray || [];
 
