@@ -44,7 +44,7 @@ describe("WikiPathMapper get slug from file", () => {
       want: {
         filePath: `public/content/testwiki/index.md`,
         pagePath: `/testwiki`,
-        slugs: undefined,
+        slugs: [],
       },
     },
   ];
