@@ -58,8 +58,7 @@ export class WikiPathMapper implements PathMapper<WikiPathMapping> {
     }
     slugArray = slugArray.map((slug) => slug.replace(/\.mdx?$/, "")); // [page1.md] -> [page1]
 
-    const slugs: string[] | undefined =
-      slugArray.length > 0 ? slugArray : undefined;
+    const slugs: string[] = slugArray || [];
 
     const pagePath = this.slugsToPagePath(slugs);
     return {
@@ -69,8 +68,8 @@ export class WikiPathMapper implements PathMapper<WikiPathMapping> {
     };
   };
 
-  slugsToPagePath = (slugs: string[] | undefined) => {
-    if (slugs === undefined) {
+  slugsToPagePath = (slugs: string[]) => {
+    if (slugs.length === 0) {
       return this.pathPrefix;
     }
     return `${this.pathPrefix}/${slugs.join("/")}`;
