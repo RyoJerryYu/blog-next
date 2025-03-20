@@ -33,6 +33,23 @@ export type PagePathMapping = BasePathMapping & {
   slug: string;
 };
 
+export type WikiPathMapping = BasePathMapping & {
+  /**
+   * the nextjs route param, should be unique for a type of resource
+   * no prefix slash and no suffix file extension for each slug
+   *
+   * e.g. for file ".../page1/subpage1.md", slugs is ["page1", "subpage1"]
+   * for file ".../page1/index.md", slugs is ["page1"]
+   *
+   * for subpage index page, the slug is the subpage slug
+   * e.g. for file ".../page1/subpage1/index.md", slugs is ["page1", "subpage1"]
+   *
+   * for index page, slugs is undefined
+   * e.g. for file ".../index.md", slugs is undefined
+   */
+  slugs: string[] | undefined;
+};
+
 /****************
  * Meta
  */
