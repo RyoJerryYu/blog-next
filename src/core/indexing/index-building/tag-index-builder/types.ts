@@ -1,6 +1,5 @@
 export type PostSlugInfo = {
   postType: string;
-  postSlug: string;
   postPagePath: string;
 };
 
