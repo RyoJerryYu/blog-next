@@ -90,16 +90,7 @@ Something should not be an index:
 - outgoing reference in a post content
 - Any thing that could directly get from content should not be an index.
 
-
-
-# TODO
-
-名称不对， path mapping 没有做真正的 mapping 工作，与外部 mapping 重名
-- path-resolving, ResourcePath, Resolver
-
-
 pipeline -> ResourceList
-
 
 ## Pipeline
 
@@ -114,23 +105,27 @@ Pipeline is responsible for:
 
 The indexing pipeline follows these steps:
 
-1. **Entry Point**: 
+1. **Entry Point**:
+
    - `init-cache.ts` triggers the indexing process during build
    - Calls `indexing-cache.ts` to manage the cache state
 
 2. **Pipeline Process**:
-   - **Resource Collection**: 
+
+   - **Resource Collection**:
+
      - Scans filesystem for content files (markdown, images, etc.)
      - Uses path mappers to establish file-to-URL relationships
-   
-   - **Meta Collection**: 
+
+   - **Meta Collection**:
+
      - Gathers metadata from multiple sources:
        - Frontmatter in markdown files
        - Git history information (dates, authors)
        - File system stats
      - Each resource type may have different metadata needs
-   
-   - **Index Building**: 
+
+   - **Index Building**:
      - Creates various indexes for site functionality:
        - Tag index for content categorization
        - Post index for blog posts
@@ -143,6 +138,7 @@ The indexing pipeline follows these steps:
    - Cache is used to speed up subsequent builds
 
 The pipeline ensures all content is properly:
+
 - Discovered (Resource Collection)
 - Enriched with metadata (Meta Collection)
 - Organized for access (Index Building)
@@ -154,28 +150,28 @@ This structured approach allows for efficient content management and fast page g
 flowchart TD
     A[init-cache.ts] --> B[indexing-cache.ts]
     B --> C[pipeline.ts]
-    
+
     subgraph Pipeline Process
         C --> D[Resource Collection]
         D --> E[Meta Collection]
         E --> F[Index Building]
-        
+
         D --> G[static-resource-path-mapper.ts]
         G --> H[Map file paths to URLs]
-        
+
         E --> I[Collect metadata]
         I --> J[frontmatter]
         I --> K[git history]
         I --> L[file stats]
-        
+
         F --> M[Build indexes]
         M --> N[tag index]
         M --> O[post index]
         M --> P[resource index]
     end
-    
+
     F --> Q[resource-pool.ts]
     Q --> R[.cache/resource-pool.json]
-    
+
     B --> S[.cache/indexing-cache.json]
 ```
