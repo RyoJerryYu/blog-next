@@ -31,7 +31,7 @@ import {
   RehypeSectionAnchorCollectionOptions,
 } from "./rehype-plugins/rehype-heading-anchor-collection";
 
-type CapturedResult = {
+export type CapturedResult = {
   trees: AnchorTree[];
 };
 const genMdxOptions = (props: ParseMdxProps) => {
