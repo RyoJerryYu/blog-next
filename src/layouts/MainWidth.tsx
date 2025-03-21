@@ -20,8 +20,8 @@ export default function MainWidth(props: MainWidthProps) {
       }}
     >
       <Grid2 size={{ xs: 0, md: 0, lg: 2 }}>{props.left}</Grid2>
-      <Grid2 size={{ xs: 12, md: 8, lg: 8 }}>{props.children}</Grid2>
-      <Grid2 size={{ xs: 0, md: 4, lg: 2 }}>{props.right}</Grid2>
+      <Grid2 size={{ xs: 12, md: 9, lg: 8 }}>{props.children}</Grid2>
+      <Grid2 size={{ xs: 0, md: 3, lg: 2 }}>{props.right}</Grid2>
     </Grid2>
   );
 }
