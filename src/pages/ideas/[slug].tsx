@@ -73,7 +73,15 @@ const IdeaPage = (props: IdeaPageProps) => {
     <>
       <Title>{props.meta.title}</Title>
       <Description>{props.meta.abstract}</Description>
-      <DefaultLayout right={<Anchor items={props.capturedResult.trees} />}>
+      <DefaultLayout
+        right={
+          <Anchor
+            items={props.capturedResult.trees}
+            offsetTop={64}
+            className="overflow-y-auto"
+          />
+        }
+      >
         <ParsingProvider>
           <Post
             meta={props.meta}
