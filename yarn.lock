@@ -4676,7 +4676,7 @@ hast-util-to-parse5@^8.0.0:
     web-namespaces "^2.0.0"
     zwitch "^2.0.0"
 
-hast-util-to-string@^3.0.0:
+hast-util-to-string@^3.0.0, hast-util-to-string@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/hast-util-to-string/-/hast-util-to-string-3.0.1.tgz#a4f15e682849326dd211c97129c94b0c3e76527c"
   integrity sha512-XelQVTDWvqcl3axRfI0xSeoVKzyIFPwsAGSLIsKdJKQMXDYJS4WYrBNF/8J7RdhIcFI2BOHgAifggsvsxp/3+A==
@@ -7723,6 +7723,16 @@ rehype-autolink-headings@^7.1.0:
     hast-util-is-element "^3.0.0"
     unified "^11.0.0"
     unist-util-visit "^5.0.0"
+
+rehype-document@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/rehype-document/-/rehype-document-7.0.3.tgz#c0674e3f217f8fccc02ced2691a299f511084895"
+  integrity sha512-g5zq6i2FwWVBVdyVi0Jw/5MRvsHj3wuJCn+QeyOjm29QBpTG4r1iUElyH9GhfWx5fB27ZEApA53RdAiYGBb4zQ==
+  dependencies:
+    "@types/hast" "^3.0.0"
+    hastscript "^8.0.0"
+    unified "^11.0.0"
+    vfile "^6.0.0"
 
 rehype-katex@^7.0.0:
   version "7.0.1"
