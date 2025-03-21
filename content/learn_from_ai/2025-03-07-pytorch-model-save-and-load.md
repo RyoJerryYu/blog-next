@@ -11,7 +11,7 @@ license: true
 
 > 本文为与 DeepSeek 对话记录，深入探讨 PyTorch 中模型的保存和加载机制，包括不同的保存方式、最佳实践以及常见问题的解决方案。
 
-# Q: PyTorch 中所谓的保存模型/加载模型，指的是保存/加载什么？是 state_dict 吗？
+## Q: PyTorch 中所谓的保存模型/加载模型，指的是保存/加载什么？是 state_dict 吗？
 
 > [!reasoning]-
 >
@@ -135,7 +135,7 @@ model.eval()
   - 若保存的是整个模型，直接加载但需保证代码兼容性。
 - **灵活性**：使用 `state_dict` 更安全、更灵活，适合跨项目或模型结构可能变化的场景。
 
-# Q: model 的 config 又是什么东西？是超参吗？
+## Q: model 的 config 又是什么东西？是超参吗？
 
 > [!reasoning]-
 >
@@ -289,7 +289,7 @@ model.load_state_dict(loaded["state_dict"])
 > - Config 主要是定义模型结构。会根据 Config 决定有多少层等。
 > - 超参主要是训练过程中的学习率、 Epochs 等，复现训练过程时需要，但与模型结构无关，只与训练过程有关。
 
-# Q: 所谓"权重"就是指 state_dict 中的内容吗？
+## Q: 所谓"权重"就是指 state_dict 中的内容吗？
 
 > [!reasoning]-
 >

@@ -11,21 +11,23 @@ tags:
 
 > 📝 本文是我在学习 OpenCV 时遇到的一个问题。问题的解答和中文翻译均由 AI 生成。
 
-# OpenCV 坐标表示：理解 (y, x) 与 (x, y) 的区别
+## OpenCV 坐标表示：理解 (y, x) 与 (x, y) 的区别
 
 ## Q
+
 Why sometimes opencv represent a point coordinate as (y,x) (e.g. the result of cv2.findContours) , and sometimes it represent as (x, y) (e.g. the arg `center` of cv2.circle)?
 
 > 为什么 OpenCV 有时用 (y,x) 表示坐标点（比如 cv2.findContours 的返回值），有时又用 (x,y) 表示（比如 cv2.circle 函数的 `center` 参数）？
 
 ## A
+
 OpenCV uses different conventions for different functions based on their specific requirements and historical reasons:
 
 > OpenCV 基于不同函数的具体需求和历史原因，使用了不同的坐标表示约定：
 
 1. **(y, x) Convention**: This is often used when dealing with image matrices directly. In image processing, images are typically represented as 2D arrays where the first dimension is the row (height, y-coordinate) and the second dimension is the column (width, x-coordinate). Functions like `cv2.findContours` return coordinates in this order to match the array indexing.
 
-> 1. **(y, x) 约定**：这种表示方法通常用于直接处理图像矩阵时。在图像处理中，图像通常表示为二维数组，其中第一维是行（高度，y坐标），第二维是列（宽度，x坐标）。像 `cv2.findContours` 这样的函数返回这种顺序的坐标是为了匹配数组索引方式。
+> 1. **(y, x) 约定**：这种表示方法通常用于直接处理图像矩阵时。在图像处理中，图像通常表示为二维数组，其中第一维是行（高度，y 坐标），第二维是列（宽度，x 坐标）。像 `cv2.findContours` 这样的函数返回这种顺序的坐标是为了匹配数组索引方式。
 
 2. **(x, y) Convention**: This is used in functions that deal with geometric shapes or points in a more traditional Cartesian coordinate system, where `x` is the horizontal axis and `y` is the vertical axis. Functions like `cv2.circle` use this convention to specify the center of the circle.
 
