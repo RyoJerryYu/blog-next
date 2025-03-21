@@ -118,7 +118,7 @@ const DefaultFooter: React.FC<DefaultFooterProps> = (
 ) => {
   return (
     <footer className={style.footer}>
-      <MainWidth className="w-full">
+      <MainWidth>
         <div className="flex flex-row justify-center items-center">
           <div className={style.footerLeft}>
             {"© 2023 Ryo Jerry Yu. All rights reserved."}
