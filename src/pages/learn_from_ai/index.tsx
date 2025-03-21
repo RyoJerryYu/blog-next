@@ -11,7 +11,6 @@ import {
 } from "@/core/indexing/indexing-cache";
 import { PostResource } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
 import { GetStaticProps } from "next";
 
@@ -41,12 +40,10 @@ const LearnFromAiPage = (props: LearnFromAiProps) => {
     <>
       <Title>Learn from AI</Title>
       <DefaultLayout>
-        <MainWidth>
-          <PostList
-            posts={props.posts}
-            allTags={tagInfoListToMap(props.allTags)}
-          />
-        </MainWidth>
+        <PostList
+          posts={props.posts}
+          allTags={tagInfoListToMap(props.allTags)}
+        />
       </DefaultLayout>
     </>
   );
