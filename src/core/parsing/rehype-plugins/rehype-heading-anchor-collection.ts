@@ -5,8 +5,9 @@ import { Plugin } from "unified";
 import { visit } from "unist-util-visit";
 
 export type AnchorTree = {
+  key: string;
+  href: string;
   id?: string;
-  href?: string;
   heading: number;
   title: string;
   children: AnchorTree[];
@@ -27,13 +28,14 @@ export const rehypeHeadingAnchorCollection: Plugin<
       if (!heading) return;
       const id = node.properties.id?.toString() ?? null;
       const anchorNode: AnchorTree = {
+        key: id ?? toString(node),
+        href: id ? `#${id}` : "",
         heading,
         title: toString(node),
         children: [],
       };
       if (id) {
         anchorNode.id = id;
-        anchorNode.href = `#${id}`;
       }
 
       // pop headingStack to resultTrees
