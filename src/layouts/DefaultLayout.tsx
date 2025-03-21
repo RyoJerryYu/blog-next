@@ -134,12 +134,17 @@ const DefaultFooter: React.FC<DefaultFooterProps> = (
 
 type DefaultLayoutProps = {
   children: React.ReactNode;
-  withFullScreen?: boolean;
-};
-const DefaultLayout: React.FC<DefaultLayoutProps> = ({
-  children,
-  withFullScreen,
-}) => {
+} & (
+  | {
+      withFullScreen: true;
+    }
+  | {
+      withFullScreen?: false;
+      left?: React.ReactNode;
+      right?: React.ReactNode;
+    }
+);
+const DefaultLayout: React.FC<DefaultLayoutProps> = (props) => {
   const iconItem: ClickableItem = { to: "/", text: "Ryo's Blog" };
   const items: ClickableItem[] = [
     { to: "/articles", text: "Articles" },
@@ -154,13 +159,13 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
       <DefaultHeader items={items} iconItem={iconItem} />
 
       {/* outside header */}
-      {withFullScreen ? (
-        children
+      {props.withFullScreen ? (
+        props.children
       ) : (
         <>
           <div className={style.headerBg}></div>
-          <MainWidth>
-            <div className={style.contentHeight}>{children}</div>
+          <MainWidth left={props.left} right={props.right}>
+            <div className={style.contentHeight}>{props.children}</div>
           </MainWidth>
         </>
       )}
