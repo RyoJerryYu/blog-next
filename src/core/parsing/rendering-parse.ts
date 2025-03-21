@@ -1,4 +1,5 @@
 import { CompileOptions } from "@mdx-js/mdx";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeKatex, { Options as KatexOptions } from "rehype-katex";
@@ -11,8 +12,8 @@ import remarkMath from "remark-math";
 import remarkUnwrapImages from "remark-unwrap-images";
 import { ParseMdxProps } from "../types/rendering";
 import {
-  RemarkCodeBlockEscapeOptions,
   remarkCodeBlockEscape,
+  RemarkCodeBlockEscapeOptions,
 } from "./complex-plugins/code-block-escape/remark-code-block-escape";
 import { remarkObsidianCallout } from "./complex-plugins/obsidian-callout/remark-obsidian-callout";
 import remarkObsidianHighlight from "./complex-plugins/obsidian-highlight/remark-obsidian-highlight";
@@ -24,8 +25,19 @@ import { remarkObsidianTag } from "./complex-plugins/obsidian-tag/remark-obsidia
 import remarkObsidianWikilink, {
   RemarkObsidianWikilinkOptions,
 } from "./complex-plugins/obsidian-wikilink/remark-obsidian-wikilink";
+import {
+  AnchorTree,
+  rehypeHeadingAnchorCollection,
+  RehypeSectionAnchorCollectionOptions,
+} from "./rehype-plugins/rehype-heading-anchor-collection";
 
+type CapturedResult = {
+  trees: AnchorTree[];
+};
 const genMdxOptions = (props: ParseMdxProps) => {
+  const capturedResult: CapturedResult = {
+    trees: [],
+  };
   const defaultMdxOptions: Omit<
     CompileOptions,
     "outputFormat" | "providerImportSource"
@@ -65,6 +77,14 @@ const genMdxOptions = (props: ParseMdxProps) => {
       rehypeSlug,
       [rehypeAutolinkHeadings, { behavior: "wrap" }],
       [
+        rehypeHeadingAnchorCollection,
+        {
+          collectResult: (tree) => {
+            capturedResult.trees = tree;
+          },
+        } as RehypeSectionAnchorCollectionOptions,
+      ],
+      [
         rehypeKatex,
         {
           strict: false,
@@ -91,13 +111,20 @@ const genMdxOptions = (props: ParseMdxProps) => {
       ],
     ],
   };
-  return defaultMdxOptions;
+  return { defaultMdxOptions, capturedResult };
 };
 
-export const parseMdx = async (content: string, props: ParseMdxProps) => {
-  const mdxOptions = genMdxOptions(props);
+export const parseMdx = async (
+  content: string,
+  props: ParseMdxProps
+): Promise<{
+  source: MDXRemoteSerializeResult;
+  capturedResult: CapturedResult;
+}> => {
+  const { defaultMdxOptions: mdxOptions, capturedResult } =
+    genMdxOptions(props);
   const source = await serialize(content, {
     mdxOptions: mdxOptions,
   });
-  return source;
+  return { source, capturedResult };
 };

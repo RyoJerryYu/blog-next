@@ -12,7 +12,7 @@ export type AnchorTree = {
   children: AnchorTree[];
 };
 
-type RehypeSectionAnchorCollectionOptions = {
+export type RehypeSectionAnchorCollectionOptions = {
   collectResult: (resultTrees: AnchorTree[]) => void;
 };
 
