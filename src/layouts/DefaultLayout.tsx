@@ -38,7 +38,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
   return (
     <>
       <HideOnScroll>
-        <AppBar>
+        <AppBar sx={{ bgcolor: "header.background" }}>
           <Toolbar>
             {/* icon */}
             <div className="ml-2 w-32 mr-2 md:mr-4">
@@ -74,7 +74,6 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
           </Toolbar>
         </AppBar>
       </HideOnScroll>
-      <Toolbar />
     </>
   );
 };
@@ -159,6 +158,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = (props) => {
       ) : (
         <>
           {/* <div className={style.headerBg}></div> */}
+          <Toolbar />
           <MainWidth left={props.left} right={props.right}>
             <div className={style.contentHeight}>{props.children}</div>
           </MainWidth>
