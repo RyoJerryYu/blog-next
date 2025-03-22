@@ -177,13 +177,13 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = (props) => {
   const homeItem: ClickableItem = { href: "/", text: "Ryo's Blog" };
   const menuItems: ClickableMenu[] = [
     { href: "/articles", text: "Articles" },
-    { href: "/ideas", text: "Ideas" },
     { href: "/learn_from_ai", text: "Learn from AI" },
     { href: "/tags", text: "Tags" },
     {
       href: "",
       text: "More",
       children: [
+        { href: "/ideas", text: "Ideas" },
         { href: "/clips", text: "Clips" },
         { href: "/prev", text: "Preview" },
         { href: "/testwiki", text: "Test Wiki" },
