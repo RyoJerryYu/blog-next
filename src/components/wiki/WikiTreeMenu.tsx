@@ -1,7 +1,9 @@
+"use client";
 import { WikiTreeNode } from "@/core/indexing/index-building/wiki-tree-index-builder/types";
+import { useContainerDimensions } from "@/hooks/use-container-dimensions";
 import { ItemType } from "antd/es/menu/interface";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu } from "../antd/Menu";
 
 export type WikiTreeMenuProps = {
@@ -51,15 +53,22 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
   ]);
   useEffect(() => {
     setOpenKeys([...rootKeys, ...currentSlugs]);
-  }, [currentSlugs]);
+  }, [rootKeys, currentSlugs]);
+
+  const thisRef = useRef<HTMLDivElement>(null);
+  const { width, height } = useContainerDimensions(thisRef);
 
   return (
-    <Menu
-      mode="inline"
-      items={items}
-      openKeys={openKeys}
-      onOpenChange={setOpenKeys}
-      selectedKeys={currentSlugs.length > 0 ? currentSlugs : ["root"]}
-    />
+    <div className="w-full h-full" ref={thisRef}>
+      {width > 10 ? (
+        <Menu
+          mode="inline"
+          items={items}
+          openKeys={openKeys}
+          onOpenChange={setOpenKeys}
+          selectedKeys={currentSlugs.length > 0 ? currentSlugs : ["root"]}
+        />
+      ) : null}
+    </div>
   );
 }
