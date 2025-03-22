@@ -1,14 +1,18 @@
 import { ParsingProvider } from "@/components-parsing/component-parsing";
+import { Anchor } from "@/components/antd/Anchor";
 import Post from "@/components/Post";
+import { WikiTreeMenu } from "@/components/wiki/WikiTreeMenu";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
+import { WikiTreeInfo } from "@/core/indexing/index-building/wiki-tree-index-builder/types";
 import {
   getPostMetaOrReload,
   getTagIndex,
+  getWikiTreeIndex,
   loadCache,
   testwikiResourceMap,
 } from "@/core/indexing/indexing-cache";
 import { testwikiPathMapper } from "@/core/indexing/indexing-settings";
-import { parseMdx } from "@/core/parsing/rendering-parse";
+import { CapturedResult, parseMdx } from "@/core/parsing/rendering-parse";
 import { PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
@@ -29,7 +33,9 @@ type TestWikiPageProps = {
   slugs: string[];
   meta: PostMeta;
   tags: TagInfo[];
+  wikiTree: WikiTreeInfo;
   source: MDXRemoteSerializeResult;
+  capturedResult: CapturedResult;
 };
 
 export const getStaticProps: GetStaticProps<
@@ -41,21 +47,35 @@ export const getStaticProps: GetStaticProps<
   const pagePath = testwikiPathMapper().slugsToPagePath(slugs);
   const meta = await getPostMetaOrReload(pagePath);
   const tags = getTagIndex().getTagsOf(meta.tags);
-  const source = await parseMdx(meta.content, {
+  const wikiTree = getWikiTreeIndex().pagePathToWikiTree("testwiki", pagePath);
+  const { source, capturedResult } = await parseMdx(meta.content, {
     pagePath: pagePath,
   });
   return {
-    props: { slugs, meta, tags, source },
+    props: { slugs, meta, tags, wikiTree, source, capturedResult },
   };
 };
 
 const TestWikiPage = (props: TestWikiPageProps) => {
-  console.log(props);
   return (
     <>
       <Title>{props.meta.title}</Title>
       <Description>{props.meta.abstract}</Description>
-      <DefaultLayout>
+      <DefaultLayout
+        left={
+          <WikiTreeMenu
+            trees={props.wikiTree.trees}
+            currentSlugs={props.slugs}
+          />
+        }
+        right={
+          <Anchor
+            items={props.capturedResult.trees}
+            offsetTop={64}
+            className="overflow-y-auto"
+          />
+        }
+      >
         <ParsingProvider>
           <Post
             meta={props.meta}
