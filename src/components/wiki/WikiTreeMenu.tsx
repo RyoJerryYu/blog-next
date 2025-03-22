@@ -47,7 +47,7 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
       mode="inline"
       items={items}
       defaultOpenKeys={[...rootKeys, ...props.currentSlugs]}
-      defaultSelectedKeys={
+      selectedKeys={
         props.currentSlugs.length > 0 ? props.currentSlugs : ["root"]
       }
     />
