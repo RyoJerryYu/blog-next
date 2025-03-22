@@ -21,6 +21,14 @@ $footer-height: 4rem;
   text-shadow: 0 0 10px #69e0ff, 0 0 20px #69e0ff;
 }
 
+.dropdownitem {
+  @apply text-gray-500 font-sans text-lg font-normal;
+  @apply hover:text-gray-700;
+}
+.dropdownitem:hover {
+  text-shadow: 0 0 10px #69e0ff, 0 0 20px #69e0ff;
+}
+
 .header {
   height: $header-height;
   --AppBar-background: theme(colors.gray.900);
