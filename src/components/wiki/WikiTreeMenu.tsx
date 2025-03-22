@@ -1,6 +1,7 @@
 import { WikiTreeNode } from "@/core/indexing/index-building/wiki-tree-index-builder/types";
 import { ItemType } from "antd/es/menu/interface";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Menu } from "../antd/Menu";
 
 export type WikiTreeMenuProps = {
@@ -42,14 +43,23 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
   };
   const items = props.trees.map((tree) => wikiTreeNodeToMenuItem(tree, 0));
   const rootKeys = props.trees.map((tree) => wikiTreeNodeToKey(tree));
+
+  const { currentSlugs } = props;
+  const [openKeys, setOpenKeys] = useState<string[]>([
+    ...rootKeys,
+    ...currentSlugs,
+  ]);
+  useEffect(() => {
+    setOpenKeys([...rootKeys, ...currentSlugs]);
+  }, [currentSlugs]);
+
   return (
     <Menu
       mode="inline"
       items={items}
-      defaultOpenKeys={[...rootKeys, ...props.currentSlugs]}
-      selectedKeys={
-        props.currentSlugs.length > 0 ? props.currentSlugs : ["root"]
-      }
+      openKeys={openKeys}
+      onOpenChange={setOpenKeys}
+      selectedKeys={currentSlugs.length > 0 ? currentSlugs : ["root"]}
     />
   );
 }
