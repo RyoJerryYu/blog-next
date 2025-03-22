@@ -54,7 +54,7 @@ export const getStaticProps: GetStaticProps<
 
   const tags = getTagIndex().getTagsOf(meta.tags);
 
-  const source = await parseMdx(meta.content, {
+  const { source, capturedResult } = await parseMdx(meta.content, {
     pagePath: pagePath,
   });
 

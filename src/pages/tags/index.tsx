@@ -2,7 +2,6 @@ import TagSelector from "@/components/TagSelector";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import { getTagIndex, loadCache } from "@/core/indexing/indexing-cache";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
 import { GetStaticProps } from "next";
 
@@ -27,9 +26,7 @@ const TagsPage = (props: TagsProps) => {
     <>
       <Title>Tags</Title>
       <DefaultLayout>
-        <MainWidth>
-          <TagSelector tags={props.tagInfos} />
-        </MainWidth>
+        <TagSelector tags={props.tagInfos} />
       </DefaultLayout>
     </>
   );

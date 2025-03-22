@@ -1,4 +1,5 @@
 import { ParsingProvider } from "@/components-parsing/component-parsing";
+import { Anchor } from "@/components/antd/Anchor";
 import Post from "@/components/Post";
 import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/types";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
@@ -11,7 +12,7 @@ import {
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { ideaPostPathMapper } from "@/core/indexing/indexing-settings";
-import { parseMdx } from "@/core/parsing/rendering-parse";
+import { CapturedResult, parseMdx } from "@/core/parsing/rendering-parse";
 import { PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
@@ -32,6 +33,7 @@ type IdeaPageProps = {
   slug: string;
   tags: TagInfo[];
   source: MDXRemoteSerializeResult;
+  capturedResult: CapturedResult;
   meta: PostMeta;
   prevNextInfo: PrevNextInfo;
 };
@@ -51,7 +53,7 @@ export const getStaticProps: GetStaticProps<
 
   const tagIndex = getTagIndex();
   const tags = tagIndex.getTagsOf(meta.tags);
-  const source = await parseMdx(meta.content, {
+  const { source, capturedResult } = await parseMdx(meta.content, {
     pagePath: pagePath,
   });
   return {
@@ -59,6 +61,7 @@ export const getStaticProps: GetStaticProps<
       slug,
       tags,
       source,
+      capturedResult,
       meta,
       prevNextInfo,
     },
@@ -70,7 +73,15 @@ const IdeaPage = (props: IdeaPageProps) => {
     <>
       <Title>{props.meta.title}</Title>
       <Description>{props.meta.abstract}</Description>
-      <DefaultLayout>
+      <DefaultLayout
+        right={
+          <Anchor
+            items={props.capturedResult.trees}
+            offsetTop={64}
+            className="overflow-y-auto"
+          />
+        }
+      >
         <ParsingProvider>
           <Post
             meta={props.meta}

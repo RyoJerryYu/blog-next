@@ -11,7 +11,6 @@ import {
 } from "@/core/indexing/indexing-cache";
 import { PostResource } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
 import { GetStaticProps } from "next";
 
@@ -61,9 +60,7 @@ export default function ClipsPage(props: ClipsProps) {
     <>
       <Title>Clips</Title>
       <DefaultLayout>
-        <MainWidth>
-          <PostList posts={posts} allTags={allTagsMap} />
-        </MainWidth>
+        <PostList posts={posts} allTags={allTagsMap} />
       </DefaultLayout>
     </>
   );

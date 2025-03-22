@@ -19,7 +19,6 @@ export const CodeBlockJessieCode = (props: CodeBlockProps) => {
   const frontMatter = matter(props.value);
   const codeContent = frontMatter.content;
 
-  console.log("frontmatter", frontMatter);
   let boardAttributes: Partial<JXG.BoardAttributes> = {};
   if (frontMatter.data) {
     boardAttributes = frontMatter.data as Partial<JXG.BoardAttributes>;
