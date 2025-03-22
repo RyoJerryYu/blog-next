@@ -12,6 +12,7 @@ export type WikiTreeMenuProps = {
 };
 
 export function WikiTreeMenu(props: WikiTreeMenuProps) {
+  const { currentSlugs, trees } = props;
   const wikiTreeNodeToKey = (tree: WikiTreeNode) => {
     return tree.slugs.length > 0 ? tree.slugs[tree.slugs.length - 1] : "root";
   };
@@ -43,26 +44,28 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
           };
     return item;
   };
-  const items = props.trees.map((tree) => wikiTreeNodeToMenuItem(tree, 0));
-  const rootKeys = props.trees.map((tree) => wikiTreeNodeToKey(tree));
 
-  const { currentSlugs } = props;
   const [openKeys, setOpenKeys] = useState<string[]>([
-    ...rootKeys,
+    ...trees.map((tree) => wikiTreeNodeToKey(tree)),
     ...currentSlugs,
   ]);
   useEffect(() => {
+    const rootKeys = trees.map((tree) => wikiTreeNodeToKey(tree));
     setOpenKeys([...rootKeys, ...currentSlugs]);
-  }, [rootKeys, currentSlugs]);
+  }, [trees, currentSlugs]);
 
   const thisRef = useRef<HTMLDivElement>(null);
   const { width, height } = useContainerDimensions(thisRef);
+
+  const items = trees.map((tree) => wikiTreeNodeToMenuItem(tree, 0));
 
   return (
     <div className="w-full h-full" ref={thisRef}>
       {width > 10 ? (
         <Menu
+          className="bg-transparent"
           mode="inline"
+          inlineIndent={10}
           items={items}
           openKeys={openKeys}
           onOpenChange={setOpenKeys}
