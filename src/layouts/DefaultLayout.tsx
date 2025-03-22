@@ -1,24 +1,16 @@
+import { Menu } from "@/components/antd/Menu";
 import {
   GitHubIcon,
   IconItem,
   PixivIcon,
   TwitterIcon,
 } from "@/components/svgs";
-import { KeyboardArrowRight } from "@mui/icons-material";
+import { KeyboardArrowDown } from "@mui/icons-material";
 import HomeIcon from "@mui/icons-material/Home";
-import {
-  AppBar,
-  Box,
-  Menu,
-  MenuItem,
-  PopoverOrigin,
-  Slide,
-  Toolbar,
-  useScrollTrigger,
-} from "@mui/material";
-import clsx from "clsx";
+import { AppBar, Box, Slide, Toolbar, useScrollTrigger } from "@mui/material";
+import { ItemType } from "antd/es/menu/interface";
 import Link from "next/link";
-import React, { JSX, useState } from "react";
+import React, { JSX } from "react";
 import style from "./DefaultLayout.module.scss";
 import MainWidth from "./MainWidth";
 
@@ -61,86 +53,34 @@ function IconLink(props: ClickableIcon) {
   );
 }
 
-type DropdownState = {
-  anchorEl: HTMLElement | null;
-  isOpen: boolean;
-  openMenu: (event: React.MouseEvent<HTMLElement>) => void;
-  closeMenu: () => void;
-};
-
-function useDropdownState() {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const isOpen = Boolean(anchorEl);
-
-  const openMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+const clickableMenuToMenuItem = (menu: ClickableMenu): ItemType => {
+  if (menu.children) {
+    return {
+      key: menu.text,
+      label: (
+        <Link href={menu.href} className={style.textlink}>
+          {menu.text}
+          <KeyboardArrowDown />
+        </Link>
+      ),
+      children: menu.children.map(clickableMenuToMenuItem),
+    };
+  }
+  return {
+    key: menu.text,
+    label: <TextLink {...menu} />,
   };
-
-  const closeMenu = () => {
-    setAnchorEl(null);
-  };
-
-  return { anchorEl, isOpen, openMenu, closeMenu };
-}
-
-type DropdownMenuProps = {
-  id: string;
-  items: ClickableItem[];
-  anchorOrigin: PopoverOrigin;
-  transformOrigin: PopoverOrigin;
-  dropdownState: DropdownState;
 };
-function DropdownMenu(props: DropdownMenuProps) {
-  return (
-    <Menu
-      id={props.id}
-      anchorEl={props.dropdownState.anchorEl}
-      anchorOrigin={props.anchorOrigin}
-      transformOrigin={props.transformOrigin}
-      open={props.dropdownState.isOpen}
-      onClose={props.dropdownState.closeMenu}
-      disableAutoFocusItem
-      disableRestoreFocus
-    >
-      {props.items.map((item) => (
-        <MenuItem key={item.text} onClick={props.dropdownState.closeMenu}>
-          <Link href={item.href} className={style.dropdownitem}>
-            {item.text}
-          </Link>
-        </MenuItem>
-      ))}
-    </Menu>
-  );
-}
-
-function DropdownLink(props: ClickableMenu) {
-  const dropdownState = useDropdownState();
-
-  return (
-    <>
-      <Box onClick={dropdownState.openMenu} className={style.textlink}>
-        {props.text}
-        <KeyboardArrowRight
-          className={clsx(dropdownState.isOpen && "rotate-90")}
-        />
-      </Box>
-      <DropdownMenu
-        id={`${props.text}-menu`}
-        items={props.children ?? []}
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        transformOrigin={{ vertical: "top", horizontal: "left" }}
-        dropdownState={dropdownState}
-      />
-    </>
-  );
-}
 
 function MenuBar(props: { items: ClickableMenu[] }) {
-  return props.items.map((item) => (
-    <div key={item.text} className="relative float-left mx-1 sm:mx-2">
-      {item.children ? <DropdownLink {...item} /> : <TextLink {...item} />}
-    </div>
-  ));
+  return (
+    <Menu
+      mode="horizontal"
+      className="bg-transparent"
+      theme="dark"
+      items={props.items.map(clickableMenuToMenuItem)}
+    />
+  );
 }
 
 type DefaultHeaderProps = {

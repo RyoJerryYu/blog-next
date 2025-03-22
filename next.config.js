@@ -6,7 +6,13 @@ const nextConfig = {
   trailingSlash: false,
   assetPrefix: basePath,
   basePath: basePath,
-  transpilePackages: ["rc-util", "rc-pagination", "rc-picker", "antd"],
+  transpilePackages: [
+    "rc-util",
+    "rc-pagination",
+    "rc-picker",
+    "antd",
+    "@ant-design/icons-svg",
+  ],
   // experimental: {
   //   // we load metadata when build-time, which is very very slow.
   //   // and those metadata are immutable and could be cached.

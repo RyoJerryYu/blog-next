@@ -49,6 +49,7 @@ export const antdTheme: ThemeConfig = {
   },
   components: {
     Menu: {
+      // light mode, used as wiki tree
       itemHoverColor: sky500,
       horizontalItemHoverColor: sky500,
 
@@ -57,6 +58,10 @@ export const antdTheme: ThemeConfig = {
       horizontalItemSelectedColor: pink500,
       itemSelectedBg: alpha(slate900, 0.75),
       horizontalItemSelectedBg: slate700,
+
+      // dark mode, used as app bar menu
+      darkPopupBg: alpha(slate900, 0.75),
+      darkItemSelectedBg: "transparent",
     },
   },
 };
