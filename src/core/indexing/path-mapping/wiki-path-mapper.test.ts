@@ -25,8 +25,8 @@ describe("WikiPathMapper get slug from file", () => {
       input: `public/content/testwiki/01-subpage1.md`,
       want: {
         filePath: `public/content/testwiki/01-subpage1.md`,
-        pagePath: `/testwiki/01-subpage1`,
-        slugs: ["01-subpage1"],
+        pagePath: `/testwiki/subpage1`,
+        slugs: ["subpage1"],
       },
     },
     {
