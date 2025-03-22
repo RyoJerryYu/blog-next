@@ -1,5 +1,6 @@
 import { PagePathMapping, Resource } from "../../../types/indexing";
 import { TagIndexBuilder, TagIndexMeta } from "./tag-index-builder";
+import { PostSlugInfo } from "./types";
 
 describe("test tag index", () => {
   const input: Array<Resource<PagePathMapping, TagIndexMeta>> = [
@@ -43,11 +44,7 @@ describe("test tag index", () => {
   type GetSlugCase = {
     name: string;
     input: string;
-    output: Array<{
-      postType: string;
-      postSlug: string;
-      postPagePath: string;
-    }>;
+    output: Array<PostSlugInfo>;
   };
 
   const getSlugCases: GetSlugCase[] = [
@@ -57,17 +54,14 @@ describe("test tag index", () => {
       output: [
         {
           postType: "articles",
-          postSlug: "001",
           postPagePath: "/articles/001",
         },
         {
           postType: "ideas",
-          postSlug: "001",
           postPagePath: "/ideas/001",
         },
         {
           postType: "ideas",
-          postSlug: "002",
           postPagePath: "/ideas/002",
         },
       ],
@@ -78,7 +72,6 @@ describe("test tag index", () => {
       output: [
         {
           postType: "articles",
-          postSlug: "001",
           postPagePath: "/articles/001",
         },
       ],

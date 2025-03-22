@@ -1,17 +1,17 @@
 import { ParsingProvider } from "@/components-parsing/component-parsing";
 import { Anchor } from "@/components/antd/Anchor";
 import Post from "@/components/Post";
-import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/types";
+import { WikiTreeMenu } from "@/components/wiki/WikiTreeMenu";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
+import { WikiTreeInfo } from "@/core/indexing/index-building/wiki-tree-index-builder/types";
 import {
   getPostMetaOrReload,
-  getPrevNextIndex,
   getTagIndex,
-  learnFromAiResourceMap,
+  getWikiTreeIndex,
   loadCache,
-  mustGetResourceType,
+  testwikiResourceMap,
 } from "@/core/indexing/indexing-cache";
-import { learnFromAiPostPathMapper } from "@/core/indexing/indexing-settings";
+import { testwikiPathMapper } from "@/core/indexing/indexing-settings";
 import { CapturedResult, parseMdx } from "@/core/parsing/rendering-parse";
 import { PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
@@ -21,59 +21,53 @@ import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   await loadCache();
-  const learnFromAiMap = learnFromAiResourceMap();
-  const pagePaths = learnFromAiMap.listPagePaths();
+  const testwikiMap = testwikiResourceMap();
+  const pagePaths = testwikiMap.listPagePaths();
   return {
     paths: pagePaths,
     fallback: false,
   };
 };
 
-type LearnFromAiPageProps = {
-  slug: string;
+type TestWikiPageProps = {
+  slugs: string[];
+  meta: PostMeta;
   tags: TagInfo[];
+  wikiTree: WikiTreeInfo;
   source: MDXRemoteSerializeResult;
   capturedResult: CapturedResult;
-  meta: PostMeta;
-  prevNextInfo: PrevNextInfo;
 };
 
 export const getStaticProps: GetStaticProps<
-  LearnFromAiPageProps,
-  { slug: string }
+  TestWikiPageProps,
+  { slugs: string[] }
 > = async ({ params }) => {
   await loadCache();
-  const slug = params!.slug;
-  const pagePath = learnFromAiPostPathMapper().slugToPagePath(slug);
-  let meta = await getPostMetaOrReload(pagePath);
-  const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
-    mustGetResourceType(pagePath),
-    pagePath
-  );
-
-  const tagIndex = getTagIndex();
-  const tags = tagIndex.getTagsOf(meta.tags);
+  const slugs = params!.slugs || [];
+  const pagePath = testwikiPathMapper().slugsToPagePath(slugs);
+  const meta = await getPostMetaOrReload(pagePath);
+  const tags = getTagIndex().getTagsOf(meta.tags);
+  const wikiTree = getWikiTreeIndex().pagePathToWikiTree("testwiki", pagePath);
   const { source, capturedResult } = await parseMdx(meta.content, {
     pagePath: pagePath,
   });
   return {
-    props: {
-      slug,
-      tags,
-      source,
-      capturedResult,
-      meta,
-      prevNextInfo,
-    },
+    props: { slugs, meta, tags, wikiTree, source, capturedResult },
   };
 };
 
-const LearnFromAiPage = (props: LearnFromAiPageProps) => {
+const TestWikiPage = (props: TestWikiPageProps) => {
   return (
     <>
       <Title>{props.meta.title}</Title>
       <Description>{props.meta.abstract}</Description>
       <DefaultLayout
+        left={
+          <WikiTreeMenu
+            trees={props.wikiTree.trees}
+            currentSlugs={props.slugs}
+          />
+        }
         right={
           <Anchor
             items={props.capturedResult.trees}
@@ -87,7 +81,7 @@ const LearnFromAiPage = (props: LearnFromAiPageProps) => {
             meta={props.meta}
             tags={props.tags}
             source={props.source}
-            prevNextInfo={props.prevNextInfo}
+            prevNextInfo={{ prevInfo: null, nextInfo: null }}
           />
         </ParsingProvider>
       </DefaultLayout>
@@ -95,4 +89,4 @@ const LearnFromAiPage = (props: LearnFromAiPageProps) => {
   );
 };
 
-export default LearnFromAiPage;
+export default TestWikiPage;

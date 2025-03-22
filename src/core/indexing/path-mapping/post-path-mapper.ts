@@ -5,9 +5,9 @@ import { PagePathMapping } from "../../types/indexing";
 import { PathMapper } from "./path-mapping";
 
 export type PostPathMapperProps = {
-  fileGlobPattern: string;
-  slugFromFilename: (filename: string) => string | undefined;
-  pathPrefix: string;
+  fileGlobPattern: string; // e.g. "public/content/articles/*.md*"
+  slugFromFilename: (filename: string) => string | undefined; // e.g. (filename) => filename.match(/(\d*-)*(.*)/)?.[2]
+  pathPrefix: string; // e.g. "/articles/"
 };
 
 /**

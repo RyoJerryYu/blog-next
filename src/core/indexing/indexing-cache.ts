@@ -9,11 +9,13 @@ import {
   BasePathMapping,
   PagePathMapping,
   PostMeta,
+  WikiPathMapping,
 } from "../types/indexing";
 import { AliasIndex } from "./index-building/alias-index-builder/alias-index-builder";
 import { clipDataFromPool } from "./index-building/clip-data-index-builder/clip-data-index-builder";
 import { PrevNextIndex } from "./index-building/prev-next-index-builder/prev-next-index-builder";
 import { TagIndex } from "./index-building/tag-index-builder/tag-index-builder";
+import { WikiTreeIndex } from "./index-building/wiki-tree-index-builder/wiki-tree-index-builder";
 import { devReloadingChain, pipeline } from "./indexing-settings";
 import { collectMetaForFilePath } from "./meta-collecting/meta-collecting";
 import {
@@ -80,6 +82,12 @@ export const learnFromAiResourceMap = () => {
     "learn_from_ai"
   );
 };
+export const testwikiResourceMap = () => {
+  return getResourceMap<WikiPathMapping, PostMeta>(
+    mustGetCache().resourcePool,
+    "testwiki"
+  );
+};
 export const getTagIndex = () => {
   return TagIndex.fromPool(mustGetCache().indexPool);
 };
@@ -91,6 +99,9 @@ export const getClipData = () => {
 };
 export const getPrevNextIndex = () => {
   return PrevNextIndex.fromPool(mustGetCache().indexPool);
+};
+export const getWikiTreeIndex = () => {
+  return WikiTreeIndex.fromPool(mustGetCache().indexPool);
 };
 
 // a helper function to get resource type from page path

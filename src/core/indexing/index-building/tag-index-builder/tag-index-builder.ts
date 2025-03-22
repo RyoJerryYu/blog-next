@@ -44,7 +44,6 @@ const postPathMappingToPostSlugInfo = (
 ): PostSlugInfo => {
   return {
     postType: resourceType,
-    postSlug: pathMapping.slug,
     postPagePath: pathMapping.pagePath,
   };
 };
