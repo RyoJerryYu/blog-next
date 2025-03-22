@@ -40,14 +40,14 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
       <HideOnScroll>
         <AppBar sx={{ bgcolor: "header.background" }}>
           <Toolbar>
-            {/* icon */}
+            {/* home */}
             <div className="ml-2 w-32 mr-2 md:mr-4">
               <Link href={homeItem.href} className={style.textlink}>
                 {homeItem.text}
               </Link>
             </div>
 
-            {/* NavBar */}
+            {/* menu */}
             <Box sx={{ display: "flex" }}>
               {menuItems.map((item) => (
                 <div
@@ -63,7 +63,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
 
             <Box sx={{ flexGrow: 1, display: "flex" }}></Box>
 
-            {/* headerRight */}
+            {/* icon */}
             <Box sx={{ display: "flex" }}>
               {iconItems.map((item) => (
                 <Link href={item.href} title={item.text} key={item.text}>
