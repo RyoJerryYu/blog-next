@@ -1,6 +1,6 @@
 import { Resource, WikiPathMapping } from "@/core/types/indexing";
 import { lastSlugIsIndex } from "../../utils/wiki-utils";
-import { IndexBuilder } from "../index-building";
+import { getIndexFromIndexPool, IndexBuilder } from "../index-building";
 import {
   WikiTreeIndexMeta,
   WikiTreeIndexResource,
@@ -70,7 +70,7 @@ class SubWikiTreeIndexBuilder {
       this.popStackAsTrees(currentStack, wikiTrees, wikiPage.pathMapping.slugs);
       currentStack.push(wikiTreeNode);
     }
-    this.popStackAsTrees(currentStack, wikiTrees, []);
+    this.popStackAsTrees(currentStack, wikiTrees, null);
     return new SubWikiTreeIndex(wikiTrees);
   };
 
@@ -84,11 +84,14 @@ class SubWikiTreeIndexBuilder {
   private popStackAsTrees = (
     currentStack: WikiTreeNode[],
     wikiTrees: WikiTreeNode[],
-    stopAtSlugs: string[]
+    stopAtSlugs: string[] | null
   ) => {
     for (let i = currentStack.length - 1; i >= 0; i--) {
       // prefix compare, if current is a prefix of stopAtSlugs, return
-      if (currentStack[i].slugs.every((slug) => stopAtSlugs.includes(slug))) {
+      if (
+        stopAtSlugs &&
+        currentStack[i].slugs.every((slug) => stopAtSlugs.includes(slug))
+      ) {
         return;
       }
       if (i === 0) {
@@ -131,11 +134,16 @@ export class WikiTreeIndexBuilder
     this.subWikiTreeIndexBuilders[resourceType].addResource(resource);
   };
   buildIndex = async (): Promise<{ wikiTree: WikiTreeIndex }> => {
-    const subIndexByResourceType = Object.fromEntries(
-      Object.entries(this.subWikiTreeIndexBuilders).map(
-        ([resourceType, builder]) => [resourceType, builder.buildIndex()]
-      )
-    );
+    const subIndexByResourceType: { [resourceType: string]: SubWikiTreeIndex } =
+      Object.fromEntries(
+        Object.entries(this.subWikiTreeIndexBuilders).map(
+          ([resourceType, subIndexBuilder]) => [
+            resourceType,
+            subIndexBuilder.buildIndex(),
+          ]
+        )
+      );
+
     const wikiTreeIndex = new WikiTreeIndex(subIndexByResourceType);
     return { wikiTree: wikiTreeIndex };
   };
@@ -163,4 +171,6 @@ export class WikiTreeIndex {
     const subIndex = this.getSubIndex(resourceType);
     return subIndex.pagePathToWikiTree(pagePath);
   };
+
+  static fromPool = getIndexFromIndexPool<WikiTreeIndex>("wikiTree");
 }

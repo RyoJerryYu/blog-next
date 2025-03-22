@@ -57,6 +57,16 @@ const wikiPages: WikiTreeIndexResource[] = [
   },
   {
     pathMapping: {
+      filePath: "public/content/wiki/index.md",
+      pagePath: "/wiki",
+      slugs: [],
+    },
+    meta: {
+      title: "Wiki",
+    },
+  },
+  {
+    pathMapping: {
       filePath: "public/content/wiki/03-athird/01-zfirst.md",
       pagePath: "/wiki/athird/zfirst",
       slugs: ["athird", "zfirst"],
@@ -71,6 +81,16 @@ describe("test sort wiki tree nodes by file path", () => {
     const result = sortWikiTreeNodesByFilePath(wikiPages);
     expect(result).toMatchInlineSnapshot(`
 [
+  {
+    "meta": {
+      "title": "Wiki",
+    },
+    "pathMapping": {
+      "filePath": "public/content/wiki/index.md",
+      "pagePath": "/wiki",
+      "slugs": [],
+    },
+  },
   {
     "meta": {
       "title": "Some",
@@ -167,56 +187,63 @@ describe("test wiki tree index builder", () => {
     {
       "children": [
         {
-          "children": [],
-          "pagePath": "/wiki/zsome/zfirst",
+          "children": [
+            {
+              "children": [],
+              "pagePath": "/wiki/zsome/zfirst",
+              "slugs": [
+                "zsome",
+                "zfirst",
+              ],
+              "title": "Some first",
+            },
+            {
+              "children": [],
+              "pagePath": "/wiki/zsome/bsecond",
+              "slugs": [
+                "zsome",
+                "bsecond",
+              ],
+              "title": "Some second",
+            },
+          ],
+          "pagePath": "/wiki/zsome",
           "slugs": [
             "zsome",
-            "zfirst",
           ],
-          "title": "Some first",
+          "title": "Some",
         },
         {
-          "children": [],
-          "pagePath": "/wiki/zsome/bsecond",
-          "slugs": [
-            "zsome",
-            "bsecond",
+          "children": [
+            {
+              "children": [],
+              "pagePath": "/wiki/bother/zfirst",
+              "slugs": [
+                "bother",
+                "zfirst",
+              ],
+              "title": "Other first",
+            },
           ],
-          "title": "Some second",
-        },
-      ],
-      "pagePath": "/wiki/zsome",
-      "slugs": [
-        "zsome",
-      ],
-      "title": "Some",
-    },
-    {
-      "children": [
-        {
-          "children": [],
-          "pagePath": "/wiki/bother/zfirst",
+          "pagePath": "/wiki/bother",
           "slugs": [
             "bother",
+          ],
+          "title": "Other",
+        },
+        {
+          "children": [],
+          "pagePath": "/wiki/athird/zfirst",
+          "slugs": [
+            "athird",
             "zfirst",
           ],
-          "title": "Other first",
+          "title": "Third first",
         },
       ],
-      "pagePath": "/wiki/bother",
-      "slugs": [
-        "bother",
-      ],
-      "title": "Other",
-    },
-    {
-      "children": [],
-      "pagePath": "/wiki/athird/zfirst",
-      "slugs": [
-        "athird",
-        "zfirst",
-      ],
-      "title": "Third first",
+      "pagePath": "/wiki",
+      "slugs": [],
+      "title": "Wiki",
     },
   ],
 }

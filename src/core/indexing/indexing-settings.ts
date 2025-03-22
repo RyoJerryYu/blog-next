@@ -3,6 +3,7 @@ import { AliasIndexBuilder } from "./index-building/alias-index-builder/alias-in
 import { ClipDataIndexBuilder } from "./index-building/clip-data-index-builder/clip-data-index-builder";
 import { PrevNextIndexBuilder } from "./index-building/prev-next-index-builder/prev-next-index-builder";
 import { TagIndexBuilder } from "./index-building/tag-index-builder/tag-index-builder";
+import { WikiTreeIndexBuilder } from "./index-building/wiki-tree-index-builder/wiki-tree-index-builder";
 import {
   MockGitMetaCollector,
   defaultGitMetaCollector,
@@ -119,8 +120,8 @@ export const pipeline = () => ({
         "articles",
         "ideas",
         "learn_from_ai",
-        "staticResources",
         "testwiki",
+        "staticResources",
       ],
       builder: new AliasIndexBuilder(),
     },
@@ -131,6 +132,10 @@ export const pipeline = () => ({
     {
       handleResources: [],
       builder: new ClipDataIndexBuilder(),
+    },
+    {
+      handleResources: ["testwiki"],
+      builder: new WikiTreeIndexBuilder(),
     },
   ],
 });
