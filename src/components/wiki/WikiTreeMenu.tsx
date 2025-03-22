@@ -1,5 +1,6 @@
 import { WikiTreeNode } from "@/core/indexing/index-building/wiki-tree-index-builder/types";
 import { ItemType } from "antd/es/menu/interface";
+import Link from "next/link";
 import { Menu } from "../antd/Menu";
 
 export type WikiTreeMenuProps = {
@@ -17,7 +18,11 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
   ): ItemType => {
     const itemFields = {
       key: wikiTreeNodeToKey(tree),
-      label: tree.title,
+      label: (
+        <Link href={tree.pagePath} title={tree.title}>
+          {tree.title}
+        </Link>
+      ),
       title: tree.title,
     };
     const item: ItemType =
