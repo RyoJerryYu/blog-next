@@ -2,6 +2,7 @@ import glob from "glob";
 import { promisify } from "util";
 import { CONTENT_DIR } from "../../../utils/env-var";
 import { WikiPathMapping } from "../../types/indexing";
+import { lastSlugIsIndex } from "../utils/wiki-utils";
 import { PathMapper } from "./path-mapping";
 
 export type WikiPathMapperProps = {
@@ -50,11 +51,7 @@ export class WikiPathMapper implements PathMapper<WikiPathMapping> {
       .split("/")
       .filter((slug) => slug !== ""); // [page1.md]
     // remove the index.md(x) from the slugs
-    if (
-      slugArray.length > 0 &&
-      (slugArray[slugArray.length - 1] === "index.md" ||
-        slugArray[slugArray.length - 1] === "index.mdx")
-    ) {
+    if (lastSlugIsIndex(slugArray)) {
       slugArray.pop();
     }
     slugArray = slugArray.map((slug) => slug.replace(/\.mdx?$/, "")); // [page1.md] -> [page1]

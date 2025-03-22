@@ -48,7 +48,7 @@ export type WikiPathMapping = BasePathMapping & {
    * for index page, slugs is empty array
    * e.g. for file ".../index.md", slugs is []
    */
-  slugs: string[] | undefined;
+  slugs: string[];
 };
 
 /****************
