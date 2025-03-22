@@ -44,6 +44,9 @@ export const muiTheme = createTheme({
 });
 
 export const antdTheme: ThemeConfig = {
+  token: {
+    colorPrimary: pink500,
+  },
   components: {
     Menu: {
       itemHoverColor: sky500,
