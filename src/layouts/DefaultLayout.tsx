@@ -5,6 +5,7 @@ import {
   TwitterIcon,
 } from "@/components/svgs";
 import { KeyboardArrowRight } from "@mui/icons-material";
+import HomeIcon from "@mui/icons-material/Home";
 import {
   AppBar,
   Box,
@@ -55,7 +56,7 @@ function TextLink(props: ClickableItem) {
 function IconLink(props: ClickableIcon) {
   return (
     <Link href={props.href} title={props.text} key={props.text}>
-      <props.Icon className="h-6 w-6 fill-gray-300 hover:fill-white transition-all ease-in-out mx-1 md:mx-2" />
+      <props.Icon className="h-6 w-6 fill-gray-300 hover:fill-white mx-1 sm:mx-2" />
     </Link>
   );
 }
@@ -136,7 +137,7 @@ function DropdownLink(props: ClickableMenu) {
 
 function MenuBar(props: { items: ClickableMenu[] }) {
   return props.items.map((item) => (
-    <div key={item.text} className="relative float-left mx-1 md:mx-2">
+    <div key={item.text} className="relative float-left mx-1 sm:mx-2">
       {item.children ? <DropdownLink {...item} /> : <TextLink {...item} />}
     </div>
   ));
@@ -158,9 +159,20 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
         <AppBar sx={{ bgcolor: "header.background" }}>
           <Toolbar>
             {/* home */}
-            <div className="ml-2 w-32 mr-2 md:mr-4">
+            <Box
+              className="ml-2 w-24 mr-4"
+              sx={{ display: { xs: "none", md: "flex" } }}
+            >
               <TextLink {...homeItem} />
-            </div>
+            </Box>
+            <Box
+              className="ml-2 mr-4"
+              sx={{ display: { xs: "flex", md: "none" } }}
+            >
+              <Link href={homeItem.href} title={homeItem.text}>
+                <HomeIcon className="h-6 w-6 text-gray-300 hover:text-white" />
+              </Link>
+            </Box>
 
             {/* menu */}
             <Box sx={{ display: "flex" }}>
