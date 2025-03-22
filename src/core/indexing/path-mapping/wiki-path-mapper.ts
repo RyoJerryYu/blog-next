@@ -2,7 +2,7 @@ import glob from "glob";
 import { promisify } from "util";
 import { CONTENT_DIR } from "../../../utils/env-var";
 import { WikiPathMapping } from "../../types/indexing";
-import { lastSlugIsIndex } from "../utils/wiki-utils";
+import { filePathToWikiSlugs } from "../utils/wiki-utils";
 import { PathMapper } from "./path-mapping";
 
 export type WikiPathMapperProps = {
@@ -47,17 +47,7 @@ export class WikiPathMapper implements PathMapper<WikiPathMapping> {
       ? filePurePath.slice(this.pathPrefix.length)
       : filePurePath; // /page1.md
     // slugArray different with slugs: when for root index, it is []
-    let slugArray: string[] = fileSlugPath
-      .split("/")
-      .filter((slug) => slug !== ""); // [page1.md]
-    // remove the index.md(x) from the slugs
-    if (lastSlugIsIndex(slugArray)) {
-      slugArray.pop();
-    }
-    slugArray = slugArray.map((slug) => slug.replace(/\.mdx?$/, "")); // [page1.md] -> [page1]
-    slugArray = slugArray.map((slug) => slug.replace(/^\d+-\s*/, "")); // [01-page1,01-subpage1.md] -> [page1,subpage1]
-
-    const slugs: string[] = slugArray || [];
+    const slugs = filePathToWikiSlugs(fileSlugPath, true);
 
     const pagePath = this.slugsToPagePath(slugs);
     return {

@@ -1,5 +1,5 @@
 import { Resource, WikiPathMapping } from "@/core/types/indexing";
-import { lastSlugIsIndex } from "../../utils/wiki-utils";
+import { filePathToWikiSlugs } from "../../utils/wiki-utils";
 import { getIndexFromIndexPool, IndexBuilder } from "../index-building";
 import {
   WikiTreeIndexMeta,
@@ -23,14 +23,10 @@ export function sortWikiTreeNodesByFilePath(
   wikiPages: WikiTreeIndexResource[]
 ) {
   return wikiPages.sort((a, b) => {
-    const partsA = a.pathMapping.filePath.split("/");
-    const partsB = b.pathMapping.filePath.split("/");
-    if (lastSlugIsIndex(partsA)) {
-      partsA.pop();
-    }
-    if (lastSlugIsIndex(partsB)) {
-      partsB.pop();
-    }
+    // here we should recaculate the slugs from the filePath
+    // because resource.pathMapping.slugs do not have order number
+    const partsA = filePathToWikiSlugs(a.pathMapping.filePath, false);
+    const partsB = filePathToWikiSlugs(b.pathMapping.filePath, false);
     for (let i = 0; i < partsA.length && i < partsB.length; i++) {
       const partA = partsA[i];
       const partB = partsB[i];
