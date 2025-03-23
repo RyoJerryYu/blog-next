@@ -95,7 +95,7 @@ function MenuBar(props: { items: ClickableMenu[] }) {
   return (
     <Menu
       mode="horizontal"
-      className="bg-transparent"
+      className="bg-transparent min-w-full"
       theme="dark"
       items={props.items.map((item) => clickableMenuToMenuItem(item, 0))}
     />
@@ -134,11 +134,9 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
             </Box>
 
             {/* menu */}
-            <Box sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", flex: 1, flexGrow: 1 }}>
               <MenuBar items={menuItems} />
             </Box>
-
-            <Box sx={{ flexGrow: 1, display: "flex" }}></Box>
 
             {/* icon */}
             <Box sx={{ display: "flex" }}>
