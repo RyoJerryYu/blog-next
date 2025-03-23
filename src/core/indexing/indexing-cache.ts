@@ -29,6 +29,19 @@ import { getResourceMap } from "./pipeline/resource-pool";
 
 const cacheFilePath = ".cache/resource-pool.json";
 
+/**
+ * Whether is in content development mode
+ * If is content development mode, the content, metadata, etc. will be reloaded on each request
+ * Else, it would load from cache file
+ *
+ * @returns true if the content is in development mode
+ */
+function isContentDev() {
+  return (
+    process.env.NODE_ENV === "development" && process.env.TEST_ENV !== "style"
+  );
+}
+
 // init resource pool cache
 export const initCache = async () => {
   console.log("init cache");
@@ -50,10 +63,9 @@ export const loadCache = async () => {
   }
   console.log("loading cache from file");
 
-  const resourcePoolLoader =
-    process.env.NODE_ENV === "development"
-      ? new ResourcePoolFromScratch()
-      : new ResourcePoolFromCache(cacheFilePath);
+  const resourcePoolLoader = isContentDev()
+    ? new ResourcePoolFromScratch()
+    : new ResourcePoolFromCache(cacheFilePath);
   cache = await executePipeline(pipeline(), resourcePoolLoader);
 };
 
@@ -144,10 +156,7 @@ const getMetaOrReload = async <
     resourceType
   );
 
-  if (
-    process.env.NODE_ENV === "development" &&
-    process.env.TEST_ENV !== "style" // if is developing style, do not reload
-  ) {
+  if (isContentDev()) {
     // for reloading in development
     console.log(`reloading on dev ${pagePath}`);
     const filePath = resourceMap.pagePathTo("filePath", pagePath);
