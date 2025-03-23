@@ -19,13 +19,19 @@ const wikiTreeNodeToMenuItem = (
   tree: WikiTreeNode,
   layer: number
 ): ItemType => {
+  const toLabel = (children: React.ReactElement) => {
+    if (tree.pagePath) {
+      return (
+        <Link href={tree.pagePath} title={tree.title}>
+          {children}
+        </Link>
+      );
+    }
+    return <span>{children}</span>;
+  };
   const itemFields = {
     key: wikiTreeNodeToKey(tree),
-    label: (
-      <Link href={tree.pagePath} title={tree.title}>
-        {tree.title}
-      </Link>
-    ),
+    label: toLabel(<>{tree.title}</>),
     title: tree.title,
   };
   const item: ItemType =
