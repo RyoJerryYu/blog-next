@@ -3,6 +3,7 @@ import { AliasIndexBuilder } from "./index-building/alias-index-builder/alias-in
 import { ClipDataIndexBuilder } from "./index-building/clip-data-index-builder/clip-data-index-builder";
 import { PrevNextIndexBuilder } from "./index-building/prev-next-index-builder/prev-next-index-builder";
 import { TagIndexBuilder } from "./index-building/tag-index-builder/tag-index-builder";
+import { WikiTreeIndexBuilder } from "./index-building/wiki-tree-index-builder/wiki-tree-index-builder";
 import {
   MockGitMetaCollector,
   defaultGitMetaCollector,
@@ -11,6 +12,7 @@ import { MetaCollectorChain } from "./meta-collecting/meta-collecting";
 import { PostRawMetaCollector } from "./meta-collecting/post-raw-meta-collector";
 import { PostPathMapper } from "./path-mapping/post-path-mapper";
 import { defaultStaticResourcePathMapper } from "./path-mapping/static-resource-path-mapper";
+import { WikiPathMapper } from "./path-mapping/wiki-path-mapper";
 
 export function articlePostPathMapper() {
   return new PostPathMapper({
@@ -33,6 +35,13 @@ export function learnFromAiPostPathMapper() {
     fileGlobPattern: "public/content/learn_from_ai/*.md*",
     slugFromFilename: (filename) => filename.match(/(\d*-)*(.*)/)?.[2],
     pathPrefix: "/learn_from_ai/",
+  });
+}
+
+export function testwikiPathMapper() {
+  return new WikiPathMapper({
+    fileGlobPattern: "public/content/testwiki/**/*.md*",
+    pathPrefix: "/testwiki",
   });
 }
 
@@ -95,10 +104,15 @@ export const pipeline = () => ({
       pathMapper: learnFromAiPostPathMapper(),
       collectorChain: defaultChain,
     },
+    {
+      resourceType: "testwiki",
+      pathMapper: testwikiPathMapper(),
+      collectorChain: defaultChain,
+    },
   ],
   indexBuilders: [
     {
-      handleResources: ["articles", "ideas", "learn_from_ai"],
+      handleResources: ["articles", "ideas", "learn_from_ai", "testwiki"],
       builder: new TagIndexBuilder(),
     },
     {
@@ -106,6 +120,7 @@ export const pipeline = () => ({
         "articles",
         "ideas",
         "learn_from_ai",
+        "testwiki",
         "staticResources",
       ],
       builder: new AliasIndexBuilder(),
@@ -117,6 +132,10 @@ export const pipeline = () => ({
     {
       handleResources: [],
       builder: new ClipDataIndexBuilder(),
+    },
+    {
+      handleResources: ["testwiki"],
+      builder: new WikiTreeIndexBuilder(true),
     },
   ],
 });

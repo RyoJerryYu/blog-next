@@ -1,24 +1,16 @@
+import { Menu } from "@/components/antd/Menu";
 import {
   GitHubIcon,
   IconItem,
   PixivIcon,
   TwitterIcon,
 } from "@/components/svgs";
-import { KeyboardArrowRight } from "@mui/icons-material";
+import { KeyboardArrowDown } from "@mui/icons-material";
 import HomeIcon from "@mui/icons-material/Home";
-import {
-  AppBar,
-  Box,
-  Menu,
-  MenuItem,
-  PopoverOrigin,
-  Slide,
-  Toolbar,
-  useScrollTrigger,
-} from "@mui/material";
-import clsx from "clsx";
+import { AppBar, Box, Slide, Toolbar, useScrollTrigger } from "@mui/material";
+import { ItemType } from "antd/es/menu/interface";
 import Link from "next/link";
-import React, { JSX, useState } from "react";
+import React, { JSX } from "react";
 import style from "./DefaultLayout.module.scss";
 import MainWidth from "./MainWidth";
 
@@ -38,7 +30,7 @@ type ClickableItem = {
 };
 type ClickableIcon = ClickableItem & { Icon: (props: IconItem) => JSX.Element };
 type ClickableMenu = ClickableItem & {
-  children?: ClickableItem[];
+  children?: ClickableMenu[];
 };
 
 ////////
@@ -61,86 +53,53 @@ function IconLink(props: ClickableIcon) {
   );
 }
 
-type DropdownState = {
-  anchorEl: HTMLElement | null;
-  isOpen: boolean;
-  openMenu: (event: React.MouseEvent<HTMLElement>) => void;
-  closeMenu: () => void;
-};
-
-function useDropdownState() {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const isOpen = Boolean(anchorEl);
-
-  const openMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+const clickableMenuToMenuItem = (
+  menu: ClickableMenu,
+  layer: number
+): ItemType => {
+  const toLabel = (children: React.ReactElement) => {
+    if (menu.href) {
+      return (
+        <Link href={menu.href} className={style.textlink}>
+          {children}
+        </Link>
+      );
+    }
+    return <span className={style.textlink}>{children}</span>;
   };
-
-  const closeMenu = () => {
-    setAnchorEl(null);
+  if (menu.children) {
+    const children =
+      layer === 0 ? (
+        <>
+          {menu.text}
+          <KeyboardArrowDown />
+        </>
+      ) : (
+        <>{menu.text}</> // for dropdown menu, antd already has the arrow icon
+      );
+    return {
+      key: menu.text,
+      label: toLabel(children),
+      children: menu.children.map((child) =>
+        clickableMenuToMenuItem(child, layer + 1)
+      ),
+    };
+  }
+  return {
+    key: menu.text,
+    label: <TextLink {...menu} />,
   };
-
-  return { anchorEl, isOpen, openMenu, closeMenu };
-}
-
-type DropdownMenuProps = {
-  id: string;
-  items: ClickableItem[];
-  anchorOrigin: PopoverOrigin;
-  transformOrigin: PopoverOrigin;
-  dropdownState: DropdownState;
 };
-function DropdownMenu(props: DropdownMenuProps) {
-  return (
-    <Menu
-      id={props.id}
-      anchorEl={props.dropdownState.anchorEl}
-      anchorOrigin={props.anchorOrigin}
-      transformOrigin={props.transformOrigin}
-      open={props.dropdownState.isOpen}
-      onClose={props.dropdownState.closeMenu}
-      disableAutoFocusItem
-      disableRestoreFocus
-    >
-      {props.items.map((item) => (
-        <MenuItem key={item.text} onClick={props.dropdownState.closeMenu}>
-          <Link href={item.href} className={style.dropdownitem}>
-            {item.text}
-          </Link>
-        </MenuItem>
-      ))}
-    </Menu>
-  );
-}
-
-function DropdownLink(props: ClickableMenu) {
-  const dropdownState = useDropdownState();
-
-  return (
-    <>
-      <Box onClick={dropdownState.openMenu} className={style.textlink}>
-        {props.text}
-        <KeyboardArrowRight
-          className={clsx(dropdownState.isOpen && "rotate-90")}
-        />
-      </Box>
-      <DropdownMenu
-        id={`${props.text}-menu`}
-        items={props.children ?? []}
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        transformOrigin={{ vertical: "top", horizontal: "left" }}
-        dropdownState={dropdownState}
-      />
-    </>
-  );
-}
 
 function MenuBar(props: { items: ClickableMenu[] }) {
-  return props.items.map((item) => (
-    <div key={item.text} className="relative float-left mx-1 sm:mx-2">
-      {item.children ? <DropdownLink {...item} /> : <TextLink {...item} />}
-    </div>
-  ));
+  return (
+    <Menu
+      mode="horizontal"
+      className="bg-transparent min-w-full"
+      theme="dark"
+      items={props.items.map((item) => clickableMenuToMenuItem(item, 0))}
+    />
+  );
 }
 
 type DefaultHeaderProps = {
@@ -175,11 +134,9 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
             </Box>
 
             {/* menu */}
-            <Box sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", flex: 1, flexGrow: 1 }}>
               <MenuBar items={menuItems} />
             </Box>
-
-            <Box sx={{ flexGrow: 1, display: "flex" }}></Box>
 
             {/* icon */}
             <Box sx={{ display: "flex" }}>
@@ -237,15 +194,26 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = (props) => {
   const homeItem: ClickableItem = { href: "/", text: "Ryo's Blog" };
   const menuItems: ClickableMenu[] = [
     { href: "/articles", text: "Articles" },
-    { href: "/ideas", text: "Ideas" },
     { href: "/learn_from_ai", text: "Learn from AI" },
     { href: "/tags", text: "Tags" },
     {
       href: "",
       text: "More",
       children: [
+        { href: "/ideas", text: "Ideas" },
         { href: "/clips", text: "Clips" },
-        { href: "/prev", text: "Preview" },
+        // { href: "/prev", text: "Preview" },
+        // { href: "/testwiki", text: "Test Wiki" },
+        // {
+        //   href: "",
+        //   text: "Other",
+        //   children: [
+        //     { href: "/about", text: "About" },
+        //     { href: "/contact", text: "Contact" },
+        //     { href: "/privacy", text: "Privacy" },
+        //     { href: "/terms", text: "Terms" },
+        //   ],
+        // },
       ],
     },
   ];
