@@ -11,47 +11,57 @@ export type WikiTreeMenuProps = {
   currentSlugs: string[];
 };
 
+const wikiTreeNodeToKey = (tree: WikiTreeNode) => {
+  return tree.slugs.length > 0 ? tree.slugs.join("/") : "root";
+};
+
+const wikiTreeNodeToMenuItem = (
+  tree: WikiTreeNode,
+  layer: number
+): ItemType => {
+  const itemFields = {
+    key: wikiTreeNodeToKey(tree),
+    label: (
+      <Link href={tree.pagePath} title={tree.title}>
+        {tree.title}
+      </Link>
+    ),
+    title: tree.title,
+  };
+  const item: ItemType =
+    tree.children.length > 0
+      ? {
+          ...itemFields,
+          type: "submenu",
+          children: tree.children.map((child) =>
+            wikiTreeNodeToMenuItem(child, layer + 1)
+          ),
+        }
+      : {
+          ...itemFields,
+          type: "item",
+        };
+  return item;
+};
+
+const slugsToParentKeys = (slugs: string[]) => {
+  const parentKeys = [];
+  for (let i = 0; i < slugs.length; i++) {
+    parentKeys.push(slugs.slice(0, i + 1).join("/"));
+  }
+  return parentKeys;
+};
+
 export function WikiTreeMenu(props: WikiTreeMenuProps) {
   const { currentSlugs, trees } = props;
-  const wikiTreeNodeToKey = (tree: WikiTreeNode) => {
-    return tree.slugs.length > 0 ? tree.slugs[tree.slugs.length - 1] : "root";
-  };
-  const wikiTreeNodeToMenuItem = (
-    tree: WikiTreeNode,
-    layer: number
-  ): ItemType => {
-    const itemFields = {
-      key: wikiTreeNodeToKey(tree),
-      label: (
-        <Link href={tree.pagePath} title={tree.title}>
-          {tree.title}
-        </Link>
-      ),
-      title: tree.title,
-    };
-    const item: ItemType =
-      tree.children.length > 0
-        ? {
-            ...itemFields,
-            type: "submenu",
-            children: tree.children.map((child) =>
-              wikiTreeNodeToMenuItem(child, layer + 1)
-            ),
-          }
-        : {
-            ...itemFields,
-            type: "item",
-          };
-    return item;
-  };
 
   const [openKeys, setOpenKeys] = useState<string[]>([
     ...trees.map((tree) => wikiTreeNodeToKey(tree)),
-    ...currentSlugs,
+    currentSlugs.join("/"),
   ]);
   useEffect(() => {
     const rootKeys = trees.map((tree) => wikiTreeNodeToKey(tree));
-    setOpenKeys([...rootKeys, ...currentSlugs]);
+    setOpenKeys([...rootKeys, ...slugsToParentKeys(currentSlugs)]);
   }, [trees, currentSlugs]);
 
   const thisRef = useRef<HTMLDivElement>(null);
@@ -69,7 +79,9 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
           items={items}
           openKeys={openKeys}
           onOpenChange={setOpenKeys}
-          selectedKeys={currentSlugs.length > 0 ? currentSlugs : ["root"]}
+          selectedKeys={
+            currentSlugs.length > 0 ? [currentSlugs.join("/")] : ["root"]
+          }
         />
       ) : null}
     </div>
