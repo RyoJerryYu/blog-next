@@ -30,7 +30,7 @@ type ClickableItem = {
 };
 type ClickableIcon = ClickableItem & { Icon: (props: IconItem) => JSX.Element };
 type ClickableMenu = ClickableItem & {
-  children?: ClickableItem[];
+  children?: ClickableMenu[];
 };
 
 ////////
@@ -53,8 +53,11 @@ function IconLink(props: ClickableIcon) {
   );
 }
 
-const clickableMenuToMenuItem = (menu: ClickableMenu): ItemType => {
-const toLabel = (children: React.ReactElement) => {
+const clickableMenuToMenuItem = (
+  menu: ClickableMenu,
+  layer: number
+): ItemType => {
+  const toLabel = (children: React.ReactElement) => {
     if (menu.href) {
       return (
         <Link href={menu.href} className={style.textlink}>
@@ -65,15 +68,21 @@ const toLabel = (children: React.ReactElement) => {
     return <span className={style.textlink}>{children}</span>;
   };
   if (menu.children) {
-    return {
-      key: menu.text,
-      label: toLabel(
+    const children =
+      layer === 0 ? (
         <>
           {menu.text}
           <KeyboardArrowDown />
         </>
+      ) : (
+        <>{menu.text}</> // for dropdown menu, antd already has the arrow icon
+      );
+    return {
+      key: menu.text,
+      label: toLabel(children),
+      children: menu.children.map((child) =>
+        clickableMenuToMenuItem(child, layer + 1)
       ),
-      children: menu.children.map(clickableMenuToMenuItem),
     };
   }
   return {
@@ -88,7 +97,7 @@ function MenuBar(props: { items: ClickableMenu[] }) {
       mode="horizontal"
       className="bg-transparent"
       theme="dark"
-      items={props.items.map(clickableMenuToMenuItem)}
+      items={props.items.map((item) => clickableMenuToMenuItem(item, 0))}
     />
   );
 }
@@ -197,6 +206,16 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = (props) => {
         { href: "/clips", text: "Clips" },
         { href: "/prev", text: "Preview" },
         { href: "/testwiki", text: "Test Wiki" },
+        {
+          href: "",
+          text: "Other",
+          children: [
+            { href: "/about", text: "About" },
+            { href: "/contact", text: "Contact" },
+            { href: "/privacy", text: "Privacy" },
+            { href: "/terms", text: "Terms" },
+          ],
+        },
       ],
     },
   ];
