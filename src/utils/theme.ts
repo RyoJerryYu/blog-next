@@ -15,6 +15,7 @@ const slate700 = "#334155";
 const slate800 = "#1e293b";
 const slate900 = "#0f172a";
 
+const gray300 = "#d1d5db";
 const gray900 = "#111827";
 const sky500 = "#0ea5e9";
 const indigo500 = "#6366f1";
@@ -62,6 +63,8 @@ export const antdTheme: ThemeConfig = {
       // dark mode, used as app bar menu
       darkPopupBg: alpha(slate900, 0.75),
       darkItemSelectedBg: "transparent",
+      darkItemColor: gray300,
+      darkItemHoverColor: white,
     },
   },
 };
