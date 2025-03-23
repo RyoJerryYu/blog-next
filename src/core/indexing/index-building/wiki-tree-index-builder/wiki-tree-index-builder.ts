@@ -43,7 +43,7 @@ export function sortWikiTreeNodesByFilePath(
  */
 class SubWikiTreeIndexBuilder {
   private readonly wikiPages: WikiTreeIndexResource[];
-  constructor() {
+  constructor(private readonly autoFolder: boolean) {
     this.wikiPages = [];
   }
   addResource = (resource: Resource<WikiPathMapping, WikiTreeIndexMeta>) => {
@@ -64,7 +64,11 @@ class SubWikiTreeIndexBuilder {
       };
 
       this.popStackAsTrees(currentStack, wikiTrees, wikiPage.pathMapping.slugs);
-      currentStack.push(wikiTreeNode);
+      if (this.autoFolder) {
+        this.pushStack(currentStack, wikiTreeNode);
+      } else {
+        currentStack.push(wikiTreeNode);
+      }
     }
     this.popStackAsTrees(currentStack, wikiTrees, null);
     return new SubWikiTreeIndex(wikiTrees);
@@ -98,6 +102,59 @@ class SubWikiTreeIndexBuilder {
       currentStack.pop();
     }
   };
+
+  private pushStack = (
+    currentStack: WikiTreeNode[],
+    wikiTreeNode: WikiTreeNode
+  ) => {
+    if (wikiTreeNode.slugs.length === 0) {
+      currentStack.push(wikiTreeNode);
+      return;
+    }
+
+    const lastNodeSlugs =
+      currentStack.length === 0
+        ? []
+        : currentStack[currentStack.length - 1].slugs;
+
+    if (!lastNodeSlugs.every((slug) => wikiTreeNode.slugs.includes(slug))) {
+      throw new Error(
+        `tree node ${
+          wikiTreeNode.title
+        } is not a prefix of the last node ${lastNodeSlugs.join("/")}`
+      );
+    }
+
+    const deltaIndex = wikiTreeNode.slugs.findIndex(
+      (slug) => !lastNodeSlugs.includes(slug)
+    );
+    if (deltaIndex === -1) {
+      throw new Error(
+        `tree node ${
+          wikiTreeNode.title
+        } is a prefix of the last node ${lastNodeSlugs.join("/")}`
+      );
+    }
+
+    for (let i = deltaIndex; i < wikiTreeNode.slugs.length; i++) {
+      const newNode: WikiTreeNode =
+        i === wikiTreeNode.slugs.length - 1
+          ? {
+              title: wikiTreeNode.title,
+              slugs: wikiTreeNode.slugs.slice(0, i + 1),
+              pagePath: wikiTreeNode.pagePath,
+              children: [],
+            }
+          : {
+              title: wikiTreeNode.slugs[i],
+              slugs: wikiTreeNode.slugs.slice(0, i + 1),
+              pagePath: "",
+              children: [],
+            };
+
+      currentStack.push(newNode);
+    }
+  };
 }
 
 export class SubWikiTreeIndex {
@@ -116,7 +173,7 @@ export class WikiTreeIndexBuilder
   private subWikiTreeIndexBuilders: {
     [resourceType: string]: SubWikiTreeIndexBuilder;
   };
-  constructor() {
+  constructor(private readonly autoFolder: boolean) {
     this.subWikiTreeIndexBuilders = {};
   }
   addResource = (
@@ -124,8 +181,9 @@ export class WikiTreeIndexBuilder
     resource: Resource<WikiPathMapping, WikiTreeIndexMeta>
   ) => {
     if (!this.subWikiTreeIndexBuilders[resourceType]) {
-      this.subWikiTreeIndexBuilders[resourceType] =
-        new SubWikiTreeIndexBuilder();
+      this.subWikiTreeIndexBuilders[resourceType] = new SubWikiTreeIndexBuilder(
+        this.autoFolder
+      );
     }
     this.subWikiTreeIndexBuilders[resourceType].addResource(resource);
   };

@@ -135,7 +135,7 @@ export const pipeline = () => ({
     },
     {
       handleResources: ["testwiki"],
-      builder: new WikiTreeIndexBuilder(),
+      builder: new WikiTreeIndexBuilder(true),
     },
   ],
 });
