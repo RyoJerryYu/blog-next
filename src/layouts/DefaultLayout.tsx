@@ -54,14 +54,24 @@ function IconLink(props: ClickableIcon) {
 }
 
 const clickableMenuToMenuItem = (menu: ClickableMenu): ItemType => {
+const toLabel = (children: React.ReactElement) => {
+    if (menu.href) {
+      return (
+        <Link href={menu.href} className={style.textlink}>
+          {children}
+        </Link>
+      );
+    }
+    return <span className={style.textlink}>{children}</span>;
+  };
   if (menu.children) {
     return {
       key: menu.text,
-      label: (
-        <Link href={menu.href} className={style.textlink}>
+      label: toLabel(
+        <>
           {menu.text}
           <KeyboardArrowDown />
-        </Link>
+        </>
       ),
       children: menu.children.map(clickableMenuToMenuItem),
     };
