@@ -144,7 +144,10 @@ const getMetaOrReload = async <
     resourceType
   );
 
-  if (process.env.NODE_ENV === "development") {
+  if (
+    process.env.NODE_ENV === "development" &&
+    process.env.TEST_ENV !== "style" // if is developing style, do not reload
+  ) {
     // for reloading in development
     console.log(`reloading on dev ${pagePath}`);
     const filePath = resourceMap.pagePathTo("filePath", pagePath);
