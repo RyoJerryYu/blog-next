@@ -1,18 +1,14 @@
 import { Menu } from "@/components/antd/Menu";
-import {
-  GitHubIcon,
-  IconItem,
-  PixivIcon,
-  TwitterIcon,
-} from "@/components/svgs";
+import { GitHubIcon, PixivIcon, TwitterIcon } from "@/components/svgs";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import HomeIcon from "@mui/icons-material/Home";
 import { AppBar, Box, Slide, Toolbar, useScrollTrigger } from "@mui/material";
 import { ItemType } from "antd/es/menu/interface";
 import Link from "next/link";
-import React, { JSX } from "react";
+import React from "react";
 import style from "./DefaultLayout.module.scss";
 import MainWidth from "./MainWidth";
+import { ClickableIcon, ClickableItem, ClickableMenu } from "./types";
 
 function HideOnScroll(props: { children: React.ReactElement<unknown, any> }) {
   const { children } = props;
@@ -23,15 +19,6 @@ function HideOnScroll(props: { children: React.ReactElement<unknown, any> }) {
     </Slide>
   );
 }
-
-type ClickableItem = {
-  href: string;
-  text: string;
-};
-type ClickableIcon = ClickableItem & { Icon: (props: IconItem) => JSX.Element };
-type ClickableMenu = ClickableItem & {
-  children?: ClickableMenu[];
-};
 
 ////////
 // Header Components
@@ -152,7 +139,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
 };
 
 type DefaultFooterProps = {
-  iconItems: (ClickableItem & { Icon: (props: IconItem) => JSX.Element })[];
+  iconItems: ClickableIcon[];
 };
 
 const DefaultFooter: React.FC<DefaultFooterProps> = (
