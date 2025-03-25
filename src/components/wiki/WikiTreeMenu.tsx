@@ -1,10 +1,12 @@
 "use client";
 import { WikiTreeNode } from "@/core/indexing/index-building/wiki-tree-index-builder/types";
 import { useContainerDimensions } from "@/hooks/use-container-dimensions";
-import { ItemType } from "antd/es/menu/interface";
+import clsx from "clsx";
 import Link from "next/link";
+import { default as Menu } from "rc-menu";
+// import "rc-menu/assets/index.css";
+import { ItemType } from "rc-menu/lib/interface";
 import { useEffect, useRef, useState } from "react";
-import { Menu } from "../antd/Menu";
 
 export type WikiTreeMenuProps = {
   trees: WikiTreeNode[];
@@ -15,10 +17,7 @@ const wikiTreeNodeToKey = (tree: WikiTreeNode) => {
   return tree.slugs.length > 0 ? tree.slugs.join("/") : "root";
 };
 
-const wikiTreeNodeToMenuItem = (
-  tree: WikiTreeNode,
-  layer: number
-): ItemType => {
+const wikiTreeNodeToMenuItem = (tree: WikiTreeNode): ItemType => {
   const toLabel = (children: React.ReactElement) => {
     if (tree.pagePath) {
       return (
@@ -39,9 +38,7 @@ const wikiTreeNodeToMenuItem = (
       ? {
           ...itemFields,
           type: "submenu",
-          children: tree.children.map((child) =>
-            wikiTreeNodeToMenuItem(child, layer + 1)
-          ),
+          children: tree.children.map((child) => wikiTreeNodeToMenuItem(child)),
         }
       : {
           ...itemFields,
@@ -73,10 +70,10 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
   const thisRef = useRef<HTMLDivElement>(null);
   const { width, height } = useContainerDimensions(thisRef);
 
-  const items = trees.map((tree) => wikiTreeNodeToMenuItem(tree, 0));
+  const items = trees.map((tree) => wikiTreeNodeToMenuItem(tree));
 
   return (
-    <div className="w-full h-full" ref={thisRef}>
+    <div className={clsx("w-full h-full", "WikiTreeMenu")} ref={thisRef}>
       {width > 10 ? (
         <Menu
           className="bg-transparent"
