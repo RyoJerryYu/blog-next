@@ -1,7 +1,47 @@
 import clsx from "clsx";
 import { default as RCMenu } from "rc-menu";
 // import "rc-menu/assets/index.css";
+import { CSSMotionProps } from "rc-motion";
 import { ClickableMenu } from "./types";
+
+const collapseNode = () => {
+  return { height: 0 };
+};
+const expandNode = (node: HTMLElement) => {
+  return { height: node.scrollHeight };
+};
+
+const horizontalMotion: CSSMotionProps = {
+  motionName: "rc-menu-open-slide-up",
+  motionAppear: true,
+  motionEnter: true,
+  motionLeave: true,
+};
+
+const verticalMotion: CSSMotionProps = {
+  motionName: "rc-menu-open-zoom",
+  motionAppear: true,
+  motionEnter: true,
+  motionLeave: true,
+};
+
+const inlineMotion: CSSMotionProps = {
+  motionName: "rc-menu-collapse",
+  motionAppear: true,
+  onAppearStart: collapseNode,
+  onAppearActive: expandNode,
+  onEnterStart: collapseNode,
+  onEnterActive: expandNode,
+  onLeaveStart: expandNode,
+  onLeaveActive: collapseNode,
+};
+
+const motionMap: Record<"horizontal" | "inline" | "vertical", CSSMotionProps> =
+  {
+    horizontal: horizontalMotion,
+    inline: inlineMotion,
+    vertical: verticalMotion,
+  };
 
 export type MenuProps = {
   items: ClickableMenu[];
@@ -29,6 +69,7 @@ export function Menu(props: MenuProps) {
       <RCMenu
         mode="horizontal"
         getPopupContainer={(node) => node.parentNode as HTMLElement}
+        defaultMotions={motionMap}
       >
         {menuItems}
       </RCMenu>
