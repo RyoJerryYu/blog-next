@@ -47,11 +47,11 @@
     border-bottom: 1px solid #dedede;
   }
   .rc-menu-item-selected {
-    background-color: #eaf8fe;
+    @apply bg-inherit;
     transform: translateZ(0);
   }
   .rc-menu-submenu-selected {
-    background-color: #eaf8fe;
+    @apply bg-inherit;
   }
   .rc-menu > li.rc-menu-submenu {
     padding: 0;
