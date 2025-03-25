@@ -1,4 +1,5 @@
 import UniversalHead from "@/layouts/UniversalHead";
+import "@/styles/DefaultLayout.Menu.scss";
 import "@/styles/globals.scss";
 import { antdTheme, muiTheme } from "@/utils/theme";
 import "@ant-design/v5-patch-for-react-19";
