@@ -69,7 +69,7 @@
       transition-property: color;
       @apply duration-75 ease-in-out;
       &:hover {
-        color: rgb(from var(--item-selected-color) r g b / 80%);
+        color: var(--link-hover-color);
       }
     }
   }
