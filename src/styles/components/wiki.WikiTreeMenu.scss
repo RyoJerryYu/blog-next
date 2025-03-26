@@ -20,6 +20,7 @@
 .WikiTreeMenu {
   --boarder-width: 4px;
   --menu-bg: transparent;
+  --sub-menu-bg: rgb(from theme("colors.slate.900") r g b / 5%);
   --item-color: theme("colors.fg.light");
   --item-hover-color: theme("colors.sky.300");
   --link-hover-color: theme("colors.pink.300");
@@ -72,6 +73,10 @@
         color: var(--link-hover-color);
       }
     }
+  }
+  .rc-menu-sub:has(.rc-menu-submenu-selected),
+  .rc-menu-sub:has(.rc-menu-item-selected) {
+    background-color: var(--sub-menu-bg);
   }
   .rc-menu-item-selected,
   .rc-menu-submenu-selected > .rc-menu-submenu-title {
