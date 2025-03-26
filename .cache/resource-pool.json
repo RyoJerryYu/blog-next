@@ -1334,10 +1334,10 @@
         ]
       },
       "meta": {
-        "content": "\n# Subpage 1\n\n[[subpage2]]\n",
+        "content": "\n# Subpage 1\n\n[[subpage2]]\n\n[[subpage3/subpage34]]\n",
         "title": "Subpage 1",
-        "abstract": "[[subpage2]]",
-        "length": 5,
+        "abstract": "[[subpage2]]\n[[subpage3/subpage34]]",
+        "length": 7,
         "created_at": "2024-01-01T00:00:00.000Z",
         "updated_at": "2024-01-01T00:00:00.000Z",
         "tags": [

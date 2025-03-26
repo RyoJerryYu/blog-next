@@ -59,12 +59,6 @@ export const antdTheme: ThemeConfig = {
       horizontalItemSelectedColor: pink500,
       itemSelectedBg: alpha(slate900, 0.75),
       horizontalItemSelectedBg: slate700,
-
-      // dark mode, used as app bar menu
-      darkPopupBg: alpha(slate900, 0.75),
-      darkItemSelectedBg: "transparent",
-      darkItemColor: gray300,
-      darkItemHoverColor: white,
     },
   },
 };

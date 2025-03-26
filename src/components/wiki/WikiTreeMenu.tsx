@@ -6,7 +6,47 @@ import Link from "next/link";
 import { default as Menu } from "rc-menu";
 // import "rc-menu/assets/index.css";
 import { ItemType } from "rc-menu/lib/interface";
+import { CSSMotionProps } from "rc-motion";
 import { useEffect, useRef, useState } from "react";
+
+const collapseNode = () => {
+  return { height: 0 };
+};
+const expandNode = (node: HTMLElement) => {
+  return { height: node.scrollHeight };
+};
+
+const horizontalMotion: CSSMotionProps = {
+  motionName: "rc-menu-open-slide-up",
+  motionAppear: true,
+  motionEnter: true,
+  motionLeave: true,
+};
+
+const verticalMotion: CSSMotionProps = {
+  motionName: "rc-menu-open-zoom",
+  motionAppear: true,
+  motionEnter: true,
+  motionLeave: true,
+};
+
+const inlineMotion: CSSMotionProps = {
+  motionName: "rc-menu-collapse",
+  motionAppear: true,
+  onAppearStart: collapseNode,
+  onAppearActive: expandNode,
+  onEnterStart: collapseNode,
+  onEnterActive: expandNode,
+  onLeaveStart: expandNode,
+  onLeaveActive: collapseNode,
+};
+
+const motionMap: Record<"horizontal" | "inline" | "vertical", CSSMotionProps> =
+  {
+    horizontal: horizontalMotion,
+    inline: inlineMotion,
+    vertical: verticalMotion,
+  };
 
 export type WikiTreeMenuProps = {
   trees: WikiTreeNode[];
@@ -76,7 +116,6 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
     <div className={clsx("w-full h-full", "WikiTreeMenu")} ref={thisRef}>
       {width > 10 ? (
         <Menu
-          className="bg-transparent"
           mode="inline"
           inlineIndent={10}
           items={items}
@@ -85,6 +124,7 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
           selectedKeys={
             currentSlugs.length > 0 ? [currentSlugs.join("/")] : ["root"]
           }
+          defaultMotions={motionMap}
         />
       ) : null}
     </div>
