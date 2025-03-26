@@ -1,18 +1,12 @@
-import { Menu } from "@/components/antd/Menu";
-import {
-  GitHubIcon,
-  IconItem,
-  PixivIcon,
-  TwitterIcon,
-} from "@/components/svgs";
-import { KeyboardArrowDown } from "@mui/icons-material";
+import { GitHubIcon, PixivIcon, TwitterIcon } from "@/components/svgs";
 import HomeIcon from "@mui/icons-material/Home";
 import { AppBar, Box, Slide, Toolbar, useScrollTrigger } from "@mui/material";
-import { ItemType } from "antd/es/menu/interface";
 import Link from "next/link";
-import React, { JSX } from "react";
+import React from "react";
 import style from "./DefaultLayout.module.scss";
 import MainWidth from "./MainWidth";
+import { Menu } from "./Menu";
+import { ClickableIcon, ClickableItem, ClickableMenu } from "./types";
 
 function HideOnScroll(props: { children: React.ReactElement<unknown, any> }) {
   const { children } = props;
@@ -23,15 +17,6 @@ function HideOnScroll(props: { children: React.ReactElement<unknown, any> }) {
     </Slide>
   );
 }
-
-type ClickableItem = {
-  href: string;
-  text: string;
-};
-type ClickableIcon = ClickableItem & { Icon: (props: IconItem) => JSX.Element };
-type ClickableMenu = ClickableItem & {
-  children?: ClickableMenu[];
-};
 
 ////////
 // Header Components
@@ -53,51 +38,17 @@ function IconLink(props: ClickableIcon) {
   );
 }
 
-const clickableMenuToMenuItem = (
-  menu: ClickableMenu,
-  layer: number
-): ItemType => {
-  const toLabel = (children: React.ReactElement) => {
-    if (menu.href) {
-      return (
-        <Link href={menu.href} className={style.textlink}>
-          {children}
-        </Link>
-      );
-    }
-    return <span className={style.textlink}>{children}</span>;
-  };
-  if (menu.children) {
-    const children =
-      layer === 0 ? (
-        <>
-          {menu.text}
-          <KeyboardArrowDown />
-        </>
-      ) : (
-        <>{menu.text}</> // for dropdown menu, antd already has the arrow icon
-      );
-    return {
-      key: menu.text,
-      label: toLabel(children),
-      children: menu.children.map((child) =>
-        clickableMenuToMenuItem(child, layer + 1)
-      ),
-    };
-  }
-  return {
-    key: menu.text,
-    label: <TextLink {...menu} />,
-  };
-};
-
 function MenuBar(props: { items: ClickableMenu[] }) {
   return (
     <Menu
-      mode="horizontal"
-      className="bg-transparent min-w-full"
-      theme="dark"
-      items={props.items.map((item) => clickableMenuToMenuItem(item, 0))}
+      items={props.items}
+      renderItem={(item) =>
+        item.href ? (
+          <TextLink {...item} />
+        ) : (
+          <span className={style.textlink}>{item.text}</span>
+        )
+      }
     />
   );
 }
@@ -152,7 +103,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
 };
 
 type DefaultFooterProps = {
-  iconItems: (ClickableItem & { Icon: (props: IconItem) => JSX.Element })[];
+  iconItems: ClickableIcon[];
 };
 
 const DefaultFooter: React.FC<DefaultFooterProps> = (
@@ -202,18 +153,18 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = (props) => {
       children: [
         { href: "/ideas", text: "Ideas" },
         { href: "/clips", text: "Clips" },
-        // { href: "/prev", text: "Preview" },
-        // { href: "/testwiki", text: "Test Wiki" },
-        // {
-        //   href: "",
-        //   text: "Other",
-        //   children: [
-        //     { href: "/about", text: "About" },
-        //     { href: "/contact", text: "Contact" },
-        //     { href: "/privacy", text: "Privacy" },
-        //     { href: "/terms", text: "Terms" },
-        //   ],
-        // },
+        { href: "/prev", text: "Preview" },
+        { href: "/testwiki", text: "Test Wiki" },
+        {
+          href: "",
+          text: "Other",
+          children: [
+            { href: "/about", text: "About" },
+            { href: "/contact", text: "Contact" },
+            { href: "/privacy", text: "Privacy" },
+            { href: "/terms", text: "Terms" },
+          ],
+        },
       ],
     },
   ];

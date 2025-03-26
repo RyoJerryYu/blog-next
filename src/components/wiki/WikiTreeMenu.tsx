@@ -1,10 +1,52 @@
 "use client";
 import { WikiTreeNode } from "@/core/indexing/index-building/wiki-tree-index-builder/types";
 import { useContainerDimensions } from "@/hooks/use-container-dimensions";
-import { ItemType } from "antd/es/menu/interface";
+import clsx from "clsx";
 import Link from "next/link";
+import { default as Menu } from "rc-menu";
+// import "rc-menu/assets/index.css";
+import { ItemType } from "rc-menu/lib/interface";
+import { CSSMotionProps } from "rc-motion";
 import { useEffect, useRef, useState } from "react";
-import { Menu } from "../antd/Menu";
+
+const collapseNode = () => {
+  return { height: 0 };
+};
+const expandNode = (node: HTMLElement) => {
+  return { height: node.scrollHeight };
+};
+
+const horizontalMotion: CSSMotionProps = {
+  motionName: "rc-menu-open-slide-up",
+  motionAppear: true,
+  motionEnter: true,
+  motionLeave: true,
+};
+
+const verticalMotion: CSSMotionProps = {
+  motionName: "rc-menu-open-zoom",
+  motionAppear: true,
+  motionEnter: true,
+  motionLeave: true,
+};
+
+const inlineMotion: CSSMotionProps = {
+  motionName: "rc-menu-collapse",
+  motionAppear: true,
+  onAppearStart: collapseNode,
+  onAppearActive: expandNode,
+  onEnterStart: collapseNode,
+  onEnterActive: expandNode,
+  onLeaveStart: expandNode,
+  onLeaveActive: collapseNode,
+};
+
+const motionMap: Record<"horizontal" | "inline" | "vertical", CSSMotionProps> =
+  {
+    horizontal: horizontalMotion,
+    inline: inlineMotion,
+    vertical: verticalMotion,
+  };
 
 export type WikiTreeMenuProps = {
   trees: WikiTreeNode[];
@@ -15,10 +57,7 @@ const wikiTreeNodeToKey = (tree: WikiTreeNode) => {
   return tree.slugs.length > 0 ? tree.slugs.join("/") : "root";
 };
 
-const wikiTreeNodeToMenuItem = (
-  tree: WikiTreeNode,
-  layer: number
-): ItemType => {
+const wikiTreeNodeToMenuItem = (tree: WikiTreeNode): ItemType => {
   const toLabel = (children: React.ReactElement) => {
     if (tree.pagePath) {
       return (
@@ -39,9 +78,7 @@ const wikiTreeNodeToMenuItem = (
       ? {
           ...itemFields,
           type: "submenu",
-          children: tree.children.map((child) =>
-            wikiTreeNodeToMenuItem(child, layer + 1)
-          ),
+          children: tree.children.map((child) => wikiTreeNodeToMenuItem(child)),
         }
       : {
           ...itemFields,
@@ -73,13 +110,12 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
   const thisRef = useRef<HTMLDivElement>(null);
   const { width, height } = useContainerDimensions(thisRef);
 
-  const items = trees.map((tree) => wikiTreeNodeToMenuItem(tree, 0));
+  const items = trees.map((tree) => wikiTreeNodeToMenuItem(tree));
 
   return (
-    <div className="w-full h-full" ref={thisRef}>
+    <div className={clsx("w-full h-full", "WikiTreeMenu")} ref={thisRef}>
       {width > 10 ? (
         <Menu
-          className="bg-transparent"
           mode="inline"
           inlineIndent={10}
           items={items}
@@ -88,6 +124,7 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
           selectedKeys={
             currentSlugs.length > 0 ? [currentSlugs.join("/")] : ["root"]
           }
+          defaultMotions={motionMap}
         />
       ) : null}
     </div>
