@@ -18,20 +18,27 @@
 }
 
 .WikiTreeMenu {
-  --item-hover-color: theme("colors.sky.500");
+  --boarder-width: 4px;
+  --menu-bg: transparent;
+  --item-color: theme("colors.fg.light");
+  --item-hover-color: theme("colors.sky.300");
+  --link-hover-color: theme("colors.pink.300");
   --item-selected-color: theme("colors.pink.500");
-  --item-hover-bg: rgb(from theme("colors.slate.900") r g b / 25%);
-  --item-selected-bg: rgb(from theme("colors.slate.900") r g b / 75%);
-
+  --item-bg: transparent;
+  --item-hover-bg: rgb(from theme("colors.slate.900") r g b / 75%);
+  --item-selected-bg: rgb(from theme("colors.slate.900") r g b / 10%);
+  --item-border: transparent;
+  --item-hover-border: rgb(from theme("colors.sky.500") r g b / 70%);
+  --item-selected-border: rgb(from theme("colors.pink.500") r g b / 70%);
   .rc-menu {
     outline: none;
     margin-bottom: 0;
     padding-left: 0;
     padding-right: 0;
     list-style: none;
-    @apply border-solid border-slate-400/50 border-r;
-    @apply text-fg-light;
-    @apply bg-transparent;
+    @apply border-solid border-slate-400/10 border-r;
+    color: var(--item-color);
+    background-color: var(--menu-bg);
   }
   .rc-menu-hidden,
   .rc-menu-submenu-hidden {
@@ -51,16 +58,33 @@
     padding: 8px 10px;
     border-bottom: 1px solid #dedede;
   }
-  .rc-menu-item-active,
-  .rc-menu-submenu-active > .rc-menu-submenu-title {
-    background-color: var(--item-hover-color);
+  .rc-menu-item,
+  .rc-menu-submenu-title {
+    color: var(--item-color);
+    background-color: var(--item-bg);
+    border-right: var(--boarder-width) solid var(--item-border);
+    @apply transition duration-300 ease-in-out;
+
+    > a {
+      transition-property: color;
+      @apply duration-75 ease-in-out;
+      &:hover {
+        color: rgb(from var(--item-selected-color) r g b / 80%);
+      }
+    }
   }
-  .rc-menu-item-selected {
-    background-color: #eaf8fe;
+  .rc-menu-item-selected,
+  .rc-menu-submenu-selected > .rc-menu-submenu-title {
+    color: var(--item-selected-color);
+    background-color: var(--item-selected-bg);
+    border-right: var(--boarder-width) solid var(--item-selected-border);
     transform: translateZ(0);
   }
-  .rc-menu-submenu-selected {
-    background-color: #eaf8fe;
+  .rc-menu-item-active,
+  .rc-menu-submenu-active > .rc-menu-submenu-title {
+    color: var(--item-hover-color);
+    background-color: var(--item-hover-bg);
+    border-right: var(--boarder-width) solid var(--item-hover-border);
   }
   .rc-menu > li.rc-menu-submenu {
     padding: 0;
