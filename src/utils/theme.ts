@@ -48,17 +48,5 @@ export const antdTheme: ThemeConfig = {
   token: {
     colorPrimary: pink500,
   },
-  components: {
-    Menu: {
-      // light mode, used as wiki tree
-      itemHoverColor: sky500,
-      horizontalItemHoverColor: sky500,
-
-      itemSelectedColor: pink500,
-      subMenuItemSelectedColor: pink500,
-      horizontalItemSelectedColor: pink500,
-      itemSelectedBg: alpha(slate900, 0.75),
-      horizontalItemSelectedBg: slate700,
-    },
-  },
+  components: {},
 };
