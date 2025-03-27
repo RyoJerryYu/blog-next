@@ -26,10 +26,10 @@ import remarkObsidianWikilink, {
   RemarkObsidianWikilinkOptions,
 } from "./complex-plugins/obsidian-wikilink/remark-obsidian-wikilink";
 import {
-  AnchorTree,
   rehypeHeadingAnchorCollection,
   RehypeSectionAnchorCollectionOptions,
 } from "./rehype-plugins/rehype-heading-anchor-collection";
+import { AnchorTree } from "./rehype-plugins/rehype-heading-anchor-collection-types";
 
 export type CapturedResult = {
   trees: AnchorTree[];

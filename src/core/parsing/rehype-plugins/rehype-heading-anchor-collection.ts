@@ -3,15 +3,7 @@ import { headingRank } from "hast-util-heading-rank";
 import { toString } from "hast-util-to-string";
 import { Plugin } from "unified";
 import { visit } from "unist-util-visit";
-
-export type AnchorTree = {
-  key: string;
-  href: string;
-  id?: string;
-  heading: number;
-  title: string;
-  children: AnchorTree[];
-};
+import { AnchorTree } from "./rehype-heading-anchor-collection-types";
 
 export type RehypeSectionAnchorCollectionOptions = {
   collectResult: (resultTrees: AnchorTree[]) => void;
