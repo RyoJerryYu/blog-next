@@ -1,8 +1,8 @@
-import { AnchorProps } from "antd";
+import { type AnchorProps } from "antd";
 import { dynamicLoading } from "../Loading/dynamic-loading";
 
 const AnchorDyn = dynamicLoading(
-  async () => (await import("antd")).Anchor,
+  async () => (await import("./client/Anchor")).Anchor,
   true
 );
 
