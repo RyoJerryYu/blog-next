@@ -16,6 +16,7 @@ $footer-height: 4rem;
 .textlink {
   @apply text-gray-300 font-sans text-lg font-normal;
   @apply hover:text-white;
+  @apply transition-colors duration-200;
 }
 .textlink:hover {
   text-shadow: 0 0 10px #69e0ff, 0 0 20px #69e0ff;
