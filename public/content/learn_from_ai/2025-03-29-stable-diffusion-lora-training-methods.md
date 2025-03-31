@@ -546,3 +546,7 @@ def inject_lora(unet, rank=8):
 - **优先 Cross-Attention**：95% 的场景只需调整这里。
 - **谨慎添加其他层**：仅在数据充足且任务特殊时尝试（如医学图像生成需精确形状控制）。
 - **监控过拟合**：添加更多可训练参数会增加过拟合风险，需配合数据增强/早停法。
+
+> [!think] 亮曰：
+>
+> `UNet2DConditionModel` 的整个流程中， Cross-Attention 主要作用在下采样、中间块、上采样三个步骤中。在 `__init__` 参数中传入每个步骤中用的 Module ，其中用 `CrossAttnDownBlock2D` 等 Module `self.has_cross_attention` 为 true ，能处理 cross_attention_mask 等参数。其中的 attentions 层即为交叉注意力层。推测，是通过 Attentions 层对下采样层入参做处理，并列的 ResNet 应该是为了提升注意力层的训练性能。
