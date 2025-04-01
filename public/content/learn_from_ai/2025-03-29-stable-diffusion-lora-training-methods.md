@@ -1,7 +1,7 @@
 ---
 created_at: 2025-03-29 10:00:00+08:00
 updated_at: 2025-03-29 10:00:00+08:00
-title: Stable Diffusion LoRA 训练方法全解析
+title: PyTorch 实现 Stable Diffusion LoRA 训练脚本：从数据预处理到模型修改与训练循环
 license: true
 tags:
   - 深度学习
@@ -12,7 +12,7 @@ tags:
   - 学习笔记
 ---
 
-> 本文详细介绍了 Stable Diffusion 模型的 LoRA（低秩适应）训练方法，包括数据准备、环境配置、训练参数设置及最佳实践。文章涵盖了从训练前准备到模型评估的完整流程，适合想要自定义 AI 绘画模型的读者参考。
+> 本文详细介绍了如何使用 PyTorch 从零开始编写 Stable Diffusion LoRA 训练脚本，包括数据预处理、模型修改、训练循环、参数保存与加载等关键步骤。特别强调了 LoRA 层的手动实现和在 UNet 的 Cross-Attention 层注入 LoRA 的原因，以及在其他层应用 LoRA 的可能性和注意事项。此外，还提供了代码示例和参数效率的讨论，帮助读者深入理解 LoRA 在 Stable Diffusion 微调中的应用。
 
 ## Q: 训练一个 Stable Diffusion 的 LoRA 模型，要有哪些步骤？
 
