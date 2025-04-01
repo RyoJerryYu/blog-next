@@ -845,7 +845,7 @@ if self.attn2 is not None:
 
 1. **训练稳定性**：
 
-   ```453:460:src/diffusers/models/attention.py
+   ```py 453:460:src/diffusers/models/attention.py
    # 在Self-Attention前应用归一化
    if self.norm_type == "ada_norm":
        norm_hidden_states = self.norm1(hidden_states, timestep)
@@ -870,7 +870,7 @@ if self.attn2 is not None:
 
 2. **残差连接的配合**：
 
-   ```510:511:src/diffusers/models/attention.py
+   ```py 510:511:src/diffusers/models/attention.py
    # 应用残差连接
    hidden_states = attn_output + hidden_states
    ```
@@ -879,7 +879,7 @@ if self.attn2 is not None:
    - 这种"归一化 → 操作 → 残差"的模式是 Transformer 架构的基本组成部分
 
 3. **多种归一化选择**：
-   ```454:461:src/diffusers/models/attention.py
+   ```py 454:461:src/diffusers/models/attention.py
    # 不同类型的归一化层
    if self.norm_type == "ada_norm":
        norm_hidden_states = self.norm1(hidden_states, timestep)
