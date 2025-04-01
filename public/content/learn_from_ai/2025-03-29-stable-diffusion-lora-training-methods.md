@@ -708,3 +708,126 @@ TransformerBlock 的核心实现是在`attention.py`中的`BasicTransformerBlock
 - `cross_attention_dim`: 指定 Cross-Attention 的维度大小
 
 在实际运行时，BasicTransformerBlock 内部会先进行 Self-Attention 操作，然后进行 Cross-Attention 操作（如果提供了`encoder_hidden_states`）。这样就实现了 UNet 中文本条件对图像生成的影响。
+
+> [!query]
+> @attention.py 中 BasicTransformerBlock 如何体现 Self-Attention 与 Cross-Attention ?
+
+> [!reasoning]
+>
+> 让我看看 attention.py 中的 BasicTransformerBlock 类，特别是它如何实现 Self-Attention 和 Cross-Attention 的部分。
+>
+> 从代码中，我可以看到 BasicTransformerBlock 类包含了以下几个关键组件：
+>
+> 初始化函数中，它设置了多个 Attention 模块和标准化层：
+>
+> self.norm1 和 self.attn1 用于 Self-Attention
+>
+> self.norm2 和 self.attn2 用于 Cross-Attention（如果需要的话）
+>
+> self.norm3 和 self.ff 用于前馈网络
+>
+> 在 forward 函数中，处理流程如下：
+>
+> 首先对输入进行 normalization
+>
+> 然后应用 Self-Attention（self.attn1）
+>
+> 如果有 cross_attention_dim 或 double_self_attention，则应用 Cross-Attention（self.attn2）
+>
+> 最后是 Feed-Forward 网络
+>
+> 特别需要注意的是，对于 Self-Attention 和 Cross-Attention 的区别：
+>
+> Self-Attention：使用 self.attn1，只使用 hidden_states 作为输入，在 only_cross_attention 为 True 时可能使用 encoder_hidden_states。
+>
+> Cross-Attention：使用 self.attn2，hidden_states 作为 query，encoder_hidden_states 作为 key 和 value。
+>
+> 在 forward 方法中，我们可以清楚看到这一点：
+>
+> 对于 Self-Attention，attn_output = self.attn1(norm_hidden_states, ...)
+>
+> 对于 Cross-Attention，attn_output = self.attn2(norm_hidden_states, encoder_hidden_states=encoder_hidden_states, ...)
+>
+> 我会重点关注 forward 方法中实现 Self-Attention 和 Cross-Attention 的关键部分。
+
+在`attention.py`中，`BasicTransformerBlock`类通过以下方式实现了 Self-Attention 和 Cross-Attention：
+
+### 1. 架构设计
+
+```py 326:361:src/diffusers/models/attention.py
+# 1. Self-Attn
+self.attn1 = Attention(
+    query_dim=dim,
+    heads=num_attention_heads,
+    dim_head=attention_head_dim,
+    dropout=dropout,
+    bias=attention_bias,
+    cross_attention_dim=cross_attention_dim if only_cross_attention else None,
+    upcast_attention=upcast_attention,
+    out_bias=attention_out_bias,
+)
+
+# 2. Cross-Attn
+if cross_attention_dim is not None or double_self_attention:
+    self.norm2 = nn.LayerNorm(dim, norm_eps, norm_elementwise_affine)
+
+    self.attn2 = Attention(
+        query_dim=dim,
+        cross_attention_dim=cross_attention_dim if not double_self_attention else None,
+        heads=num_attention_heads,
+        dim_head=attention_head_dim,
+        dropout=dropout,
+        bias=attention_bias,
+        upcast_attention=upcast_attention,
+        out_bias=attention_out_bias,
+    )
+```
+
+### 2. 前向传播过程
+
+```py 500:525:src/diffusers/models/attention.py
+# 1. Self-Attention
+norm_hidden_states = self.norm1(hidden_states)
+attn_output = self.attn1(
+    norm_hidden_states,
+    encoder_hidden_states=encoder_hidden_states if self.only_cross_attention else None,
+    attention_mask=attention_mask,
+    **cross_attention_kwargs,
+)
+
+# ... (处理输出)
+hidden_states = attn_output + hidden_states
+
+# 2. Cross-Attention
+if self.attn2 is not None:
+    norm_hidden_states = self.norm2(hidden_states)
+    attn_output = self.attn2(
+        norm_hidden_states,
+        encoder_hidden_states=encoder_hidden_states,
+        attention_mask=encoder_attention_mask,
+        **cross_attention_kwargs,
+    )
+    hidden_states = attn_output + hidden_states
+```
+
+### 3. 关键区别
+
+- **Self-Attention (attn1)**：
+
+  - 默认情况下只使用`hidden_states`作为输入（query, key, value 都来自同一源）
+  - 只有当`only_cross_attention=True`时才会用`encoder_hidden_states`
+  - 使用`attention_mask`作为掩码
+
+- **Cross-Attention (attn2)**：
+  - `norm_hidden_states`作为 query
+  - `encoder_hidden_states`作为 key 和 value
+  - 使用`encoder_attention_mask`作为掩码
+  - 当`encoder_hidden_states=None`时会退化为 Self-Attention
+
+### 4. 配置控制
+
+- `only_cross_attention`：是否在 attn1 中使用 cross-attention
+- `double_self_attention`：是否将 attn2 配置为另一个 self-attention 层
+- `cross_attention_dim`：指定条件编码的维度
+
+这种设计允许 UNet 模型在不同层级灵活组合 Self-Attention 和 Cross-Attention，实现对图像特征的内部处理和对条件信息的整合。
