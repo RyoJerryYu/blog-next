@@ -831,3 +831,65 @@ if self.attn2 is not None:
 - `cross_attention_dim`：指定条件编码的维度
 
 这种设计允许 UNet 模型在不同层级灵活组合 Self-Attention 和 Cross-Attention，实现对图像特征的内部处理和对条件信息的整合。
+
+> [!query]
+> 我注意到 @attention.py 中在 Attention 层前都会有一个 LayerNorm 层。这是必须要有的吗？有什么作用？
+
+> [!reasoning]-
+> 这个问题询问的是关于在 Attention 层前使用 LayerNorm 的必要性和作用。我需要解释 LayerNorm 在 Transformer 结构中的重要性。
+> 在 attention.py 中的 BasicTransformerBlock 实现中，每个 Attention 操作前确实都有一个 normalization 层（通常是 LayerNorm），我应该分析这种设计的原因。
+
+是的，在`attention.py`的`BasicTransformerBlock`中，每个 Attention 层前都有一个归一化层（通常是 LayerNorm），这是非常重要的设计：
+
+### LayerNorm 的必要性
+
+1. **训练稳定性**：
+
+   ```453:460:src/diffusers/models/attention.py
+   # 在Self-Attention前应用归一化
+   if self.norm_type == "ada_norm":
+       norm_hidden_states = self.norm1(hidden_states, timestep)
+   elif self.norm_type == "ada_norm_zero":
+       norm_hidden_states, gate_msa, shift_mlp, scale_mlp, gate_mlp = self.norm1(
+           hidden_states, timestep, class_labels, hidden_dtype=hidden_states.dtype
+       )
+   elif self.norm_type in ["layer_norm", "layer_norm_i2vgen"]:
+       norm_hidden_states = self.norm1(hidden_states)
+   ```
+
+2. **梯度流动**：
+   - 归一化层将数据分布标准化，防止梯度消失或爆炸
+   - 特别是在深层网络中，保持梯度流动对训练至关重要
+
+### LayerNorm 的作用
+
+1. **特征分布稳定**：
+
+   - 将特征归一化到相同尺度，减少批次间差异
+   - 使网络对输入变化更加鲁棒，提高泛化能力
+
+2. **残差连接的配合**：
+
+   ```510:511:src/diffusers/models/attention.py
+   # 应用残差连接
+   hidden_states = attn_output + hidden_states
+   ```
+
+   - Pre-LayerNorm 结构（先归一化后 Attention）与残差连接配合使用
+   - 这种"归一化 → 操作 → 残差"的模式是 Transformer 架构的基本组成部分
+
+3. **多种归一化选择**：
+   ```454:461:src/diffusers/models/attention.py
+   # 不同类型的归一化层
+   if self.norm_type == "ada_norm":
+       norm_hidden_states = self.norm1(hidden_states, timestep)
+   elif self.norm_type == "ada_norm_zero":
+       # ...
+   elif self.norm_type in ["layer_norm", "layer_norm_i2vgen"]:
+       # ...
+   ```
+   - 基本的 LayerNorm
+   - 带条件的 AdaLayerNorm（使用 timestep 信息调整）
+   - 其他特殊归一化变体，适应不同场景
+
+总之，LayerNorm 在 Attention 层前是必不可少的，它是保证 Transformer 结构有效训练和良好性能的关键组件，特别是在生成模型这样需要处理大量复杂特征的深度网络中。
