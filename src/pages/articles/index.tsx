@@ -11,7 +11,6 @@ import {
 } from "@/core/indexing/indexing-cache";
 import { PostResource } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
 import { GetStaticProps } from "next";
 
@@ -48,9 +47,7 @@ const ArticlesPage = (props: ArticlesProps) => {
     <>
       <Title>Articles</Title>
       <DefaultLayout>
-        <MainWidth>
-          <PostList posts={props.posts} allTags={allTagsMap} />
-        </MainWidth>
+        <PostList posts={props.posts} allTags={allTagsMap} />
       </DefaultLayout>
     </>
   );

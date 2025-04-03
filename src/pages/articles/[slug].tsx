@@ -1,4 +1,5 @@
 import { ParsingProvider } from "@/components-parsing/component-parsing";
+import { Anchor } from "@/components/antd/Anchor";
 import Comments from "@/components/Comments";
 import Post from "@/components/Post";
 import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/types";
@@ -12,7 +13,7 @@ import {
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { articlePostPathMapper } from "@/core/indexing/indexing-settings";
-import { parseMdx } from "@/core/parsing/rendering-parse";
+import { CapturedResult, parseMdx } from "@/core/parsing/rendering-parse";
 import { PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
@@ -34,6 +35,7 @@ type ArticlePageProps = {
   slug: string;
   tags: TagInfo[];
   source: MDXRemoteSerializeResult;
+  capturedResult: CapturedResult;
   meta: PostMeta;
   prevNextInfo: PrevNextInfo;
 };
@@ -54,7 +56,7 @@ export const getStaticProps: GetStaticProps<
 
   const tags = getTagIndex().getTagsOf(meta.tags);
 
-  const source = await parseMdx(meta.content, {
+  const { source, capturedResult } = await parseMdx(meta.content, {
     pagePath: pagePath,
   });
 
@@ -62,6 +64,7 @@ export const getStaticProps: GetStaticProps<
     slug,
     tags,
     source,
+    capturedResult,
     meta,
     prevNextInfo,
   };
@@ -82,7 +85,15 @@ const ArticlePage = (props: ArticlePageProps) => {
           tags: props.meta.tags,
         }}
       />
-      <DefaultLayout>
+      <DefaultLayout
+        right={
+          <Anchor
+            items={props.capturedResult.trees}
+            offsetTop={64}
+            className="overflow-y-auto"
+          />
+        }
+      >
         <ParsingProvider>
           <Post
             meta={props.meta}

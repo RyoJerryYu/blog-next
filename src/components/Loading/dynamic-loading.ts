@@ -2,7 +2,10 @@ import dynamic, { LoaderComponent } from "next/dynamic";
 import { createElement } from "react";
 import { Loading } from "./Loading";
 
-export const dynamicLoading = <P>(loader: () => LoaderComponent<P>) => {
+export const dynamicLoading = <P>(
+  loader: () => LoaderComponent<P>,
+  transparentLoading?: boolean
+) => {
   return dynamic(
     () => {
       try {
@@ -18,7 +21,10 @@ export const dynamicLoading = <P>(loader: () => LoaderComponent<P>) => {
     {
       ssr: false,
       loading: (props) => {
-        return createElement(Loading, props);
+        return createElement(Loading, {
+          isTransparent: transparentLoading,
+          ...props,
+        });
       },
     }
   );
