@@ -1,11 +1,18 @@
 /** @type {import('next').NextConfig} */
 const basePath = process.env.NEXT_PUBLIC_SITE_BASE_PATH || undefined;
 const nextConfig = {
-  output: 'export',
+  output: "export",
   reactStrictMode: true,
   trailingSlash: false,
   assetPrefix: basePath,
   basePath: basePath,
+  transpilePackages: [
+    "rc-util",
+    "rc-pagination",
+    "rc-picker",
+    "antd",
+    "@ant-design/icons-svg",
+  ],
   // experimental: {
   //   // we load metadata when build-time, which is very very slow.
   //   // and those metadata are immutable and could be cached.
@@ -30,4 +37,4 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.TEST_ENV === "analyze",
 });
 
-module.exports = withBundleAnalyzer( nextConfig );
+module.exports = withBundleAnalyzer(nextConfig);

@@ -13,3 +13,5 @@ export const SITE_URL = `${SITE_ORIGIN}${BASE_PATH}`;
 
 // used for SEO allowing recognition
 export const PROD_SITE_URL = "https://blog.ryo-okami.xyz";
+
+export const CONTENT_DIR = "public/content";

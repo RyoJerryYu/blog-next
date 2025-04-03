@@ -22,6 +22,7 @@ export const listPathMappings = async <PathMapping extends BasePathMapping>(
     if (existPath.has(filePath)) {
       throw new Error(`Duplicate filePath: ${filePath}`);
     }
+    existPath.add(filePath);
     return pathMapper.filePath2PathMapping(filePath);
   });
 };

@@ -9,11 +9,13 @@ import {
   BasePathMapping,
   PagePathMapping,
   PostMeta,
+  WikiPathMapping,
 } from "../types/indexing";
 import { AliasIndex } from "./index-building/alias-index-builder/alias-index-builder";
 import { clipDataFromPool } from "./index-building/clip-data-index-builder/clip-data-index-builder";
 import { PrevNextIndex } from "./index-building/prev-next-index-builder/prev-next-index-builder";
 import { TagIndex } from "./index-building/tag-index-builder/tag-index-builder";
+import { WikiTreeIndex } from "./index-building/wiki-tree-index-builder/wiki-tree-index-builder";
 import { devReloadingChain, pipeline } from "./indexing-settings";
 import { collectMetaForFilePath } from "./meta-collecting/meta-collecting";
 import {
@@ -26,6 +28,19 @@ import {
 import { getResourceMap } from "./pipeline/resource-pool";
 
 const cacheFilePath = ".cache/resource-pool.json";
+
+/**
+ * Whether is in content development mode
+ * If is content development mode, the content, metadata, etc. will be reloaded on each request
+ * Else, it would load from cache file
+ *
+ * @returns true if the content is in development mode
+ */
+function isContentDev() {
+  return (
+    process.env.NODE_ENV === "development" && process.env.TEST_ENV !== "style"
+  );
+}
 
 // init resource pool cache
 export const initCache = async () => {
@@ -48,10 +63,9 @@ export const loadCache = async () => {
   }
   console.log("loading cache from file");
 
-  const resourcePoolLoader =
-    process.env.NODE_ENV === "development"
-      ? new ResourcePoolFromScratch()
-      : new ResourcePoolFromCache(cacheFilePath);
+  const resourcePoolLoader = isContentDev()
+    ? new ResourcePoolFromScratch()
+    : new ResourcePoolFromCache(cacheFilePath);
   cache = await executePipeline(pipeline(), resourcePoolLoader);
 };
 
@@ -80,6 +94,12 @@ export const learnFromAiResourceMap = () => {
     "learn_from_ai"
   );
 };
+export const testwikiResourceMap = () => {
+  return getResourceMap<WikiPathMapping, PostMeta>(
+    mustGetCache().resourcePool,
+    "testwiki"
+  );
+};
 export const getTagIndex = () => {
   return TagIndex.fromPool(mustGetCache().indexPool);
 };
@@ -91,6 +111,9 @@ export const getClipData = () => {
 };
 export const getPrevNextIndex = () => {
   return PrevNextIndex.fromPool(mustGetCache().indexPool);
+};
+export const getWikiTreeIndex = () => {
+  return WikiTreeIndex.fromPool(mustGetCache().indexPool);
 };
 
 // a helper function to get resource type from page path
@@ -133,7 +156,7 @@ const getMetaOrReload = async <
     resourceType
   );
 
-  if (process.env.NODE_ENV === "development") {
+  if (isContentDev()) {
     // for reloading in development
     console.log(`reloading on dev ${pagePath}`);
     const filePath = resourceMap.pagePathTo("filePath", pagePath);

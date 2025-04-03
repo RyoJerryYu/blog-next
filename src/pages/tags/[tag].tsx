@@ -9,7 +9,6 @@ import {
 } from "@/core/indexing/indexing-cache";
 import { PagePathMapping, PostMeta, PostResource } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import MainWidth from "@/layouts/MainWidth";
 import { Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
 
@@ -69,13 +68,11 @@ const TagPage = (props: TagPageProps) => {
     <>
       <Title>{props.selectedTagInfo.tag}</Title>
       <DefaultLayout>
-        <MainWidth>
-          <TagSelector
-            tags={props.allTagInfos}
-            selectedTagSlug={props.selectedTagInfo.slug}
-          />
-          <PostList posts={props.posts} allTags={tagInfoMap} />
-        </MainWidth>
+        <TagSelector
+          tags={props.allTagInfos}
+          selectedTagSlug={props.selectedTagInfo.slug}
+        />
+        <PostList posts={props.posts} allTags={tagInfoMap} />
       </DefaultLayout>
     </>
   );

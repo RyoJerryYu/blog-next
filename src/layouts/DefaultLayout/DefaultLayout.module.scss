@@ -16,34 +16,23 @@ $footer-height: 4rem;
 .textlink {
   @apply text-gray-300 font-sans text-lg font-normal;
   @apply hover:text-white;
+  @apply transition-colors duration-200;
 }
 .textlink:hover {
   text-shadow: 0 0 10px #69e0ff, 0 0 20px #69e0ff;
 }
 
+.dropdownitem {
+  @apply text-gray-500 font-sans text-lg font-normal;
+  @apply hover:text-gray-700;
+}
+.dropdownitem:hover {
+  text-shadow: 0 0 10px #69e0ff, 0 0 20px #69e0ff;
+}
+
 .header {
-  @apply top-0 fixed w-full z-50 flex;
-  @apply bg-gray-900 bg-opacity-50;
-  @apply transition ease-in-out hover:bg-opacity-75;
-
   height: $header-height;
-
-  & .icon {
-    @apply headeritem;
-    @apply ml-2 w-32 mr-4 md:mr-12;
-  }
-  & .navBar {
-    @apply headeritem;
-    @apply pr-2;
-  }
-  & .navBarItem {
-    @apply textbox;
-    @apply relative float-left mx-1 md:mx-2;
-  }
-  & .headerRight {
-    @apply headeritem;
-    @apply ml-auto mr-8 hidden md:flex;
-  }
+  --AppBar-background: theme(colors.gray.900);
 }
 
 .headerBg {
