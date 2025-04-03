@@ -4,7 +4,7 @@ const basePath = process.env.NEXT_PUBLIC_SITE_BASE_PATH || "";
 module.exports = {
   siteUrl: `${siteOrigin}${basePath}`,
   generateRobotsTxt: true, // (optional)
+  changefreq: 'weekly',
+  sitemapSize: 7000,
   outDir: "./out",
-  // sitemapSize: 7000,
-  generateIndexSitemap: false,
 }
