@@ -33,10 +33,12 @@ import { AnchorTree } from "./rehype-plugins/rehype-heading-anchor-collection-ty
 
 export type CapturedResult = {
   trees: AnchorTree[];
+  refPagePaths: string[];
 };
 const genMdxOptions = (props: ParseMdxProps) => {
   const capturedResult: CapturedResult = {
     trees: [],
+    refPagePaths: [],
   };
   const defaultMdxOptions: Omit<
     CompileOptions,
@@ -59,7 +61,14 @@ const genMdxOptions = (props: ParseMdxProps) => {
           ],
         } as RemarkObsidianRichOptions,
       ],
-      [remarkObsidianWikilink, {} as RemarkObsidianWikilinkOptions],
+      [
+        remarkObsidianWikilink,
+        {
+          collectRefPagePath: (toPagePaths) => {
+            capturedResult.refPagePaths = toPagePaths;
+          },
+        } as RemarkObsidianWikilinkOptions,
+      ],
       remarkObsidianTag,
       remarkObsidianHighlight,
       [

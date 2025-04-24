@@ -15,6 +15,8 @@ import { ObsidianWikilinkPropsMdx } from "./types";
  * ```
  *
  * It will transform to MDX Node: <ObsidianWikilink file="file" path="path" label="label" />
+ *
+ * Need Alias Index to resolve the alias to the page path.
  */
 
 const syntax = /\[\[([^\]]+)\]\]/;
@@ -30,16 +32,20 @@ const testMatcher = (matcher: Matcher, props: ObsidianWikilinkPropsMdx) => {
 
 export type RemarkObsidianWikilinkOptions = {
   matchers: [Matcher, string][];
+  collectRefPagePath: (toPagePath: string[]) => void;
 };
 
 const DEFAULT_OPTIONS: RemarkObsidianWikilinkOptions = {
   matchers: [],
+  collectRefPagePath: (_: string[]) => {},
 };
 
 const remarkObsidianWikilink: Plugin<[RemarkObsidianWikilinkOptions?]> = (
   options
 ) => {
   const opts = { ...DEFAULT_OPTIONS, ...options };
+
+  const collectedRefPagePaths: string[] = [];
   return (tree) => {
     visit(
       tree,
@@ -83,11 +89,14 @@ const remarkObsidianWikilink: Plugin<[RemarkObsidianWikilinkOptions?]> = (
           throw new Error(`Invalid alias: ${alias}`);
         }
 
+        // this alias should always be resolvable below
         const props: ObsidianWikilinkPropsMdx = {
           alias,
           path, // no need to consider prefix
           label,
         };
+
+        collectedRefPagePaths.push(props.path);
 
         for (let [matcher, componentName] of opts.matchers) {
           if (!testMatcher(matcher, props)) {
@@ -117,6 +126,8 @@ const remarkObsidianWikilink: Plugin<[RemarkObsidianWikilinkOptions?]> = (
         return modifyTree(obsidianWikilinkElement);
       }
     );
+
+    opts.collectRefPagePath(collectedRefPagePaths);
   };
 };
 
