@@ -12,9 +12,9 @@ import {
   testwikiResourceMap,
 } from "@/core/indexing/indexing-cache";
 import { testwikiPathMapper } from "@/core/indexing/indexing-settings";
+import { AnchorTree } from "@/core/parsing/rehype-plugins/rehype-heading-anchor-collection-types";
 import { parseMdx } from "@/core/parsing/rendering-parse";
 import { PostMeta } from "@/core/types/indexing";
-import { CapturedResult } from "@/core/types/rendering";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -36,7 +36,7 @@ type TestWikiPageProps = {
   tags: TagInfo[];
   wikiTree: WikiTreeInfo;
   source: MDXRemoteSerializeResult;
-  capturedResult: CapturedResult;
+  headingTrees: AnchorTree[];
 };
 
 export const getStaticProps: GetStaticProps<
@@ -53,7 +53,14 @@ export const getStaticProps: GetStaticProps<
     pagePath: pagePath,
   });
   return {
-    props: { slugs, meta, tags, wikiTree, source, capturedResult },
+    props: {
+      slugs,
+      meta,
+      tags,
+      wikiTree,
+      source,
+      headingTrees: capturedResult.headingTrees,
+    },
   };
 };
 
@@ -71,7 +78,7 @@ const TestWikiPage = (props: TestWikiPageProps) => {
         }
         right={
           <Anchor
-            items={props.capturedResult.headingTrees}
+            items={props.headingTrees}
             offsetTop={64}
             className="overflow-y-auto"
           />

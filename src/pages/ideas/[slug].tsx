@@ -12,9 +12,9 @@ import {
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { ideaPostPathMapper } from "@/core/indexing/indexing-settings";
+import { AnchorTree } from "@/core/parsing/rehype-plugins/rehype-heading-anchor-collection-types";
 import { parseMdx } from "@/core/parsing/rendering-parse";
 import { PostMeta } from "@/core/types/indexing";
-import { CapturedResult } from "@/core/types/rendering";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -34,7 +34,7 @@ type IdeaPageProps = {
   slug: string;
   tags: TagInfo[];
   source: MDXRemoteSerializeResult;
-  capturedResult: CapturedResult;
+  headingTrees: AnchorTree[];
   meta: PostMeta;
   prevNextInfo: PrevNextInfo;
 };
@@ -62,7 +62,7 @@ export const getStaticProps: GetStaticProps<
       slug,
       tags,
       source,
-      capturedResult,
+      headingTrees: capturedResult.headingTrees,
       meta,
       prevNextInfo,
     },
@@ -77,7 +77,7 @@ const IdeaPage = (props: IdeaPageProps) => {
       <DefaultLayout
         right={
           <Anchor
-            items={props.capturedResult.headingTrees}
+            items={props.headingTrees}
             offsetTop={64}
             className="overflow-y-auto"
           />
