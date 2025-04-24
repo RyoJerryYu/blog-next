@@ -10,7 +10,7 @@ import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkUnwrapImages from "remark-unwrap-images";
-import { ParseMdxProps } from "../types/rendering";
+import { CapturedResult, ParseMdxProps } from "../types/rendering";
 import {
   remarkCodeBlockEscape,
   RemarkCodeBlockEscapeOptions,
@@ -29,13 +29,7 @@ import {
   rehypeHeadingAnchorCollection,
   RehypeSectionAnchorCollectionOptions,
 } from "./rehype-plugins/rehype-heading-anchor-collection";
-import { AnchorTree } from "./rehype-plugins/rehype-heading-anchor-collection-types";
 
-export type CapturedResult = {
-  trees: AnchorTree[];
-  wikiRefPagePaths: string[];
-  richRefPagePaths: string[];
-};
 const genMdxOptions = (props: ParseMdxProps) => {
   const capturedResult: CapturedResult = {
     trees: [],

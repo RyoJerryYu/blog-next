@@ -12,8 +12,9 @@ import {
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { learnFromAiPostPathMapper } from "@/core/indexing/indexing-settings";
-import { CapturedResult, parseMdx } from "@/core/parsing/rendering-parse";
+import { parseMdx } from "@/core/parsing/rendering-parse";
 import { PostMeta } from "@/core/types/indexing";
+import { CapturedResult } from "@/core/types/rendering";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
