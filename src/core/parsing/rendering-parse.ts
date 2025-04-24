@@ -33,12 +33,14 @@ import { AnchorTree } from "./rehype-plugins/rehype-heading-anchor-collection-ty
 
 export type CapturedResult = {
   trees: AnchorTree[];
-  refPagePaths: string[];
+  wikiRefPagePaths: string[];
+  richRefPagePaths: string[];
 };
 const genMdxOptions = (props: ParseMdxProps) => {
   const capturedResult: CapturedResult = {
     trees: [],
-    refPagePaths: [],
+    wikiRefPagePaths: [],
+    richRefPagePaths: [],
   };
   const defaultMdxOptions: Omit<
     CompileOptions,
@@ -59,13 +61,16 @@ const genMdxOptions = (props: ParseMdxProps) => {
               "ObsidianRichExcalidraw",
             ],
           ],
+          collectRefPagePath: (toPagePaths) => {
+            capturedResult.richRefPagePaths = toPagePaths;
+          },
         } as RemarkObsidianRichOptions,
       ],
       [
         remarkObsidianWikilink,
         {
           collectRefPagePath: (toPagePaths) => {
-            capturedResult.refPagePaths = toPagePaths;
+            capturedResult.wikiRefPagePaths = toPagePaths;
           },
         } as RemarkObsidianWikilinkOptions,
       ],

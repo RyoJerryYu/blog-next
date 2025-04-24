@@ -75,11 +75,17 @@ const parseObsidianRichProp = (node: Paragraph): ObsidianRichProps => {
     throw new Error("Invalid file path: " + file);
   }
 
-  return {
+  const props: ObsidianRichProps = {
     file: file,
     url: resourcePath(path),
     label: label,
   };
+
+  if (path) {
+    props.pagePath = path;
+  }
+
+  return props;
 };
 
 export type Matcher = RegExp | ((props: ObsidianRichProps) => boolean);
@@ -100,14 +106,18 @@ export type RemarkObsidianRichOptions = {
    * list of [matcher, componentName]
    */
   matchers: [Matcher, string][];
+  collectRefPagePath: (toPagePaths: string[]) => void;
 };
 
 const DEFAULT_OPTIONS: RemarkObsidianRichOptions = {
   matchers: [],
+  collectRefPagePath: (_: string[]) => {},
 };
 
 const remarkObsidianRich: Plugin<[RemarkObsidianRichOptions?]> = (options) => {
   const opts = { ...DEFAULT_OPTIONS, ...options };
+
+  const collectedRefPagePaths: string[] = [];
   return (tree) => {
     visit(
       tree,
@@ -118,6 +128,9 @@ const remarkObsidianRich: Plugin<[RemarkObsidianRichOptions?]> = (options) => {
           throw new Error("index is undefined");
         }
         const props = parseObsidianRichProp(node);
+        if (props.pagePath) {
+          collectedRefPagePaths.push(props.pagePath);
+        }
         for (let [matcher, componentName] of opts.matchers) {
           if (!testMatcher(matcher, props)) {
             continue;
@@ -144,6 +157,8 @@ const remarkObsidianRich: Plugin<[RemarkObsidianRichOptions?]> = (options) => {
         parent.children.splice(index, 1, obsidianRichElement);
       }
     );
+
+    opts.collectRefPagePath(collectedRefPagePaths);
   };
 };
 export default remarkObsidianRich;
