@@ -5,7 +5,7 @@ export type ParseMdxProps = {
 };
 
 export type CapturedResult = {
-  trees: AnchorTree[];
+  headingTrees: AnchorTree[];
   wikiRefPagePaths: string[];
   richRefPagePaths: string[];
 };

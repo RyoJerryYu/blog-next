@@ -77,7 +77,7 @@ const LearnFromAiPage = (props: LearnFromAiPageProps) => {
       <DefaultLayout
         right={
           <Anchor
-            items={props.capturedResult.trees}
+            items={props.capturedResult.headingTrees}
             offsetTop={64}
             className="overflow-y-auto"
           />

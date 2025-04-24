@@ -32,7 +32,7 @@ import {
 
 const genMdxOptions = (props: ParseMdxProps) => {
   const capturedResult: CapturedResult = {
-    trees: [],
+    headingTrees: [],
     wikiRefPagePaths: [],
     richRefPagePaths: [],
   };
@@ -88,7 +88,7 @@ const genMdxOptions = (props: ParseMdxProps) => {
         rehypeHeadingAnchorCollection,
         {
           collectResult: (tree) => {
-            capturedResult.trees = tree;
+            capturedResult.headingTrees = tree;
           },
         } as RehypeSectionAnchorCollectionOptions,
       ],
