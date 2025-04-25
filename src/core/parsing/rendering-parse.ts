@@ -21,7 +21,10 @@ import remarkObsidianRich, {
   RemarkObsidianRichOptions,
 } from "./complex-plugins/obsidian-rich/remark-obsidian-rich";
 import { ObsidianRichProps } from "./complex-plugins/obsidian-rich/types";
-import { remarkObsidianTag } from "./complex-plugins/obsidian-tag/remark-obsidian-tag";
+import {
+  remarkObsidianTag,
+  RemarkObsidianTagOptions,
+} from "./complex-plugins/obsidian-tag/remark-obsidian-tag";
 import remarkObsidianWikilink, {
   RemarkObsidianWikilinkOptions,
 } from "./complex-plugins/obsidian-wikilink/remark-obsidian-wikilink";
@@ -70,7 +73,12 @@ const genMdxOptions = (props: ParseMdxProps) => {
           },
         } as RemarkObsidianWikilinkOptions,
       ],
-      remarkObsidianTag,
+      [
+        remarkObsidianTag,
+        {
+          isMetaPhase: props.isMetaPhase,
+        } as RemarkObsidianTagOptions,
+      ],
       remarkObsidianHighlight,
       [
         remarkCodeBlockEscape,
