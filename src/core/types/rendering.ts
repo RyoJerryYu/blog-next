@@ -2,10 +2,11 @@ import { AnchorTree } from "../parsing/rehype-plugins/rehype-heading-anchor-coll
 
 export type ParseMdxProps = {
   pagePath: string;
+  isMetaPhase?: boolean; // if true, only collect meta data, and not to use index
 };
 
 export type CapturedResult = {
   headingTrees: AnchorTree[];
-  wikiRefPagePaths: string[];
+  wikiRefAliases: string[];
   richRefPagePaths: string[];
 };

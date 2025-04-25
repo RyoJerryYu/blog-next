@@ -32,12 +32,13 @@ const testMatcher = (matcher: Matcher, props: ObsidianWikilinkPropsMdx) => {
 
 export type RemarkObsidianWikilinkOptions = {
   matchers: [Matcher, string][];
-  collectRefPagePath: (toPagePath: string[]) => void;
+  isMetaPhase?: boolean; // if true, only collect meta data, and not to use index
+  collectRefAliases: (alias: string[]) => void;
 };
 
 const DEFAULT_OPTIONS: RemarkObsidianWikilinkOptions = {
   matchers: [],
-  collectRefPagePath: (_: string[]) => {},
+  collectRefAliases: (_: string[]) => {},
 };
 
 const remarkObsidianWikilink: Plugin<[RemarkObsidianWikilinkOptions?]> = (
@@ -45,7 +46,15 @@ const remarkObsidianWikilink: Plugin<[RemarkObsidianWikilinkOptions?]> = (
 ) => {
   const opts = { ...DEFAULT_OPTIONS, ...options };
 
-  const collectedRefPagePaths: string[] = [];
+  const collectedRefAliases: string[] = [];
+  const resolveRefAlias = (alias: string) => {
+    if (opts.isMetaPhase) {
+      collectedRefAliases.push(alias);
+      return "-";
+    } else {
+      return getAliasIndex().resolve(alias);
+    }
+  };
   return (tree) => {
     visit(
       tree,
@@ -83,7 +92,7 @@ const remarkObsidianWikilink: Plugin<[RemarkObsidianWikilinkOptions?]> = (
           label = alias;
         }
 
-        let path = getAliasIndex().resolve(alias);
+        let path = resolveRefAlias(alias);
         // alias to a post no need for considering extension
         if (!path) {
           throw new Error(`Invalid alias: ${alias}`);
@@ -95,8 +104,6 @@ const remarkObsidianWikilink: Plugin<[RemarkObsidianWikilinkOptions?]> = (
           path, // no need to consider prefix
           label,
         };
-
-        collectedRefPagePaths.push(props.path);
 
         for (let [matcher, componentName] of opts.matchers) {
           if (!testMatcher(matcher, props)) {
@@ -127,7 +134,7 @@ const remarkObsidianWikilink: Plugin<[RemarkObsidianWikilinkOptions?]> = (
       }
     );
 
-    opts.collectRefPagePath(collectedRefPagePaths);
+    opts.collectRefAliases(collectedRefAliases);
   };
 };
 

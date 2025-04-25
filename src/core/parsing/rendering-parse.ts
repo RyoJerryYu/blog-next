@@ -33,7 +33,7 @@ import {
 const genMdxOptions = (props: ParseMdxProps) => {
   const capturedResult: CapturedResult = {
     headingTrees: [],
-    wikiRefPagePaths: [],
+    wikiRefAliases: [],
     richRefPagePaths: [],
   };
   const defaultMdxOptions: Omit<
@@ -55,7 +55,8 @@ const genMdxOptions = (props: ParseMdxProps) => {
               "ObsidianRichExcalidraw",
             ],
           ],
-          collectRefPagePath: (toPagePaths) => {
+          isMetaPhase: props.isMetaPhase,
+          collectRefAliases: (toPagePaths) => {
             capturedResult.richRefPagePaths = toPagePaths;
           },
         } as RemarkObsidianRichOptions,
@@ -63,8 +64,9 @@ const genMdxOptions = (props: ParseMdxProps) => {
       [
         remarkObsidianWikilink,
         {
-          collectRefPagePath: (toPagePaths) => {
-            capturedResult.wikiRefPagePaths = toPagePaths;
+          isMetaPhase: props.isMetaPhase,
+          collectRefAliases: (aliases) => {
+            capturedResult.wikiRefAliases = aliases;
           },
         } as RemarkObsidianWikilinkOptions,
       ],

@@ -52,7 +52,10 @@ const isObsidianRich = (node: unknown): node is Paragraph => {
  * @param node
  * @returns
  */
-const parseObsidianRichProp = (node: Paragraph): ObsidianRichProps => {
+const parseObsidianRichProp = (
+  node: Paragraph,
+  resolveRefAlias: (alias: string) => string | undefined
+): ObsidianRichProps => {
   let text = (node.children[0] as Text).value;
   // console.log("text:", text);
   let [_, matched] = syntax.exec(text)!;
@@ -65,11 +68,11 @@ const parseObsidianRichProp = (node: Paragraph): ObsidianRichProps => {
     label = file;
   }
 
-  let path = getAliasIndex().resolve(file);
+  let path = resolveRefAlias(file);
   if (!path) {
     // allow .md file shorttened
     // if not found, try resolve it as was shorttened
-    path = getAliasIndex().resolve(`${file}.md`);
+    path = resolveRefAlias(`${file}.md`);
   }
   if (!path) {
     throw new Error("Invalid file path: " + file);
@@ -106,18 +109,27 @@ export type RemarkObsidianRichOptions = {
    * list of [matcher, componentName]
    */
   matchers: [Matcher, string][];
-  collectRefPagePath: (toPagePaths: string[]) => void;
+  isMetaPhase?: boolean; // if true, only collect meta data, and not to use index
+  collectRefAliases: (aliases: string[]) => void;
 };
 
 const DEFAULT_OPTIONS: RemarkObsidianRichOptions = {
   matchers: [],
-  collectRefPagePath: (_: string[]) => {},
+  collectRefAliases: (_: string[]) => {},
 };
 
 const remarkObsidianRich: Plugin<[RemarkObsidianRichOptions?]> = (options) => {
   const opts = { ...DEFAULT_OPTIONS, ...options };
 
-  const collectedRefPagePaths: string[] = [];
+  const collectedRefAliases: string[] = [];
+  const resolveRefAlias = (alias: string) => {
+    if (opts.isMetaPhase) {
+      collectedRefAliases.push(alias);
+      return "-";
+    } else {
+      return getAliasIndex().resolve(alias);
+    }
+  };
   return (tree) => {
     visit(
       tree,
@@ -127,10 +139,7 @@ const remarkObsidianRich: Plugin<[RemarkObsidianRichOptions?]> = (options) => {
           console.error("index is undefined", node, parent);
           throw new Error("index is undefined");
         }
-        const props = parseObsidianRichProp(node);
-        if (props.pagePath) {
-          collectedRefPagePaths.push(props.pagePath);
-        }
+        const props = parseObsidianRichProp(node, resolveRefAlias);
         for (let [matcher, componentName] of opts.matchers) {
           if (!testMatcher(matcher, props)) {
             continue;
@@ -158,7 +167,7 @@ const remarkObsidianRich: Plugin<[RemarkObsidianRichOptions?]> = (options) => {
       }
     );
 
-    opts.collectRefPagePath(collectedRefPagePaths);
+    opts.collectRefAliases(collectedRefAliases);
   };
 };
 export default remarkObsidianRich;
