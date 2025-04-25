@@ -2,6 +2,8 @@
  * PathMapping
  */
 
+import { CapturedResult } from "./rendering";
+
 /**
  * All resource are uniquely identified by their pagePath
  * attention: filePath may not be unique between two types of resources
@@ -78,6 +80,8 @@ export type PostMeta = BaseMeta & {
   tags: string[];
   license: boolean;
 };
+
+export type MDXMeta = CapturedResult;
 
 /****************
  * Resource
