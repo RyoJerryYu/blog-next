@@ -41,6 +41,10 @@ export class GitMetaCollector implements MetaCollector<GitMeta> {
     filePath: string,
     prevMeta: Partial<GitMeta>
   ): Promise<Partial<GitMeta>> => {
+    if (prevMeta.created_at && prevMeta.updated_at) {
+      return {};
+    }
+
     let commits;
     try {
       commits = await git.log({ fs, dir: this.gitDir, filepath: filePath });
