@@ -1,21 +1,29 @@
 import { ParsingProvider } from "@/components-parsing/component-parsing";
 import { Anchor } from "@/components/antd/Anchor";
+import BackRefList from "@/components/BackRefList/BackRefList";
 import Post from "@/components/Post";
 import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/types";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import {
+  getAliasIndex,
   getPostMetaOrReload,
   getPrevNextIndex,
+  getResource,
   getTagIndex,
   learnFromAiResourceMap,
   loadCache,
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { learnFromAiPostPathMapper } from "@/core/indexing/indexing-settings";
-import { CapturedResult, parseMdx } from "@/core/parsing/rendering-parse";
-import { PostMeta } from "@/core/types/indexing";
+import { parseMdx } from "@/core/parsing/rendering-parse";
+import {
+  MDXMeta,
+  PagePathMapping,
+  PostMeta,
+  PostResource,
+} from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import { Description, Title } from "@/layouts/UniversalHead";
+import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
@@ -33,9 +41,9 @@ type LearnFromAiPageProps = {
   slug: string;
   tags: TagInfo[];
   source: MDXRemoteSerializeResult;
-  capturedResult: CapturedResult;
-  meta: PostMeta;
+  meta: PostMeta & MDXMeta;
   prevNextInfo: PrevNextInfo;
+  backRefResources: PostResource[];
 };
 
 export const getStaticProps: GetStaticProps<
@@ -50,10 +58,14 @@ export const getStaticProps: GetStaticProps<
     mustGetResourceType(pagePath),
     pagePath
   );
+  const backRefPagePaths = getAliasIndex().resolveBackRef(pagePath);
+  const backRefResources = backRefPagePaths.map((pagePath) => {
+    return getResource<PagePathMapping, PostMeta>(pagePath);
+  });
 
   const tagIndex = getTagIndex();
   const tags = tagIndex.getTagsOf(meta.tags);
-  const { source, capturedResult } = await parseMdx(meta.content, {
+  const { source } = await parseMdx(meta.content, {
     pagePath: pagePath,
   });
   return {
@@ -61,9 +73,9 @@ export const getStaticProps: GetStaticProps<
       slug,
       tags,
       source,
-      capturedResult,
       meta,
       prevNextInfo,
+      backRefResources,
     },
   };
 };
@@ -73,10 +85,17 @@ const LearnFromAiPage = (props: LearnFromAiPageProps) => {
     <>
       <Title>{props.meta.title}</Title>
       <Description>{props.meta.abstract}</Description>
+      <SEOObject
+        article={{
+          publishedTime: props.meta.created_at ?? undefined,
+          modifiedTime: props.meta.updated_at ?? undefined,
+          tags: props.meta.tags,
+        }}
+      />
       <DefaultLayout
         right={
           <Anchor
-            items={props.capturedResult.trees}
+            items={props.meta.headingTrees}
             offsetTop={64}
             className="overflow-y-auto"
           />
@@ -90,6 +109,7 @@ const LearnFromAiPage = (props: LearnFromAiPageProps) => {
             prevNextInfo={props.prevNextInfo}
           />
         </ParsingProvider>
+        <BackRefList posts={props.backRefResources} />
       </DefaultLayout>
     </>
   );

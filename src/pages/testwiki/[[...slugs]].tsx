@@ -1,19 +1,27 @@
 import { ParsingProvider } from "@/components-parsing/component-parsing";
 import { Anchor } from "@/components/antd/Anchor";
+import BackRefList from "@/components/BackRefList/BackRefList";
 import Post from "@/components/Post";
 import { WikiTreeMenu } from "@/components/wiki/WikiTreeMenu";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import { WikiTreeInfo } from "@/core/indexing/index-building/wiki-tree-index-builder/types";
 import {
+  getAliasIndex,
   getPostMetaOrReload,
+  getResource,
   getTagIndex,
   getWikiTreeIndex,
   loadCache,
   testwikiResourceMap,
 } from "@/core/indexing/indexing-cache";
 import { testwikiPathMapper } from "@/core/indexing/indexing-settings";
-import { CapturedResult, parseMdx } from "@/core/parsing/rendering-parse";
-import { PostMeta } from "@/core/types/indexing";
+import { parseMdx } from "@/core/parsing/rendering-parse";
+import {
+  MDXMeta,
+  PagePathMapping,
+  PostMeta,
+  PostResource,
+} from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -31,11 +39,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 type TestWikiPageProps = {
   slugs: string[];
-  meta: PostMeta;
+  meta: PostMeta & MDXMeta;
   tags: TagInfo[];
   wikiTree: WikiTreeInfo;
   source: MDXRemoteSerializeResult;
-  capturedResult: CapturedResult;
+  backRefResources: PostResource[];
 };
 
 export const getStaticProps: GetStaticProps<
@@ -48,11 +56,22 @@ export const getStaticProps: GetStaticProps<
   const meta = await getPostMetaOrReload(pagePath);
   const tags = getTagIndex().getTagsOf(meta.tags);
   const wikiTree = getWikiTreeIndex().pagePathToWikiTree("testwiki", pagePath);
-  const { source, capturedResult } = await parseMdx(meta.content, {
+  const { source } = await parseMdx(meta.content, {
     pagePath: pagePath,
   });
+  const backRefPagePaths = getAliasIndex().resolveBackRef(pagePath);
+  const backRefResources = backRefPagePaths.map((pagePath) => {
+    return getResource<PagePathMapping, PostMeta>(pagePath);
+  });
   return {
-    props: { slugs, meta, tags, wikiTree, source, capturedResult },
+    props: {
+      slugs,
+      meta,
+      tags,
+      wikiTree,
+      source,
+      backRefResources,
+    },
   };
 };
 
@@ -70,7 +89,7 @@ const TestWikiPage = (props: TestWikiPageProps) => {
         }
         right={
           <Anchor
-            items={props.capturedResult.trees}
+            items={props.meta.headingTrees}
             offsetTop={64}
             className="overflow-y-auto"
           />
@@ -84,6 +103,7 @@ const TestWikiPage = (props: TestWikiPageProps) => {
             prevNextInfo={{ prevInfo: null, nextInfo: null }}
           />
         </ParsingProvider>
+        <BackRefList posts={props.backRefResources} />
       </DefaultLayout>
     </>
   );

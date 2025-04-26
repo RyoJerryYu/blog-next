@@ -55,9 +55,29 @@ export class SubPrevNextIndex {
     }
     const prevIndex = index - 1;
     const nextIndex = index + 1;
+
+    const toPrevNextResource = (
+      resource: PrevNextIndexResource
+    ): PrevNextIndexResource => {
+      return {
+        pathMapping: {
+          pagePath: resource.pathMapping.pagePath,
+          filePath: resource.pathMapping.filePath,
+        },
+        meta: {
+          title: resource.meta.title,
+          created_at: resource.meta.created_at,
+          updated_at: resource.meta.updated_at,
+        },
+      };
+    };
     return {
-      prevInfo: prevIndex >= 0 ? this.posts[prevIndex] : null,
-      nextInfo: nextIndex < this.posts.length ? this.posts[nextIndex] : null,
+      prevInfo:
+        prevIndex >= 0 ? toPrevNextResource(this.posts[prevIndex]) : null,
+      nextInfo:
+        nextIndex < this.posts.length
+          ? toPrevNextResource(this.posts[nextIndex])
+          : null,
     };
   };
 }

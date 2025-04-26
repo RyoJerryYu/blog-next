@@ -6,7 +6,7 @@
     "dev": "next dev",
     "styledev": "TEST_ENV=style next dev",
     "pppppprebuildddddd": "NODE_PATH=./ ts-node --esm -r tsconfig-paths/register --project tsconfig.json scripts/init-cache.ts",
-    "prebuild": "tsx scripts/init-cache.ts",
+    "prebuild": "tsx -C import scripts/init-cache.ts",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test-ci": "TEST_ENV=ci yarn test",
     "build": "next build",

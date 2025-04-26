@@ -52,7 +52,10 @@ const isObsidianRich = (node: unknown): node is Paragraph => {
  * @param node
  * @returns
  */
-const parseObsidianRichProp = (node: Paragraph): ObsidianRichProps => {
+const parseObsidianRichProp = (
+  node: Paragraph,
+  resolveRefAlias: (alias: string) => string | undefined
+): ObsidianRichProps => {
   let text = (node.children[0] as Text).value;
   // console.log("text:", text);
   let [_, matched] = syntax.exec(text)!;
@@ -65,21 +68,27 @@ const parseObsidianRichProp = (node: Paragraph): ObsidianRichProps => {
     label = file;
   }
 
-  let path = getAliasIndex().resolve(file);
+  let path = resolveRefAlias(file);
   if (!path) {
     // allow .md file shorttened
     // if not found, try resolve it as was shorttened
-    path = getAliasIndex().resolve(`${file}.md`);
+    path = resolveRefAlias(`${file}.md`);
   }
   if (!path) {
     throw new Error("Invalid file path: " + file);
   }
 
-  return {
+  const props: ObsidianRichProps = {
     file: file,
     url: resourcePath(path),
     label: label,
   };
+
+  if (path) {
+    props.pagePath = path;
+  }
+
+  return props;
 };
 
 export type Matcher = RegExp | ((props: ObsidianRichProps) => boolean);
@@ -100,14 +109,27 @@ export type RemarkObsidianRichOptions = {
    * list of [matcher, componentName]
    */
   matchers: [Matcher, string][];
+  isMetaPhase?: boolean; // if true, only collect meta data, and not to use index
+  collectRefAliases: (aliases: string[]) => void;
 };
 
 const DEFAULT_OPTIONS: RemarkObsidianRichOptions = {
   matchers: [],
+  collectRefAliases: (_: string[]) => {},
 };
 
 const remarkObsidianRich: Plugin<[RemarkObsidianRichOptions?]> = (options) => {
   const opts = { ...DEFAULT_OPTIONS, ...options };
+
+  const collectedRefAliases: string[] = [];
+  const resolveRefAlias = (alias: string) => {
+    if (opts.isMetaPhase) {
+      collectedRefAliases.push(alias);
+      return "-";
+    } else {
+      return getAliasIndex().resolve(alias);
+    }
+  };
   return (tree) => {
     visit(
       tree,
@@ -117,7 +139,7 @@ const remarkObsidianRich: Plugin<[RemarkObsidianRichOptions?]> = (options) => {
           console.error("index is undefined", node, parent);
           throw new Error("index is undefined");
         }
-        const props = parseObsidianRichProp(node);
+        const props = parseObsidianRichProp(node, resolveRefAlias);
         for (let [matcher, componentName] of opts.matchers) {
           if (!testMatcher(matcher, props)) {
             continue;
@@ -144,6 +166,8 @@ const remarkObsidianRich: Plugin<[RemarkObsidianRichOptions?]> = (options) => {
         parent.children.splice(index, 1, obsidianRichElement);
       }
     );
+
+    opts.collectRefAliases(collectedRefAliases);
   };
 };
 export default remarkObsidianRich;

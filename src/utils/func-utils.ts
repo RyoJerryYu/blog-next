@@ -21,3 +21,7 @@ export const copyNullableArray = <T>(
   }
   return [...array];
 };
+
+export const deduplicateArray = <T>(array: T[]): T[] => {
+  return array.filter((value, index, self) => self.indexOf(value) === index);
+};

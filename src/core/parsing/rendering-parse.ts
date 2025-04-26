@@ -10,7 +10,7 @@ import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkUnwrapImages from "remark-unwrap-images";
-import { ParseMdxProps } from "../types/rendering";
+import { CapturedResult, ParseMdxProps } from "../types/rendering";
 import {
   remarkCodeBlockEscape,
   RemarkCodeBlockEscapeOptions,
@@ -21,7 +21,10 @@ import remarkObsidianRich, {
   RemarkObsidianRichOptions,
 } from "./complex-plugins/obsidian-rich/remark-obsidian-rich";
 import { ObsidianRichProps } from "./complex-plugins/obsidian-rich/types";
-import { remarkObsidianTag } from "./complex-plugins/obsidian-tag/remark-obsidian-tag";
+import {
+  remarkObsidianTag,
+  RemarkObsidianTagOptions,
+} from "./complex-plugins/obsidian-tag/remark-obsidian-tag";
 import remarkObsidianWikilink, {
   RemarkObsidianWikilinkOptions,
 } from "./complex-plugins/obsidian-wikilink/remark-obsidian-wikilink";
@@ -29,14 +32,12 @@ import {
   rehypeHeadingAnchorCollection,
   RehypeSectionAnchorCollectionOptions,
 } from "./rehype-plugins/rehype-heading-anchor-collection";
-import { AnchorTree } from "./rehype-plugins/rehype-heading-anchor-collection-types";
 
-export type CapturedResult = {
-  trees: AnchorTree[];
-};
 const genMdxOptions = (props: ParseMdxProps) => {
   const capturedResult: CapturedResult = {
-    trees: [],
+    headingTrees: [],
+    wikiRefAliases: [],
+    richRefAliases: [],
   };
   const defaultMdxOptions: Omit<
     CompileOptions,
@@ -57,10 +58,27 @@ const genMdxOptions = (props: ParseMdxProps) => {
               "ObsidianRichExcalidraw",
             ],
           ],
+          isMetaPhase: props.isMetaPhase,
+          collectRefAliases: (aliases) => {
+            capturedResult.richRefAliases = aliases;
+          },
         } as RemarkObsidianRichOptions,
       ],
-      [remarkObsidianWikilink, {} as RemarkObsidianWikilinkOptions],
-      remarkObsidianTag,
+      [
+        remarkObsidianWikilink,
+        {
+          isMetaPhase: props.isMetaPhase,
+          collectRefAliases: (aliases) => {
+            capturedResult.wikiRefAliases = aliases;
+          },
+        } as RemarkObsidianWikilinkOptions,
+      ],
+      [
+        remarkObsidianTag,
+        {
+          isMetaPhase: props.isMetaPhase,
+        } as RemarkObsidianTagOptions,
+      ],
       remarkObsidianHighlight,
       [
         remarkCodeBlockEscape,
@@ -80,7 +98,7 @@ const genMdxOptions = (props: ParseMdxProps) => {
         rehypeHeadingAnchorCollection,
         {
           collectResult: (tree) => {
-            capturedResult.trees = tree;
+            capturedResult.headingTrees = tree;
           },
         } as RehypeSectionAnchorCollectionOptions,
       ],

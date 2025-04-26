@@ -1,4 +1,4 @@
-import { BaseMeta, PostMeta } from "../types/indexing";
+import { BaseMeta, MDXMeta, PostMeta } from "../types/indexing";
 import { AliasIndexBuilder } from "./index-building/alias-index-builder/alias-index-builder";
 import { ClipDataIndexBuilder } from "./index-building/clip-data-index-builder/clip-data-index-builder";
 import { PrevNextIndexBuilder } from "./index-building/prev-next-index-builder/prev-next-index-builder";
@@ -8,6 +8,7 @@ import {
   MockGitMetaCollector,
   defaultGitMetaCollector,
 } from "./meta-collecting/git-meta-collector";
+import { MDXMetaCollector } from "./meta-collecting/mdx-meta-collector";
 import { MetaCollectorChain } from "./meta-collecting/meta-collecting";
 import { PostRawMetaCollector } from "./meta-collecting/post-raw-meta-collector";
 import { PostPathMapper } from "./path-mapping/post-path-mapper";
@@ -50,10 +51,11 @@ export const defaultStaticResourceChain: MetaCollectorChain<BaseMeta> = {
   defaultMeta: {},
 };
 
-export const defaultChain: MetaCollectorChain<PostMeta> = {
+export const defaultChain: MetaCollectorChain<PostMeta & MDXMeta> = {
   collectors: [
     // new CacheMetaCollector(".", "cache", ["content"]),
     new PostRawMetaCollector(),
+    new MDXMetaCollector(),
     defaultGitMetaCollector(),
   ],
   defaultMeta: {
@@ -65,10 +67,13 @@ export const defaultChain: MetaCollectorChain<PostMeta> = {
     updated_at: null,
     tags: [],
     license: false,
+    headingTrees: [],
+    wikiRefAliases: [],
+    richRefAliases: [],
   },
 };
 
-export const devReloadingChain: MetaCollectorChain<PostMeta> = {
+export const devReloadingChain: MetaCollectorChain<PostMeta & MDXMeta> = {
   collectors: [new PostRawMetaCollector(), new MockGitMetaCollector()],
   defaultMeta: {
     content: "",
@@ -79,6 +84,9 @@ export const devReloadingChain: MetaCollectorChain<PostMeta> = {
     updated_at: null,
     tags: [],
     license: false,
+    headingTrees: [],
+    wikiRefAliases: [],
+    richRefAliases: [],
   },
 };
 

@@ -7,6 +7,7 @@
 import {
   BaseMeta,
   BasePathMapping,
+  MDXMeta,
   PagePathMapping,
   PostMeta,
   WikiPathMapping,
@@ -169,5 +170,5 @@ const getMetaOrReload = async <
 };
 
 export const getPostMetaOrReload = async (pagePath: string) => {
-  return getMetaOrReload<PagePathMapping, PostMeta>(pagePath);
+  return getMetaOrReload<PagePathMapping, PostMeta & MDXMeta>(pagePath);
 };

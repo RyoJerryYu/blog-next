@@ -47,7 +47,9 @@ import { ObsidianTagProps } from "./types";
 
 const syntax = /(^|[\s])(#[^\s]+)/;
 
-export type RemarkObsidianTagOptions = {};
+export type RemarkObsidianTagOptions = {
+  isMetaPhase?: boolean; // if true, only collect meta data, and not to use index
+};
 
 const DEFAULT_OPTIONS: RemarkObsidianTagOptions = {};
 
@@ -55,6 +57,12 @@ export const remarkObsidianTag: Plugin<[RemarkObsidianTagOptions?]> = (
   options
 ) => {
   const opts = { ...DEFAULT_OPTIONS, ...options };
+  const getTagsOf = (tags: string[]) => {
+    if (opts.isMetaPhase) {
+      return [];
+    }
+    return getTagIndex().getTagsOf(tags);
+  };
   return (tree) => {
     visit(
       tree,
@@ -84,7 +92,7 @@ export const remarkObsidianTag: Plugin<[RemarkObsidianTagOptions?]> = (
           tag,
         };
 
-        const tagInfos = getTagIndex().getTagsOf([tag]);
+        const tagInfos = getTagsOf([tag]);
         if (tagInfos.length > 0) {
           // resolvable tag
           const tagInfo = tagInfos[0];
