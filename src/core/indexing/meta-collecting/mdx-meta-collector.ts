@@ -8,7 +8,10 @@ export class MDXMetaCollector implements MetaCollector<MDXMeta> {
   handleAbleKeys = (): (keyof MDXMeta)[] | "*" => {
     return ["headingTrees", "wikiRefAliases", "richRefAliases"];
   };
-  async collectMeta(filePath: string): Promise<Partial<MDXMeta>> {
+  async collectMeta(
+    filePath: string,
+    prevMeta: Partial<MDXMeta>
+  ): Promise<Partial<MDXMeta>> {
     const raw = await promisify(fs.readFile)(filePath, "utf-8");
     const { capturedResult } = await parseMdx(raw, {
       isMetaPhase: true,

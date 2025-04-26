@@ -85,7 +85,10 @@ export class CacheMetaCollector<Meta extends BaseMeta>
    * @param filePath Path to the resource file, relative to project root
    * @returns Promise resolving to cached meta data with excluded fields removed, or empty object if cache invalid
    */
-  collectMeta = async (filePath: string): Promise<Partial<Meta>> => {
+  collectMeta = async (
+    filePath: string,
+    prevMeta: Partial<Meta>
+  ): Promise<Partial<Meta>> => {
     const cachePath = this.filePathToCachePath(filePath);
     if (await this.cacheExpired(filePath)) {
       return {};
