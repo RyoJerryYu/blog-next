@@ -23,7 +23,9 @@ const BackRefListElement = ({ postMeta, url }: BackRefListElementProps) => {
   return (
     <div className="flex-1 p-2 rounded-md hover:bg-bg-focus">
       <Link href={url} className="flex items-center">
-        <div className="text-lg flex-grow h-fit">{postMeta.title}</div>
+        <div className="text-lg flex-grow h-fit overflow-ellipsis">
+          {postMeta.title}
+        </div>
         <TagsBox tags={tags} className="py-4 md:py-1 flex-none" />
       </Link>
     </div>
