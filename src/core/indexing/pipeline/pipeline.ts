@@ -41,31 +41,6 @@ import {
  */
 
 /**
- * Builds the index from a list of resource maps.
- * It do not depend on other resources except the given resource maps.
- *
- * @param resourceMapsWithResourceType - An array of tuples containing the resource type and the resource map.
- * @param indexBuilder - The index builder.
- * @returns The built index.
- */
-export const buildIndexFromResourceMaps = async <
-  PathMapping extends BasePathMapping,
-  Meta extends BaseMeta,
-  Index,
-  IndexKey extends string
->(
-  resourceMapsWithResourceType: [string, ResourceMap<PathMapping, Meta>][], // [resourceType, resourceMap]
-  indexBuilder: IndexBuilder<PathMapping, Meta, Index, IndexKey>
-) => {
-  const resourcesByType: [string, Readonly<Resource<PathMapping, Meta>>[]][] =
-    resourceMapsWithResourceType.map(([key, map]) => [
-      key,
-      map.listResources(),
-    ]);
-  return await buildIndex(resourcesByType, indexBuilder);
-};
-
-/**
  * Represents a list of resource chains. Useful for extending as a tuple.
  */
 type ResourceChainListBase = readonly ResourceChain<string, any, any>[];
@@ -160,10 +135,10 @@ export const executePipeline = async <
   // Build indexes
   let indexPool: { [key: string]: any } = {};
   for (let { handleResources, builder } of pipline.indexBuilders) {
-    const resourceMaps: [string, ResourceMap<any, any>][] = handleResources.map(
-      (key) => [key, resourcePool[key]]
+    const resourceMaps: [string, Resource<any, any>[]][] = handleResources.map(
+      (key) => [key, resourcePool[key].listResources()]
     );
-    const index = await buildIndexFromResourceMaps(resourceMaps, builder);
+    const index = await buildIndex(resourceMaps, builder);
     indexPool = { ...indexPool, ...index };
   }
 
