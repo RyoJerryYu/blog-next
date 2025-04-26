@@ -28,6 +28,7 @@
  * - Building-this-blog.md
  */
 
+import { deduplicateArray } from "@/utils/func-utils";
 import path from "path";
 import {
   BaseMeta,
@@ -147,7 +148,8 @@ export class AliasIndex {
   };
 
   resolveBackRef = (pagePath: string) => {
-    return this.backRefIndex.get(pagePath) || [];
+    const res = this.backRefIndex.get(pagePath) || [];
+    return deduplicateArray(res);
   };
 
   static fromPool = getIndexFromIndexPool<AliasIndex>("alias");

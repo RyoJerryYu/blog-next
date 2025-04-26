@@ -1,5 +1,5 @@
 import { BaseMeta } from "@/core/types/indexing";
-import { mergeObjectIgnoreUndefined } from "@/utils/merge-object";
+import { mergeObjectIgnoreUndefined } from "@/utils/func-utils";
 
 /**
  * A type responsible for parsing meta data for a resource.
