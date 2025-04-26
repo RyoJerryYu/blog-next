@@ -23,7 +23,7 @@ import {
   PostResource,
 } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import { Description, Title } from "@/layouts/UniversalHead";
+import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
@@ -85,6 +85,13 @@ const LearnFromAiPage = (props: LearnFromAiPageProps) => {
     <>
       <Title>{props.meta.title}</Title>
       <Description>{props.meta.abstract}</Description>
+      <SEOObject
+        article={{
+          publishedTime: props.meta.created_at ?? undefined,
+          modifiedTime: props.meta.updated_at ?? undefined,
+          tags: props.meta.tags,
+        }}
+      />
       <DefaultLayout
         right={
           <Anchor
