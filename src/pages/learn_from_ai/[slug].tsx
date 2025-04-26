@@ -1,11 +1,14 @@
 import { ParsingProvider } from "@/components-parsing/component-parsing";
 import { Anchor } from "@/components/antd/Anchor";
+import BackRefList from "@/components/BackRefList/BackRefList";
 import Post from "@/components/Post";
 import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/types";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import {
+  getAliasIndex,
   getPostMetaOrReload,
   getPrevNextIndex,
+  getResource,
   getTagIndex,
   learnFromAiResourceMap,
   loadCache,
@@ -13,7 +16,12 @@ import {
 } from "@/core/indexing/indexing-cache";
 import { learnFromAiPostPathMapper } from "@/core/indexing/indexing-settings";
 import { parseMdx } from "@/core/parsing/rendering-parse";
-import { MDXMeta, PostMeta } from "@/core/types/indexing";
+import {
+  MDXMeta,
+  PagePathMapping,
+  PostMeta,
+  PostResource,
+} from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -35,6 +43,7 @@ type LearnFromAiPageProps = {
   source: MDXRemoteSerializeResult;
   meta: PostMeta & MDXMeta;
   prevNextInfo: PrevNextInfo;
+  backRefResources: PostResource[];
 };
 
 export const getStaticProps: GetStaticProps<
@@ -49,6 +58,10 @@ export const getStaticProps: GetStaticProps<
     mustGetResourceType(pagePath),
     pagePath
   );
+  const backRefPagePaths = getAliasIndex().resolveBackRef(pagePath);
+  const backRefResources = backRefPagePaths.map((pagePath) => {
+    return getResource<PagePathMapping, PostMeta>(pagePath);
+  });
 
   const tagIndex = getTagIndex();
   const tags = tagIndex.getTagsOf(meta.tags);
@@ -62,6 +75,7 @@ export const getStaticProps: GetStaticProps<
       source,
       meta,
       prevNextInfo,
+      backRefResources,
     },
   };
 };
@@ -88,6 +102,7 @@ const LearnFromAiPage = (props: LearnFromAiPageProps) => {
             prevNextInfo={props.prevNextInfo}
           />
         </ParsingProvider>
+        <BackRefList posts={props.backRefResources} />
       </DefaultLayout>
     </>
   );

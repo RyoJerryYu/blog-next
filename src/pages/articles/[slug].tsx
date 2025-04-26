@@ -1,20 +1,28 @@
 import { ParsingProvider } from "@/components-parsing/component-parsing";
 import { Anchor } from "@/components/antd/Anchor";
+import BackRefList from "@/components/BackRefList/BackRefList";
 import Comments from "@/components/Comments";
 import Post from "@/components/Post";
 import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/types";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import {
   articleResourceMap,
+  getAliasIndex,
   getPostMetaOrReload,
   getPrevNextIndex,
+  getResource,
   getTagIndex,
   loadCache,
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { articlePostPathMapper } from "@/core/indexing/indexing-settings";
 import { parseMdx } from "@/core/parsing/rendering-parse";
-import { MDXMeta, PostMeta } from "@/core/types/indexing";
+import {
+  MDXMeta,
+  PagePathMapping,
+  PostMeta,
+  PostResource,
+} from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -37,6 +45,7 @@ type ArticlePageProps = {
   source: MDXRemoteSerializeResult;
   meta: PostMeta & MDXMeta;
   prevNextInfo: PrevNextInfo;
+  backRefResources: PostResource[];
 };
 
 export const getStaticProps: GetStaticProps<
@@ -52,6 +61,10 @@ export const getStaticProps: GetStaticProps<
     mustGetResourceType(pagePath),
     pagePath
   );
+  const backRefPagePaths = getAliasIndex().resolveBackRef(pagePath);
+  const backRefResources = backRefPagePaths.map((pagePath) => {
+    return getResource<PagePathMapping, PostMeta>(pagePath);
+  });
 
   const tags = getTagIndex().getTagsOf(meta.tags);
 
@@ -65,6 +78,7 @@ export const getStaticProps: GetStaticProps<
     source,
     meta,
     prevNextInfo,
+    backRefResources,
   };
   // fs.writeFileSync(`temp/${slug}.tmp`, JSON.stringify(props));
 
@@ -100,6 +114,7 @@ const ArticlePage = (props: ArticlePageProps) => {
             prevNextInfo={props.prevNextInfo}
           />
         </ParsingProvider>
+        <BackRefList posts={props.backRefResources} />
         <Comments issue-term={props.slug} />
       </DefaultLayout>
     </>
