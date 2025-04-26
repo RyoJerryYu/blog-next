@@ -12,9 +12,8 @@ import {
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { learnFromAiPostPathMapper } from "@/core/indexing/indexing-settings";
-import { AnchorTree } from "@/core/parsing/rehype-plugins/rehype-heading-anchor-collection-types";
 import { parseMdx } from "@/core/parsing/rendering-parse";
-import { PostMeta } from "@/core/types/indexing";
+import { MDXMeta, PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -34,8 +33,7 @@ type LearnFromAiPageProps = {
   slug: string;
   tags: TagInfo[];
   source: MDXRemoteSerializeResult;
-  headingTrees: AnchorTree[];
-  meta: PostMeta;
+  meta: PostMeta & MDXMeta;
   prevNextInfo: PrevNextInfo;
 };
 
@@ -54,7 +52,7 @@ export const getStaticProps: GetStaticProps<
 
   const tagIndex = getTagIndex();
   const tags = tagIndex.getTagsOf(meta.tags);
-  const { source, capturedResult } = await parseMdx(meta.content, {
+  const { source } = await parseMdx(meta.content, {
     pagePath: pagePath,
   });
   return {
@@ -62,7 +60,6 @@ export const getStaticProps: GetStaticProps<
       slug,
       tags,
       source,
-      headingTrees: capturedResult.headingTrees,
       meta,
       prevNextInfo,
     },
@@ -77,7 +74,7 @@ const LearnFromAiPage = (props: LearnFromAiPageProps) => {
       <DefaultLayout
         right={
           <Anchor
-            items={props.headingTrees}
+            items={props.meta.headingTrees}
             offsetTop={64}
             className="overflow-y-auto"
           />

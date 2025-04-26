@@ -13,9 +13,8 @@ import {
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { articlePostPathMapper } from "@/core/indexing/indexing-settings";
-import { AnchorTree } from "@/core/parsing/rehype-plugins/rehype-heading-anchor-collection-types";
 import { parseMdx } from "@/core/parsing/rendering-parse";
-import { PostMeta } from "@/core/types/indexing";
+import { MDXMeta, PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -36,8 +35,7 @@ type ArticlePageProps = {
   slug: string;
   tags: TagInfo[];
   source: MDXRemoteSerializeResult;
-  headingTrees: AnchorTree[];
-  meta: PostMeta;
+  meta: PostMeta & MDXMeta;
   prevNextInfo: PrevNextInfo;
 };
 
@@ -65,7 +63,6 @@ export const getStaticProps: GetStaticProps<
     slug,
     tags,
     source,
-    headingTrees: meta.headingTrees,
     meta,
     prevNextInfo,
   };
@@ -89,7 +86,7 @@ const ArticlePage = (props: ArticlePageProps) => {
       <DefaultLayout
         right={
           <Anchor
-            items={props.headingTrees}
+            items={props.meta.headingTrees}
             offsetTop={64}
             className="overflow-y-auto"
           />

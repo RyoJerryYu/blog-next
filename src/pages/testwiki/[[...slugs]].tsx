@@ -12,9 +12,8 @@ import {
   testwikiResourceMap,
 } from "@/core/indexing/indexing-cache";
 import { testwikiPathMapper } from "@/core/indexing/indexing-settings";
-import { AnchorTree } from "@/core/parsing/rehype-plugins/rehype-heading-anchor-collection-types";
 import { parseMdx } from "@/core/parsing/rendering-parse";
-import { PostMeta } from "@/core/types/indexing";
+import { MDXMeta, PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -32,11 +31,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 type TestWikiPageProps = {
   slugs: string[];
-  meta: PostMeta;
+  meta: PostMeta & MDXMeta;
   tags: TagInfo[];
   wikiTree: WikiTreeInfo;
   source: MDXRemoteSerializeResult;
-  headingTrees: AnchorTree[];
 };
 
 export const getStaticProps: GetStaticProps<
@@ -49,7 +47,7 @@ export const getStaticProps: GetStaticProps<
   const meta = await getPostMetaOrReload(pagePath);
   const tags = getTagIndex().getTagsOf(meta.tags);
   const wikiTree = getWikiTreeIndex().pagePathToWikiTree("testwiki", pagePath);
-  const { source, capturedResult } = await parseMdx(meta.content, {
+  const { source } = await parseMdx(meta.content, {
     pagePath: pagePath,
   });
   return {
@@ -59,7 +57,6 @@ export const getStaticProps: GetStaticProps<
       tags,
       wikiTree,
       source,
-      headingTrees: capturedResult.headingTrees,
     },
   };
 };
@@ -78,7 +75,7 @@ const TestWikiPage = (props: TestWikiPageProps) => {
         }
         right={
           <Anchor
-            items={props.headingTrees}
+            items={props.meta.headingTrees}
             offsetTop={64}
             className="overflow-y-auto"
           />
