@@ -29,7 +29,12 @@
  */
 
 import path from "path";
-import { BaseMeta, BasePathMapping, Resource } from "../../../types/indexing";
+import {
+  BaseMeta,
+  BasePathMapping,
+  MDXMeta,
+  Resource,
+} from "../../../types/indexing";
 import { IndexBuilder, getIndexFromIndexPool } from "../index-building";
 
 const isPageFile = (urlpath: string) => {
@@ -62,16 +67,19 @@ export const aliasesFromPath = (path: string) => {
 };
 
 export class AliasIndexBuilder
-  implements IndexBuilder<BasePathMapping, BaseMeta, AliasIndex, "alias">
+  implements
+    IndexBuilder<BasePathMapping, BaseMeta | MDXMeta, AliasIndex, "alias">
 {
   // alias -> path
   private readonly index: Map<string, string>;
+  private readonly backRefIndex: Map<string, string[]>; // to page path -> from page paths
   constructor() {
     this.index = new Map();
+    this.backRefIndex = new Map();
   }
   addResource = (
     resourceType: string,
-    resource: Resource<BasePathMapping, BaseMeta>
+    resource: Resource<BasePathMapping, BaseMeta | MDXMeta>
   ) => {
     const { filePath, pagePath } = resource.pathMapping;
     const aliases = [
@@ -95,22 +103,51 @@ export class AliasIndexBuilder
       //   )}, new path: ${pagePath}`
       // );
     }
+
+    if (
+      !("wikiRefAliases" in resource.meta) ||
+      !("richRefAliases" in resource.meta)
+    ) {
+      return;
+    }
+
+    const wikiRefAliases = resource.meta.wikiRefAliases || [];
+    const richRefAliases = resource.meta.richRefAliases || [];
+    const refAliases = [...wikiRefAliases, ...richRefAliases];
+
+    for (const alias of refAliases) {
+      const toPagePath = this.index.get(alias);
+      if (!toPagePath) {
+        continue;
+      }
+
+      if (!this.backRefIndex.has(toPagePath)) {
+        this.backRefIndex.set(toPagePath, []);
+      }
+      this.backRefIndex.get(toPagePath)?.push(pagePath);
+    }
   };
   buildIndex = async (): Promise<{ alias: AliasIndex }> => {
     return {
-      alias: new AliasIndex(this.index),
+      alias: new AliasIndex(this.index, this.backRefIndex),
     };
   };
 }
 
 export class AliasIndex {
   private readonly index: Map<string, string>;
-  constructor(index: Map<string, string>) {
+  private readonly backRefIndex: Map<string, string[]>;
+  constructor(index: Map<string, string>, backRefIndex: Map<string, string[]>) {
     this.index = index;
+    this.backRefIndex = backRefIndex;
   }
 
   resolve = (alias: string) => {
     return this.index.get(alias);
+  };
+
+  resolveBackRef = (pagePath: string) => {
+    return this.backRefIndex.get(pagePath) || [];
   };
 
   static fromPool = getIndexFromIndexPool<AliasIndex>("alias");
