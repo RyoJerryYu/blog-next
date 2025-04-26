@@ -6,7 +6,7 @@ import { MetaCollector } from "./meta-collecting";
 
 export class MDXMetaCollector implements MetaCollector<MDXMeta> {
   handleAbleKeys = (): (keyof MDXMeta)[] | "*" => {
-    return ["headingTrees", "wikiRefAliases", "richRefPagePaths"];
+    return ["headingTrees", "wikiRefAliases", "richRefAliases"];
   };
   async collectMeta(filePath: string): Promise<Partial<MDXMeta>> {
     const raw = await promisify(fs.readFile)(filePath, "utf-8");

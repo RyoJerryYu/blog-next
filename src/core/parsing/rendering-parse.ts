@@ -37,7 +37,7 @@ const genMdxOptions = (props: ParseMdxProps) => {
   const capturedResult: CapturedResult = {
     headingTrees: [],
     wikiRefAliases: [],
-    richRefPagePaths: [],
+    richRefAliases: [],
   };
   const defaultMdxOptions: Omit<
     CompileOptions,
@@ -59,8 +59,8 @@ const genMdxOptions = (props: ParseMdxProps) => {
             ],
           ],
           isMetaPhase: props.isMetaPhase,
-          collectRefAliases: (toPagePaths) => {
-            capturedResult.richRefPagePaths = toPagePaths;
+          collectRefAliases: (aliases) => {
+            capturedResult.richRefAliases = aliases;
           },
         } as RemarkObsidianRichOptions,
       ],

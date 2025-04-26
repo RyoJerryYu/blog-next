@@ -69,7 +69,7 @@ export const defaultChain: MetaCollectorChain<PostMeta & MDXMeta> = {
     license: false,
     headingTrees: [],
     wikiRefAliases: [],
-    richRefPagePaths: [],
+    richRefAliases: [],
   },
 };
 
@@ -86,7 +86,7 @@ export const devReloadingChain: MetaCollectorChain<PostMeta & MDXMeta> = {
     license: false,
     headingTrees: [],
     wikiRefAliases: [],
-    richRefPagePaths: [],
+    richRefAliases: [],
   },
 };
 
