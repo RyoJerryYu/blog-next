@@ -71,7 +71,7 @@ export const loadCache = async () => {
   cache = await executePipeline(pipeline(), resourcePoolLoader);
 };
 
-const mustGetCache = () => {
+export const mustGetCache = () => {
   if (!cache) {
     throw new Error("Cache not initialized");
   }
