@@ -11,3 +11,8 @@ export type PostPageProps = {
   prevNextInfo: PrevNextInfo;
   backRefResources: PostResource[];
 };
+
+export type PostPageHyperProps = {
+  withSEO?: boolean;
+  withComments?: boolean;
+};

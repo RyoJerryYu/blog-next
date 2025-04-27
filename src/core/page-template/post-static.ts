@@ -64,7 +64,6 @@ export function buildPostGetStaticProps(
       prevNextInfo,
       backRefResources,
     };
-    // fs.writeFileSync(`temp/${slug}.tmp`, JSON.stringify(props));
 
     return { props };
   };

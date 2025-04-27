@@ -13,6 +13,9 @@ export const getStaticPaths: GetStaticPaths =
 export const getStaticProps: GetStaticProps<PostPageProps, { slug: string }> =
   buildPostGetStaticProps("articles", articlePostPathMapper());
 
-const ArticlePage = buildPostPage();
+const ArticlePage = buildPostPage({
+  withSEO: true,
+  withComments: true,
+});
 
 export default ArticlePage;
