@@ -36,7 +36,11 @@ import {
   MDXMeta,
   Resource,
 } from "../../../types/indexing";
-import { IndexBuilder, getIndexFromIndexPool } from "../index-building";
+import {
+  IndexBuilder,
+  IndexPool,
+  getIndexFromIndexPool,
+} from "../index-building";
 
 const isPageFile = (urlpath: string) => {
   return path.extname(urlpath) === ".md";
@@ -128,7 +132,7 @@ export class AliasIndexBuilder
       this.backRefIndex.get(toPagePath)?.push(pagePath);
     }
   };
-  buildIndex = async (): Promise<{ alias: AliasIndex }> => {
+  buildIndex = async (indexPool: IndexPool): Promise<{ alias: AliasIndex }> => {
     return {
       alias: new AliasIndex(this.index, this.backRefIndex),
     };

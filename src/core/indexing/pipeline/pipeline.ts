@@ -138,7 +138,7 @@ export const executePipeline = async <
     const resourceMaps: [string, Resource<any, any>[]][] = handleResources.map(
       (key) => [key, resourcePool[key].listResources()]
     );
-    const index = await buildIndex(resourceMaps, builder);
+    const index = await buildIndex(resourceMaps, builder, indexPool);
     indexPool = { ...indexPool, ...index };
   }
 
