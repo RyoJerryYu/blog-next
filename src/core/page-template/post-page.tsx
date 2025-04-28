@@ -3,10 +3,12 @@ import { Anchor } from "@/components/antd/Anchor";
 import BackRefList from "@/components/BackRefList/BackRefList";
 import Comments from "@/components/Comments";
 import Post from "@/components/Post";
+import PostList from "@/components/PostList";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import { JSX } from "react";
-import { PostPageProps } from "./post-type";
+import { tagInfoListToMap } from "../indexing/index-building/tag-index-builder/types";
+import { PostIndexPageProps, PostPageProps } from "./post-type";
 
 export function buildPostPage(): (props: PostPageProps) => JSX.Element {
   const PostPage = (props: PostPageProps) => {
@@ -49,4 +51,21 @@ export function buildPostPage(): (props: PostPageProps) => JSX.Element {
     );
   };
   return PostPage;
+}
+
+export function buildPostIndexPage(): (
+  props: PostIndexPageProps
+) => JSX.Element {
+  const PostIndexPage = (props: PostIndexPageProps) => {
+    const allTagsMap = tagInfoListToMap(props.allTagsList);
+    return (
+      <>
+        <Title>Articles</Title>
+        <DefaultLayout>
+          <PostList posts={props.posts} allTags={allTagsMap} />
+        </DefaultLayout>
+      </>
+    );
+  };
+  return PostIndexPage;
 }

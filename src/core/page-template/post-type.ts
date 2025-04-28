@@ -17,3 +17,8 @@ export type PostPageHyperProps = {
   withSEO?: boolean;
   withComments?: boolean;
 };
+
+export type PostIndexPageProps = {
+  allTagsList: TagInfo[];
+  posts: PostResource[];
+};
