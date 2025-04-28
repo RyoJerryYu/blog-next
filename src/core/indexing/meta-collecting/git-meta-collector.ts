@@ -37,14 +37,7 @@ export class GitMetaCollector implements MetaCollector<GitMeta> {
    *   - created_at: ISO date string of first commit
    *   - updated_at: ISO date string of latest commit (if more than one commit)
    */
-  collectMeta = async (
-    filePath: string,
-    prevMeta: Partial<GitMeta>
-  ): Promise<Partial<GitMeta>> => {
-    if (prevMeta.created_at && prevMeta.updated_at) {
-      return {};
-    }
-
+  collectMeta = async (filePath: string): Promise<Partial<GitMeta>> => {
     let commits;
     try {
       commits = await git.log({ fs, dir: this.gitDir, filepath: filePath });
@@ -90,10 +83,7 @@ export class MockGitMetaCollector implements MetaCollector<GitMeta> {
    *   - created_at: Tomorrow's date as ISO string
    *   - updated_at: Not included
    */
-  collectMeta = async (
-    filePath: string,
-    prevMeta: Partial<GitMeta>
-  ): Promise<Partial<GitMeta>> => {
+  collectMeta = async (filePath: string): Promise<Partial<GitMeta>> => {
     return {
       created_at: dayjs().add(1, "day").toJSON(),
     };

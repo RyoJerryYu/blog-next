@@ -34,10 +34,7 @@ export interface MetaCollector<Meta extends BaseMeta> {
    * @param filePath Path to the resource file, relative to project root
    * @returns Promise resolving to partial meta data for the resource
    */
-  collectMeta(
-    filePath: string,
-    prevMeta: Partial<Meta>
-  ): Promise<Partial<Meta>>;
+  collectMeta(filePath: string): Promise<Partial<Meta>>;
 
   /**
    * Optional deferred processing after all meta is collected.
@@ -85,7 +82,8 @@ export async function collectMetaForFilePath<Meta extends BaseMeta>(
       continue;
     }
 
-    const partialMeta = await collector.collectMeta(filePath, meta);
+    const partialMeta = await collector.collectMeta(filePath);
+    // meta = { ...partialMeta, ...meta };
     meta = mergeObjectIgnoreUndefined(partialMeta, meta);
     collectorExecuteds[i] = true;
   }

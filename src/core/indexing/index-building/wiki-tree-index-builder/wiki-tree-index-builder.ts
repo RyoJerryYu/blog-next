@@ -1,10 +1,6 @@
 import { Resource, WikiPathMapping } from "@/core/types/indexing";
 import { filePathToWikiSlugs } from "../../utils/wiki-utils";
-import {
-  getIndexFromIndexPool,
-  IndexBuilder,
-  IndexPool,
-} from "../index-building";
+import { getIndexFromIndexPool, IndexBuilder } from "../index-building";
 import {
   WikiTreeIndexMeta,
   WikiTreeIndexResource,
@@ -191,9 +187,7 @@ export class WikiTreeIndexBuilder
     }
     this.subWikiTreeIndexBuilders[resourceType].addResource(resource);
   };
-  buildIndex = async (
-    indexPool: IndexPool
-  ): Promise<{ wikiTree: WikiTreeIndex }> => {
+  buildIndex = async (): Promise<{ wikiTree: WikiTreeIndex }> => {
     const subIndexByResourceType: { [resourceType: string]: SubWikiTreeIndex } =
       Object.fromEntries(
         Object.entries(this.subWikiTreeIndexBuilders).map(

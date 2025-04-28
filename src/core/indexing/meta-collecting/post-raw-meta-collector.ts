@@ -63,10 +63,7 @@ export class PostRawMetaCollector implements MetaCollector<PostMeta> {
    * @param filePath Path to the resource file, relative to project root
    * @returns Promise resolving to partial meta data extracted from the file
    */
-  collectMeta = async (
-    filePath: string,
-    prevMeta: Partial<PostMeta>
-  ): Promise<Partial<PostMeta>> => {
+  collectMeta = async (filePath: string) => {
     console.log("parseMetaFromFile", filePath);
     const raw = await promisify(fs.readFile)(filePath, "utf-8");
     return this.collectMetaFromRaw(raw);

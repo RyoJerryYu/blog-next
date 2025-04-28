@@ -116,7 +116,6 @@ The indexing pipeline follows these steps:
 
      - Scans filesystem for content files (markdown, images, etc.)
      - Uses path mappers to establish file-to-URL relationships
-     - path mapper do not have state, so it could be reused
 
    - **Meta Collection**:
 
@@ -125,7 +124,6 @@ The indexing pipeline follows these steps:
        - Git history information (dates, authors)
        - File system stats
      - Each resource type may have different metadata needs
-     - meta collector do not have state, so it could be reused
 
    - **Index Building**:
      - Creates various indexes for site functionality:
@@ -133,7 +131,6 @@ The indexing pipeline follows these steps:
        - Post index for blog posts
        - Resource index for static files
      - Indexes are derived from collected resources and metadata
-     - index builder have state, so it could not be reused
 
 3. **Cache Storage**:
    - Saves complete resource pool to `.cache/resource-pool.json`

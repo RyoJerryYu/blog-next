@@ -1,10 +1,6 @@
 import { BasePathMapping, PostMeta, Resource } from "../../../types/indexing";
 import { timeStrToUnix } from "../../utils/git-utils";
-import {
-  IndexBuilder,
-  IndexPool,
-  getIndexFromIndexPool,
-} from "../index-building";
+import { IndexBuilder, getIndexFromIndexPool } from "../index-building";
 import { PrevNextIndexResource, PrevNextInfo } from "./types";
 
 // a helper function to sort posts by created at desc
@@ -107,9 +103,7 @@ export class PrevNextIndexBuilder
     this.subPrevNextIndexBuilders[resourceType].addResource(resource);
   };
 
-  buildIndex = async (
-    indexPool: IndexPool
-  ): Promise<{ prevNext: PrevNextIndex }> => {
+  buildIndex = async (): Promise<{ prevNext: PrevNextIndex }> => {
     const subIndexByResourceType: { [resourceType: string]: SubPrevNextIndex } =
       {};
     for (const resourceType in this.subPrevNextIndexBuilders) {

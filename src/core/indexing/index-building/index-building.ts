@@ -18,22 +18,20 @@ export type IndexBuilder<
   /**
    * Build the index object.
    * return object that would merge on the site index.
-   * @param indexPool - The index pool build by previous builders.
    * @returns An object that have a index on the key of this builder.
    */
-  buildIndex: (indexPool: { [key: string]: any }) => Promise<{
+  buildIndex: () => Promise<{
     [K in Key]: Index;
   }>;
-};
-
-export type IndexPool = {
-  [key: string]: any;
 };
 
 // represent a static method on index
 export type GetIndexFromIndexPool<Index> = (indexPool: {
   [key: string]: any;
 }) => Index;
+type IndexPool = {
+  [key: string]: any;
+};
 export const getIndexFromIndexPool: <Index>(
   key: string
 ) => GetIndexFromIndexPool<Index> = (key: string) => {
@@ -47,13 +45,12 @@ export const buildIndex = async <
   Key extends string
 >(
   resourceMapWithTypes: [string, Resource<PathMapping, Meta>[]][],
-  indexBuilder: IndexBuilder<PathMapping, Meta, Index, Key>,
-  indexPool: IndexPool
+  indexBuilder: IndexBuilder<PathMapping, Meta, Index, Key>
 ) => {
   for (const [resourceType, resources] of resourceMapWithTypes) {
     resources.forEach((resource) => {
       indexBuilder.addResource(resourceType, resource);
     });
   }
-  return await indexBuilder.buildIndex(indexPool);
+  return await indexBuilder.buildIndex();
 };

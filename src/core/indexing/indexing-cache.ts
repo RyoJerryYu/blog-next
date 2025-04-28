@@ -13,7 +13,6 @@ import {
   WikiPathMapping,
 } from "../types/indexing";
 import { AliasIndex } from "./index-building/alias-index-builder/alias-index-builder";
-import { BackrefIndex } from "./index-building/backref-index-builder/backref-index-builder";
 import { clipDataFromPool } from "./index-building/clip-data-index-builder/clip-data-index-builder";
 import { PrevNextIndex } from "./index-building/prev-next-index-builder/prev-next-index-builder";
 import { TagIndex } from "./index-building/tag-index-builder/tag-index-builder";
@@ -71,7 +70,7 @@ export const loadCache = async () => {
   cache = await executePipeline(pipeline(), resourcePoolLoader);
 };
 
-export const mustGetCache = () => {
+const mustGetCache = () => {
   if (!cache) {
     throw new Error("Cache not initialized");
   }
@@ -107,9 +106,6 @@ export const getTagIndex = () => {
 };
 export const getAliasIndex = () => {
   return AliasIndex.fromPool(mustGetCache().indexPool);
-};
-export const getBackrefIndex = () => {
-  return BackrefIndex.fromPool(mustGetCache().indexPool);
 };
 export const getClipData = () => {
   return clipDataFromPool(mustGetCache().indexPool);
