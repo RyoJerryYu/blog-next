@@ -14,7 +14,11 @@
  */
 
 import { BaseMeta, PagePathMapping, Resource } from "../../../types/indexing";
-import { IndexBuilder, getIndexFromIndexPool } from "../index-building";
+import {
+  IndexBuilder,
+  IndexPool,
+  getIndexFromIndexPool,
+} from "../index-building";
 import { PostSlugInfo, TagInfo } from "./types";
 
 /**
@@ -97,7 +101,7 @@ export class TagIndexBuilder
    * Builds and returns the final tag index
    * Returns an object with a single "tag" key containing the TagIndex instance
    */
-  buildIndex = async () => {
+  buildIndex = async (indexPool: IndexPool) => {
     return {
       tag: new TagIndex(this.index),
     };

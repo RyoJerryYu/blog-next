@@ -5,7 +5,7 @@ import Post from "@/components/Post";
 import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/types";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import {
-  getAliasIndex,
+  getBackrefIndex,
   getPostMetaOrReload,
   getPrevNextIndex,
   getResource,
@@ -58,7 +58,7 @@ export const getStaticProps: GetStaticProps<
     mustGetResourceType(pagePath),
     pagePath
   );
-  const backRefPagePaths = getAliasIndex().resolveBackRef(pagePath);
+  const backRefPagePaths = getBackrefIndex().resolve(pagePath);
   const backRefResources = backRefPagePaths.map((pagePath) => {
     return getResource<PagePathMapping, PostMeta>(pagePath);
   });

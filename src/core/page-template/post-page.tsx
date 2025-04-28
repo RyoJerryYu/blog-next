@@ -1,0 +1,52 @@
+import { ParsingProvider } from "@/components-parsing/component-parsing";
+import { Anchor } from "@/components/antd/Anchor";
+import BackRefList from "@/components/BackRefList/BackRefList";
+import Comments from "@/components/Comments";
+import Post from "@/components/Post";
+import DefaultLayout from "@/layouts/DefaultLayout";
+import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
+import { JSX } from "react";
+import { PostPageHyperProps, PostPageProps } from "./post-type";
+
+export function buildPostPage(
+  hyperProps: PostPageHyperProps
+): (props: PostPageProps) => JSX.Element {
+  const PostPage = (props: PostPageProps) => {
+    return (
+      <>
+        <Title>{props.meta.title}</Title>
+        <Description>{props.meta.abstract}</Description>
+        {hyperProps.withSEO && (
+          <SEOObject
+            article={{
+              publishedTime: props.meta.created_at ?? undefined,
+              modifiedTime: props.meta.updated_at ?? undefined,
+              tags: props.meta.tags,
+            }}
+          />
+        )}
+        <DefaultLayout
+          right={
+            <Anchor
+              items={props.meta.headingTrees}
+              offsetTop={64}
+              className="overflow-y-auto"
+            />
+          }
+        >
+          <ParsingProvider>
+            <Post
+              meta={props.meta}
+              tags={props.tags}
+              source={props.source}
+              prevNextInfo={props.prevNextInfo}
+            />
+          </ParsingProvider>
+          <BackRefList posts={props.backRefResources} />
+          {hyperProps.withComments && <Comments issue-term={props.slug} />}
+        </DefaultLayout>
+      </>
+    );
+  };
+  return PostPage;
+}

@@ -6,7 +6,7 @@ import { WikiTreeMenu } from "@/components/wiki/WikiTreeMenu";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import { WikiTreeInfo } from "@/core/indexing/index-building/wiki-tree-index-builder/types";
 import {
-  getAliasIndex,
+  getBackrefIndex,
   getPostMetaOrReload,
   getResource,
   getTagIndex,
@@ -59,7 +59,7 @@ export const getStaticProps: GetStaticProps<
   const { source } = await parseMdx(meta.content, {
     pagePath: pagePath,
   });
-  const backRefPagePaths = getAliasIndex().resolveBackRef(pagePath);
+  const backRefPagePaths = getBackrefIndex().resolve(pagePath);
   const backRefResources = backRefPagePaths.map((pagePath) => {
     return getResource<PagePathMapping, PostMeta>(pagePath);
   });

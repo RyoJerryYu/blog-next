@@ -1,5 +1,6 @@
 import { BaseMeta, MDXMeta, PostMeta } from "../types/indexing";
 import { AliasIndexBuilder } from "./index-building/alias-index-builder/alias-index-builder";
+import { BackrefIndexBuilder } from "./index-building/backref-index-builder/backref-index-builder";
 import { ClipDataIndexBuilder } from "./index-building/clip-data-index-builder/clip-data-index-builder";
 import { PrevNextIndexBuilder } from "./index-building/prev-next-index-builder/prev-next-index-builder";
 import { TagIndexBuilder } from "./index-building/tag-index-builder/tag-index-builder";
@@ -132,6 +133,10 @@ export const pipeline = () => ({
         "staticResources",
       ],
       builder: new AliasIndexBuilder(),
+    },
+    {
+      handleResources: ["articles", "ideas", "learn_from_ai", "testwiki"],
+      builder: new BackrefIndexBuilder(),
     },
     {
       handleResources: ["articles", "ideas", "learn_from_ai"],
