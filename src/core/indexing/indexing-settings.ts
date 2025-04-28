@@ -91,64 +91,66 @@ export const devReloadingChain: MetaCollectorChain<PostMeta & MDXMeta> = {
   },
 };
 
-export const pipeline = () => ({
-  resourceChains: [
-    {
-      resourceType: "staticResources",
-      pathMapper: defaultStaticResourcePathMapper(),
-      collectorChain: defaultStaticResourceChain,
-    },
-    {
-      resourceType: "articles",
-      pathMapper: articlePostPathMapper(),
-      collectorChain: defaultChain,
-    },
-    {
-      resourceType: "ideas",
-      pathMapper: ideaPostPathMapper(),
-      collectorChain: defaultChain,
-    },
-    {
-      resourceType: "learn_from_ai",
-      pathMapper: learnFromAiPostPathMapper(),
-      collectorChain: defaultChain,
-    },
-    {
-      resourceType: "testwiki",
-      pathMapper: testwikiPathMapper(),
-      collectorChain: defaultChain,
-    },
-  ],
-  indexBuilders: [
-    {
-      handleResources: ["articles", "ideas", "learn_from_ai", "testwiki"],
-      builder: new TagIndexBuilder(),
-    },
-    {
-      handleResources: [
-        "articles",
-        "ideas",
-        "learn_from_ai",
-        "testwiki",
-        "staticResources",
-      ],
-      builder: new AliasIndexBuilder(),
-    },
-    {
-      handleResources: ["articles", "ideas", "learn_from_ai", "testwiki"],
-      builder: new BackrefIndexBuilder(),
-    },
-    {
-      handleResources: ["articles", "ideas", "learn_from_ai"],
-      builder: new PrevNextIndexBuilder(),
-    },
-    {
-      handleResources: [],
-      builder: new ClipDataIndexBuilder(),
-    },
-    {
-      handleResources: ["testwiki"],
-      builder: new WikiTreeIndexBuilder(true),
-    },
-  ],
-});
+export function pipeline() {
+  return {
+    resourceChains: [
+      {
+        resourceType: "staticResources",
+        pathMapper: defaultStaticResourcePathMapper(),
+        collectorChain: defaultStaticResourceChain,
+      },
+      {
+        resourceType: "articles",
+        pathMapper: articlePostPathMapper(),
+        collectorChain: defaultChain,
+      },
+      {
+        resourceType: "ideas",
+        pathMapper: ideaPostPathMapper(),
+        collectorChain: defaultChain,
+      },
+      {
+        resourceType: "learn_from_ai",
+        pathMapper: learnFromAiPostPathMapper(),
+        collectorChain: defaultChain,
+      },
+      {
+        resourceType: "testwiki",
+        pathMapper: testwikiPathMapper(),
+        collectorChain: defaultChain,
+      },
+    ],
+    indexBuilders: [
+      {
+        handleResources: ["articles", "ideas", "learn_from_ai", "testwiki"],
+        builder: new TagIndexBuilder(),
+      },
+      {
+        handleResources: [
+          "articles",
+          "ideas",
+          "learn_from_ai",
+          "testwiki",
+          "staticResources",
+        ],
+        builder: new AliasIndexBuilder(),
+      },
+      {
+        handleResources: ["articles", "ideas", "learn_from_ai", "testwiki"],
+        builder: new BackrefIndexBuilder(),
+      },
+      {
+        handleResources: ["articles", "ideas", "learn_from_ai"],
+        builder: new PrevNextIndexBuilder(),
+      },
+      {
+        handleResources: [],
+        builder: new ClipDataIndexBuilder(),
+      },
+      {
+        handleResources: ["testwiki"],
+        builder: new WikiTreeIndexBuilder(true),
+      },
+    ],
+  };
+}
