@@ -10,11 +10,11 @@ import { GetStaticPaths, GetStaticProps } from "next";
 export const getStaticPaths: GetStaticPaths = buildPostGetStaticPaths("ideas");
 
 export const getStaticProps: GetStaticProps<PostPageProps, { slug: string }> =
-  buildPostGetStaticProps("ideas", ideaPostPathMapper());
+  buildPostGetStaticProps("ideas", ideaPostPathMapper(), {
+    withSEO: false,
+    withComments: false,
+  });
 
-const IdeaPage = buildPostPage({
-  withSEO: false,
-  withComments: false,
-});
+const IdeaPage = buildPostPage();
 
 export default IdeaPage;

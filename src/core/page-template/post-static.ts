@@ -13,7 +13,7 @@ import { PostPathMapper } from "../indexing/path-mapping/post-path-mapper";
 import { getResourceMap } from "../indexing/pipeline/resource-pool";
 import { parseMdx } from "../parsing/rendering-parse";
 import { PagePathMapping, PostMeta } from "../types/indexing";
-import { PostPageProps } from "./post-type";
+import { PostPageHyperProps, PostPageProps } from "./post-type";
 
 export function buildPostGetStaticPaths(resourceType: string): GetStaticPaths {
   return async () => {
@@ -33,7 +33,8 @@ export function buildPostGetStaticPaths(resourceType: string): GetStaticPaths {
 
 export function buildPostGetStaticProps(
   resourceType: string,
-  pathMapper: PostPathMapper
+  pathMapper: PostPathMapper,
+  hyperProps: PostPageHyperProps
 ): GetStaticProps<PostPageProps, { slug: string }> {
   return async ({ params }) => {
     console.log(`onGetStaticProps: ${params?.slug}`);
@@ -63,6 +64,7 @@ export function buildPostGetStaticProps(
       meta,
       prevNextInfo,
       backRefResources,
+      hyperProps,
     };
 
     return { props };

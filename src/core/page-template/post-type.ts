@@ -10,6 +10,7 @@ export type PostPageProps = {
   meta: PostMeta & MDXMeta;
   prevNextInfo: PrevNextInfo;
   backRefResources: PostResource[];
+  hyperProps: PostPageHyperProps;
 };
 
 export type PostPageHyperProps = {
