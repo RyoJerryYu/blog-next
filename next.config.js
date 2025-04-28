@@ -13,6 +13,9 @@ const nextConfig = {
     "antd",
     "@ant-design/icons-svg",
   ],
+  experimental: {
+    serverMinification: false,
+  },
   // experimental: {
   //   // we load metadata when build-time, which is very very slow.
   //   // and those metadata are immutable and could be cached.
