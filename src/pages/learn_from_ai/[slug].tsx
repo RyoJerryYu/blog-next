@@ -11,11 +11,11 @@ export const getStaticPaths: GetStaticPaths =
   buildPostGetStaticPaths("learn_from_ai");
 
 export const getStaticProps: GetStaticProps<PostPageProps, { slug: string }> =
-  buildPostGetStaticProps("learn_from_ai", learnFromAiPostPathMapper());
+  buildPostGetStaticProps("learn_from_ai", learnFromAiPostPathMapper(), {
+    withSEO: true,
+    withComments: false,
+  });
 
-const LearnFromAiPage = buildPostPage({
-  withSEO: true,
-  withComments: false,
-});
+const LearnFromAiPage = buildPostPage();
 
 export default LearnFromAiPage;

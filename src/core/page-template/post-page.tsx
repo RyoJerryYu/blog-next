@@ -3,20 +3,20 @@ import { Anchor } from "@/components/antd/Anchor";
 import BackRefList from "@/components/BackRefList/BackRefList";
 import Comments from "@/components/Comments";
 import Post from "@/components/Post";
+import PostList from "@/components/PostList";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import { JSX } from "react";
-import { PostPageHyperProps, PostPageProps } from "./post-type";
+import { tagInfoListToMap } from "../indexing/index-building/tag-index-builder/types";
+import { PostIndexPageProps, PostPageProps } from "./post-type";
 
-export function buildPostPage(
-  hyperProps: PostPageHyperProps
-): (props: PostPageProps) => JSX.Element {
+export function buildPostPage(): (props: PostPageProps) => JSX.Element {
   const PostPage = (props: PostPageProps) => {
     return (
       <>
         <Title>{props.meta.title}</Title>
         <Description>{props.meta.abstract}</Description>
-        {hyperProps.withSEO && (
+        {props.hyperProps.withSEO && (
           <SEOObject
             article={{
               publishedTime: props.meta.created_at ?? undefined,
@@ -43,10 +43,29 @@ export function buildPostPage(
             />
           </ParsingProvider>
           <BackRefList posts={props.backRefResources} />
-          {hyperProps.withComments && <Comments issue-term={props.slug} />}
+          {props.hyperProps.withComments && (
+            <Comments issue-term={props.slug} />
+          )}
         </DefaultLayout>
       </>
     );
   };
   return PostPage;
+}
+
+export function buildPostIndexPage(): (
+  props: PostIndexPageProps
+) => JSX.Element {
+  const PostIndexPage = (props: PostIndexPageProps) => {
+    const allTagsMap = tagInfoListToMap(props.allTagsList);
+    return (
+      <>
+        <Title>Articles</Title>
+        <DefaultLayout>
+          <PostList posts={props.posts} allTags={allTagsMap} />
+        </DefaultLayout>
+      </>
+    );
+  };
+  return PostIndexPage;
 }

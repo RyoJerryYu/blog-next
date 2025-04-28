@@ -11,11 +11,11 @@ export const getStaticPaths: GetStaticPaths =
   buildPostGetStaticPaths("articles");
 
 export const getStaticProps: GetStaticProps<PostPageProps, { slug: string }> =
-  buildPostGetStaticProps("articles", articlePostPathMapper());
+  buildPostGetStaticProps("articles", articlePostPathMapper(), {
+    withSEO: true,
+    withComments: true,
+  });
 
-const ArticlePage = buildPostPage({
-  withSEO: true,
-  withComments: true,
-});
+const ArticlePage = buildPostPage();
 
 export default ArticlePage;

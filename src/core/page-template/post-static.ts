@@ -13,7 +13,11 @@ import { PostPathMapper } from "../indexing/path-mapping/post-path-mapper";
 import { getResourceMap } from "../indexing/pipeline/resource-pool";
 import { parseMdx } from "../parsing/rendering-parse";
 import { PagePathMapping, PostMeta } from "../types/indexing";
-import { PostPageProps } from "./post-type";
+import {
+  PostIndexPageProps,
+  PostPageHyperProps,
+  PostPageProps,
+} from "./post-type";
 
 export function buildPostGetStaticPaths(resourceType: string): GetStaticPaths {
   return async () => {
@@ -33,7 +37,8 @@ export function buildPostGetStaticPaths(resourceType: string): GetStaticPaths {
 
 export function buildPostGetStaticProps(
   resourceType: string,
-  pathMapper: PostPathMapper
+  pathMapper: PostPathMapper,
+  hyperProps: PostPageHyperProps
 ): GetStaticProps<PostPageProps, { slug: string }> {
   return async ({ params }) => {
     console.log(`onGetStaticProps: ${params?.slug}`);
@@ -63,8 +68,36 @@ export function buildPostGetStaticProps(
       meta,
       prevNextInfo,
       backRefResources,
+      hyperProps,
     };
 
     return { props };
+  };
+}
+
+export function buildPostIndexGetStaticProps(
+  resourceType: string
+): GetStaticProps<PostIndexPageProps> {
+  return async () => {
+    console.log(`onGetStaticProps: ${resourceType}`);
+    await loadCache();
+    const pageMap = getResourceMap<PagePathMapping, PostMeta>(
+      mustGetCache().resourcePool,
+      resourceType
+    );
+    console.log(`all page paths for ${resourceType}:`, pageMap.listPagePaths());
+
+    const pagePaths = getPrevNextIndex()
+      .listResources(resourceType)
+      .map((r) => r.pathMapping.pagePath);
+    const posts = pagePaths.map(pageMap.pagePathToResource);
+    const allTagsList = getTagIndex().getTags();
+
+    return {
+      props: {
+        posts,
+        allTagsList,
+      },
+    };
   };
 }
