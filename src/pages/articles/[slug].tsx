@@ -8,13 +8,12 @@ import {
   getPostMetaOrReload,
   getPrevNextIndex,
   getResource,
-  getResourcePool,
   getTagIndex,
   loadCache,
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { articlePostPathMapper } from "@/core/indexing/indexing-settings";
-import { getResourceMap } from "@/core/indexing/pipeline/resource-pool";
+import { postGetStaticPaths } from "@/core/page-template/post-static";
 import { PostPageProps } from "@/core/page-template/post-types";
 import { parseMdx } from "@/core/parsing/rendering-parse";
 import { PagePathMapping, PostMeta } from "@/core/types/indexing";
@@ -25,17 +24,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 const resourceType = "articles";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  console.log(`onGetStaticPaths:`);
-  await loadCache();
-  const postMap = getResourceMap<PagePathMapping, PostMeta>(
-    getResourcePool(),
-    resourceType
-  );
-  const pagePaths = postMap.listPagePaths();
-  return {
-    paths: pagePaths,
-    fallback: false,
-  };
+  return await postGetStaticPaths(resourceType);
 };
 
 const pathMapper = articlePostPathMapper();
