@@ -80,8 +80,6 @@ export const getStaticProps: GetStaticProps<
     prevNextInfo,
     backRefResources,
   };
-  // fs.writeFileSync(`temp/${slug}.tmp`, JSON.stringify(props));
-
   return { props };
 };
 
