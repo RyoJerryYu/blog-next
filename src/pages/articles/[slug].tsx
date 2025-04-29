@@ -13,7 +13,7 @@ import {
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { articlePostPathMapper } from "@/core/indexing/indexing-settings";
-import { postGetStaticPaths } from "@/core/page-template/post-static-path";
+import { postGetStaticPaths } from "@/core/page-template/post-static-paths";
 import { PostPageProps } from "@/core/page-template/post-types";
 import { parseMdx } from "@/core/parsing/rendering-parse";
 import { PagePathMapping, PostMeta } from "@/core/types/indexing";
@@ -27,14 +27,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return await postGetStaticPaths(resourceType);
 };
 
-const pathMapper = articlePostPathMapper();
-
 export const getStaticProps: GetStaticProps<
   PostPageProps,
   { slug: string }
 > = async ({ params }) => {
   console.log(`onGetStaticProps: ${params?.slug}`);
   await loadCache();
+  const pathMapper = articlePostPathMapper();
   const slug = params!.slug;
   const pagePath = pathMapper.slugToPagePath(slug);
   const meta = await getPostMetaOrReload(pagePath);
