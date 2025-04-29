@@ -4,8 +4,8 @@ import {
   getPostMetaOrReload,
   getPrevNextIndex,
   getResource,
+  getResourcePool,
   getTagIndex,
-  mustGetCache,
   mustGetResourceType,
 } from "../indexing/indexing-cache";
 import { PostPathMapper } from "../indexing/path-mapping/post-path-mapper";
@@ -22,7 +22,7 @@ export function buildPostGetStaticPaths(resourceType: string): GetStaticPaths {
   return async () => {
     console.log(`onGetStaticPaths: ${resourceType}`);
     const pageMap = getResourceMap<PagePathMapping, PostMeta>(
-      mustGetCache().resourcePool,
+      getResourcePool(),
       resourceType
     );
     const pagePaths = pageMap.listPagePaths();
@@ -78,7 +78,7 @@ export function buildPostIndexGetStaticProps(
   return async () => {
     console.log(`onGetStaticProps: ${resourceType}`);
     const pageMap = getResourceMap<PagePathMapping, PostMeta>(
-      mustGetCache().resourcePool,
+      getResourcePool(),
       resourceType
     );
     console.log(`all page paths for ${resourceType}:`, pageMap.listPagePaths());

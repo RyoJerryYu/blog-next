@@ -78,29 +78,33 @@ export const mustGetCache = () => {
   return cache;
 };
 
+export const getResourceTypeMap = () => mustGetCache().resourceTypeMap;
+export const getResourcePool = () => mustGetCache().resourcePool;
+export const getIndexPool = () => mustGetCache().indexPool;
+
 export const testwikiResourceMap = () => {
   return getResourceMap<WikiPathMapping, PostMeta>(
-    mustGetCache().resourcePool,
+    getResourcePool(),
     "testwiki"
   );
 };
 export const getTagIndex = () => {
-  return TagIndex.fromPool(mustGetCache().indexPool);
+  return TagIndex.fromPool(getIndexPool());
 };
 export const getAliasIndex = () => {
-  return AliasIndex.fromPool(mustGetCache().indexPool);
+  return AliasIndex.fromPool(getIndexPool());
 };
 export const getBackrefIndex = () => {
-  return BackrefIndex.fromPool(mustGetCache().indexPool);
+  return BackrefIndex.fromPool(getIndexPool());
 };
 export const getClipData = () => {
-  return clipDataFromPool(mustGetCache().indexPool);
+  return clipDataFromPool(getIndexPool());
 };
 export const getPrevNextIndex = () => {
-  return PrevNextIndex.fromPool(mustGetCache().indexPool);
+  return PrevNextIndex.fromPool(getIndexPool());
 };
 export const getWikiTreeIndex = () => {
-  return WikiTreeIndex.fromPool(mustGetCache().indexPool);
+  return WikiTreeIndex.fromPool(getIndexPool());
 };
 
 // a helper function to get resource type from page path
