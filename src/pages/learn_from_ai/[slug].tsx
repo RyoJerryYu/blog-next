@@ -12,7 +12,7 @@ import {
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { learnFromAiPostPathMapper } from "@/core/indexing/indexing-settings";
-import { postGetStaticPaths } from "@/core/page-template/post-static";
+import { postGetStaticPaths } from "@/core/page-template/post-static-path";
 import { PostPageProps } from "@/core/page-template/post-types";
 import { parseMdx } from "@/core/parsing/rendering-parse";
 import { PagePathMapping, PostMeta } from "@/core/types/indexing";
