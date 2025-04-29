@@ -31,8 +31,8 @@ import { MDXRemoteSerializeResult } from "next-mdx-remote";
 export const getStaticPaths: GetStaticPaths = async () => {
   console.log(`onGetStaticPaths:`);
   await loadCache();
-  const articleMap = articleResourceMap();
-  const pagePaths = articleMap.listPagePaths();
+  const postMap = articleResourceMap();
+  const pagePaths = postMap.listPagePaths();
   return {
     paths: pagePaths,
     fallback: false,

@@ -28,9 +28,10 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  console.log(`onGetStaticPaths:`);
   await loadCache();
-  const ideaMap = ideaResourceMap();
-  const pagePaths = ideaMap.listPagePaths();
+  const postMap = ideaResourceMap();
+  const pagePaths = postMap.listPagePaths();
   return {
     paths: pagePaths,
     fallback: false,
@@ -50,6 +51,7 @@ export const getStaticProps: GetStaticProps<
   IdeaPageProps,
   { slug: string }
 > = async ({ params }) => {
+  console.log(`onGetStaticProps: ${params?.slug}`);
   await loadCache();
   const slug = params!.slug;
   const pagePath = ideaPostPathMapper().slugToPagePath(slug);
@@ -63,21 +65,21 @@ export const getStaticProps: GetStaticProps<
     return getResource<PagePathMapping, PostMeta>(pagePath);
   });
 
-  const tagIndex = getTagIndex();
-  const tags = tagIndex.getTagsOf(meta.tags);
+  const tags = getTagIndex().getTagsOf(meta.tags);
+
   const { source } = await parseMdx(meta.content, {
     pagePath: pagePath,
   });
-  return {
-    props: {
-      slug,
-      tags,
-      source,
-      meta,
-      prevNextInfo,
-      backRefResources,
-    },
+
+  const props: IdeaPageProps = {
+    slug,
+    tags,
+    source,
+    meta,
+    prevNextInfo,
+    backRefResources,
   };
+  return { props };
 };
 
 const IdeaPage = (props: IdeaPageProps) => {
