@@ -1,6 +1,6 @@
 import { loadCache } from "@/core/indexing/indexing-cache";
 import { testwikiPathMapper } from "@/core/indexing/indexing-settings";
-import { buildWikiPage } from "@/core/page-template/wiki-page";
+import { WikiPage } from "@/core/page-template/wiki-page";
 import {
   wikiGetStaticPaths,
   wikiGetStaticProps,
@@ -23,6 +23,6 @@ export const getStaticProps: GetStaticProps<
   return await wikiGetStaticProps("testwiki", slugs, pathMapper);
 };
 
-const TestWikiPage = buildWikiPage();
+const TestWikiPage = WikiPage;
 
 export default TestWikiPage;
