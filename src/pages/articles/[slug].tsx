@@ -4,16 +4,17 @@ import BackRefList from "@/components/BackRefList/BackRefList";
 import Comments from "@/components/Comments";
 import Post from "@/components/Post";
 import {
-  articleResourceMap,
   getAliasIndex,
   getPostMetaOrReload,
   getPrevNextIndex,
   getResource,
+  getResourcePool,
   getTagIndex,
   loadCache,
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { articlePostPathMapper } from "@/core/indexing/indexing-settings";
+import { getResourceMap } from "@/core/indexing/pipeline/resource-pool";
 import { PostPageProps } from "@/core/page-template/post-types";
 import { parseMdx } from "@/core/parsing/rendering-parse";
 import { PagePathMapping, PostMeta } from "@/core/types/indexing";
@@ -24,7 +25,10 @@ import { GetStaticPaths, GetStaticProps } from "next";
 export const getStaticPaths: GetStaticPaths = async () => {
   console.log(`onGetStaticPaths:`);
   await loadCache();
-  const postMap = articleResourceMap();
+  const postMap = getResourceMap<PagePathMapping, PostMeta>(
+    getResourcePool(),
+    "articles"
+  );
   const pagePaths = postMap.listPagePaths();
   return {
     paths: pagePaths,

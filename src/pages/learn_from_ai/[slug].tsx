@@ -7,12 +7,13 @@ import {
   getPostMetaOrReload,
   getPrevNextIndex,
   getResource,
+  getResourcePool,
   getTagIndex,
-  learnFromAiResourceMap,
   loadCache,
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { learnFromAiPostPathMapper } from "@/core/indexing/indexing-settings";
+import { getResourceMap } from "@/core/indexing/pipeline/resource-pool";
 import { PostPageProps } from "@/core/page-template/post-types";
 import { parseMdx } from "@/core/parsing/rendering-parse";
 import { PagePathMapping, PostMeta } from "@/core/types/indexing";
@@ -23,7 +24,10 @@ import { GetStaticPaths, GetStaticProps } from "next";
 export const getStaticPaths: GetStaticPaths = async () => {
   console.log(`onGetStaticPaths:`);
   await loadCache();
-  const learnFromAiMap = learnFromAiResourceMap();
+  const learnFromAiMap = getResourceMap<PagePathMapping, PostMeta>(
+    getResourcePool(),
+    "learn_from_ai"
+  );
   const pagePaths = learnFromAiMap.listPagePaths();
   return {
     paths: pagePaths,
