@@ -5,7 +5,6 @@ import {
   getPrevNextIndex,
   getResource,
   getTagIndex,
-  loadCache,
   mustGetCache,
   mustGetResourceType,
 } from "../indexing/indexing-cache";
@@ -22,7 +21,6 @@ import {
 export function buildPostGetStaticPaths(resourceType: string): GetStaticPaths {
   return async () => {
     console.log(`onGetStaticPaths: ${resourceType}`);
-    await loadCache();
     const pageMap = getResourceMap<PagePathMapping, PostMeta>(
       mustGetCache().resourcePool,
       resourceType
@@ -42,7 +40,6 @@ export function buildPostGetStaticProps(
 ): GetStaticProps<PostPageProps, { slug: string }> {
   return async ({ params }) => {
     console.log(`onGetStaticProps: ${params?.slug}`);
-    await loadCache();
     const slug = params!.slug;
     const pagePath = pathMapper.slugToPagePath(slug);
     const meta = await getPostMetaOrReload(pagePath);
@@ -80,7 +77,6 @@ export function buildPostIndexGetStaticProps(
 ): GetStaticProps<PostIndexPageProps> {
   return async () => {
     console.log(`onGetStaticProps: ${resourceType}`);
-    await loadCache();
     const pageMap = getResourceMap<PagePathMapping, PostMeta>(
       mustGetCache().resourcePool,
       resourceType
