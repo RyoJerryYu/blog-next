@@ -78,24 +78,6 @@ export const mustGetCache = () => {
   return cache;
 };
 
-export const articleResourceMap = () => {
-  return getResourceMap<PagePathMapping, PostMeta>(
-    mustGetCache().resourcePool,
-    "articles"
-  );
-};
-export const ideaResourceMap = () => {
-  return getResourceMap<PagePathMapping, PostMeta>(
-    mustGetCache().resourcePool,
-    "ideas"
-  );
-};
-export const learnFromAiResourceMap = () => {
-  return getResourceMap<PagePathMapping, PostMeta>(
-    mustGetCache().resourcePool,
-    "learn_from_ai"
-  );
-};
 export const testwikiResourceMap = () => {
   return getResourceMap<WikiPathMapping, PostMeta>(
     mustGetCache().resourcePool,

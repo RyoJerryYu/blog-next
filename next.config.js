@@ -13,6 +13,13 @@ const nextConfig = {
     "antd",
     "@ant-design/icons-svg",
   ],
+  experimental: {
+    serverMinification: false,
+
+    // 关闭可能导致问题的优化
+    optimizeCss: false,
+    scrollRestoration: false,
+  },
   // experimental: {
   //   // we load metadata when build-time, which is very very slow.
   //   // and those metadata are immutable and could be cached.
@@ -22,6 +29,11 @@ const nextConfig = {
   //   cpus: 1,
   //   workerThreads: false,
   // },
+  webpack: (config) => {
+    // 禁用模块合并（测试用途）
+    config.optimization.concatenateModules = false;
+    return config;
+  },
   images: {
     unoptimized: true,
     remotePatterns: [
