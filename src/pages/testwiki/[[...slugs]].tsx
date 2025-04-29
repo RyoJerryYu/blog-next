@@ -3,8 +3,6 @@ import { Anchor } from "@/components/antd/Anchor";
 import BackRefList from "@/components/BackRefList/BackRefList";
 import Post from "@/components/Post";
 import { WikiTreeMenu } from "@/components/wiki/WikiTreeMenu";
-import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
-import { WikiTreeInfo } from "@/core/indexing/index-building/wiki-tree-index-builder/types";
 import {
   getBackrefIndex,
   getPostMetaOrReload,
@@ -15,17 +13,12 @@ import {
   testwikiResourceMap,
 } from "@/core/indexing/indexing-cache";
 import { testwikiPathMapper } from "@/core/indexing/indexing-settings";
+import { WikiPageProps } from "@/core/page-template/wiki-type";
 import { parseMdx } from "@/core/parsing/rendering-parse";
-import {
-  MDXMeta,
-  PagePathMapping,
-  PostMeta,
-  PostResource,
-} from "@/core/types/indexing";
+import { PagePathMapping, PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   await loadCache();
@@ -37,17 +30,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-type TestWikiPageProps = {
-  slugs: string[];
-  meta: PostMeta & MDXMeta;
-  tags: TagInfo[];
-  wikiTree: WikiTreeInfo;
-  source: MDXRemoteSerializeResult;
-  backRefResources: PostResource[];
-};
-
 export const getStaticProps: GetStaticProps<
-  TestWikiPageProps,
+  WikiPageProps,
   { slugs: string[] }
 > = async ({ params }) => {
   await loadCache();
@@ -75,7 +59,7 @@ export const getStaticProps: GetStaticProps<
   };
 };
 
-const TestWikiPage = (props: TestWikiPageProps) => {
+const TestWikiPage = (props: WikiPageProps) => {
   return (
     <>
       <Title>{props.meta.title}</Title>
