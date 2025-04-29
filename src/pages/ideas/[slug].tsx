@@ -21,12 +21,14 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
 
+const resourceType = "ideas";
+
 export const getStaticPaths: GetStaticPaths = async () => {
   console.log(`onGetStaticPaths:`);
   await loadCache();
   const postMap = getResourceMap<PagePathMapping, PostMeta>(
     getResourcePool(),
-    "ideas"
+    resourceType
   );
   const pagePaths = postMap.listPagePaths();
   return {
@@ -35,12 +37,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
+const pathMapper = ideaPostPathMapper();
+
 export const getStaticProps: GetStaticProps<
   PostPageProps,
   { slug: string }
 > = async ({ params }) => {
   console.log(`onGetStaticProps: ${params?.slug}`);
-  const pathMapper = ideaPostPathMapper();
   await loadCache();
   const slug = params!.slug;
   const pagePath = pathMapper.slugToPagePath(slug);
