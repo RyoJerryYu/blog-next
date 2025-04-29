@@ -10,7 +10,6 @@ import {
   MDXMeta,
   PagePathMapping,
   PostMeta,
-  WikiPathMapping,
 } from "../types/indexing";
 import { AliasIndex } from "./index-building/alias-index-builder/alias-index-builder";
 import { BackrefIndex } from "./index-building/backref-index-builder/backref-index-builder";
@@ -78,12 +77,6 @@ export const mustGetCache = () => {
   return cache;
 };
 
-export const testwikiResourceMap = () => {
-  return getResourceMap<WikiPathMapping, PostMeta>(
-    mustGetCache().resourcePool,
-    "testwiki"
-  );
-};
 export const getTagIndex = () => {
   return TagIndex.fromPool(mustGetCache().indexPool);
 };
