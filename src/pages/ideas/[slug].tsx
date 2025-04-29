@@ -23,6 +23,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 const resourceType = "ideas";
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  await loadCache();
   return await postGetStaticPaths(resourceType);
 };
 

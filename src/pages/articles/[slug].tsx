@@ -24,6 +24,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 const resourceType = "articles";
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  await loadCache();
   return await postGetStaticPaths(resourceType);
 };
 
