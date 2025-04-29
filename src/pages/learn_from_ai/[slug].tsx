@@ -2,8 +2,6 @@ import { ParsingProvider } from "@/components-parsing/component-parsing";
 import { Anchor } from "@/components/antd/Anchor";
 import BackRefList from "@/components/BackRefList/BackRefList";
 import Post from "@/components/Post";
-import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/types";
-import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import {
   getAliasIndex,
   getPostMetaOrReload,
@@ -15,17 +13,12 @@ import {
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { learnFromAiPostPathMapper } from "@/core/indexing/indexing-settings";
+import { PostPageProps } from "@/core/page-template/post-types";
 import { parseMdx } from "@/core/parsing/rendering-parse";
-import {
-  MDXMeta,
-  PagePathMapping,
-  PostMeta,
-  PostResource,
-} from "@/core/types/indexing";
+import { PagePathMapping, PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   console.log(`onGetStaticPaths:`);
@@ -38,17 +31,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-type LearnFromAiPageProps = {
-  slug: string;
-  tags: TagInfo[];
-  source: MDXRemoteSerializeResult;
-  meta: PostMeta & MDXMeta;
-  prevNextInfo: PrevNextInfo;
-  backRefResources: PostResource[];
-};
-
 export const getStaticProps: GetStaticProps<
-  LearnFromAiPageProps,
+  PostPageProps,
   { slug: string }
 > = async ({ params }) => {
   console.log(`onGetStaticProps: ${params?.slug}`);
@@ -71,7 +55,7 @@ export const getStaticProps: GetStaticProps<
     pagePath: pagePath,
   });
 
-  const props: LearnFromAiPageProps = {
+  const props: PostPageProps = {
     slug,
     tags,
     source,
@@ -82,7 +66,7 @@ export const getStaticProps: GetStaticProps<
   return { props };
 };
 
-const LearnFromAiPage = (props: LearnFromAiPageProps) => {
+const LearnFromAiPage = (props: PostPageProps) => {
   return (
     <>
       <Title>{props.meta.title}</Title>

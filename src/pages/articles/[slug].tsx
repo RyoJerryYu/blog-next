@@ -3,8 +3,6 @@ import { Anchor } from "@/components/antd/Anchor";
 import BackRefList from "@/components/BackRefList/BackRefList";
 import Comments from "@/components/Comments";
 import Post from "@/components/Post";
-import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/types";
-import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import {
   articleResourceMap,
   getAliasIndex,
@@ -16,17 +14,12 @@ import {
   mustGetResourceType,
 } from "@/core/indexing/indexing-cache";
 import { articlePostPathMapper } from "@/core/indexing/indexing-settings";
+import { PostPageProps } from "@/core/page-template/post-types";
 import { parseMdx } from "@/core/parsing/rendering-parse";
-import {
-  MDXMeta,
-  PagePathMapping,
-  PostMeta,
-  PostResource,
-} from "@/core/types/indexing";
+import { PagePathMapping, PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, SEOObject, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   console.log(`onGetStaticPaths:`);
@@ -39,17 +32,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-type ArticlePageProps = {
-  slug: string;
-  tags: TagInfo[];
-  source: MDXRemoteSerializeResult;
-  meta: PostMeta & MDXMeta;
-  prevNextInfo: PrevNextInfo;
-  backRefResources: PostResource[];
-};
-
 export const getStaticProps: GetStaticProps<
-  ArticlePageProps,
+  PostPageProps,
   { slug: string }
 > = async ({ params }) => {
   console.log(`onGetStaticProps: ${params?.slug}`);
@@ -72,7 +56,7 @@ export const getStaticProps: GetStaticProps<
     pagePath: pagePath,
   });
 
-  const props: ArticlePageProps = {
+  const props: PostPageProps = {
     slug,
     tags,
     source,
@@ -83,7 +67,7 @@ export const getStaticProps: GetStaticProps<
   return { props };
 };
 
-const ArticlePage = (props: ArticlePageProps) => {
+const ArticlePage = (props: PostPageProps) => {
   return (
     <>
       <Title>{props.meta.title}</Title>
