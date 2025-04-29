@@ -2,20 +2,11 @@ import { ParsingProvider } from "@/components-parsing/component-parsing";
 import { Anchor } from "@/components/antd/Anchor";
 import BackRefList from "@/components/BackRefList/BackRefList";
 import Post from "@/components/Post";
-import {
-  getAliasIndex,
-  getPostMetaOrReload,
-  getPrevNextIndex,
-  getResource,
-  getTagIndex,
-  loadCache,
-  mustGetResourceType,
-} from "@/core/indexing/indexing-cache";
+import { loadCache } from "@/core/indexing/indexing-cache";
 import { ideaPostPathMapper } from "@/core/indexing/indexing-settings";
 import { postGetStaticPaths } from "@/core/page-template/post-static-paths";
+import { postStaticProps } from "@/core/page-template/post-static-props";
 import { PostPageProps } from "@/core/page-template/post-types";
-import { parseMdx } from "@/core/parsing/rendering-parse";
-import { PagePathMapping, PostMeta } from "@/core/types/indexing";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Description, Title } from "@/layouts/UniversalHead";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -35,32 +26,7 @@ export const getStaticProps: GetStaticProps<
   await loadCache();
   const pathMapper = ideaPostPathMapper();
   const slug = params!.slug;
-  const pagePath = pathMapper.slugToPagePath(slug);
-  let meta = await getPostMetaOrReload(pagePath);
-  const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
-    mustGetResourceType(pagePath),
-    pagePath
-  );
-  const backRefPagePaths = getAliasIndex().resolveBackRef(pagePath);
-  const backRefResources = backRefPagePaths.map((pagePath) => {
-    return getResource<PagePathMapping, PostMeta>(pagePath);
-  });
-
-  const tags = getTagIndex().getTagsOf(meta.tags);
-
-  const { source } = await parseMdx(meta.content, {
-    pagePath: pagePath,
-  });
-
-  const props: PostPageProps = {
-    slug,
-    tags,
-    source,
-    meta,
-    prevNextInfo,
-    backRefResources,
-  };
-  return { props };
+  return await postStaticProps(slug, pathMapper);
 };
 
 const IdeaPage = (props: PostPageProps) => {
