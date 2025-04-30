@@ -426,6 +426,8 @@ K_ABC = circle(A, B, C);
 
 带 label [[2022-08-13-introduction-for-k8s|其他文章]]
 
+带 fragment [[2022-08-13-introduction-for-k8s#部署一个-pod|其他文章]]
+
 带路径 [[articles/2022-08-13-introduction-for-k8s|其他文章]]
 
 Page path 全路径 [[/articles/introduction-for-k8s|其他文章]]
