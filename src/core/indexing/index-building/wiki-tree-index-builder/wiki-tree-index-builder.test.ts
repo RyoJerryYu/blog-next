@@ -250,7 +250,7 @@ describe("test wiki tree index builder", () => {
     for (const wikiPage of wikiPages) {
       builder.addResource("wiki", wikiPage);
     }
-    const index = await builder.buildIndex();
+    const index = await builder.buildIndex({});
 
     const result = index.wikiTree.pagePathToWikiTree("wiki", "/wiki/zsome");
     expect(result).toMatchInlineSnapshot(`
@@ -398,7 +398,7 @@ describe("test wiki tree index builder", () => {
     for (const wikiPage of wikiPages) {
       builder.addResource("wiki", wikiPage);
     }
-    const index = await builder.buildIndex();
+    const index = await builder.buildIndex({});
 
     const result = index.wikiTree.pagePathToWikiTree("wiki", "/wiki/zsome");
     expect(result).toMatchInlineSnapshot(`
@@ -506,7 +506,7 @@ describe("test wiki tree index builder", () => {
     for (const wikiPage of wikiPages) {
       builder.addResource("wiki", wikiPage);
     }
-    const index = await builder.buildIndex();
+    const index = await builder.buildIndex({});
 
     const result = index.wikiTree.pagePathToWikiTree("wiki", "/wiki/zsome");
     expect(result).toMatchInlineSnapshot(`

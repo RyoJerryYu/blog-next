@@ -83,7 +83,7 @@ describe("test tag index", () => {
     },
   ];
   it.each(getSlugCases)("$name", async ({ input, output }) => {
-    const tagIndex = await builder.buildIndex();
+    const tagIndex = await builder.buildIndex({});
     const result = tagIndex.tag.getPostSlugs(input);
     expect(result).toEqual(output);
   });
@@ -98,7 +98,7 @@ describe("test tag index", () => {
     },
   ];
   it.each(getTagsCases)("$name", async ({ output }) => {
-    const tagIndex = await builder.buildIndex();
+    const tagIndex = await builder.buildIndex({});
     const result = tagIndex.tag.getTags();
     for (let i = 0; i < result.length; i++) {
       let resultCompare = {
@@ -132,7 +132,7 @@ describe("test tag index", () => {
     },
   ];
   it.each(getTagsOfCases)("$name", async ({ input, output }) => {
-    const tagIndex = await builder.buildIndex();
+    const tagIndex = await builder.buildIndex({});
     const result = tagIndex.tag.getTagsOf(input);
     for (let i = 0; i < result.length; i++) {
       let resultCompare = {

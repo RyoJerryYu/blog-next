@@ -21,7 +21,7 @@ describe("test alias index", () => {
       meta: {},
     });
   });
-  const futureIndex = builder.buildIndex();
+  const futureIndex = builder.buildIndex({});
 
   const resolveCases = [
     {
