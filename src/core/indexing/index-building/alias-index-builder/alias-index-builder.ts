@@ -113,8 +113,18 @@ export class AliasIndex {
     this.index = index;
   }
 
+  // alias here allow fragment, e.g. Building-this-blog#title
   resolve = (alias: string) => {
-    return this.index.get(alias);
+    let [realAlias, fragment] = [alias, ""];
+    if (alias.includes("#")) {
+      [realAlias, fragment] = alias.split("#");
+    }
+
+    const path = this.index.get(realAlias);
+    if (fragment) {
+      return `${path}#${fragment}`;
+    }
+    return path;
   };
 
   static fromPool = getIndexFromIndexPool<AliasIndex>("alias");

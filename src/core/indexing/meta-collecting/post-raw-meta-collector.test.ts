@@ -6,7 +6,7 @@ describeNoCI("test parse from real", () => {
   const collector = new PostRawMetaCollector();
   it("should parse right path", async () => {
     const filePath = "public/content/articles/2020-01-27-Building-this-blog.md";
-    const meta = await collector.collectMeta(filePath);
+    const meta = await collector.collectMeta(filePath, {});
     expect(meta.title).toBe("搭建博客的过程");
   });
 });
