@@ -49,16 +49,22 @@ const syntax = /(^|[\s])(#[^\s]+)/;
 
 export type RemarkObsidianTagOptions = {
   isMetaPhase?: boolean; // if true, only collect meta data, and not to use index
+  collectMdxTags: (tags: string[]) => void;
+  firstTagParagraph?: boolean; // if true, remove first paragraph if it's only tags
 };
 
-const DEFAULT_OPTIONS: RemarkObsidianTagOptions = {};
+const DEFAULT_OPTIONS: RemarkObsidianTagOptions = {
+  collectMdxTags: (_: string[]) => {},
+};
 
 export const remarkObsidianTag: Plugin<[RemarkObsidianTagOptions?]> = (
   options
 ) => {
   const opts = { ...DEFAULT_OPTIONS, ...options };
+  const collectedMdxTags: string[] = [];
   const getTagsOf = (tags: string[]) => {
     if (opts.isMetaPhase) {
+      collectedMdxTags.push(...tags);
       return [];
     }
     return getTagIndex().getTagsOf(tags);
@@ -123,5 +129,7 @@ export const remarkObsidianTag: Plugin<[RemarkObsidianTagOptions?]> = (
         return index + 2;
       }
     );
+
+    opts.collectMdxTags(collectedMdxTags);
   };
 };

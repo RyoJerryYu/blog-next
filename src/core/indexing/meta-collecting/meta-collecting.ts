@@ -86,7 +86,7 @@ export async function collectMetaForFilePath<Meta extends BaseMeta>(
     }
 
     const partialMeta = await collector.collectMeta(filePath, meta);
-    meta = mergeObjectIgnoreUndefined(partialMeta, meta);
+    meta = mergeObjectIgnoreUndefined(meta, partialMeta);
     collectorExecuteds[i] = true;
   }
 
