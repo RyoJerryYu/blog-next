@@ -1,16 +1,16 @@
 import { loadCache } from "@/core/indexing/indexing-cache";
 import { articlePostPathMapper } from "@/core/indexing/indexing-settings";
-import { buildPostPage } from "@/core/page-template/post-page";
+import { PostPage } from "@/core/page-template/post-page";
 import {
-  buildPostGetStaticPaths,
-  buildPostGetStaticProps,
+  postGetStaticPaths,
+  postGetStaticProps,
 } from "@/core/page-template/post-static";
 import { PostPageProps } from "@/core/page-template/post-type";
 import { GetStaticPaths, GetStaticProps } from "next";
 
-export const getStaticPaths: GetStaticPaths = async (c) => {
+export const getStaticPaths: GetStaticPaths = async () => {
   await loadCache();
-  return await buildPostGetStaticPaths("articles")(c);
+  return await postGetStaticPaths("articles");
 };
 
 export const getStaticProps: GetStaticProps<
@@ -18,12 +18,13 @@ export const getStaticProps: GetStaticProps<
   { slug: string }
 > = async ({ params }) => {
   await loadCache();
-  return await buildPostGetStaticProps("articles", articlePostPathMapper(), {
+  const slug = params!.slug;
+  return await postGetStaticProps("articles", articlePostPathMapper(), slug, {
     withSEO: true,
     withComments: true,
-  })({ params });
+  });
 };
 
-const ArticlePage = buildPostPage();
+const ArticlePage = PostPage;
 
 export default ArticlePage;

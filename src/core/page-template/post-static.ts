@@ -1,4 +1,3 @@
-import { GetStaticPaths, GetStaticProps } from "next";
 import {
   getBackrefIndex,
   getPostMetaOrReload,
@@ -18,82 +17,76 @@ import {
   PostPageProps,
 } from "./post-type";
 
-export function buildPostGetStaticPaths(resourceType: string): GetStaticPaths {
-  return async () => {
-    console.log(`onGetStaticPaths: ${resourceType}`);
-    const pageMap = getResourceMap<PagePathMapping, PostMeta>(
-      mustGetCache().resourcePool,
-      resourceType
-    );
-    const pagePaths = pageMap.listPagePaths();
-    return {
-      paths: pagePaths,
-      fallback: false,
-    };
+export const postGetStaticPaths = async (resourceType: string) => {
+  console.log(`onGetStaticPaths: ${resourceType}`);
+  const pageMap = getResourceMap<PagePathMapping, PostMeta>(
+    mustGetCache().resourcePool,
+    resourceType
+  );
+  const pagePaths = pageMap.listPagePaths();
+  return {
+    paths: pagePaths,
+    fallback: false,
   };
-}
+};
 
-export function buildPostGetStaticProps(
+export async function postGetStaticProps(
   resourceType: string,
   pathMapper: PostPathMapper,
+  slug: string,
   hyperProps: PostPageHyperProps
-): GetStaticProps<PostPageProps, { slug: string }> {
-  return async ({ params }) => {
-    console.log(`onGetStaticProps: ${params?.slug}`);
-    const slug = params!.slug;
-    const pagePath = pathMapper.slugToPagePath(slug);
-    const meta = await getPostMetaOrReload(pagePath);
-    const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
-      mustGetResourceType(pagePath),
-      pagePath
-    );
-    const backRefPagePaths = getBackrefIndex().resolve(pagePath);
-    const backRefResources = backRefPagePaths.map((pagePath) => {
-      return getResource<PagePathMapping, PostMeta>(pagePath);
-    });
+): Promise<{ props: PostPageProps }> {
+  console.log(`onGetStaticProps: ${slug}`);
+  const pagePath = pathMapper.slugToPagePath(slug);
+  const meta = await getPostMetaOrReload(pagePath);
+  const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
+    mustGetResourceType(pagePath),
+    pagePath
+  );
+  const backRefPagePaths = getBackrefIndex().resolve(pagePath);
+  const backRefResources = backRefPagePaths.map((pagePath) => {
+    return getResource<PagePathMapping, PostMeta>(pagePath);
+  });
 
-    const tags = getTagIndex().getTagsOf(meta.tags);
+  const tags = getTagIndex().getTagsOf(meta.tags);
 
-    const { source } = await parseMdx(meta.content, {
-      pagePath: pagePath,
-    });
+  const { source } = await parseMdx(meta.content, {
+    pagePath: pagePath,
+  });
 
-    const props: PostPageProps = {
-      slug,
-      tags,
-      source,
-      meta,
-      prevNextInfo,
-      backRefResources,
-      hyperProps,
-    };
-
-    return { props };
+  const props: PostPageProps = {
+    slug,
+    tags,
+    source,
+    meta,
+    prevNextInfo,
+    backRefResources,
+    hyperProps,
   };
+
+  return { props };
 }
 
-export function buildPostIndexGetStaticProps(
+export async function postIndexGetStaticProps(
   resourceType: string
-): GetStaticProps<PostIndexPageProps> {
-  return async () => {
-    console.log(`onGetStaticProps: ${resourceType}`);
-    const pageMap = getResourceMap<PagePathMapping, PostMeta>(
-      mustGetCache().resourcePool,
-      resourceType
-    );
-    console.log(`all page paths for ${resourceType}:`, pageMap.listPagePaths());
+): Promise<{ props: PostIndexPageProps }> {
+  console.log(`onGetStaticProps: ${resourceType}`);
+  const pageMap = getResourceMap<PagePathMapping, PostMeta>(
+    mustGetCache().resourcePool,
+    resourceType
+  );
+  console.log(`all page paths for ${resourceType}:`, pageMap.listPagePaths());
 
-    const pagePaths = getPrevNextIndex()
-      .listResources(resourceType)
-      .map((r) => r.pathMapping.pagePath);
-    const posts = pagePaths.map(pageMap.pagePathToResource);
-    const allTagsList = getTagIndex().getTags();
+  const pagePaths = getPrevNextIndex()
+    .listResources(resourceType)
+    .map((r) => r.pathMapping.pagePath);
+  const posts = pagePaths.map(pageMap.pagePathToResource);
+  const allTagsList = getTagIndex().getTags();
 
-    return {
-      props: {
-        posts,
-        allTagsList,
-      },
-    };
+  return {
+    props: {
+      posts,
+      allTagsList,
+    },
   };
 }

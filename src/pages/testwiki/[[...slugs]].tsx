@@ -1,112 +1,28 @@
-import { ParsingProvider } from "@/components-parsing/component-parsing";
-import { Anchor } from "@/components/antd/Anchor";
-import BackRefList from "@/components/BackRefList/BackRefList";
-import Post from "@/components/Post";
-import { WikiTreeMenu } from "@/components/wiki/WikiTreeMenu";
-import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
-import { WikiTreeInfo } from "@/core/indexing/index-building/wiki-tree-index-builder/types";
-import {
-  getBackrefIndex,
-  getPostMetaOrReload,
-  getResource,
-  getTagIndex,
-  getWikiTreeIndex,
-  loadCache,
-  testwikiResourceMap,
-} from "@/core/indexing/indexing-cache";
+import { loadCache } from "@/core/indexing/indexing-cache";
 import { testwikiPathMapper } from "@/core/indexing/indexing-settings";
-import { parseMdx } from "@/core/parsing/rendering-parse";
+import { WikiPage } from "@/core/page-template/wiki-page";
 import {
-  MDXMeta,
-  PagePathMapping,
-  PostMeta,
-  PostResource,
-} from "@/core/types/indexing";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import { Description, Title } from "@/layouts/UniversalHead";
+  wikiGetStaticPaths,
+  wikiGetStaticProps,
+} from "@/core/page-template/wiki-static";
+import { WikiPageProps } from "@/core/page-template/wiki-type";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   await loadCache();
-  const testwikiMap = testwikiResourceMap();
-  const pagePaths = testwikiMap.listPagePaths();
-  return {
-    paths: pagePaths,
-    fallback: false,
-  };
-};
-
-type TestWikiPageProps = {
-  slugs: string[];
-  meta: PostMeta & MDXMeta;
-  tags: TagInfo[];
-  wikiTree: WikiTreeInfo;
-  source: MDXRemoteSerializeResult;
-  backRefResources: PostResource[];
+  return await wikiGetStaticPaths("testwiki");
 };
 
 export const getStaticProps: GetStaticProps<
-  TestWikiPageProps,
+  WikiPageProps,
   { slugs: string[] }
 > = async ({ params }) => {
   await loadCache();
   const slugs = params!.slugs || [];
-  const pagePath = testwikiPathMapper().slugsToPagePath(slugs);
-  const meta = await getPostMetaOrReload(pagePath);
-  const tags = getTagIndex().getTagsOf(meta.tags);
-  const wikiTree = getWikiTreeIndex().pagePathToWikiTree("testwiki", pagePath);
-  const { source } = await parseMdx(meta.content, {
-    pagePath: pagePath,
-  });
-  const backRefPagePaths = getBackrefIndex().resolve(pagePath);
-  const backRefResources = backRefPagePaths.map((pagePath) => {
-    return getResource<PagePathMapping, PostMeta>(pagePath);
-  });
-  return {
-    props: {
-      slugs,
-      meta,
-      tags,
-      wikiTree,
-      source,
-      backRefResources,
-    },
-  };
+  const pathMapper = testwikiPathMapper();
+  return await wikiGetStaticProps("testwiki", slugs, pathMapper);
 };
 
-const TestWikiPage = (props: TestWikiPageProps) => {
-  return (
-    <>
-      <Title>{props.meta.title}</Title>
-      <Description>{props.meta.abstract}</Description>
-      <DefaultLayout
-        left={
-          <WikiTreeMenu
-            trees={props.wikiTree.trees}
-            currentSlugs={props.slugs}
-          />
-        }
-        right={
-          <Anchor
-            items={props.meta.headingTrees}
-            offsetTop={64}
-            className="overflow-y-auto"
-          />
-        }
-      >
-        <ParsingProvider>
-          <Post
-            meta={props.meta}
-            tags={props.tags}
-            source={props.source}
-            prevNextInfo={{ prevInfo: null, nextInfo: null }}
-          />
-        </ParsingProvider>
-        <BackRefList posts={props.backRefResources} />
-      </DefaultLayout>
-    </>
-  );
-};
+const TestWikiPage = WikiPage;
 
 export default TestWikiPage;
