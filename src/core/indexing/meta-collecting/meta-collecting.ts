@@ -23,13 +23,6 @@ import { mergeObjectIgnoreUndefined } from "@/utils/func-utils";
  */
 export interface MetaCollector<Meta extends BaseMeta> {
   /**
-   * Returns the meta data fields this collector can handle.
-   * Returns "*" if this collector can handle all meta fields.
-   * A collector will be skipped if all its handleable fields are already collected.
-   */
-  handleAbleKeys(): Array<keyof Meta> | "*";
-
-  /**
    * Collects meta data for a resource from its file.
    * @param filePath Path to the resource file, relative to project root
    * @returns Promise resolving to partial meta data for the resource
@@ -74,16 +67,6 @@ export async function collectMetaForFilePath<Meta extends BaseMeta>(
   const collectorExecuteds = new Array<boolean>(collectors.length).fill(false);
   for (let i = 0; i < collectors.length; i++) {
     const collector = collectors[i];
-    const handleAbleKeys = collector.handleAbleKeys();
-    if (
-      handleAbleKeys !== "*" &&
-      handleAbleKeys.every((key) => meta[key] !== undefined)
-    ) {
-      // do not be able to handle all keys and
-      // every handleAbleKeys is already handled
-      // skip this collector
-      continue;
-    }
 
     const partialMeta = await collector.collectMeta(filePath, meta);
     meta = mergeObjectIgnoreUndefined(meta, partialMeta);

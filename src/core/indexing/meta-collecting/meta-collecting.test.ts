@@ -13,14 +13,12 @@ const mockMetaCollector = (
   meta: Partial<MockMeta>
 ): MetaCollector<MockMeta> => {
   return {
-    handleAbleKeys: () => ["created_at", "updated_at", "tags"],
     collectMeta: async () => meta,
   };
 };
 
 const noopMetaCollector = <T extends {}>(meta: T): MetaCollector<T> => {
   return {
-    handleAbleKeys: () => Object.keys(meta) as (keyof T)[],
     collectMeta: async () => meta,
   };
 };
@@ -65,8 +63,8 @@ describe("collectMetaForFilePath", () => {
       defaultMeta: { a: "", b: "", c: "" },
     };
     const meta = await collectMetaForFilePath(chain, "");
-    expect(meta.a).toBe("1");
-    expect(meta.b).toBe("2");
-    expect(meta.c).toBe("4");
+    expect(meta.a).toBe("5");
+    expect(meta.b).toBe("3");
+    expect(meta.c).toBe("6");
   });
 });
