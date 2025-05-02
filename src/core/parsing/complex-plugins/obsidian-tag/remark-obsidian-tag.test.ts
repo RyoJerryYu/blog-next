@@ -123,3 +123,66 @@ ABC #TAG/TAG2 DEF
 `);
   });
 });
+
+describe("remark-obsidian-tag, firstTagParagraph feature", () => {
+  const processor = unified()
+    .use(remarkParse)
+    .use(remarkObsidianTag, {
+      isMetaPhase: true,
+      firstTagParagraph: true,
+    } as RemarkObsidianTagOptions)
+    .use(remarkMdx)
+    .use(remarkStringify);
+
+  it("should remove first paragraph if it's only tags", async () => {
+    // await loadCache();
+    const md = `
+#TAG #TAG2
+
+Some Text
+`;
+    const result = processor.processSync(md);
+    expect(result.value).toMatchInlineSnapshot(`
+"Some Text
+"
+`);
+  });
+
+  it("should allow empty lines", async () => {
+    // await loadCache();
+    const md = `
+
+
+
+  #TAG    #TAG2
+
+  Some Text
+
+  `;
+    const result = processor.processSync(md);
+    expect(result.value).toMatchInlineSnapshot(`
+"Some Text
+"
+`);
+  });
+
+  it("should not remove first paragraph if it's not only tags", async () => {
+    // await loadCache();
+    const md = `
+First Paragraph
+
+#TAG #TAG2
+
+Some Text
+`;
+    const result = processor.processSync(md);
+    expect(result.value).toMatchInlineSnapshot(`
+"First Paragraph
+
+<ObsidianTag tag="TAG" /> <ObsidianTag tag="TAG2" />
+
+Some Text
+"
+`);
+  });
+});
