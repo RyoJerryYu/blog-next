@@ -78,6 +78,7 @@ const genMdxOptions = (props: ParseMdxProps) => {
         remarkObsidianTag,
         {
           isMetaPhase: props.isMetaPhase,
+          firstTagParagraph: true,
           collectMdxTags: (tags) => {
             capturedResult.tags = tags;
           },
