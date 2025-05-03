@@ -1,5 +1,5 @@
 import { getTagIndex } from "@/core/indexing/indexing-cache";
-import { Parent, Text } from "mdast";
+import { Paragraph, Parent, Root, Text } from "mdast";
 import { Plugin } from "unified";
 import { visit } from "unist-util-visit";
 import { propsToMdxJsxAttributes } from "../utils/utils";
@@ -49,16 +49,22 @@ const syntax = /(^|[\s])(#[^\s]+)/;
 
 export type RemarkObsidianTagOptions = {
   isMetaPhase?: boolean; // if true, only collect meta data, and not to use index
+  collectMdxTags: (tags: string[]) => void;
+  firstTagParagraph?: boolean; // if true, remove first paragraph if it's only tags
 };
 
-const DEFAULT_OPTIONS: RemarkObsidianTagOptions = {};
+const DEFAULT_OPTIONS: RemarkObsidianTagOptions = {
+  collectMdxTags: (_: string[]) => {},
+};
 
 export const remarkObsidianTag: Plugin<[RemarkObsidianTagOptions?]> = (
   options
 ) => {
   const opts = { ...DEFAULT_OPTIONS, ...options };
+  const collectedMdxTags: string[] = [];
   const getTagsOf = (tags: string[]) => {
     if (opts.isMetaPhase) {
+      collectedMdxTags.push(...tags);
       return [];
     }
     return getTagIndex().getTagsOf(tags);
@@ -123,5 +129,64 @@ export const remarkObsidianTag: Plugin<[RemarkObsidianTagOptions?]> = (
         return index + 2;
       }
     );
+
+    if (opts.firstTagParagraph && "children" in tree) {
+      removeFirstParagraph(tree as Root);
+    }
+
+    opts.collectMdxTags(collectedMdxTags);
   };
 };
+
+function removeFirstParagraph(tree: Root) {
+  if (tree.children.length === 0) {
+    // no paragraph as top level node
+    return;
+  }
+
+  let firstParagraph: Paragraph | undefined;
+  let i = 0;
+  for (; i < tree.children.length; i++) {
+    const child = tree.children[i];
+    if (child.type !== "paragraph") {
+      // first child is not a paragraph, no need to remove
+      return;
+    }
+
+    if (child.children.length === 0) {
+      // empty paragraph, to next paragraph
+      continue;
+    }
+
+    firstParagraph = child;
+    break;
+  }
+
+  if (!firstParagraph) {
+    // no paragraph as top level node
+    return;
+  }
+
+  for (let j = 0; j < firstParagraph.children.length; j++) {
+    const child = firstParagraph.children[j];
+    if (child.type == "text") {
+      if (child.value.trim() !== "") {
+        // not empty text, no need to remove
+        return;
+      }
+      // empty text, continue to next child
+      continue;
+    }
+
+    if (child.type === "mdxJsxTextElement" && child.name === "ObsidianTag") {
+      // mdxJsxTextElement, continue to next child
+      continue;
+    }
+
+    // other node type, no need to remove
+    return;
+  }
+
+  // remove the first paragraph
+  tree.children.splice(i, 1);
+}

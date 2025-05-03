@@ -9,4 +9,5 @@ export type CapturedResult = {
   headingTrees: AnchorTree[];
   wikiRefAliases: string[];
   richRefAliases: string[];
+  tags: string[];
 };

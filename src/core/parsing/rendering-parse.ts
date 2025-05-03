@@ -38,6 +38,7 @@ const genMdxOptions = (props: ParseMdxProps) => {
     headingTrees: [],
     wikiRefAliases: [],
     richRefAliases: [],
+    tags: [],
   };
   const defaultMdxOptions: Omit<
     CompileOptions,
@@ -77,6 +78,10 @@ const genMdxOptions = (props: ParseMdxProps) => {
         remarkObsidianTag,
         {
           isMetaPhase: props.isMetaPhase,
+          firstTagParagraph: true,
+          collectMdxTags: (tags) => {
+            capturedResult.tags = tags;
+          },
         } as RemarkObsidianTagOptions,
       ],
       remarkObsidianHighlight,
