@@ -5,6 +5,7 @@ import { ClipDataIndexBuilder } from "./index-building/clip-data-index-builder/c
 import { PrevNextIndexBuilder } from "./index-building/prev-next-index-builder/prev-next-index-builder";
 import { TagIndexBuilder } from "./index-building/tag-index-builder/tag-index-builder";
 import { WikiTreeIndexBuilder } from "./index-building/wiki-tree-index-builder/wiki-tree-index-builder";
+import { FsMetaCollector } from "./meta-collecting/fs-meta-collector";
 import {
   MockGitMetaCollector,
   defaultGitMetaCollector,
@@ -56,6 +57,7 @@ export const defaultChain: MetaCollectorChain<PostMeta & MDXMeta> = {
   collectors: [
     // new CacheMetaCollector(".", "cache", ["content"]),
     new PostRawMetaCollector(),
+    new FsMetaCollector(),
     new MDXMetaCollector(),
     defaultGitMetaCollector(),
   ],
@@ -75,7 +77,11 @@ export const defaultChain: MetaCollectorChain<PostMeta & MDXMeta> = {
 };
 
 export const devReloadingChain: MetaCollectorChain<PostMeta & MDXMeta> = {
-  collectors: [new PostRawMetaCollector(), new MockGitMetaCollector()],
+  collectors: [
+    new PostRawMetaCollector(),
+    new FsMetaCollector(),
+    new MockGitMetaCollector(),
+  ],
   defaultMeta: {
     content: "",
     title: "<No Title>",
