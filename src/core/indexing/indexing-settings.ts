@@ -41,6 +41,13 @@ export function learnFromAiPostPathMapper() {
   });
 }
 
+export function ygowikiPathMapper() {
+  return new WikiPathMapper({
+    fileGlobPattern: "public/content/ygowiki/**/*.md*",
+    pathPrefix: "/ygowiki",
+  });
+}
+
 export function testwikiPathMapper() {
   return new WikiPathMapper({
     fileGlobPattern: "public/content/testwiki/**/*.md*",
@@ -125,10 +132,21 @@ export function pipeline() {
         pathMapper: testwikiPathMapper(),
         collectorChain: defaultChain,
       },
+      {
+        resourceType: "ygowiki",
+        pathMapper: ygowikiPathMapper(),
+        collectorChain: defaultChain,
+      },
     ],
     indexBuilders: [
       {
-        handleResources: ["articles", "ideas", "learn_from_ai", "testwiki"],
+        handleResources: [
+          "articles",
+          "ideas",
+          "learn_from_ai",
+          "ygowiki",
+          "testwiki",
+        ],
         builder: new TagIndexBuilder(),
       },
       {
@@ -136,13 +154,20 @@ export function pipeline() {
           "articles",
           "ideas",
           "learn_from_ai",
+          "ygowiki",
           "testwiki",
           "staticResources",
         ],
         builder: new AliasIndexBuilder(),
       },
       {
-        handleResources: ["articles", "ideas", "learn_from_ai", "testwiki"],
+        handleResources: [
+          "articles",
+          "ideas",
+          "learn_from_ai",
+          "ygowiki",
+          "testwiki",
+        ],
         builder: new BackrefIndexBuilder(),
       },
       {
@@ -154,7 +179,7 @@ export function pipeline() {
         builder: new ClipDataIndexBuilder(),
       },
       {
-        handleResources: ["testwiki"],
+        handleResources: ["testwiki", "ygowiki"],
         builder: new WikiTreeIndexBuilder(true),
       },
     ],

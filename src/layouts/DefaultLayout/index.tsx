@@ -153,6 +153,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = (props) => {
       children: [
         { href: "/ideas", text: "Ideas" },
         { href: "/clips", text: "Clips" },
+        { href: "/ygowiki", text: "YGO Wiki" },
         // { href: "/prev", text: "Preview" },
         // { href: "/testwiki", text: "Test Wiki" },
         // {
