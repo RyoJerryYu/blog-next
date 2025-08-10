@@ -5,13 +5,13 @@ import { ClipDataIndexBuilder } from "./index-building/clip-data-index-builder/c
 import { PrevNextIndexBuilder } from "./index-building/prev-next-index-builder/prev-next-index-builder";
 import { TagIndexBuilder } from "./index-building/tag-index-builder/tag-index-builder";
 import { WikiTreeIndexBuilder } from "./index-building/wiki-tree-index-builder/wiki-tree-index-builder";
-import { FsMetaCollector } from "./meta-collecting/fs-meta-collector";
 import {
   MockGitMetaCollector,
   defaultGitMetaCollector,
 } from "./meta-collecting/git-meta-collector";
 import { MDXMetaCollector } from "./meta-collecting/mdx-meta-collector";
 import { MetaCollectorChain } from "./meta-collecting/meta-collecting";
+import { PathMetaCollector } from "./meta-collecting/path-meta-collector";
 import { PostRawMetaCollector } from "./meta-collecting/post-raw-meta-collector";
 import { PostPathMapper } from "./path-mapping/post-path-mapper";
 import { defaultStaticResourcePathMapper } from "./path-mapping/static-resource-path-mapper";
@@ -64,7 +64,7 @@ export const defaultChain: MetaCollectorChain<PostMeta & MDXMeta> = {
   collectors: [
     // new CacheMetaCollector(".", "cache", ["content"]),
     new PostRawMetaCollector(),
-    new FsMetaCollector(),
+    new PathMetaCollector(),
     new MDXMetaCollector(),
     defaultGitMetaCollector(),
   ],
@@ -86,7 +86,7 @@ export const defaultChain: MetaCollectorChain<PostMeta & MDXMeta> = {
 export const devReloadingChain: MetaCollectorChain<PostMeta & MDXMeta> = {
   collectors: [
     new PostRawMetaCollector(),
-    new FsMetaCollector(),
+    new PathMetaCollector(),
     new MockGitMetaCollector(),
   ],
   defaultMeta: {
