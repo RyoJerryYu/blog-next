@@ -1,4 +1,4 @@
-import { PostMeta } from "@/core/types/indexing";
+import { BasePathMapping, PostMeta } from "@/core/types/indexing";
 import path from "path";
 import { MetaCollector } from "./meta-collecting";
 
@@ -8,12 +8,14 @@ export class FsMetaCollector implements MetaCollector<PostMeta> {
   };
 
   collectMeta = async (
-    filePath: string,
+    pathMapping: BasePathMapping,
     prevMeta: Partial<PostMeta>
   ): Promise<Partial<PostMeta>> => {
     if (prevMeta.title) {
       return {};
     }
+
+    const filePath = pathMapping.filePath;
     const fileExt = path.extname(filePath);
     const fileBaseName = path.basename(filePath, fileExt);
 

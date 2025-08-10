@@ -1,7 +1,7 @@
 import { BaseMeta, BasePathMapping, Resource } from "@/core/types/indexing";
 import {
   MetaCollectorChain,
-  collectMetaForFilePath,
+  collectMetaForPath,
 } from "../meta-collecting/meta-collecting";
 import { PathMapper, listPathMappings } from "../path-mapping/path-mapping";
 
@@ -147,10 +147,7 @@ export const collectResourcesAsMap = async <
   const resources: Resource<PathMapping, Meta>[] = [];
   for (let i = 0; i < pathMappings.length; i++) {
     const pathMapping = pathMappings[i];
-    const meta = await collectMetaForFilePath(
-      collectorChain,
-      pathMapping.filePath
-    );
+    const meta = await collectMetaForPath(collectorChain, pathMapping);
     resources.push({ pathMapping, meta });
   }
 

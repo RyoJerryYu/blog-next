@@ -1,5 +1,5 @@
 import { parseMdx } from "@/core/parsing/rendering-parse";
-import { MDXMeta } from "@/core/types/indexing";
+import { BasePathMapping, MDXMeta } from "@/core/types/indexing";
 import { deduplicateArray } from "@/utils/func-utils";
 import { MetaCollector } from "./meta-collecting";
 
@@ -14,7 +14,7 @@ export class MDXMetaCollector
     return ["headingTrees", "wikiRefAliases", "richRefAliases", "tags"];
   };
   async collectMeta(
-    filePath: string,
+    pathMapping: BasePathMapping,
     prevMeta: Partial<MDXMeta & { content: string }>
   ): Promise<Partial<MDXMeta>> {
     const raw = prevMeta.content;
@@ -27,7 +27,7 @@ export class MDXMetaCollector
     }
     const { capturedResult } = await parseMdx(raw, {
       isMetaPhase: true,
-      pagePath: filePath,
+      pagePath: pathMapping.filePath,
     });
 
     if (prevMeta.tags) {

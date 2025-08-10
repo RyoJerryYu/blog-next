@@ -538,6 +538,27 @@
         "pagePath": "/content/testwiki/page3/subpage3.md"
       },
       "meta": {}
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/ygowiki/cards/crystron/01-水晶机巧·内蕴.md",
+        "pagePath": "/content/ygowiki/cards/crystron/01-水晶机巧·内蕴.md"
+      },
+      "meta": {}
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/ygowiki/cards/crystron/02-水晶机巧·晶簇.md",
+        "pagePath": "/content/ygowiki/cards/crystron/02-水晶机巧·晶簇.md"
+      },
+      "meta": {}
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/ygowiki/index.md",
+        "pagePath": "/content/ygowiki/index.md"
+      },
+      "meta": {}
     }
   ],
   "articles": [
@@ -8452,6 +8473,85 @@
             "title": "Page 3 Subpage 3",
             "children": [],
             "id": "page-3-subpage-3"
+          }
+        ],
+        "wikiRefAliases": [],
+        "richRefAliases": []
+      }
+    }
+  ],
+  "ygowiki": [
+    {
+      "pathMapping": {
+        "filePath": "public/content/ygowiki/cards/crystron/01-水晶机巧·内蕴.md",
+        "pagePath": "/ygowiki/cards/crystron/水晶机巧·内蕴",
+        "slugs": [
+          "cards",
+          "crystron",
+          "水晶机巧·内蕴"
+        ]
+      },
+      "meta": {
+        "content": "![水晶机巧包体](https://cdn.233.momobako.com/ygopro/pics/31552317.jpg)\n\n此卡名的卡1回合仅可发动1张，此卡名的③效果1回合仅可使用1次。\n\n①：作为此卡发动时的效果处理，可从牌组将“水晶机巧・内蕴”以外的1张“水晶机巧”卡加入手牌。\n\n②：自己的“水晶机巧”怪兽1回合仅各1次，不会因战斗被破坏。\n\n③：将墓地的此卡除外，以自己墓地的1只“水晶机巧”怪兽为对象可以发动。将该怪兽特殊召唤。\n\n",
+        "title": "01-水晶机巧·内蕴",
+        "abstract": "![水晶机巧包体](https://cdn.233.momobako.com/ygopro/pics/31552317.jpg)\n此卡名的卡1回合仅可发动1张，此卡名的③效果1回合仅可使用1次。\n①：作为此卡发动时的效果处理，可从牌组将“水晶机巧・内蕴”以外的1张“水晶机巧”卡加入手牌。",
+        "length": 11,
+        "created_at": "2025-08-10T13:42:36.000Z",
+        "updated_at": null,
+        "tags": [],
+        "license": false,
+        "headingTrees": [],
+        "wikiRefAliases": [],
+        "richRefAliases": []
+      }
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/ygowiki/cards/crystron/02-水晶机巧·晶簇.md",
+        "pagePath": "/ygowiki/cards/crystron/水晶机巧·晶簇",
+        "slugs": [
+          "cards",
+          "crystron",
+          "水晶机巧·晶簇"
+        ]
+      },
+      "meta": {
+        "content": "![水晶机巧晶簇](https://cdn.233.momobako.com/ygopro/pics/53829527.jpg)\n\n\n此卡名的②效果1回合仅可使用1次。\n\n①：自己场上的“水晶机巧”卡不可因对手的效果除外。\n\n②：以场上的1张表侧表示卡为对象可以发动（自己场上存在“水晶机巧”同步怪兽的情况下，可将此效果的对象改成2张）。将“水晶机巧・晶簇”以外的、自己墓地・除外状态的1张“水晶机巧”卡放回牌组，将对象卡破坏。",
+        "title": "02-水晶机巧·晶簇",
+        "abstract": "![水晶机巧晶簇](https://cdn.233.momobako.com/ygopro/pics/53829527.jpg)\n此卡名的②效果1回合仅可使用1次。\n①：自己场上的“水晶机巧”卡不可因对手的效果除外。",
+        "length": 8,
+        "created_at": "2025-08-10T13:42:36.000Z",
+        "updated_at": null,
+        "tags": [],
+        "license": false,
+        "headingTrees": [],
+        "wikiRefAliases": [],
+        "richRefAliases": []
+      }
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/ygowiki/index.md",
+        "pagePath": "/ygowiki",
+        "slugs": []
+      },
+      "meta": {
+        "content": "# 游戏王相关 wiki\n\n这里存放着文章中引用到的游戏王相关 Wiki 内容。\n",
+        "title": "index",
+        "abstract": "这里存放着文章中引用到的游戏王相关 Wiki 内容。",
+        "length": 4,
+        "created_at": "2025-08-10T13:42:36.000Z",
+        "updated_at": null,
+        "tags": [],
+        "license": false,
+        "headingTrees": [
+          {
+            "key": "游戏王相关-wiki",
+            "href": "#游戏王相关-wiki",
+            "heading": 1,
+            "title": "游戏王相关 wiki",
+            "children": [],
+            "id": "游戏王相关-wiki"
           }
         ],
         "wikiRefAliases": [],

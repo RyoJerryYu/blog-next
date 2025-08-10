@@ -1,4 +1,4 @@
-import { BaseMeta } from "@/core/types/indexing";
+import { BaseMeta, BasePathMapping } from "@/core/types/indexing";
 import { mergeObjectIgnoreUndefined } from "@/utils/func-utils";
 
 /**
@@ -24,11 +24,12 @@ import { mergeObjectIgnoreUndefined } from "@/utils/func-utils";
 export interface MetaCollector<Meta extends BaseMeta> {
   /**
    * Collects meta data for a resource from its file.
-   * @param filePath Path to the resource file, relative to project root
+   * @param pathMapping Path mapping for the resource
+   * @param prevMeta Previous meta data for the resource
    * @returns Promise resolving to partial meta data for the resource. The result will be merged with the previous meta data.
    */
   collectMeta(
-    filePath: string,
+    pathMapping: BasePathMapping,
     prevMeta: Partial<Meta>
   ): Promise<Partial<Meta>>;
 
@@ -36,10 +37,10 @@ export interface MetaCollector<Meta extends BaseMeta> {
    * Optional deferred processing after all meta is collected.
    * Called in reverse order after all collectors finish.
    * Must not modify the meta data.
-   * @param filePath Path to the resource file
+   * @param pathMapping Path mapping for the resource
    * @param meta Complete meta data collected for the resource
    */
-  defer?(filePath: string, meta: Meta): Promise<void>;
+  defer?(pathMapping: BasePathMapping, meta: Meta): Promise<void>;
 }
 
 /**
@@ -59,16 +60,16 @@ export type MetaCollectorChain<Meta extends BaseMeta> = {
  * @param collectors the chain of meta collectors, will be executed in order
  * @param defaultMeta the default meta data will be merged with the collected meta data
  */
-export async function collectMetaForFilePath<Meta extends BaseMeta>(
+export async function collectMetaForPath<Meta extends BaseMeta>(
   { collectors, defaultMeta }: MetaCollectorChain<Meta>,
-  filePath: string
+  pathMapping: BasePathMapping
 ): Promise<Meta> {
   let meta: Partial<Meta> = {};
   const collectorExecuteds = new Array<boolean>(collectors.length).fill(false);
   for (let i = 0; i < collectors.length; i++) {
     const collector = collectors[i];
 
-    const partialMeta = await collector.collectMeta(filePath, meta);
+    const partialMeta = await collector.collectMeta(pathMapping, meta);
     meta = mergeObjectIgnoreUndefined(meta, partialMeta);
     collectorExecuteds[i] = true;
   }
@@ -80,7 +81,7 @@ export async function collectMetaForFilePath<Meta extends BaseMeta>(
     if (collectorExecuteds[i]) {
       // only execute defer if the collector is executed
       const collector = collectors[i];
-      await collector.defer?.(filePath, fullMeta);
+      await collector.defer?.(pathMapping, fullMeta);
     }
   }
 
