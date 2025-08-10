@@ -3,6 +3,10 @@ import { MDXMeta } from "@/core/types/indexing";
 import { deduplicateArray } from "@/utils/func-utils";
 import { MetaCollector } from "./meta-collecting";
 
+/**
+ * MDXMetaCollector is a meta collector that collects meta data from MDX files.
+ * It use `content` in previous collector to collect meta data.
+ */
 export class MDXMetaCollector
   implements MetaCollector<MDXMeta & { content: string }>
 {

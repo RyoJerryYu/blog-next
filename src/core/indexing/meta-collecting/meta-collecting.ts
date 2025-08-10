@@ -25,7 +25,7 @@ export interface MetaCollector<Meta extends BaseMeta> {
   /**
    * Collects meta data for a resource from its file.
    * @param filePath Path to the resource file, relative to project root
-   * @returns Promise resolving to partial meta data for the resource
+   * @returns Promise resolving to partial meta data for the resource. The result will be merged with the previous meta data.
    */
   collectMeta(
     filePath: string,
