@@ -1,4 +1,4 @@
-import { BaseMeta } from "@/core/types/indexing";
+import { BaseMeta, BasePathMapping } from "@/core/types/indexing";
 import dayjs from "dayjs";
 import fs, { existsSync } from "fs";
 import { mkdir, readFile, writeFile } from "fs/promises";
@@ -82,13 +82,14 @@ export class CacheMetaCollector<Meta extends BaseMeta>
    * Collects meta data for a resource from its cache file if available and not expired.
    * Meta data is information that belongs to a specific resource, never depending on other resources.
    *
-   * @param filePath Path to the resource file, relative to project root
+   * @param pathMapping Path mapping for the resource
    * @returns Promise resolving to cached meta data with excluded fields removed, or empty object if cache invalid
    */
   collectMeta = async (
-    filePath: string,
+    pathMapping: BasePathMapping,
     prevMeta: Partial<Meta>
   ): Promise<Partial<Meta>> => {
+    const filePath = pathMapping.filePath;
     const cachePath = this.filePathToCachePath(filePath);
     if (await this.cacheExpired(filePath)) {
       return {};
@@ -113,10 +114,11 @@ export class CacheMetaCollector<Meta extends BaseMeta>
    * Excludes specified fields from being cached.
    * Must not modify the meta data.
    *
-   * @param filePath Path to the resource file
+   * @param pathMapping Path mapping for the resource
    * @param meta Complete meta data to cache
    */
-  defer = async (filePath: string, meta: Meta): Promise<void> => {
+  defer = async (pathMapping: BasePathMapping, meta: Meta): Promise<void> => {
+    const filePath = pathMapping.filePath;
     const cachePath = this.filePathToCachePath(filePath);
     if (!existsSync(dirname(cachePath))) {
       console.log(`create cache dir for ${filePath} to ${cachePath}`);

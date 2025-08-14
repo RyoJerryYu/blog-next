@@ -98,7 +98,7 @@ const genMdxOptions = (props: ParseMdxProps) => {
     ],
     rehypePlugins: [
       rehypeSlug,
-      [rehypeAutolinkHeadings, { behavior: "wrap" }],
+      [rehypeAutolinkHeadings, { behavior: "prepend" }], // TODO: use copy icon for copy link
       [
         rehypeHeadingAnchorCollection,
         {

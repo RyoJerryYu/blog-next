@@ -1,3 +1,4 @@
+import { BasePathMapping } from "@/core/types/indexing";
 import dayjs from "dayjs";
 import fs from "fs";
 import git from "isomorphic-git";
@@ -32,15 +33,16 @@ export class GitMetaCollector implements MetaCollector<GitMeta> {
    * Collects meta data for a resource from its file's git history.
    * Gets created_at from first commit and updated_at from latest commit.
    *
-   * @param filePath Path to the resource file, relative to project root
+   * @param pathMapping Path mapping for the resource
    * @returns Promise resolving to:
    *   - created_at: ISO date string of first commit
    *   - updated_at: ISO date string of latest commit (if more than one commit)
    */
   collectMeta = async (
-    filePath: string,
+    pathMapping: BasePathMapping,
     prevMeta: Partial<GitMeta>
   ): Promise<Partial<GitMeta>> => {
+    const filePath = pathMapping.filePath;
     if (prevMeta.created_at && prevMeta.updated_at) {
       return {};
     }
@@ -85,13 +87,13 @@ export class MockGitMetaCollector implements MetaCollector<GitMeta> {
 
   /**
    * Returns mock git meta data for development.
-   * @param filePath Path to the resource file (unused in mock)
+   * @param pathMapping Path mapping for the resource (unused in mock)
    * @returns Promise resolving to:
    *   - created_at: Tomorrow's date as ISO string
    *   - updated_at: Not included
    */
   collectMeta = async (
-    filePath: string,
+    pathMapping: BasePathMapping,
     prevMeta: Partial<GitMeta>
   ): Promise<Partial<GitMeta>> => {
     return {

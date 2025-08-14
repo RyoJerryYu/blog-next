@@ -1,7 +1,7 @@
 import {
   MetaCollector,
   MetaCollectorChain,
-  collectMetaForFilePath,
+  collectMetaForPath,
 } from "./meta-collecting";
 
 type MockMeta = {
@@ -29,7 +29,7 @@ type C = { c: string };
 
 describe("collectMetaForFilePath", () => {
   it("should never remain undefined", async () => {
-    const meta = await collectMetaForFilePath(
+    const meta = await collectMetaForPath(
       {
         collectors: [
           mockMetaCollector({}),
@@ -37,7 +37,10 @@ describe("collectMetaForFilePath", () => {
         ],
         defaultMeta: { created_at: "", updated_at: "", tags: [] },
       },
-      ""
+      {
+        filePath: "",
+        pagePath: "",
+      }
     );
     expect(meta).toBeDefined();
     expect(meta.created_at).toBeDefined();
@@ -62,7 +65,10 @@ describe("collectMetaForFilePath", () => {
       collectors: [abCollector, bcCollector, acCollector],
       defaultMeta: { a: "", b: "", c: "" },
     };
-    const meta = await collectMetaForFilePath(chain, "");
+    const meta = await collectMetaForPath(chain, {
+      filePath: "",
+      pagePath: "",
+    });
     expect(meta.a).toBe("5");
     expect(meta.b).toBe("3");
     expect(meta.c).toBe("6");

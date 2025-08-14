@@ -18,7 +18,7 @@ import { PrevNextIndex } from "./index-building/prev-next-index-builder/prev-nex
 import { TagIndex } from "./index-building/tag-index-builder/tag-index-builder";
 import { WikiTreeIndex } from "./index-building/wiki-tree-index-builder/wiki-tree-index-builder";
 import { devReloadingChain, pipeline } from "./indexing-settings";
-import { collectMetaForFilePath } from "./meta-collecting/meta-collecting";
+import { collectMetaForPath } from "./meta-collecting/meta-collecting";
 import {
   cacheResourcePool,
   executePipeline,
@@ -126,7 +126,6 @@ const getMetaOrReload = async <
   PathMapping extends BasePathMapping,
   Meta extends BaseMeta
 >(
-  // cache: ResourceMap<PagePathMapping, PostMeta>,
   pagePath: string
 ) => {
   const cache = mustGetCache();
@@ -139,9 +138,9 @@ const getMetaOrReload = async <
   if (isContentDev()) {
     // for reloading in development
     console.log(`reloading on dev ${pagePath}`);
-    const filePath = resourceMap.pagePathTo("filePath", pagePath);
+    const pathMapping = resourceMap.pagePathToResource(pagePath).pathMapping;
     const chain = devReloadingChain;
-    const meta = await collectMetaForFilePath(chain, filePath);
+    const meta = await collectMetaForPath(chain, pathMapping);
     return meta;
   } else {
     return resourceMap.pagePathToMeta(pagePath);

@@ -1,4 +1,4 @@
-import { PostMeta } from "@/core/types/indexing";
+import { BasePathMapping, PostMeta } from "@/core/types/indexing";
 import dayjs from "dayjs";
 import fs from "fs";
 import matter from "gray-matter";
@@ -64,9 +64,10 @@ export class PostRawMetaCollector implements MetaCollector<PostMeta> {
    * @returns Promise resolving to partial meta data extracted from the file
    */
   collectMeta = async (
-    filePath: string,
+    pathMapping: BasePathMapping,
     prevMeta: Partial<PostMeta>
   ): Promise<Partial<PostMeta>> => {
+    const filePath = pathMapping.filePath;
     console.log("parseMetaFromFile", filePath);
     const raw = await promisify(fs.readFile)(filePath, "utf-8");
     return this.collectMetaFromRaw(raw);

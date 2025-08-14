@@ -178,3 +178,10 @@ flowchart TD
 
     B --> S[.cache/indexing-cache.json]
 ```
+
+## How to add a new series of resources with existing pipeline
+
+1. Define a new path mapper in `indexing-settings.ts`
+2. Add settings for the new resource in `indexing-settings.ts` in `pipeline` (resourceChains, indexBuilders)
+3. Add a new page component in `pages/[[...slugs]].tsx`
+4. Add a new item in `DefaultLayout` in `layouts/DefaultLayout/index.tsx` .
