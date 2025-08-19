@@ -333,3 +333,7 @@ tags:
 2. 能做真魔紫炎，就尽量先做真魔紫炎。真魔紫炎找调整/非调整中缺少的那一方 or 荒行的对象，继续扩大场值。
 3. 不能做真魔紫炎的场合，考虑能否做失 X 继续特招木猿做 combo 。
 4. 连失 X 都做不了，最后考虑做军大将找六武门会不会有奇效。
+
+## 参考文献
+
+- [【游戏王MD】主题编年史杯六武众预组介绍_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1qUY4zgE5L/?spm_id_from=333.337.search-card.all.click&vd_source=ba01a1932b530e32e2576726fdda41d7)
