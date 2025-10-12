@@ -1,6 +1,6 @@
 ---
-created_at: 2020-08-02 00:10:10
-updated_at: 2022-03-27 21:30:33+08:00
+created_at: 2020-08-02T00:10:10
+updated_at: 2025-09-29T15:16:00
 layout:     post
 title:      "Python字典的实现原理"
 subtitle:   "逻辑结构与物理结构在Python3.6前后的不同"
