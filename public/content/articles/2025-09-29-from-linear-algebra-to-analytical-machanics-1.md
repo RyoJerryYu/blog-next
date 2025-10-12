@@ -323,11 +323,11 @@ $$
 
 这样说可能不够直观。让我们举一个例子作图更直观地感受多元函数的微分。
 
-我们令函数 $z = f(x, y) = x^2 + y^2$ ，这是一个抛物面，在点 $(x_{0}, y_{0}) = (0.5, 0.5)$ 处的线性逼近应为：
+我们令函数 $z = f(x, y) = x^2 + y^2$ ，这是一个抛物面，在点 $(x_{0}, y_{0}) = (-0.5, 0.5)$ 处的线性逼近应为：
 
 $$
 dz = - dx - dy = \begin{bmatrix}
-1 & 1
+-1 & 1
 \end{bmatrix}\begin{bmatrix}
 dx \\
 dy
@@ -360,7 +360,7 @@ view = view3d([-7,-7], [14,14], [bound,bound, zbound])<<
 F = function(x,y){return x**2 + y**2;};
 fg = functiongraph3d(view, F, bound, bound)<<strokeWidth:0.5,stepsU:70,stepsV:70>>;
 
-px = slider([4,-8], [8,-8], [-1,0.5,1]);
+px = slider([4,-8], [8,-8], [-1,-0.5,1]);
 py = slider([4,-8], [4,-4], [-1,0.5,1]);
 
 PX = function(){return px.Value();};
