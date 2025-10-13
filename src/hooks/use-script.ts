@@ -1,9 +1,9 @@
-import { MutableRefObject, useEffect, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 
 export type UseScriptParams = {
   url: string;
   attributes?: Record<string, string>;
-  ref: MutableRefObject<HTMLElement | null>;
+  ref: RefObject<HTMLElement | null>;
 };
 
 type ScriptStatus = "idle" | "loading" | "ready" | "error";

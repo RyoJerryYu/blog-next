@@ -1,4 +1,5 @@
 "use client";
+import { useGlobalScript } from "@/hooks/use-global-Script";
 import clsx from "clsx";
 import JXG from "jsxgraph";
 import { useEffect, useRef, useState } from "react";
@@ -8,24 +9,60 @@ export const JXGBoardImpl = (props: JXGBoardProps) => {
   const { boardAttributes, logic, jessieCode, className } = props;
   const id = useRef(Math.random().toString(36).substring(2, 15));
   const [board, setBoard] = useState<JXG.Board | null>(null);
+  const mathJaxScript = useRef(null);
+
+  const attr = boardAttributes || {};
+
+  if (!attr.boundingBox && !attr.boundingBox) {
+    attr.boundingBox = [-10, 10, 10, -10];
+  }
+
+  const mathJaxStatus = useGlobalScript({
+    url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
+    id: "MathJax-script",
+    attributes: {
+      id: "MathJax-script",
+    },
+  });
 
   useEffect(() => {
-    const board = JXG.JSXGraph.initBoard(id.current, {
-      boundingbox: [-10, 10, 10, -10],
-      ...boardAttributes,
-    });
-    setBoard(board);
-  }, [boardAttributes, id]);
-
-  useEffect(() => {
-    if (board) {
-      if (jessieCode) {
-        board.jc.parse(logic);
-      } else {
-        logic(board);
-      }
+    if (mathJaxStatus !== "ready") {
+      return;
     }
-  }, [board, jessieCode, logic]);
+    const initFunc = async () => {
+      JXG.Options.text.useMathJax = true;
+      JXG.Options.label.useMathJax = true;
+      // @ts-ignore
+      if (typeof window.MathJax !== "undefined") {
+        console.log("MathJax is defined!!!!!!!!!!!!!!!!");
+        //@ts-ignore
+        window.MathJax.config.tex.inlineMath = [["$", "$"]];
+        //@ts-ignore
+        window.MathJax.config.tex.processEscapes = true;
+        //@ts-ignore
+        window.MathJax.config.chtml.adaptiveCSS = false;
+        //@ts-ignore
+        await window.MathJax.startup.getComponents();
+      }
+      const board = JXG.JSXGraph.initBoard(id.current, {
+        ...attr,
+      });
+      setBoard(board);
+      if (board) {
+        if (jessieCode) {
+          board.jc.parse(logic);
+        } else {
+          logic(board);
+        }
+      }
+    };
+    initFunc();
+  }, [attr, id, jessieCode, logic, mathJaxStatus]);
 
-  return <div id={id.current} className={clsx("w-full h-full", className)} />;
+  return (
+    <>
+      <div id={id.current} className={clsx("w-full h-full", className)} />
+      <div ref={mathJaxScript} />
+    </>
+  );
 };
