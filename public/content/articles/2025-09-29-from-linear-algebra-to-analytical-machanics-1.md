@@ -261,6 +261,43 @@ $$
 
 ![](https://upload.wikimedia.org/wikipedia/commons/f/f1/Dydx_zh.svg)
 
+来一个动态的例子：
+
+```jessiecode
+---
+boundingBox: [0,1,1,0]
+---
+F = function(x){return x**2;};
+f = functiongraph(F)<<strokeWidth:2>>;
+P = glider(0.4,0.16,f);
+tanL = tangent(P);
+
+dx = slider([0.1,0.9],[0.3,0.9], [0,0.2,0.5]);
+
+ppx = function() {return P.X()+dx.Value();};
+ppy = function() {return F(ppx());};
+invisible = <<visible: false>>;
+xisdx = line(
+	function(){return [ppx(), 0];}, 
+	function(){return [ppx(), ppy()];}
+)invisible;
+yisy = line(
+	function(){return [P.X(), P.Y()];},
+	function(){return [ppx(), P.Y()];}
+)invisible;
+
+largeFont = <<fontSize:18>>;
+deltaP = point(ppx,ppy)<<name:'$\\Delta y$', label:largeFont>>;
+dyP = intersection(xisdx, tanL) <<name:'$dy$', label:largeFont>>;
+dxP = point(ppx, P.Y())<<withLabel:false>>;
+
+dxL = segment(dxP, P)<<name:'$dx = \\Delta x$', withLabel: true, label: largeFont>>;
+delyL = segment(dxP, deltaP)<<color: 'blue'>>;
+dyL = segment(dxP, dyP)<<dash:3, color: 'cyan'>>;
+text(0.1,0.8,function(){return "$\\frac{\\Delta y - dy}{\\Delta x} = $"+((delyL.L()-dyL.L())/(dxL.L())).toFixed(2);})largeFont;
+```
+
+
 所以我们能很直观的感受什么叫微分啦：在离函数上一点足够近的范围内，我们用一个随自变量线性变化的值去近似代替这一点附近的函数值本身，这个线性变化的值就是微分 $\mathrm{d}y$ 。
 
 可这又有人要说了：你这定义不严谨呀！什么叫做“足够近的范围内”？多近才叫做足够近？怎么样的线性变化的值才能跟函数值本身足够像？从上面的图我们也能很清楚的看出， $\mathrm{d}y$ 跟 $\Delta y$ 可不相等呀！
