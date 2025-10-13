@@ -1,3 +1,4 @@
+import { GlobalScriptProvider } from "@/hooks/use-global-Script";
 import UniversalHead from "@/layouts/UniversalHead";
 import "@/styles/DefaultLayout.Menu.scss";
 import "@/styles/components/wiki.WikiTreeMenu.scss";
@@ -24,9 +25,11 @@ export default function App({ Component, pageProps }: AppProps) {
           gtag('js', new Date());
           gtag('config', 'G-1Y0XYKX8HY');`}
       </Script>
-      <ThemeProvider theme={muiTheme}>
-        <Component {...pageProps} />
-      </ThemeProvider>
+      <GlobalScriptProvider>
+        <ThemeProvider theme={muiTheme}>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </GlobalScriptProvider>
     </>
   );
 }
