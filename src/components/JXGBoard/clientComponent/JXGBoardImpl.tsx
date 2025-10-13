@@ -9,13 +9,18 @@ export const JXGBoardImpl = (props: JXGBoardProps) => {
   const id = useRef(Math.random().toString(36).substring(2, 15));
   const [board, setBoard] = useState<JXG.Board | null>(null);
 
+  const attr = boardAttributes || {};
+
+  if (!attr.boundingBox && !attr.boundingBox) {
+    attr.boundingBox = [-10, 10, 10, -10];
+  }
+
   useEffect(() => {
     const board = JXG.JSXGraph.initBoard(id.current, {
-      boundingbox: [-10, 10, 10, -10],
-      ...boardAttributes,
+      ...attr,
     });
     setBoard(board);
-  }, [boardAttributes, id]);
+  }, [attr, id]);
 
   useEffect(() => {
     if (board) {
