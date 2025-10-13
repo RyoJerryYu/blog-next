@@ -1,1 +1,0 @@
-self.__SSG_MANIFEST=new Set(["\u002F","\u002Farticles","\u002Farticles\u002F[slug]","\u002Fclips","\u002Fideas","\u002Fideas\u002F[slug]","\u002Flearn_from_ai","\u002Flearn_from_ai\u002F[slug]","\u002Ftags","\u002Ftags\u002F[tag]","\u002Ftestwiki\u002F[[...slugs]]","\u002Fygowiki\u002F[[...slugs]]"]);self.__SSG_MANIFEST_CB&&self.__SSG_MANIFEST_CB()
