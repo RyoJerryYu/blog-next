@@ -19,7 +19,7 @@ type PostProps = {
 const Post = ({ meta, source, tags, prevNextInfo }: PostProps) => {
   const { prevInfo, nextInfo } = prevNextInfo;
   return (
-    <article className={style.post}>
+    <article className="post-frame">
       <h1>{meta.title}</h1>
       {meta.created_at && (
         <RelativeTime className={style.postDate}>

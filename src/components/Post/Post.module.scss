@@ -1,10 +1,5 @@
 @tailwind components;
 
-.post {
-  @apply flex flex-col mx-auto min-h-screen;
-  @apply p-2;
-}
-
 .postDate {
   @apply text-sm text-slate-700;
 }

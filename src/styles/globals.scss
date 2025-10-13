@@ -84,6 +84,10 @@
       );
     }
   }
+  .post-frame {
+    @apply flex flex-col mx-auto min-h-screen;
+    @apply p-2;
+  }
   .post-body {
     overflow-wrap: break-word;
     word-wrap: break-word;
