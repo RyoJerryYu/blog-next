@@ -185,3 +185,16 @@ flowchart TD
 2. Add settings for the new resource in `indexing-settings.ts` in `pipeline` (resourceChains, indexBuilders)
 3. Add a new page component in `pages/[[...slugs]].tsx`
 4. Add a new item in `DefaultLayout` in `layouts/DefaultLayout/index.tsx` .
+
+## Reason for why path mapping must have pagePath and filePath
+
+Path mapping is used before all other steps, every info from a resource file should come from path mapping.
+
+pagePath must got from path mapping, because we should uniquely identify a resource in other steps.
+
+filePath must got from path mapping, because we should read the file content after path mapping (e.g. parse the file content to meta).
+
+Allowing a path mapping to have no filePath will have the benefit of referencing the page that does not exist in the file system. But since Obsidian do not allow doing so, we also do not allow it for aligning with Obsidian.
+
+If want to show a page that does not exist in the file system, we could use an index instead.
+

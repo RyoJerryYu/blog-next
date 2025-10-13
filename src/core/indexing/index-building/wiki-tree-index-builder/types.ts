@@ -13,6 +13,7 @@ export type WikiTreeNode = {
   slugs: string[];
   pagePath: string;
   children: WikiTreeNode[];
+  isVirtual?: boolean;
 };
 export type WikiTreeInfo = {
   trees: WikiTreeNode[];
