@@ -18,8 +18,13 @@ export const wikiGetStaticPaths = async (resourceType: string) => {
     resourceType
   );
   const pagePaths = testwikiMap.listPagePaths();
+  const wikiTreeIndex = getWikiTreeIndex();
+  const virtualPagePaths = wikiTreeIndex
+    .listTreeNodeTOCs(resourceType)
+    .filter((node) => node.isVirtual)
+    .map((node) => node.pagePath);
   return {
-    paths: pagePaths,
+    paths: [...pagePaths, ...virtualPagePaths],
     fallback: false,
   };
 };
@@ -30,12 +35,25 @@ export const wikiGetStaticProps = async (
   pathMapper: WikiPathMapper
 ): Promise<{ props: WikiPageProps }> => {
   const pagePath = pathMapper.slugsToPagePath(slugs);
-  const meta = await getPostMetaOrReload(pagePath);
-  const tags = getTagIndex().getTagsOf(meta.tags);
-  const wikiTree = getWikiTreeIndex().pagePathToWikiTree(
+  const wikiTreeIndex = getWikiTreeIndex();
+  const wikiTree = wikiTreeIndex.pagePathToWikiTree(resourceType, pagePath);
+  const treeNodeTOC = wikiTreeIndex.pagePathToTreeNodeTOC(
     resourceType,
     pagePath
   );
+  if (treeNodeTOC.isVirtual) {
+    return {
+      props: {
+        isIndexOnly: true,
+        slugs,
+        wikiTree,
+        treeNodeTOC: treeNodeTOC,
+      },
+    };
+  }
+
+  const meta = await getPostMetaOrReload(pagePath);
+  const tags = getTagIndex().getTagsOf(meta.tags);
   const { source } = await parseMdx(meta.content, {
     pagePath: pagePath,
   });
@@ -46,9 +64,9 @@ export const wikiGetStaticProps = async (
   return {
     props: {
       slugs,
+      wikiTree,
       meta,
       tags,
-      wikiTree,
       source,
       backRefResources,
     },

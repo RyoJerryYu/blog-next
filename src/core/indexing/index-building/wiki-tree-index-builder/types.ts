@@ -18,3 +18,15 @@ export type WikiTreeNode = {
 export type WikiTreeInfo = {
   trees: WikiTreeNode[];
 };
+
+export type WikiTreeNodeTOC = {
+  title: string;
+  slugs: string[];
+  pagePath: string;
+  isVirtual?: boolean;
+  children: {
+    title: string;
+    slugs: string[];
+    pagePath: string;
+  }[];
+};

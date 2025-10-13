@@ -10,6 +10,7 @@ import {
   WikiTreeIndexResource,
   WikiTreeInfo,
   WikiTreeNode,
+  WikiTreeNodeTOC,
 } from "./types";
 
 /**
@@ -81,7 +82,7 @@ class SubWikiTreeIndexBuilder {
     }
     this.popStackAsTrees(currentStack, wikiTrees, null);
 
-    const wikiTreeNodeList = this.buildWikiTreeNodeList(wikiTrees);
+    const wikiTreeNodeList = this.buildTreeNodeTOCList(wikiTrees);
     return new SubWikiTreeIndex(wikiTrees, wikiTreeNodeList);
   };
 
@@ -207,20 +208,27 @@ class SubWikiTreeIndexBuilder {
    * @param wikiTrees - the wiki tree nodes
    * @returns the wiki tree node list
    */
-  private buildWikiTreeNodeList = (
+  private buildTreeNodeTOCList = (
     wikiTrees: WikiTreeNode[]
-  ): WikiTreeNode[] => {
+  ): WikiTreeNodeTOC[] => {
     const flattenSubTrees = (subTrees: WikiTreeNode[]) => {
-      const subList: WikiTreeNode[] = [];
+      const subList: WikiTreeNodeTOC[] = [];
       for (const wikiTreeNode of subTrees) {
-        subList.push({ ...wikiTreeNode, children: [] }); // emit children for memory saving
+        subList.push({
+          ...wikiTreeNode,
+          children: wikiTreeNode.children.map((c) => ({
+            title: c.title,
+            slugs: c.slugs,
+            pagePath: c.pagePath,
+          })),
+        }); // emit children for memory saving
         subList.push(...flattenSubTrees(wikiTreeNode.children));
       }
       return subList;
     };
 
     const nodeList = flattenSubTrees(wikiTrees);
-    if (!nodeList.some((node) => node.slugs.length === 0)) {
+    if (nodeList.every((node) => node.slugs.length > 0)) {
       // no root node, add a root node to the front
 
       const firstNode = nodeList[0];
@@ -235,27 +243,33 @@ class SubWikiTreeIndexBuilder {
         .replace(firstNode.slugs.join("/"), "")
         .replace(/\/$/, "");
       nodeList.unshift({
-        title: "Index",
+        title: virtualPagePath.replace("/", ""),
         slugs: [],
         pagePath: virtualPagePath,
-        children: [],
+        isVirtual: true,
+        children: wikiTrees.map((tree) => ({
+          title: tree.title,
+          slugs: tree.slugs,
+          pagePath: tree.pagePath,
+        })),
       });
     }
+
     return nodeList;
   };
 }
 
 export class SubWikiTreeIndex {
-  private readonly nodeByPagePath: Record<string, WikiTreeNode>;
+  private readonly nodeTOCByPagePath: Record<string, WikiTreeNodeTOC>;
   constructor(
     private readonly wikiTreeNodes: WikiTreeNode[],
     // it's a list, in order, with all the nodes, but no children info
     // and always contains the root node at the front
-    private readonly wikiTreeNodeList: WikiTreeNode[]
+    private readonly treeNodeTOCList: WikiTreeNodeTOC[]
   ) {
-    this.nodeByPagePath = {};
-    for (const wikiTreeNode of this.wikiTreeNodeList) {
-      this.nodeByPagePath[wikiTreeNode.pagePath] = wikiTreeNode;
+    this.nodeTOCByPagePath = {};
+    for (const wikiTreeNode of this.treeNodeTOCList) {
+      this.nodeTOCByPagePath[wikiTreeNode.pagePath] = wikiTreeNode;
     }
   }
 
@@ -265,12 +279,12 @@ export class SubWikiTreeIndex {
     };
   };
 
-  listTreeNodes = (): WikiTreeNode[] => {
-    return this.wikiTreeNodeList;
+  listTreeNodeTOCs = (): WikiTreeNodeTOC[] => {
+    return this.treeNodeTOCList;
   };
 
-  pagePathToWikiTreeNode = (pagePath: string): WikiTreeNode => {
-    return this.nodeByPagePath[pagePath];
+  pagePathToTreeNodeTOC = (pagePath: string): WikiTreeNodeTOC => {
+    return this.nodeTOCByPagePath[pagePath];
   };
 }
 export class WikiTreeIndexBuilder
@@ -335,17 +349,17 @@ export class WikiTreeIndex {
     return subIndex.pagePathToWikiTree(pagePath);
   };
 
-  listTreeNodes = (resourceType: string): WikiTreeNode[] => {
+  listTreeNodeTOCs = (resourceType: string): WikiTreeNodeTOC[] => {
     const subIndex = this.getSubIndex(resourceType);
-    return subIndex.listTreeNodes();
+    return subIndex.listTreeNodeTOCs();
   };
 
-  pagePathToWikiTreeNode = (
+  pagePathToTreeNodeTOC = (
     resourceType: string,
     pagePath: string
-  ): WikiTreeNode => {
+  ): WikiTreeNodeTOC => {
     const subIndex = this.getSubIndex(resourceType);
-    return subIndex.pagePathToWikiTreeNode(pagePath);
+    return subIndex.pagePathToTreeNodeTOC(pagePath);
   };
 
   static fromPool = getIndexFromIndexPool<WikiTreeIndex>("wikiTree");
