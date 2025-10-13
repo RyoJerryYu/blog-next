@@ -20,7 +20,7 @@ const Post = ({ meta, source, tags, prevNextInfo }: PostProps) => {
   const { prevInfo, nextInfo } = prevNextInfo;
   return (
     <article className={style.post}>
-      <h1 className={style.postTitle}>{meta.title}</h1>
+      <h1>{meta.title}</h1>
       {meta.created_at && (
         <RelativeTime className={style.postDate}>
           {meta.created_at}

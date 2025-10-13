@@ -4,9 +4,7 @@
   @apply flex flex-col mx-auto min-h-screen;
   @apply p-2;
 }
-.postTitle {
-  @apply text-4xl font-bold text-slate-900;
-}
+
 .postDate {
   @apply text-sm text-slate-700;
 }
