@@ -55,6 +55,13 @@ export function testwikiPathMapper() {
   });
 }
 
+export function jessiecodeWikiPathMapper() {
+  return new WikiPathMapper({
+    fileGlobPattern: "public/content/jessiecode-wiki/**/*.md*",
+    pathPrefix: "/jessiecode-wiki",
+  });
+}
+
 export const defaultStaticResourceChain: MetaCollectorChain<BaseMeta> = {
   collectors: [],
   defaultMeta: {},
@@ -128,6 +135,11 @@ export function pipeline() {
         collectorChain: defaultChain,
       },
       {
+        resourceType: "jessiecode-wiki",
+        pathMapper: jessiecodeWikiPathMapper(),
+        collectorChain: defaultChain,
+      },
+      {
         resourceType: "testwiki",
         pathMapper: testwikiPathMapper(),
         collectorChain: defaultChain,
@@ -144,6 +156,7 @@ export function pipeline() {
           "articles",
           "ideas",
           "learn_from_ai",
+          "jessiecode-wiki",
           "ygowiki",
           "testwiki",
         ],
@@ -154,6 +167,7 @@ export function pipeline() {
           "articles",
           "ideas",
           "learn_from_ai",
+          "jessiecode-wiki",
           "ygowiki",
           "testwiki",
           "staticResources",
@@ -165,6 +179,7 @@ export function pipeline() {
           "articles",
           "ideas",
           "learn_from_ai",
+          "jessiecode-wiki",
           "ygowiki",
           "testwiki",
         ],
@@ -179,7 +194,7 @@ export function pipeline() {
         builder: new ClipDataIndexBuilder(),
       },
       {
-        handleResources: ["testwiki", "ygowiki"],
+        handleResources: ["testwiki", "ygowiki", "jessiecode-wiki"],
         builder: new WikiTreeIndexBuilder(true),
       },
     ],
