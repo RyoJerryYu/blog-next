@@ -22,15 +22,53 @@ export const fuchsia500 = "#d946ef";
 export const pink300 = "#f9a8d4";
 export const pink500 = "#ec4899";
 
+export const codeblock = {
+  900: "#0f172a",
+  800: "#30374c",
+  700: "#4f556c",
+  600: "#626880",
+  500: "#8a90a9",
+  400: "#aab0cb",
+  300: "#ced4f0",
+  200: "#dfe5ff",
+  100: "#e9f0ff",
+  50: "#f1f7ff",
+};
+
+export const codeblockSecondary = {
+  900: "#2a220f",
+  800: "#4d432f",
+  700: "#6d624d",
+  600: "#827660",
+  500: "#ac9f88",
+  400: "#cbbea6",
+  300: "#eee1c8",
+  200: "#fceed5",
+  100: "#fff4db",
+  50: "#fff9e0",
+};
+
 declare module "@mui/material/styles" {
   interface Palette {
     header: {
       background: string;
     };
+    codeblock: {
+      darkBg: string;
+      bg: string;
+      text: string;
+      selectedText: string;
+    };
   }
   interface PaletteOptions {
     header: {
       background: string;
+    };
+    codeblock: {
+      darkBg: string;
+      bg: string;
+      text: string;
+      selectedText: string;
     };
   }
 }
@@ -39,6 +77,12 @@ export const muiTheme = createTheme({
   palette: {
     header: {
       background: alpha(slate900, 0.75),
+    },
+    codeblock: {
+      darkBg: alpha(codeblock[900], 0.9),
+      bg: alpha(codeblock[800], 0.9),
+      text: alpha(codeblock[500], 0.9),
+      selectedText: alpha(codeblock[300], 0.9),
     },
   },
 });
