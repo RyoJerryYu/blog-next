@@ -5,9 +5,8 @@ const CodeBlockImpl = dynamicLoading(
   async () => (await import("./clientComponent/CodeBlockImpl")).CodeBlockImpl
 );
 
-// TODO want show language, show file name, highlight line...
 const CodeBlock = ({ language, children }: CodeBlockProps) => {
-  return <CodeBlockImpl language={language} children={children} />;
+  return <CodeBlockImpl language={language}>{children}</CodeBlockImpl>;
 };
 
 export default CodeBlock;

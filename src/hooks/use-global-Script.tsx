@@ -83,6 +83,7 @@ export const useGlobalScript = (props: UseGlobalScriptProps) => {
 
   useEffect(() => {
     initScript(id, url, attributes);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, url, attributes]);
 
   return statusMap[id];
