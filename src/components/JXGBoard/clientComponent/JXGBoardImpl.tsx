@@ -1,8 +1,8 @@
 "use client";
 import { useGlobalScript } from "@/hooks/use-global-Script";
-import clsx from "clsx";
+import { Box } from "@mui/material";
 import JXG from "jsxgraph";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { JXGBoardProps } from "../types/JXGBoardProps";
 
 export const JXGBoardImpl = (props: JXGBoardProps) => {
@@ -11,11 +11,13 @@ export const JXGBoardImpl = (props: JXGBoardProps) => {
   const [board, setBoard] = useState<JXG.Board | null>(null);
   const mathJaxScript = useRef(null);
 
-  const attr = boardAttributes || {};
-
-  if (!attr.boundingBox && !attr.boundingBox) {
-    attr.boundingBox = [-10, 10, 10, -10];
-  }
+  const attr = useMemo(() => {
+    const attr = boardAttributes || {};
+    if (!attr.boundingBox && !attr.boundingBox) {
+      attr.boundingBox = [-10, 10, 10, -10];
+    }
+    return attr;
+  }, [boardAttributes]);
 
   const mathJaxStatus = useGlobalScript({
     url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
@@ -61,7 +63,7 @@ export const JXGBoardImpl = (props: JXGBoardProps) => {
 
   return (
     <>
-      <div id={id.current} className={clsx("w-full h-full", className)} />
+      <Box id={id.current} sx={{ width: "100%", height: "100%" }} />
       <div ref={mathJaxScript} />
     </>
   );
