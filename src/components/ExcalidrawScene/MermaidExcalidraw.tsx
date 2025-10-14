@@ -9,7 +9,7 @@ const MermaidExcalidrawImpl = dynamicLoading(
 
 export function MermaidExcalidraw(props: MermaidCodeBlockProps) {
   return (
-    <div className="relative h-[600px] my-4">
+    <div style={{ height: "600px" }}>
       <MermaidExcalidrawImpl {...props} />
     </div>
   );

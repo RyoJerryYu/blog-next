@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import { dynamicLoading } from "../Loading/dynamic-loading";
 import { JXGBoardProps } from "./types/JXGBoardProps";
 
@@ -7,8 +8,8 @@ const JXGBoardImpl = dynamicLoading(
 
 export function JXGBoard(props: JXGBoardProps) {
   return (
-    <div className="relative h-[600px] w-[600px] my-4">
+    <Box sx={{ width: "100%", aspectRatio: "1/1" }}>
       <JXGBoardImpl {...props} />
-    </div>
+    </Box>
   );
 }

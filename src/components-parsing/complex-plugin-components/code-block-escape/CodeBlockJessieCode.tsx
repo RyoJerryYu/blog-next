@@ -1,6 +1,7 @@
 import { JXGBoard } from "@/components/JXGBoard/JXGBoard";
 import { CodeBlockProps } from "@/core/parsing/complex-plugins/code-block-escape/types";
 import matter from "gray-matter";
+import { CodeBlockLayout } from "./CodeBlockLayout";
 
 /**
  * source 如下：
@@ -25,14 +26,16 @@ export const CodeBlockJessieCode = (props: CodeBlockProps) => {
   }
 
   return (
-    <JXGBoard
-      jessieCode
-      logic={codeContent}
-      boardAttributes={{
-        grid: true,
-        axis: true,
-        ...boardAttributes,
-      }}
-    />
+    <CodeBlockLayout {...props}>
+      <JXGBoard
+        jessieCode
+        logic={codeContent}
+        boardAttributes={{
+          grid: true,
+          axis: true,
+          ...boardAttributes,
+        }}
+      />
+    </CodeBlockLayout>
   );
 };
