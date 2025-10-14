@@ -1,5 +1,4 @@
-import glob from "glob";
-import { promisify } from "util";
+import { glob } from "fs/promises";
 import { CONTENT_DIR } from "../../../utils/env-var";
 import { WikiPathMapping } from "../../types/indexing";
 import { filePathToWikiSlugs } from "../utils/wiki-utils";
@@ -24,7 +23,7 @@ export class WikiPathMapper implements PathMapper<WikiPathMapping> {
   }
 
   listFilePaths = async () => {
-    return await promisify(glob)(this.fileGlobPattern);
+    return await Array.fromAsync(glob(this.fileGlobPattern));
   };
 
   /**
