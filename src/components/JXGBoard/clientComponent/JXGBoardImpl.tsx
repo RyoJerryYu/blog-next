@@ -5,6 +5,12 @@ import JXG from "jsxgraph";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { JXGBoardProps } from "../types/JXGBoardProps";
 
+declare global {
+  interface Window {
+    MathJax: any;
+  }
+}
+
 export const JXGBoardImpl = (props: JXGBoardProps) => {
   const { boardAttributes, logic, jessieCode, className } = props;
   const id = useRef(Math.random().toString(36).substring(2, 15));
@@ -35,16 +41,11 @@ export const JXGBoardImpl = (props: JXGBoardProps) => {
       JXG.Options.text.useMathJax = true;
       JXG.Options.label.useMathJax = true;
       JXG.Options.label.autoPosition = true;
-      // @ts-ignore
       if (typeof window.MathJax !== "undefined") {
         console.log("MathJax is defined!!!!!!!!!!!!!!!!");
-        //@ts-ignore
         window.MathJax.config.tex.inlineMath = [["$", "$"]];
-        //@ts-ignore
         window.MathJax.config.tex.processEscapes = true;
-        //@ts-ignore
         window.MathJax.config.chtml.adaptiveCSS = false;
-        //@ts-ignore
         await window.MathJax.startup.getComponents();
       }
       const board = JXG.JSXGraph.initBoard(id.current, {
