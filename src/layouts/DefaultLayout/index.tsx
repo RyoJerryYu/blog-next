@@ -227,23 +227,27 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = (props) => {
           >
             <div className={style.contentHeight}>{props.children}</div>
           </MainWidth>
-          <Drawer
-            open={drawerOpen}
-            onClose={() => setDrawerOpen(false)}
-            anchor="left"
-          >
-            <Box sx={{ minWidth: "30vw" }}>{props.left}</Box>
-          </Drawer>
-          <Fab
-            onClick={() => setDrawerOpen(true)}
-            sx={{
-              position: "absolute",
-              right: "1rem",
-              bottom: "1rem",
-            }}
-          >
-            <MenuIcon />
-          </Fab>
+          {needDrawer ? (
+            <>
+              <Drawer
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                anchor="left"
+              >
+                <Box sx={{ minWidth: "30vw" }}>{props.left}</Box>
+              </Drawer>
+              <Fab
+                onClick={() => setDrawerOpen(true)}
+                sx={{
+                  position: "absolute",
+                  right: "1rem",
+                  bottom: "1rem",
+                }}
+              >
+                <MenuIcon />
+              </Fab>
+            </>
+          ) : null}
         </>
       )}
 
