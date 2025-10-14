@@ -189,6 +189,11 @@
   .rc-menu-vertical-right > .rc-menu-submenu > .rc-menu-submenu-title,
   .rc-menu-inline > .rc-menu-submenu > .rc-menu-submenu-title {
     padding: 12px 8px 12px 24px;
+    // for text overflow
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
   }
   .rc-menu-vertical .rc-menu-submenu-arrow,
   .rc-menu-vertical-left .rc-menu-submenu-arrow,

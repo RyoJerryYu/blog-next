@@ -7,7 +7,7 @@ import { default as Menu } from "rc-menu";
 // import "rc-menu/assets/index.css";
 import { ItemType } from "rc-menu/lib/interface";
 import { CSSMotionProps } from "rc-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const collapseNode = () => {
   return { height: 0 };
@@ -110,7 +110,10 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
   const thisRef = useRef<HTMLDivElement>(null);
   const { width, height } = useContainerDimensions(thisRef);
 
-  const items = trees.map((tree) => wikiTreeNodeToMenuItem(tree));
+  const items = useMemo(
+    () => trees.map((tree) => wikiTreeNodeToMenuItem(tree)),
+    [trees]
+  );
 
   return (
     <div className={clsx("w-full h-full", "WikiTreeMenu")} ref={thisRef}>
