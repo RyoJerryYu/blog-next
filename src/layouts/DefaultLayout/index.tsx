@@ -76,7 +76,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
               <TextLink {...homeItem} />
             </Box>
             <Box
-              className="ml-2 mr-4"
+              className="ml-2 mr-2"
               sx={{ display: { xs: "flex", md: "none" } }}
             >
               <Link href={homeItem.href} title={homeItem.text}>
@@ -187,7 +187,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = (props) => {
       Icon: PixivIcon,
     },
   ];
-  // const rightItem: ClickableItem = { to: "/about", text: "About Me" };
+
   return (
     <>
       <DefaultHeader
@@ -201,7 +201,6 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = (props) => {
         props.children
       ) : (
         <>
-          {/* <div className={style.headerBg}></div> */}
           <Toolbar />
           <MainWidth left={props.left} right={props.right}>
             <div className={style.contentHeight}>{props.children}</div>

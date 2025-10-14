@@ -1,13 +1,12 @@
 "use client";
 import { WikiTreeNode } from "@/core/indexing/index-building/wiki-tree-index-builder/types";
-import { useContainerDimensions } from "@/hooks/use-container-dimensions";
 import clsx from "clsx";
 import Link from "next/link";
 import { default as Menu } from "rc-menu";
 // import "rc-menu/assets/index.css";
 import { ItemType } from "rc-menu/lib/interface";
 import { CSSMotionProps } from "rc-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const collapseNode = () => {
   return { height: 0 };
@@ -107,26 +106,24 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
     setOpenKeys([...rootKeys, ...slugsToParentKeys(currentSlugs)]);
   }, [trees, currentSlugs]);
 
-  const thisRef = useRef<HTMLDivElement>(null);
-  const { width, height } = useContainerDimensions(thisRef);
-
-  const items = trees.map((tree) => wikiTreeNodeToMenuItem(tree));
+  const items = useMemo(
+    () => trees.map((tree) => wikiTreeNodeToMenuItem(tree)),
+    [trees]
+  );
 
   return (
-    <div className={clsx("w-full h-full", "WikiTreeMenu")} ref={thisRef}>
-      {width > 10 ? (
-        <Menu
-          mode="inline"
-          inlineIndent={10}
-          items={items}
-          openKeys={openKeys}
-          onOpenChange={setOpenKeys}
-          selectedKeys={
-            currentSlugs.length > 0 ? [currentSlugs.join("/")] : ["root"]
-          }
-          defaultMotions={motionMap}
-        />
-      ) : null}
+    <div className={clsx("w-full h-full", "WikiTreeMenu")}>
+      <Menu
+        mode="inline"
+        inlineIndent={10}
+        items={items}
+        openKeys={openKeys}
+        onOpenChange={setOpenKeys}
+        selectedKeys={
+          currentSlugs.length > 0 ? [currentSlugs.join("/")] : ["root"]
+        }
+        defaultMotions={motionMap}
+      />
     </div>
   );
 }
