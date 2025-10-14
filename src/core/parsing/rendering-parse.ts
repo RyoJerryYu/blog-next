@@ -1,3 +1,4 @@
+import { langAlias, langs } from "@/grammars";
 import { CompileOptions } from "@mdx-js/mdx";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
@@ -10,6 +11,7 @@ import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkUnwrapImages from "remark-unwrap-images";
+import { createHighlighter } from "shiki";
 import { CapturedResult, ParseMdxProps } from "../types/rendering";
 import {
   remarkCodeBlockEscape,
@@ -130,6 +132,15 @@ const genMdxOptions = (props: ParseMdxProps) => {
           onVisitHighlightedWord: (node: any, id: string | undefined) => {
             node.properties.className = ["word"];
           },
+          getHighlighter: (options) =>
+            createHighlighter({
+              ...options,
+              langs: [...options.langs, ...langs],
+              langAlias: {
+                ...options.langAlias,
+                ...langAlias,
+              },
+            }),
         } as PrettyCodeOptions,
       ],
     ],
