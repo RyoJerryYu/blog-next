@@ -1,5 +1,4 @@
-import glob from "glob";
-import { promisify } from "util";
+import { glob } from "fs/promises";
 import { BasePathMapping } from "../../types/indexing";
 import { PathMapper } from "./path-mapping";
 
@@ -27,7 +26,7 @@ export class StaticResourcePathMapper implements PathMapper<BasePathMapping> {
   }
 
   listFilePaths = async () => {
-    return await promisify(glob)(this.fileGlobPattern);
+    return await Array.fromAsync(glob(this.fileGlobPattern));
   };
 
   filePath2PathMapping = (filePath: string) => {

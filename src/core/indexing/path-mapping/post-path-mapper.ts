@@ -1,6 +1,5 @@
-import glob from "glob";
+import { glob } from "fs/promises";
 import path from "path";
-import { promisify } from "util";
 import { PagePathMapping } from "../../types/indexing";
 import { PathMapper } from "./path-mapping";
 
@@ -30,7 +29,7 @@ export class PostPathMapper implements PathMapper<PagePathMapping> {
   }
 
   listFilePaths = async () => {
-    return await promisify(glob)(this.fileGlobPattern);
+    return await Array.fromAsync(glob(this.fileGlobPattern));
   };
 
   filePath2PathMapping = (filePath: string) => {

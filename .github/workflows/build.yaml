@@ -52,7 +52,7 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           # update the Node version to meet your needs
-          node-version: 20
+          node-version: 22
           cache: yarn
 
       - name: Build
