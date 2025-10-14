@@ -1,27 +1,13 @@
-import { NoSsr } from "@mui/base";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { monokaiSublime } from "react-syntax-highlighter/dist/cjs/styles/hljs";
+import { dynamicLoading } from "../Loading/dynamic-loading";
+import { CodeBlockProps } from "./types/CodeBlockProps";
 
-type CodeBlockProps = {
-  language?: string;
-  children: string;
-};
+const CodeBlockImpl = dynamicLoading(
+  async () => (await import("./clientComponent/CodeBlockImpl")).CodeBlockImpl
+);
 
 // TODO want show language, show file name, highlight line...
 const CodeBlock = ({ language, children }: CodeBlockProps) => {
-  return (
-    <>
-      <NoSsr>
-        <SyntaxHighlighter
-          language={language}
-          style={monokaiSublime}
-          showLineNumbers={true}
-        >
-          {children}
-        </SyntaxHighlighter>
-      </NoSsr>
-    </>
-  );
+  return <CodeBlockImpl language={language} children={children} />;
 };
 
 export default CodeBlock;
