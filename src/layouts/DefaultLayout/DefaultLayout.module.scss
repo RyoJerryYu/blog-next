@@ -5,10 +5,6 @@ $hover-cyan: #69e0ff;
 $header-height: 4rem;
 $footer-height: 4rem;
 
-.headeritem {
-  @apply h-full flex justify-center;
-}
-
 .textbox {
   @apply h-full flex items-center justify-center p-4;
 }

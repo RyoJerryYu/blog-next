@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 export const useContainerDimensions = (
   myRef: React.RefObject<HTMLElement | null>
 ) => {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const getDimensions = () => ({
       width: myRef.current?.offsetWidth ?? 0,
       height: myRef.current?.offsetHeight ?? 0,

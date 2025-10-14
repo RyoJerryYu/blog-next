@@ -1,8 +1,18 @@
 import { GitHubIcon, PixivIcon, TwitterIcon } from "@/components/svgs";
+import { useContainerDimensions } from "@/hooks/use-container-dimensions";
 import HomeIcon from "@mui/icons-material/Home";
-import { AppBar, Box, Slide, Toolbar, useScrollTrigger } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import {
+  AppBar,
+  Box,
+  Drawer,
+  Fab,
+  Slide,
+  Toolbar,
+  useScrollTrigger,
+} from "@mui/material";
 import Link from "next/link";
-import React from "react";
+import React, { useRef, useState } from "react";
 import style from "./DefaultLayout.module.scss";
 import MainWidth from "./MainWidth";
 import { Menu } from "./Menu";
@@ -76,7 +86,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
               <TextLink {...homeItem} />
             </Box>
             <Box
-              className="ml-2 mr-4"
+              className="ml-2 mr-2"
               sx={{ display: { xs: "flex", md: "none" } }}
             >
               <Link href={homeItem.href} title={homeItem.text}>
@@ -187,7 +197,12 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = (props) => {
       Icon: PixivIcon,
     },
   ];
-  // const rightItem: ClickableItem = { to: "/about", text: "About Me" };
+
+  const leftRef = useRef<HTMLDivElement>(null);
+  const { width } = useContainerDimensions(leftRef);
+  const needDrawer = width < 10;
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   return (
     <>
       <DefaultHeader
@@ -201,11 +216,34 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = (props) => {
         props.children
       ) : (
         <>
-          {/* <div className={style.headerBg}></div> */}
           <Toolbar />
-          <MainWidth left={props.left} right={props.right}>
+          <MainWidth
+            left={
+              <Box ref={leftRef} sx={{ width: "100%", height: "100%" }}>
+                {needDrawer ? null : props.left}
+              </Box>
+            }
+            right={props.right}
+          >
             <div className={style.contentHeight}>{props.children}</div>
           </MainWidth>
+          <Drawer
+            open={drawerOpen}
+            onClose={() => setDrawerOpen(false)}
+            anchor="left"
+          >
+            <Box sx={{ minWidth: "30vw" }}>{props.left}</Box>
+          </Drawer>
+          <Fab
+            onClick={() => setDrawerOpen(true)}
+            sx={{
+              position: "absolute",
+              right: "1rem",
+              bottom: "1rem",
+            }}
+          >
+            <MenuIcon />
+          </Fab>
         </>
       )}
 
