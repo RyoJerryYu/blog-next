@@ -39,29 +39,29 @@ export const CodeBlockLayout = (props: CodeBlockLayoutProps) => {
   const [view, setView] = useState<"preview" | "code">("preview");
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
-      <Paper sx={{ width: "100%", borderRadius: 2, overflow: "hidden" }}>
-        <CodeBlockTabs value={view} onChange={(_, value) => setView(value)}>
+      <Paper
+        sx={{
+          borderRadius: 2,
+          overflow: "hidden",
+          width: "100%",
+          maxWidth: "800px",
+          height: "100%",
+          maxHeight: "800px",
+        }}
+      >
+        <CodeBlockTabs
+          value={view}
+          onChange={(_, value) => setView(value)}
+          sx={{ overflow: "auto" }}
+        >
           <CodeBlockTab label="Preview" value="preview" />
           <CodeBlockTab label="Code" value="code" />
         </CodeBlockTabs>
         {view === "preview" ? (
-          <Box
-            sx={{
-              maxWidth: "800px",
-              width: "100%",
-              height: "100%",
-              maxHeight: "800px",
-            }}
-          >
-            {props.children}
-          </Box>
+          <Box>{props.children}</Box>
         ) : (
           <Box
             sx={{
-              maxWidth: "800px",
-              width: "100%",
-              height: "100%",
-              maxHeight: "800px",
               overflow: "auto",
             }}
           >
