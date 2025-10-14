@@ -34,6 +34,7 @@ export const JXGBoardImpl = (props: JXGBoardProps) => {
     const initFunc = async () => {
       JXG.Options.text.useMathJax = true;
       JXG.Options.label.useMathJax = true;
+      JXG.Options.label.autoPosition = true;
       // @ts-ignore
       if (typeof window.MathJax !== "undefined") {
         console.log("MathJax is defined!!!!!!!!!!!!!!!!");
