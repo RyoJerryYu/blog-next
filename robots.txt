@@ -7,3 +7,4 @@ Host: https://ryojerryyu.github.io/blog-next
 
 # Sitemaps
 Sitemap: https://ryojerryyu.github.io/blog-next/sitemap.xml
+Sitemap: https://ryojerryyu.github.io/blog-next/sitemap-0.xml
