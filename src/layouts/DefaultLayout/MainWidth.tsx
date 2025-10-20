@@ -77,8 +77,9 @@ export default function MainWidth(props: MainWidthProps) {
           </Drawer>
           <Fab
             onClick={() => setDrawerOpen(true)}
+            color="primary"
             sx={{
-              position: "absolute",
+              position: "fixed",
               right: "1rem",
               bottom: "1rem",
             }}
