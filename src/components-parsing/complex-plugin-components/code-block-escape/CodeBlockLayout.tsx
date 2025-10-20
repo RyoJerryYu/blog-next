@@ -45,8 +45,6 @@ export const CodeBlockLayout = (props: CodeBlockLayoutProps) => {
           overflow: "hidden",
           width: "100%",
           maxWidth: "800px",
-          height: "100%",
-          maxHeight: "800px",
         }}
       >
         <CodeBlockTabs
@@ -58,10 +56,19 @@ export const CodeBlockLayout = (props: CodeBlockLayoutProps) => {
           <CodeBlockTab label="Code" value="code" />
         </CodeBlockTabs>
         {view === "preview" ? (
-          <Box>{props.children}</Box>
+          <Box
+            sx={{
+              height: "100%",
+              maxHeight: "800px",
+            }}
+          >
+            {props.children}
+          </Box>
         ) : (
           <Box
             sx={{
+              width: "100%",
+              height: "100%",
               overflow: "auto",
             }}
           >
