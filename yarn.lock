@@ -2170,10 +2170,10 @@
     classnames "^2.3.2"
     rc-util "^5.24.4"
 
-"@rc-component/qrcode@~1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@rc-component/qrcode/-/qrcode-1.0.1.tgz#98e0a79dc95f26fe211b59d04ef3312bc70dedbe"
-  integrity sha512-g8eeeaMyFXVlq8cZUeaxCDhfIYjpao0l9cvm5gFwKXy/Vm1yDWV7h2sjH5jHYzdFedlVKBpATFB1VKMrHzwaWQ==
+"@rc-component/qrcode@~1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@rc-component/qrcode/-/qrcode-1.1.0.tgz#4e38f1d7c2c8aae7f62d60ab110a842c1395db3e"
+  integrity sha512-ABA80Yer0c6I2+moqNY0kF3Y1NxIT6wDP/EINIqbiRbfZKP1HtHpKMh8WuTXLgVGYsoWG2g9/n0PgM8KdnJb4Q==
   dependencies:
     "@babel/runtime" "^7.24.7"
     classnames "^2.3.2"
@@ -2211,51 +2211,51 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.10.4.tgz#427d5549943a9c6fce808e39ea64dbe60d4047f1"
   integrity sha512-WJgX9nzTqknM393q1QJDJmoW28kUfEnybeTfVNcNAPnIx210RXm2DiXiHzfNPJNIUUb1tJnz/l4QGtJ30PgWmA==
 
-"@shikijs/core@3.13.0":
-  version "3.13.0"
-  resolved "https://registry.yarnpkg.com/@shikijs/core/-/core-3.13.0.tgz#73503364a1eb51b65cf904115c62fed7a47df596"
-  integrity sha512-3P8rGsg2Eh2qIHekwuQjzWhKI4jV97PhvYjYUzGqjvJfqdQPz+nMlfWahU24GZAyW1FxFI1sYjyhfh5CoLmIUA==
+"@shikijs/core@3.15.0":
+  version "3.15.0"
+  resolved "https://registry.yarnpkg.com/@shikijs/core/-/core-3.15.0.tgz#eee251070b4e39b59e108266cbcd50c85d738d54"
+  integrity sha512-8TOG6yG557q+fMsSVa8nkEDOZNTSxjbbR8l6lF2gyr6Np+jrPlslqDxQkN6rMXCECQ3isNPZAGszAfYoJOPGlg==
   dependencies:
-    "@shikijs/types" "3.13.0"
+    "@shikijs/types" "3.15.0"
     "@shikijs/vscode-textmate" "^10.0.2"
     "@types/hast" "^3.0.4"
     hast-util-to-html "^9.0.5"
 
-"@shikijs/engine-javascript@3.13.0":
-  version "3.13.0"
-  resolved "https://registry.yarnpkg.com/@shikijs/engine-javascript/-/engine-javascript-3.13.0.tgz#d25cefdac378216a95fefdf0b3a560550393ea65"
-  integrity sha512-Ty7xv32XCp8u0eQt8rItpMs6rU9Ki6LJ1dQOW3V/56PKDcpvfHPnYFbsx5FFUP2Yim34m/UkazidamMNVR4vKg==
+"@shikijs/engine-javascript@3.15.0":
+  version "3.15.0"
+  resolved "https://registry.yarnpkg.com/@shikijs/engine-javascript/-/engine-javascript-3.15.0.tgz#478dd4feb3b4b7e91f148cc9e7ebc0b7de5fbb18"
+  integrity sha512-ZedbOFpopibdLmvTz2sJPJgns8Xvyabe2QbmqMTz07kt1pTzfEvKZc5IqPVO/XFiEbbNyaOpjPBkkr1vlwS+qg==
   dependencies:
-    "@shikijs/types" "3.13.0"
+    "@shikijs/types" "3.15.0"
     "@shikijs/vscode-textmate" "^10.0.2"
     oniguruma-to-es "^4.3.3"
 
-"@shikijs/engine-oniguruma@3.13.0":
-  version "3.13.0"
-  resolved "https://registry.yarnpkg.com/@shikijs/engine-oniguruma/-/engine-oniguruma-3.13.0.tgz#ae8efa90c30e2b66c7fd5549ee747f693fbd60df"
-  integrity sha512-O42rBGr4UDSlhT2ZFMxqM7QzIU+IcpoTMzb3W7AlziI1ZF7R8eS2M0yt5Ry35nnnTX/LTLXFPUjRFCIW+Operg==
+"@shikijs/engine-oniguruma@3.15.0":
+  version "3.15.0"
+  resolved "https://registry.yarnpkg.com/@shikijs/engine-oniguruma/-/engine-oniguruma-3.15.0.tgz#bc5fe6484d64b2daacdfbb248f06732fbc78c8e2"
+  integrity sha512-HnqFsV11skAHvOArMZdLBZZApRSYS4LSztk2K3016Y9VCyZISnlYUYsL2hzlS7tPqKHvNqmI5JSUJZprXloMvA==
   dependencies:
-    "@shikijs/types" "3.13.0"
+    "@shikijs/types" "3.15.0"
     "@shikijs/vscode-textmate" "^10.0.2"
 
-"@shikijs/langs@3.13.0":
-  version "3.13.0"
-  resolved "https://registry.yarnpkg.com/@shikijs/langs/-/langs-3.13.0.tgz#51a927c8089dffb2560ac8d7549297de9d081b91"
-  integrity sha512-672c3WAETDYHwrRP0yLy3W1QYB89Hbpj+pO4KhxK6FzIrDI2FoEXNiNCut6BQmEApYLfuYfpgOZaqbY+E9b8wQ==
+"@shikijs/langs@3.15.0":
+  version "3.15.0"
+  resolved "https://registry.yarnpkg.com/@shikijs/langs/-/langs-3.15.0.tgz#d8385a9ca66ce9923149c650336444b1d25fc248"
+  integrity sha512-WpRvEFvkVvO65uKYW4Rzxs+IG0gToyM8SARQMtGGsH4GDMNZrr60qdggXrFOsdfOVssG/QQGEl3FnJ3EZ+8w8A==
   dependencies:
-    "@shikijs/types" "3.13.0"
+    "@shikijs/types" "3.15.0"
 
-"@shikijs/themes@3.13.0":
-  version "3.13.0"
-  resolved "https://registry.yarnpkg.com/@shikijs/themes/-/themes-3.13.0.tgz#ee92780f0580d4ffa8ed619b52c5eb4a95d012a3"
-  integrity sha512-Vxw1Nm1/Od8jyA7QuAenaV78BG2nSr3/gCGdBkLpfLscddCkzkL36Q5b67SrLLfvAJTOUzW39x4FHVCFriPVgg==
+"@shikijs/themes@3.15.0":
+  version "3.15.0"
+  resolved "https://registry.yarnpkg.com/@shikijs/themes/-/themes-3.15.0.tgz#6093a90191b89654045c72636ddd35c04273658f"
+  integrity sha512-8ow2zWb1IDvCKjYb0KiLNrK4offFdkfNVPXb1OZykpLCzRU6j+efkY+Y7VQjNlNFXonSw+4AOdGYtmqykDbRiQ==
   dependencies:
-    "@shikijs/types" "3.13.0"
+    "@shikijs/types" "3.15.0"
 
-"@shikijs/types@3.13.0":
-  version "3.13.0"
-  resolved "https://registry.yarnpkg.com/@shikijs/types/-/types-3.13.0.tgz#d223c6e28796914fbb105a3ee63bc3af5483852e"
-  integrity sha512-oM9P+NCFri/mmQ8LoFGVfVyemm5Hi27330zuOBp0annwJdKH1kOLndw3zCtAVDehPLg9fKqoEx3Ht/wNZxolfw==
+"@shikijs/types@3.15.0":
+  version "3.15.0"
+  resolved "https://registry.yarnpkg.com/@shikijs/types/-/types-3.15.0.tgz#4e025b4dea98e1603243b1f00677854e07e5eda1"
+  integrity sha512-BnP+y/EQnhihgHy4oIAN+6FFtmfTekwOLsQbRw9hOKwqgNy8Bdsjq8B05oAt/ZgvIWWFrshV71ytOrlPfYjIJw==
   dependencies:
     "@shikijs/vscode-textmate" "^10.0.2"
     "@types/hast" "^3.0.4"
@@ -2812,10 +2812,10 @@ ansi-styles@^6.1.0:
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-6.2.1.tgz#0e62320cf99c21afff3b3012192546aacbfb05c5"
   integrity sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug==
 
-antd@^5.27.5:
-  version "5.27.5"
-  resolved "https://registry.yarnpkg.com/antd/-/antd-5.27.5.tgz#978b265c722b9229e7dcc2fcddc5f5445af9bdf0"
-  integrity sha512-Ehd9mqtHvJ1clon1yJ/1BTV6eX/3SH2YXZZPTHUk8XdzXFwUioI+Lht47s+MaHIUBY77RnZrmtKwwR+VVu0l7A==
+antd@^5.29.1:
+  version "5.29.1"
+  resolved "https://registry.yarnpkg.com/antd/-/antd-5.29.1.tgz#e124b1aaa709a534816c42d558da02a917b995cc"
+  integrity sha512-TTFVbpKbyL6cPfEoKq6Ya3BIjTUr7uDW9+7Z+1oysRv1gpcN7kQ4luH8r/+rXXwz4n6BIz1iBJ1ezKCdsdNW0w==
   dependencies:
     "@ant-design/colors" "^7.2.1"
     "@ant-design/cssinjs" "^1.23.0"
@@ -2826,7 +2826,7 @@ antd@^5.27.5:
     "@babel/runtime" "^7.26.0"
     "@rc-component/color-picker" "~2.0.1"
     "@rc-component/mutate-observer" "^1.1.0"
-    "@rc-component/qrcode" "~1.0.1"
+    "@rc-component/qrcode" "~1.1.0"
     "@rc-component/tour" "~1.15.1"
     "@rc-component/trigger" "^2.3.0"
     classnames "^2.5.1"
@@ -2838,7 +2838,7 @@ antd@^5.27.5:
     rc-dialog "~9.6.0"
     rc-drawer "~7.3.0"
     rc-dropdown "~4.2.1"
-    rc-field-form "~2.7.0"
+    rc-field-form "~2.7.1"
     rc-image "~7.12.0"
     rc-input "~1.8.0"
     rc-input-number "~9.5.0"
@@ -2862,7 +2862,7 @@ antd@^5.27.5:
     rc-tooltip "~6.4.0"
     rc-tree "~5.13.1"
     rc-tree-select "~5.27.0"
-    rc-upload "~4.9.2"
+    rc-upload "~4.11.0"
     rc-util "^5.44.4"
     scroll-into-view-if-needed "^3.1.0"
     throttle-debounce "^5.0.2"
@@ -3897,10 +3897,10 @@ data-view-byte-offset@^1.0.0:
     es-errors "^1.3.0"
     is-data-view "^1.0.1"
 
-dayjs@^1.11.11, dayjs@^1.11.18, dayjs@^1.11.7:
-  version "1.11.18"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.18.tgz#835fa712aac52ab9dec8b1494098774ed7070a11"
-  integrity sha512-zFBQ7WFRvVRhKcWoUh+ZA1g2HVgUbsZm9sbddh8EC5iv93sui8DVVz1Npvz+r6meo9VKfa8NyLWBsQK1VvIKPA==
+dayjs@^1.11.11, dayjs@^1.11.19, dayjs@^1.11.7:
+  version "1.11.19"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.19.tgz#15dc98e854bb43917f12021806af897c58ae2938"
+  integrity sha512-t5EcLVS6QPBNqM2z8fakk/NKel+Xzshgt8FFKAn+qwlD1pzZWxh0nVCrvFK7ZDb6XucZeF9z8C7CBWTRIVApAw==
 
 debounce@^1.2.1:
   version "1.2.1"
@@ -6313,10 +6313,10 @@ jsonfile@^6.0.1:
     object.assign "^4.1.4"
     object.values "^1.1.6"
 
-jsxgraph@^1.11.0-beta2, jsxgraph@^1.12.0:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/jsxgraph/-/jsxgraph-1.12.0.tgz#2d8457823badf8a3d3f429bd4e0f618ed99d0e6c"
-  integrity sha512-o/QenjjScmmZD/NgPQ7PYEKYMmhbDzdpaWcW5BY7HfF13tE8NO3aMLSDoFrWDntby3Rrd4lamPrjhU27JHAfDw==
+jsxgraph@^1.11.0-beta2, jsxgraph@^1.12.2:
+  version "1.12.2"
+  resolved "https://registry.yarnpkg.com/jsxgraph/-/jsxgraph-1.12.2.tgz#fdafb1560356da8b0901117ac2049230495f6dac"
+  integrity sha512-7kTscexFVBHirsBrxZFQg2hA6Mf/Pa2piojNgxHZ9i/rQfxDAaq7p8oD9/009clQTFQ9fNLUpmDKwV+84zA2Gg==
   dependencies:
     jsxgraph "^1.11.0-beta2"
 
@@ -8080,10 +8080,10 @@ rc-dropdown@~4.2.0, rc-dropdown@~4.2.1:
     classnames "^2.2.6"
     rc-util "^5.44.1"
 
-rc-field-form@~2.7.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/rc-field-form/-/rc-field-form-2.7.0.tgz#22413e793f35bfc1f35b0ec462774d7277f5a399"
-  integrity sha512-hgKsCay2taxzVnBPZl+1n4ZondsV78G++XVsMIJCAoioMjlMQR9YwAp7JZDIECzIu2Z66R+f4SFIRrO2DjDNAA==
+rc-field-form@~2.7.1:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/rc-field-form/-/rc-field-form-2.7.1.tgz#8bb1d7c6bf40e2b99b494816972252c327d9b5a0"
+  integrity sha512-vKeSifSJ6HoLaAB+B8aq/Qgm8a3dyxROzCtKNCsBQgiverpc4kWDQihoUwzUj+zNWJOykwSY4dNX3QrGwtVb9A==
   dependencies:
     "@babel/runtime" "^7.18.0"
     "@rc-component/async-validator" "^5.0.3"
@@ -8342,10 +8342,10 @@ rc-tree@~5.13.0, rc-tree@~5.13.1:
     rc-util "^5.16.1"
     rc-virtual-list "^3.5.1"
 
-rc-upload@~4.9.2:
-  version "4.9.2"
-  resolved "https://registry.yarnpkg.com/rc-upload/-/rc-upload-4.9.2.tgz#297f52fd1b1c2a4b570c3e42444609b7530531bb"
-  integrity sha512-nHx+9rbd1FKMiMRYsqQ3NkXUv7COHPBo3X1Obwq9SWS6/diF/A0aJ5OHubvwUAIDs+4RMleljV0pcrNUc823GQ==
+rc-upload@~4.11.0:
+  version "4.11.0"
+  resolved "https://registry.yarnpkg.com/rc-upload/-/rc-upload-4.11.0.tgz#c2ced905a8b38b3e5c48493d388ca0e8373de18b"
+  integrity sha512-ZUyT//2JAehfHzjWowqROcwYJKnZkIUGWaTE/VogVrepSl7AFNbQf4+zGfX4zl9Vrj/Jm8scLO0R6UlPDKK4wA==
   dependencies:
     "@babel/runtime" "^7.18.3"
     classnames "^2.2.5"
@@ -8369,10 +8369,10 @@ rc-virtual-list@^3.14.2, rc-virtual-list@^3.5.1, rc-virtual-list@^3.5.2:
     rc-resize-observer "^1.0.0"
     rc-util "^5.36.0"
 
-react-chartjs-2@^5.1.0, react-chartjs-2@^5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/react-chartjs-2/-/react-chartjs-2-5.3.0.tgz#2d3286339a742bc7f77b5829c33ebab215f714cc"
-  integrity sha512-UfZZFnDsERI3c3CZGxzvNJd02SHjaSJ8kgW1djn65H1KK8rehwTjyrRKOG3VTMG8wtHZ5rgAO5oTHtHi9GCCmw==
+react-chartjs-2@^5.1.0, react-chartjs-2@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/react-chartjs-2/-/react-chartjs-2-5.3.1.tgz#2b29995ce8b07f5c95c6ea3696838569e88453aa"
+  integrity sha512-h5IPXKg9EXpjoBzUfyWJvllMjG2mQ4EiuHQFhms/AjUm0XSZHhyRy2xVmLXHKrtcdrPO4mnGqRtYoD0vp95A0A==
 
 react-dom@19.2.0:
   version "19.2.0"
@@ -9017,17 +9017,17 @@ shebang-regex@^3.0.0:
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
 
-shiki@^3.11.0, shiki@^3.13.0:
-  version "3.13.0"
-  resolved "https://registry.yarnpkg.com/shiki/-/shiki-3.13.0.tgz#9675e9d36a893434cc297d66ddd4598a4af1fea1"
-  integrity sha512-aZW4l8Og16CokuCLf8CF8kq+KK2yOygapU5m3+hoGw0Mdosc6fPitjM+ujYarppj5ZIKGyPDPP1vqmQhr+5/0g==
+shiki@^3.11.0, shiki@^3.15.0:
+  version "3.15.0"
+  resolved "https://registry.yarnpkg.com/shiki/-/shiki-3.15.0.tgz#27cb37a080f987a4ec3a0402137b72f7400b8ea4"
+  integrity sha512-kLdkY6iV3dYbtPwS9KXU7mjfmDm25f5m0IPNFnaXO7TBPcvbUOY72PYXSuSqDzwp+vlH/d7MXpHlKO/x+QoLXw==
   dependencies:
-    "@shikijs/core" "3.13.0"
-    "@shikijs/engine-javascript" "3.13.0"
-    "@shikijs/engine-oniguruma" "3.13.0"
-    "@shikijs/langs" "3.13.0"
-    "@shikijs/themes" "3.13.0"
-    "@shikijs/types" "3.13.0"
+    "@shikijs/core" "3.15.0"
+    "@shikijs/engine-javascript" "3.15.0"
+    "@shikijs/engine-oniguruma" "3.15.0"
+    "@shikijs/langs" "3.15.0"
+    "@shikijs/themes" "3.15.0"
+    "@shikijs/types" "3.15.0"
     "@shikijs/vscode-textmate" "^10.0.2"
     "@types/hast" "^3.0.4"
 
