@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # https://github.com/actions/checkout
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         if: inputs.is-ci-build == false
         # if not a CI build, fetch all history for full build
         with:
@@ -37,7 +37,7 @@ jobs:
           fetch-depth: 0
           lfs: true
       - name: Checkout without history
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         if: inputs.is-ci-build == true
         # if CI build, fetch minimal history
         with:
@@ -65,7 +65,7 @@ jobs:
           NEXT_PUBLIC_SITE_BASE_PATH: ${{ inputs.site-base-path }}
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ !inputs.is-ci-build }}
         with:
           name: blog-next

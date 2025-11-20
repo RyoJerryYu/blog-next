@@ -25,11 +25,11 @@ jobs:
       url: https://test.ryo-okami.xyz
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         # Deploy to gh-pages should be in a git directory
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: blog-next
           path: out
