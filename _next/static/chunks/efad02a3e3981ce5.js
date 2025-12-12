@@ -4,7 +4,7 @@ __turbopack_load_page_chunks__("/ygowiki/[[...slugs]]", [
   "static/chunks/e1e911adc363fbbb.js",
   "static/chunks/2f575e7e0ab005ea.js",
   "static/chunks/a94972c178cdbc92.js",
-  "static/chunks/9aa9d26fdf0babdd.js",
+  "static/chunks/b15016338d503c24.js",
   "static/chunks/2f6e9f165d313382.js",
   "static/chunks/74298751169194a9.js",
   "static/chunks/bdc64dcbeac7b2fb.js",
@@ -12,5 +12,5 @@ __turbopack_load_page_chunks__("/ygowiki/[[...slugs]]", [
   "static/chunks/29dd1c217057e1d3.js",
   "static/chunks/a2020d7ea2add2f2.css",
   "static/chunks/53c99afcbdf7d98c.css",
-  "static/chunks/turbopack-80366d2f9e02a44e.js"
+  "static/chunks/turbopack-a0bf713cb9fa205f.js"
 ])
