@@ -29,7 +29,7 @@ jobs:
         # Deploy to gh-pages should be in a git directory
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: blog-next
           path: out
