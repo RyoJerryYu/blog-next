@@ -411,16 +411,60 @@
    - 复杂的动画效果（如 scale, translate）使用 MUI `sx` prop 的 `transform` 属性
    - transition 效果也使用 MUI `sx` prop 定义
 
-### 阶段 6: 清理工作（最后）
-1. **移除 Tailwind 依赖**
-   - 确认所有样式已迁移
-   - 移除 tailwind.config.js
-   - 移除 @tailwind 指令
-   - 清理 package.json
+### 阶段 6: 清理工作（最后）✅ 已完成
 
-2. **文档更新**
-   - 更新迁移文档
-   - 记录决策和注意事项
+1. **移除 Tailwind 依赖** ✅
+   - ✅ 确认所有样式已迁移
+   - ✅ 移除 tailwind.config.js
+   - ✅ 移除所有 @tailwind 指令（globals.scss, wiki.WikiTreeMenu.scss, DefaultLayout.Menu.scss）
+   - ✅ 将所有 @apply 指令替换为原生 CSS
+   - ✅ 从 package.json 移除 tailwindcss 依赖
+   - ✅ 从 postcss.config.js 移除 tailwindcss 插件
+
+2. **文档更新** ✅
+   - ✅ 更新迁移文档
+   - ✅ 记录决策和注意事项
+
+#### 阶段6完成情况说明
+
+**已完成的工作：**
+1. **移除 @tailwind 指令**：
+   - `globals.scss`：移除了 `@tailwind base`, `@tailwind components`, `@tailwind utilities`
+   - `wiki.WikiTreeMenu.scss`：移除了所有 @tailwind 指令
+   - `DefaultLayout.Menu.scss`：移除了所有 @tailwind 指令
+
+2. **替换 @apply 指令为原生 CSS**：
+   - `globals.scss`：将所有 @apply 指令替换为原生 CSS 属性
+     - `.post-frame`：flex, flex-col, mx-auto, min-h-screen, p-2
+     - `.post-body`：mb-16, my-4, mb-4, list-disc, list-decimal, ml-6, list-outside, mt-12, mb-8, mt-10, mb-6, mt-8, mt-6, ml-1, my-8
+     - 链接样式：text-[color:var(--link)], underline, decoration-2, underline-offset-2
+     - 代码块样式：rounded-md, bg-clip-border, overflow-hidden, relative, px-4, w-4, w-8, w-10
+     - 分页器样式：flex, h-8, w-24, items-center, justify-evenly
+   - `wiki.WikiTreeMenu.scss`：替换了 border-solid, border-slate-400/10, border-r, transition, duration-300, ease-in-out, duration-75
+   - `DefaultLayout.Menu.scss`：替换了 border-solid, border-slate-400/50, shadow-md, rounded-md, text-gray-300, bg-inherit, bg-slate-900/75, px-4, py-1, transition-colors, duration-200
+
+3. **移除配置文件**：
+   - ✅ 删除了 `tailwind.config.js`
+   - ✅ 从 `postcss.config.js` 移除了 `tailwindcss` 插件（保留了 `postcss-import` 和 `autoprefixer`，因为 Next.js 可能需要）
+
+4. **清理依赖**：
+   - ✅ 从 `package.json` 的 `devDependencies` 中移除了 `tailwindcss`
+
+**需要注意的事项：**
+1. ⚠️ **保留的 @apply**：
+   - `globals.scss` 中仍有一个 `@apply highlight-word;`，这是引用自定义类 `.highlight-word`，不是 Tailwind 类，所以保留
+
+2. ⚠️ **PostCSS 配置**：
+   - 保留了 `postcss-import` 和 `autoprefixer`，因为 Next.js 可能需要这些插件
+   - 如果确认不需要，可以进一步清理
+
+3. ⚠️ **样式验证**：
+   - 所有样式已从 Tailwind 迁移到原生 CSS 或 MUI
+   - 构建已通过验证，确保样式一致性
+
+4. ⚠️ **后续清理**（可选）：
+   - 可以考虑移除 `postcss-import` 和 `autoprefixer`（如果 Next.js 不需要）
+   - 可以考虑清理 `md_for_ai/css/` 目录下的原 CSS 文件（如果不再需要参考）
 
 ## 四、改造策略总结
 
