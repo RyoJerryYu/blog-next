@@ -466,9 +466,13 @@ file path 全路径 [[public/content/articles/2022-08-13-introduction-for-k8s|�
 
 ### Excalidraw 短引用
 
-短引用 Excalidraw
+短引用 Excalidraw （旧版 json 格式）
 
-![[Drawing 2024-04-13 17.33.27.excalidraw]]
+![[Drawing 2024-04-13-json.excalidraw]]
+
+短引用 Excalidraw （新版 md 格式，未压缩）
+
+![[Drawing 2024-04-13-md-plain-json.excalidraw]]
 
 ## Callouts
 
@@ -520,7 +524,7 @@ file path 全路径 [[public/content/articles/2022-08-13-introduction-for-k8s|�
 > >
 > > 也可以嵌套 Excalidraw
 > >
-> > ![[Drawing 2024-04-13 17.33.27.excalidraw]]
+> > ![[Drawing 2024-04-13-json.excalidraw]]
 > >
 > > 也可以是 Tag #Tag1 #Tag2
 > >
