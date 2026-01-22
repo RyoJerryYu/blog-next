@@ -472,7 +472,7 @@ file path 全路径 [[public/content/articles/2022-08-13-introduction-for-k8s|�
 
 短引用 Excalidraw （新版 md 格式，未压缩）
 
-![[Drawing 2024-04-13-md-plain-json.excalidraw]]
+![[Drawing 2024-04-13-md-json.excalidraw]]
 
 ## Callouts
 
