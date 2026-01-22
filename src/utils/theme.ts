@@ -21,6 +21,10 @@ export const indigo500 = "#6366f1";
 export const fuchsia500 = "#d946ef";
 export const pink300 = "#f9a8d4";
 export const pink500 = "#ec4899";
+export const yellow500 = "#eab308";
+export const emerald500 = "#10b981";
+export const orange500 = "#f97316";
+export const lime500 = "#84cc16";
 
 export const codeblock = {
   900: "#0f172a",
@@ -86,6 +90,13 @@ declare module "@mui/material/styles" {
       main: string;
       focus: string;
     };
+    cssVars: {
+      hover: string;
+      line: string;
+      link: string;
+      yellow500: string;
+      pink500: string;
+    };
   }
   interface PaletteOptions {
     header: {
@@ -124,6 +135,13 @@ declare module "@mui/material/styles" {
       main: string;
       focus: string;
     };
+    cssVars: {
+      hover: string;
+      line: string;
+      link: string;
+      yellow500: string;
+      pink500: string;
+    };
   }
 }
 
@@ -154,12 +172,12 @@ export const muiTheme = createTheme({
       titlebg: slate900, // codeblock.titlebg
       highlightedbg: slate500, // codeblock.highlightedbg
       colored: {
-        a: "#10b981", // emerald[500]
+        a: emerald500, // emerald[500]
         b: indigo500, // indigo[500]
-        c: "#f97316", // orange[500]
+        c: orange500, // orange[500]
         d: sky500, // sky[500]
         e: fuchsia500, // fuchsia[500]
-        f: "#84cc16", // lime[500]
+        f: lime500, // lime[500]
       },
     },
     codeinline: {
@@ -177,6 +195,64 @@ export const muiTheme = createTheme({
     border: {
       main: slate400, // border.DEFAULT
       focus: slate500, // border.focus
+    },
+    cssVars: {
+      hover: "#edebef", // --hover
+      line: "#8a829955", // --line (with alpha)
+      link: pink500, // --link
+      yellow500: yellow500, // --yellow-500 (for highlight-word)
+      pink500: pink500, // --pink-500 (for tag-word)
+    },
+  },
+  typography: {
+    fontFamily: [
+      "ui-sans-serif",
+      "system-ui",
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      '"Noto Sans"',
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+      '"Noto Color Emoji"',
+    ].join(","),
+    h1: {
+      fontSize: "2.25rem", // text-4xl
+      fontWeight: "bold",
+      lineHeight: "normal", // leading-normal
+    },
+    h2: {
+      fontSize: "1.875rem", // text-3xl
+      fontWeight: "bold",
+      lineHeight: "normal",
+    },
+    h3: {
+      fontSize: "1.5rem", // text-2xl
+      fontWeight: "bold",
+      lineHeight: "normal",
+    },
+    h4: {
+      fontSize: "1.25rem", // text-xl
+      fontWeight: "bold",
+      lineHeight: "normal",
+    },
+    h5: {
+      fontSize: "1.125rem", // text-lg
+      fontWeight: "bold",
+      lineHeight: "normal",
+    },
+    h6: {
+      fontSize: "1.125rem", // text-lg
+      fontWeight: "bold",
+      lineHeight: "normal",
+    },
+    body1: {
+      lineHeight: 1.75, // leading-7 = 1.75rem = 28px
     },
   },
 });

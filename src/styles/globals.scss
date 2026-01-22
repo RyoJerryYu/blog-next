@@ -3,9 +3,13 @@
 @tailwind utilities;
 
 :root {
+  /* CSS 变量现在由 MUI theme 通过 ThemeCSSVars 组件注入 */
+  /* 这些值作为 fallback，实际值在运行时由 theme.palette.cssVars 提供 */
   --hover: #edebef;
   --line: #8a829955;
   --link: #ec4899;
+  --yellow-500: #eab308;
+  --pink-500: #ec4899;
 }
 
 @layer base {
@@ -43,7 +47,7 @@
 @layer utilities {
   .highlight-word {
     --highlighted-border-size: 3px;
-    --highlighted-bg-color: theme("colors.yellow.500");
+    --highlighted-bg-color: var(--yellow-500);
 
     border-bottom-width: var(--highlighted-border-size);
     border-radius: calc(var(--highlighted-border-size) * 2);
@@ -58,7 +62,7 @@
     --tag-border-size: 1px;
     --tag-border-opacity: 0%;
     --tag-base-size: 1rem;
-    --tag-text-color: theme("colors.pink.500");
+    --tag-text-color: var(--pink-500);
     --tag-bg-opacity: 10%;
 
     font-size: calc(var(--tag-base-size) * 0.875);

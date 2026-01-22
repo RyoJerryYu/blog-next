@@ -1,3 +1,4 @@
+import ThemeCSSVars from "@/components/ThemeCSSVars";
 import { GlobalScriptProvider } from "@/hooks/use-global-Script";
 import UniversalHead from "@/layouts/UniversalHead";
 import "@/styles/DefaultLayout.Menu.scss";
@@ -26,6 +27,7 @@ export default function App({ Component, pageProps }: AppProps) {
       </Script>
       <GlobalScriptProvider>
         <ThemeProvider theme={muiTheme}>
+          <ThemeCSSVars />
           <Component {...pageProps} />
         </ThemeProvider>
       </GlobalScriptProvider>
