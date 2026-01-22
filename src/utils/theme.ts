@@ -58,6 +58,33 @@ declare module "@mui/material/styles" {
       bg: string;
       text: string;
       selectedText: string;
+      titletext: string;
+      titlebg: string;
+      highlightedbg: string;
+      colored: {
+        a: string;
+        b: string;
+        c: string;
+        d: string;
+        e: string;
+        f: string;
+      };
+    };
+    codeinline: {
+      bg: string;
+      text: string;
+    };
+    fg: {
+      main: string;
+      light: string;
+    };
+    bg: {
+      focus: string;
+      focus2: string;
+    };
+    border: {
+      main: string;
+      focus: string;
     };
   }
   interface PaletteOptions {
@@ -69,12 +96,52 @@ declare module "@mui/material/styles" {
       bg: string;
       text: string;
       selectedText: string;
+      titletext: string;
+      titlebg: string;
+      highlightedbg: string;
+      colored: {
+        a: string;
+        b: string;
+        c: string;
+        d: string;
+        e: string;
+        f: string;
+      };
+    };
+    codeinline: {
+      bg: string;
+      text: string;
+    };
+    fg: {
+      main: string;
+      light: string;
+    };
+    bg: {
+      focus: string;
+      focus2: string;
+    };
+    border: {
+      main: string;
+      focus: string;
     };
   }
 }
 
 export const muiTheme = createTheme({
   palette: {
+    mode: "light",
+    primary: {
+      main: slate700,
+    },
+    text: {
+      primary: slate700, // fg.DEFAULT
+      secondary: slate500, // fg.light
+    },
+    background: {
+      default: slate50, // bg.DEFAULT
+      paper: slate100, // bg.focus
+    },
+    divider: slate400, // border.DEFAULT
     header: {
       background: alpha(slate900, 0.75),
     },
@@ -83,6 +150,33 @@ export const muiTheme = createTheme({
       bg: alpha(codeblock[800], 0.9),
       text: alpha(codeblock[500], 0.9),
       selectedText: alpha(codeblock[300], 0.9),
+      titletext: slate100, // codeblock.titletext
+      titlebg: slate900, // codeblock.titlebg
+      highlightedbg: slate500, // codeblock.highlightedbg
+      colored: {
+        a: "#10b981", // emerald[500]
+        b: indigo500, // indigo[500]
+        c: "#f97316", // orange[500]
+        d: sky500, // sky[500]
+        e: fuchsia500, // fuchsia[500]
+        f: "#84cc16", // lime[500]
+      },
+    },
+    codeinline: {
+      bg: slate400, // codeinline.DEFAULT
+      text: slate700, // codeinline.text
+    },
+    fg: {
+      main: slate700, // fg.DEFAULT
+      light: slate500, // fg.light
+    },
+    bg: {
+      focus: slate100, // bg.focus
+      focus2: slate200, // bg.focus2
+    },
+    border: {
+      main: slate400, // border.DEFAULT
+      focus: slate500, // border.focus
     },
   },
 });

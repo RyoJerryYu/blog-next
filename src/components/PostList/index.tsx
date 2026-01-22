@@ -1,63 +1,98 @@
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import { PostMeta, PostResource } from "@/core/types/indexing";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import Link from "next/link";
 import React from "react";
 import RelativeTime from "../RelativeTime";
 import TagsBox from "../TagsBox";
-import style from "./PostList.module.scss";
 
 type PostAbstractProps = {
-  className?: string;
   children: string;
 };
-const PostAbstract: React.FC<PostAbstractProps> = ({ className, children }) => {
+const PostAbstract: React.FC<PostAbstractProps> = ({ children }) => {
   const lines = children.split("\n");
 
   return (
-    <div className={className}>
+    <Box>
       {lines.map((line, index) => {
         return (
-          <p key={index} className="py-1">
+          <Typography
+            key={index}
+            variant="body2"
+            sx={{
+              py: 0.5, // py-1 = 0.25rem = 0.5 * theme.spacing(1)
+              lineHeight: 1.375, // leading-snug
+            }}
+          >
             {line}
-          </p>
+          </Typography>
         );
       })}
-    </div>
+    </Box>
   );
 };
 
 type PostListElementProps = {
-  className?: string;
   postMeta: PostMeta;
   url: string;
   tags: TagInfo[];
 };
 
-export function PostListElement({
-  className,
-  postMeta,
-  url,
-  tags,
-}: PostListElementProps) {
+export function PostListElement({ postMeta, url, tags }: PostListElementProps) {
+  const theme = useTheme();
+
   return (
-    <div className={className}>
+    <Box
+      sx={{
+        flex: 1,
+        p: 1, // p-2 = 0.5rem = 1 * theme.spacing(1)
+        borderRadius: 1, // rounded-md = 0.375rem
+        "&:hover": {
+          backgroundColor: theme.palette.bg.focus, // hover:bg-bg-focus
+        },
+      }}
+    >
       <Link href={url}>
-        <h6 className={style.postTitle}>{postMeta.title}</h6>
+        <Typography
+          variant="h6"
+          sx={{
+            fontSize: "1.25rem", // text-xl
+            fontWeight: "bold",
+          }}
+        >
+          {postMeta.title}
+        </Typography>
         {postMeta.created_at && (
-          <RelativeTime className={style.postDate}>
-            {postMeta.created_at}
-          </RelativeTime>
+          <Box
+            sx={{
+              fontSize: "0.75rem", // text-xs
+              color: theme.palette.fg.light, // text-fg-light
+              width: "100%",
+            }}
+          >
+            <RelativeTime>{postMeta.created_at}</RelativeTime>
+          </Box>
         )}
         {postMeta.abstract && postMeta.abstract.length > 0 && (
-          <PostAbstract className={style.postAbstract}>
-            {postMeta.abstract}
-          </PostAbstract>
+          <Box
+            sx={{
+              fontSize: "0.875rem", // text-sm
+            }}
+          >
+            <PostAbstract>{postMeta.abstract}</PostAbstract>
+          </Box>
         )}
       </Link>
       {postMeta.tags && postMeta.tags.length > 0 && (
-        <TagsBox tags={tags} className="py-4 md:py-1" />
+        <Box
+          sx={{
+            py: { xs: 2, md: 0.5 }, // py-4 md:py-1
+          }}
+        >
+          <TagsBox tags={tags} />
+        </Box>
       )}
-    </div>
+    </Box>
   );
 }
 
@@ -68,7 +103,7 @@ type PostListProps = {
 
 export default function PostList({ posts, allTags }: PostListProps) {
   if (posts.length === 0) {
-    return <div>No posts</div>;
+    return <Box>No posts</Box>;
   }
 
   const elementsProps = posts.map((post) => {
@@ -94,16 +129,18 @@ export default function PostList({ posts, allTags }: PostListProps) {
   });
 
   return (
-    <div className={style.postList}>
+    <Stack
+      direction="column"
+      spacing={{ xs: 2, md: 0 }} // gap-4 md:gap-0
+    >
       {elementsProps.map(({ post, url, tags }) => (
         <PostListElement
           key={post.pathMapping.pagePath}
-          className={style.postListElement}
           postMeta={post.meta}
           tags={tags}
           url={url}
         />
       ))}
-    </div>
+    </Stack>
   );
 }
