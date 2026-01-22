@@ -20,9 +20,9 @@ const Post = ({ meta, source, tags, prevNextInfo }: PostProps) => {
     <article className="post-frame">
       <h1>{meta.title}</h1>
       {meta.created_at && (
-        <RelativeTime className="text-sm text-slate-700">
-          {meta.created_at}
-        </RelativeTime>
+        <div className="text-sm text-slate-700">
+          <RelativeTime>{meta.created_at}</RelativeTime>
+        </div>
       )}
       {meta.tags.length > 0 && <TagsBox className="mt-2" tags={tags} />}
 
