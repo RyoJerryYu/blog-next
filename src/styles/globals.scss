@@ -10,36 +10,89 @@
   --link: #ec4899;
   --yellow-500: #eab308;
   --pink-500: #ec4899;
+  --fg-main: #334155;
+  --bg-default: #f8fafc;
+  --font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif;
+  --fg-light: #64748b;
+  --bg-focus2: #e2e8f0;
+  --codeinline-bg: #94a3b8;
+  --codeinline-text: #334155;
+  --codeblock-titlebg: #0f172a;
+  --codeblock-titletext: #f1f5f9;
+  --codeblock-bg: rgba(48, 55, 76, 0.85);
+  --codeblock-text: rgba(138, 144, 169, 0.9);
+  --codeblock-highlightedbg: #64748b;
+  --codeblock-colored-a: #10b981;
+  --codeblock-colored-b: #6366f1;
+  --codeblock-colored-c: #f97316;
+  --codeblock-colored-d: #0ea5e9;
+  --codeblock-colored-e: #d946ef;
+  --codeblock-colored-f: #84cc16;
 }
 
 @layer base {
+  /* body 样式：CssBaseline 处理基础样式，这里补充自定义样式 */
   body {
-    @apply font-sans leading-7;
+    font-family: var(
+      --font-family,
+      ui-sans-serif,
+      system-ui,
+      sans-serif,
+      Apple Color Emoji,
+      Segoe UI Emoji,
+      Segoe UI Symbol,
+      Noto Color Emoji
+    );
+    line-height: 1.75rem; /* leading-7 = 1.75rem = 28px */
     -webkit-text-size-adjust: 100%;
-    @apply text-fg bg-bg;
+    color: var(--fg-main, #334155); /* text-fg */
+    background-color: var(--bg-default, #f8fafc); /* bg-bg */
   }
+
+  /* h1-h6 样式：使用 theme 中的值，但需要应用到原生 HTML 标签 */
+  /* 因为项目中直接使用 <h1> 等标签，而不是 MUI Typography 组件 */
   h1 {
-    @apply text-4xl font-bold leading-normal;
+    font-size: 2.25rem; /* text-4xl */
+    font-weight: 700;
+    line-height: 1.5;
   }
   h2 {
-    @apply text-3xl font-bold leading-normal;
+    font-size: 1.875rem; /* text-3xl */
+    font-weight: 700;
+    line-height: 1.5;
   }
   h3 {
-    @apply text-2xl font-bold leading-normal;
+    font-size: 1.5rem; /* text-2xl */
+    font-weight: 700;
+    line-height: 1.5;
   }
   h4 {
-    @apply text-xl font-bold leading-normal;
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 700;
+    line-height: 1.5;
   }
   h5 {
-    @apply text-lg font-bold leading-normal;
+    font-size: 1.125rem; /* text-lg */
+    font-weight: 700;
+    line-height: 1.5;
   }
   h6 {
-    @apply text-lg font-bold leading-normal;
+    font-size: 1.125rem; /* text-lg */
+    font-weight: 700;
+    line-height: 1.5;
   }
+
   blockquote {
-    @apply text-fg-light bg-bg-focus2;
-    @apply border-l-8 border-[--line] rounded-lg bg-clip-border overflow-hidden;
-    @apply my-6 px-5 py-4;
+    /* 颜色值从 theme 获取，通过 CSS 变量 */
+    color: var(--fg-light);
+    background-color: var(--bg-focus2);
+    border-left: 8px solid var(--line);
+    border-radius: 0.5rem;
+    background-clip: border-box;
+    overflow: hidden;
+    margin: 1.5rem 0;
+    padding: 1rem 1.25rem;
     position: relative;
   }
 }
@@ -170,13 +223,14 @@
 
     // code inline
     & :not(pre) > code {
-      @apply bg-codeinline/20 text-codeinline-text;
+      background-color: rgba(from var(--codeinline-bg) r g b / 20%);
+      color: var(--codeinline-text);
       transition-property: background;
       transition-duration: 0.2s;
       transition-timing-function: ease;
-      @apply py-0.5 px-1 mx-0.5;
-      @apply rounded;
-      // border-radius: 0.2rem;
+      padding: 0.125rem 0.25rem;
+      margin: 0 0.125rem;
+      border-radius: 0.25rem;
       font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Monaco,
         Consolas, monospace;
     }
@@ -190,17 +244,25 @@
       > [data-rehype-pretty-code-title] {
         // when no caption, it will be figcaption
         // when caption exists, it will be div
-        @apply p-2 w-full;
-        @apply bg-codeblock-titlebg/90 text-codeblock-titletext;
-        @apply whitespace-nowrap text-ellipsis overflow-hidden;
-        @apply text-sm;
+        padding: 0.5rem;
+        width: 100%;
+        background-color: var(--codeblock-titlebg);
+        color: var(--codeblock-titletext);
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        font-size: 0.875rem; /* text-sm */
+        line-height: 1.25rem; /* text-sm line-height */
       }
 
       > pre {
-        @apply bg-codeblock/85 text-codeblock-text;
-        @apply py-4;
-        @apply text-sm;
-        @apply overflow-x-auto;
+        background-color: var(--codeblock-bg);
+        color: var(--codeblock-text);
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        font-size: 0.875rem; /* text-sm */
+        line-height: 1.25rem; /* text-sm line-height */
+        overflow-x: auto;
 
         & code span[data-line] {
           @apply px-4;
@@ -209,35 +271,35 @@
 
           &[data-highlighted-line] {
             // 高亮行
-            @apply border-r-4;
-            --highlighted-line-color: theme("colors.codeblock.highlightedbg");
+            border-right-width: 4px;
+            --highlighted-line-color: var(--codeblock-highlightedbg);
             background-color: rgb(
               from var(--highlighted-line-color) r g b / 20%
             );
             border-color: rgb(from var(--highlighted-line-color) r g b / 40%);
             &[data-highlighted-line-id="a"],
             &[data-highlighted-line-id="1"] {
-              --highlighted-line-color: theme("colors.codeblock.colored.a");
+              --highlighted-line-color: var(--codeblock-colored-a);
             }
             &[data-highlighted-line-id="b"],
             &[data-highlighted-line-id="2"] {
-              --highlighted-line-color: theme("colors.codeblock.colored.b");
+              --highlighted-line-color: var(--codeblock-colored-b);
             }
             &[data-highlighted-line-id="c"],
             &[data-highlighted-line-id="3"] {
-              --highlighted-line-color: theme("colors.codeblock.colored.c");
+              --highlighted-line-color: var(--codeblock-colored-c);
             }
             &[data-highlighted-line-id="d"],
             &[data-highlighted-line-id="4"] {
-              --highlighted-line-color: theme("colors.codeblock.colored.d");
+              --highlighted-line-color: var(--codeblock-colored-d);
             }
             &[data-highlighted-line-id="e"],
             &[data-highlighted-line-id="5"] {
-              --highlighted-line-color: theme("colors.codeblock.colored.e");
+              --highlighted-line-color: var(--codeblock-colored-e);
             }
             &[data-highlighted-line-id="f"],
             &[data-highlighted-line-id="6"] {
-              --highlighted-line-color: theme("colors.codeblock.colored.f");
+              --highlighted-line-color: var(--codeblock-colored-f);
             }
           }
 
@@ -245,31 +307,31 @@
             // 高亮字符
             @apply highlight-word;
             --highlighted-border-size: 2px;
-            --highlighted-bg-color: theme("colors.codeblock.highlightedbg");
+            --highlighted-bg-color: var(--codeblock-highlightedbg);
 
             &[data-chars-id="a"],
             &[data-chars-id="1"] {
-              --highlighted-bg-color: theme("colors.codeblock.colored.a");
+              --highlighted-bg-color: var(--codeblock-colored-a);
             }
             &[data-chars-id="b"],
             &[data-chars-id="2"] {
-              --highlighted-bg-color: theme("colors.codeblock.colored.b");
+              --highlighted-bg-color: var(--codeblock-colored-b);
             }
             &[data-chars-id="c"],
             &[data-chars-id="3"] {
-              --highlighted-bg-color: theme("colors.codeblock.colored.c");
+              --highlighted-bg-color: var(--codeblock-colored-c);
             }
             &[data-chars-id="d"],
             &[data-chars-id="4"] {
-              --highlighted-bg-color: theme("colors.codeblock.colored.d");
+              --highlighted-bg-color: var(--codeblock-colored-d);
             }
             &[data-chars-id="e"],
             &[data-chars-id="5"] {
-              --highlighted-bg-color: theme("colors.codeblock.colored.e");
+              --highlighted-bg-color: var(--codeblock-colored-e);
             }
             &[data-chars-id="f"],
             &[data-chars-id="6"] {
-              --highlighted-bg-color: theme("colors.codeblock.colored.f");
+              --highlighted-bg-color: var(--codeblock-colored-f);
             }
           }
         }
@@ -283,8 +345,11 @@
             content: counter(line);
 
             /* Other styling */
-            @apply inline-block mr-4 text-right text-codeblock-titletext/20;
-            @apply w-2;
+            display: inline-block;
+            margin-right: 1rem;
+            text-align: right;
+            color: rgba(from var(--codeblock-titletext) r g b / 20%);
+            width: 0.5rem;
           }
 
           &[data-line-numbers-max-digits="2"] > [data-line]::before {
@@ -301,10 +366,18 @@
 
       > [data-rehype-pretty-code-caption] {
         // it would be a figcaption
-        @apply p-2 w-full;
-        @apply bg-codeblock-titlebg/90 text-codeblock-titletext/75;
-        @apply whitespace-nowrap text-ellipsis overflow-hidden;
-        @apply text-sm italic font-mono;
+        padding: 0.5rem;
+        width: 100%;
+        background-color: var(--codeblock-titlebg);
+        color: rgba(from var(--codeblock-titletext) r g b / 75%);
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        font-size: 0.875rem; /* text-sm */
+        font-style: italic;
+        line-height: 1.25rem; /* text-sm line-height */
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          Liberation Mono, Courier New, monospace;
       }
     }
 

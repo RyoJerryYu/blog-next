@@ -96,6 +96,24 @@ declare module "@mui/material/styles" {
       link: string;
       yellow500: string;
       pink500: string;
+      fgMain: string;
+      bgDefault: string;
+      fontFamily: string;
+      fgLight: string;
+      bgFocus2: string;
+      codeinlineBg: string;
+      codeinlineText: string;
+      codeblockTitlebg: string;
+      codeblockTitletext: string;
+      codeblockBg: string;
+      codeblockText: string;
+      codeblockHighlightedbg: string;
+      codeblockColoredA: string;
+      codeblockColoredB: string;
+      codeblockColoredC: string;
+      codeblockColoredD: string;
+      codeblockColoredE: string;
+      codeblockColoredF: string;
     };
   }
   interface PaletteOptions {
@@ -141,6 +159,24 @@ declare module "@mui/material/styles" {
       link: string;
       yellow500: string;
       pink500: string;
+      fgMain: string;
+      bgDefault: string;
+      fontFamily: string;
+      fgLight: string;
+      bgFocus2: string;
+      codeinlineBg: string;
+      codeinlineText: string;
+      codeblockTitlebg: string;
+      codeblockTitletext: string;
+      codeblockBg: string;
+      codeblockText: string;
+      codeblockHighlightedbg: string;
+      codeblockColoredA: string;
+      codeblockColoredB: string;
+      codeblockColoredC: string;
+      codeblockColoredD: string;
+      codeblockColoredE: string;
+      codeblockColoredF: string;
     };
   }
 }
@@ -202,19 +238,38 @@ export const muiTheme = createTheme({
       link: pink500, // --link
       yellow500: yellow500, // --yellow-500 (for highlight-word)
       pink500: pink500, // --pink-500 (for tag-word)
+      fgMain: slate700, // --fg-main (for body text)
+      bgDefault: slate50, // --bg-default (for body background)
+      fontFamily: [
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif",
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+        '"Noto Color Emoji"',
+      ].join(","), // --font-family
+      fgLight: slate500, // --fg-light (for blockquote, etc.)
+      bgFocus2: slate200, // --bg-focus2 (for blockquote, etc.)
+      codeinlineBg: slate400, // --codeinline-bg
+      codeinlineText: slate700, // --codeinline-text
+      codeblockTitlebg: alpha(slate900, 0.9), // --codeblock-titlebg (#0f172ae6)
+      codeblockTitletext: slate100, // --codeblock-titletext (rgb(241 245 249))
+      codeblockBg: alpha(slate900, 0.85), // --codeblock-bg (#0f172ad9)
+      codeblockText: slate200, // --codeblock-text (rgb(226 232 240))
+      codeblockHighlightedbg: slate500, // --codeblock-highlightedbg
+      codeblockColoredA: emerald500, // --codeblock-colored-a
+      codeblockColoredB: indigo500, // --codeblock-colored-b
+      codeblockColoredC: orange500, // --codeblock-colored-c
+      codeblockColoredD: sky500, // --codeblock-colored-d
+      codeblockColoredE: fuchsia500, // --codeblock-colored-e
+      codeblockColoredF: lime500, // --codeblock-colored-f
     },
   },
   typography: {
     fontFamily: [
       "ui-sans-serif",
       "system-ui",
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      '"Noto Sans"',
       "sans-serif",
       '"Apple Color Emoji"',
       '"Segoe UI Emoji"',
@@ -223,36 +278,36 @@ export const muiTheme = createTheme({
     ].join(","),
     h1: {
       fontSize: "2.25rem", // text-4xl
-      fontWeight: "bold",
-      lineHeight: "normal", // leading-normal
+      fontWeight: 700,
+      lineHeight: 1.5,
     },
     h2: {
       fontSize: "1.875rem", // text-3xl
-      fontWeight: "bold",
-      lineHeight: "normal",
+      fontWeight: 700,
+      lineHeight: 1.5,
     },
     h3: {
       fontSize: "1.5rem", // text-2xl
-      fontWeight: "bold",
-      lineHeight: "normal",
+      fontWeight: 700,
+      lineHeight: 1.5,
     },
     h4: {
       fontSize: "1.25rem", // text-xl
-      fontWeight: "bold",
-      lineHeight: "normal",
+      fontWeight: 700,
+      lineHeight: 1.5,
     },
     h5: {
       fontSize: "1.125rem", // text-lg
-      fontWeight: "bold",
-      lineHeight: "normal",
+      fontWeight: 700,
+      lineHeight: 1.5,
     },
     h6: {
       fontSize: "1.125rem", // text-lg
-      fontWeight: "bold",
-      lineHeight: "normal",
+      fontWeight: 700,
+      lineHeight: 1.5,
     },
     body1: {
-      lineHeight: 1.75, // leading-7 = 1.75rem = 28px
+      lineHeight: "1.75rem", // leading-7 = 1.75rem = 28px
     },
   },
 });

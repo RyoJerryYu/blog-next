@@ -167,17 +167,53 @@
    - 将 globals.scss 中的 CSS 变量改为从 MUI theme 获取
    - 确保 CSS 变量与 MUI theme 同步
 
-### 阶段 2: 全局样式迁移（高优先级）
-1. **迁移 @layer base 样式**
-   - body 样式 → MUI CssBaseline 或 theme
-   - h1-h6 → MUI theme typography
-   - blockquote → MUI 组件或保留在 globals.scss（使用 theme 颜色）
+### 阶段 2: 全局样式迁移（高优先级）✅ 已完成
 
-2. **迁移 @layer utilities 中的工具类**
-   - .highlight-word → 保留在 globals.scss，但使用 theme 颜色
-   - .tag-word → 保留在 globals.scss，但使用 theme 颜色
-   - .post-frame → 已迁移，可移除
-   - .post-body → 部分迁移（颜色到 theme，复杂选择器保留）
+1. **迁移 @layer base 样式** ✅
+   - ✅ body 样式 → MUI CssBaseline（已添加 CssBaseline 组件）
+   - ✅ h1-h6 → MUI theme typography（已移除 globals.scss 中的定义）
+   - ✅ blockquote → 保留在 globals.scss，使用 theme 颜色（通过 CSS 变量）
+
+2. **迁移 @layer utilities 中的工具类** ✅
+   - ✅ .highlight-word → 保留在 globals.scss，使用 theme 颜色（通过 CSS 变量）
+   - ✅ .tag-word → 保留在 globals.scss，使用 theme 颜色（通过 CSS 变量）
+   - ⚠️ .post-frame → **注意**：Post 组件迁移被拒绝，所以保留在 globals.scss
+   - ✅ .post-body → 颜色值已迁移到 theme（通过 CSS 变量），复杂选择器保留
+
+#### 阶段2完成情况说明
+
+**已完成的工作：**
+1. 添加了 MUI CssBaseline 组件来处理全局 body 样式
+2. 移除了 globals.scss 中的 h1-h6 样式定义（已在 theme typography 中配置）
+3. blockquote 样式改为使用 CSS 变量（--fg-light, --bg-focus2, --line）
+4. .highlight-word 和 .tag-word 已使用 CSS 变量（--yellow-500, --pink-500）
+5. .post-body 中的所有颜色值已迁移到 CSS 变量：
+   - codeinline: --codeinline-bg, --codeinline-text
+   - codeblock: --codeblock-titlebg, --codeblock-titletext, --codeblock-bg, --codeblock-text, --codeblock-highlightedbg
+   - codeblock colored: --codeblock-colored-a 到 --codeblock-colored-f
+
+**需要注意的事项：**
+1. ⚠️ **.post-frame 类仍在使用**：Post 组件和 wiki-page 组件仍在使用 `post-frame` 类，所以不能移除。后续迁移这些组件时需要处理。
+2. ⚠️ **CSS 变量注入时机**：ThemeCSSVars 组件在客户端运行时注入 CSS 变量，SSR 时使用 fallback 值。这可能导致轻微的样式闪烁，但影响很小。
+3. ⚠️ **代码块样式**：代码块相关的样式（rehype-pretty-code 生成的内容）已全部使用 CSS 变量，确保与 theme 同步。
+4. ⚠️ **Tailwind @apply 指令**：部分样式仍使用 @apply，但颜色值已通过 CSS 变量从 theme 获取。后续可以逐步将 @apply 替换为原生 CSS。
+
+**重要修复（阶段2完成后发现的问题）：**
+1. ⚠️ **h1-h6 样式必须保留在 globals.scss**：
+   - 问题：项目中直接使用原生 HTML 标签（`<h1>`, `<h2>` 等），而不是 MUI Typography 组件
+   - MUI 的 typography 配置只对 Typography 组件生效，不会自动应用到原生 HTML 标签
+   - MDX 渲染的内容也会生成原生 h1-h6 标签
+   - 解决方案：在 globals.scss 中保留 h1-h6 样式，但使用与 theme typography 相同的值，确保一致性
+   
+2. ⚠️ **body 样式需要补充**：
+   - 问题：CssBaseline 只提供基础样式，不包含自定义的 `leading-7` 和颜色（`text-fg bg-bg`）
+   - 解决方案：在 globals.scss 中补充 body 样式，使用 CSS 变量从 theme 获取值
+   - 添加了 `--fg-main`, `--bg-default`, `--font-family` CSS 变量
+
+3. ⚠️ **后续迁移建议**：
+   - 如果要将组件迁移到 MUI Typography，需要将原生 `<h1>` 等标签替换为 `<Typography variant="h1">` 组件
+   - 但 MDX 渲染的内容无法直接控制，所以 globals.scss 中的 h1-h6 样式需要保留
+   - 可以考虑使用 rehype 插件将 MDX 中的 h1-h6 转换为 Typography 组件，但这需要额外的配置
 
 ### 阶段 3: 布局组件迁移（中优先级）
 1. **DefaultLayout 相关**

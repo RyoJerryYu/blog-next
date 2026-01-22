@@ -5,7 +5,7 @@ import "@/styles/DefaultLayout.Menu.scss";
 import "@/styles/components/wiki.WikiTreeMenu.scss";
 import "@/styles/globals.scss";
 import { muiTheme } from "@/utils/theme";
-import { ThemeProvider } from "@mui/material/styles";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import "katex/dist/katex.min.css";
 import type { AppProps } from "next/app";
 import Script from "next/script";
@@ -27,6 +27,7 @@ export default function App({ Component, pageProps }: AppProps) {
       </Script>
       <GlobalScriptProvider>
         <ThemeProvider theme={muiTheme}>
+          <CssBaseline />
           <ThemeCSSVars />
           <Component {...pageProps} />
         </ThemeProvider>
