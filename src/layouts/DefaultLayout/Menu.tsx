@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { Box } from "@mui/material";
 import { default as RCMenu } from "rc-menu";
 // import "rc-menu/assets/index.css";
 import { CSSMotionProps } from "rc-motion";
@@ -65,7 +65,13 @@ export function Menu(props: MenuProps) {
 
   const menuItems = items.map((item) => itemToComponent(item));
   return (
-    <div className={clsx("DefaultLayoutMenu", "bg-transparent min-w-full")}>
+    <Box
+      className="DefaultLayoutMenu"
+      sx={{
+        backgroundColor: "transparent", // bg-transparent
+        minWidth: "100%", // min-w-full
+      }}
+    >
       <RCMenu
         mode="horizontal"
         getPopupContainer={(node) => node.parentNode as HTMLElement}
@@ -73,6 +79,6 @@ export function Menu(props: MenuProps) {
       >
         {menuItems}
       </RCMenu>
-    </div>
+    </Box>
   );
 }

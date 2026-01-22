@@ -1,60 +1,41 @@
-@tailwind components;
-
 $hover-cyan: #69e0ff;
 
 $header-height: 4rem;
 $footer-height: 4rem;
 
-.textbox {
-  @apply h-full flex items-center justify-center p-4;
-}
-
 .textlink {
-  @apply text-gray-300 font-sans text-lg font-normal;
-  @apply hover:text-white;
-  @apply transition-colors duration-200;
-}
-.textlink:hover {
-  text-shadow: 0 0 10px #69e0ff, 0 0 20px #69e0ff;
-}
+  // text-gray-300
+  --tw-text-opacity: 1;
+  color: rgb(209 213 219 / var(--tw-text-opacity, 1));
 
-.dropdownitem {
-  @apply text-gray-500 font-sans text-lg font-normal;
-  @apply hover:text-gray-700;
-}
-.dropdownitem:hover {
-  text-shadow: 0 0 10px #69e0ff, 0 0 20px #69e0ff;
-}
+  // font-sans
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
-.header {
-  height: $header-height;
-  --AppBar-background: theme(colors.gray.900);
-}
+  // text-lg
+  font-size: 1.125rem;
 
-.headerBg {
-  @apply top-0 w-full z-0 h-16 bg-gradient-to-b from-gray-700 to-transparent;
+  // font-normal
+  font-weight: 400;
+
+  // leading-7 (text-lg line-height)
+  line-height: 1.75rem;
+
+  // transition-colors duration-200
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke;
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    // hover:text-white
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+
+    text-shadow: 0 0 10px #69e0ff, 0 0 20px #69e0ff;
+  }
 }
 
 .contentHeight {
   min-height: calc(100vh - $header-height - $footer-height);
-}
-
-.footer {
-  @apply bottom-0 w-full z-50 bg-gray-900;
-  @apply transition ease-in-out bg-opacity-90;
-  @apply text-slate-100 text-sm font-sans font-normal;
-
-  height: $footer-height;
-
-  & .footerLeft {
-    @apply ml-2;
-  }
-  & .footerRight {
-    @apply ml-auto mr-2 float-right;
-    @apply flex flex-row gap-4 items-center justify-center;
-  }
-}
-
-.footerIcon {
-  @apply fill-slate-400 hover:fill-slate-100 transition-all ease-in-out duration-300;
 }

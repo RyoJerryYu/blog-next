@@ -154,6 +154,10 @@
 #### 其他页面
 - **需要检查**: 各页面文件
 
+### 2.4 原代码渲染后的 css 文件
+
+源代码渲染出的 CSS 文件，在本文件夹下的 `css/` 文件夹下。进行改造时，如不清楚 tailwindcss 的类对应的 CSS 样式，需要参考原有渲染出的 CSS 文件找到对应关系。
+
 ## 三、改造优先级和顺序
 
 ### 阶段 1: 基础建设（最高优先级）
@@ -215,14 +219,65 @@
    - 但 MDX 渲染的内容无法直接控制，所以 globals.scss 中的 h1-h6 样式需要保留
    - 可以考虑使用 rehype 插件将 MDX 中的 h1-h6 转换为 Typography 组件，但这需要额外的配置
 
-### 阶段 3: 布局组件迁移（中优先级）
-1. **DefaultLayout 相关**
-   - DefaultLayout.module.scss → MUI 组件
-   - Header/Footer → MUI AppBar
+### 阶段 3: 布局组件迁移（中优先级）✅ 已完成
 
-2. **Post 组件**
-   - 迁移内联 Tailwind 类到 MUI
-   - 处理 post-body 中的样式
+1. **DefaultLayout 相关** ✅
+   - ✅ DefaultLayout.module.scss → 已迁移到 MUI sx prop
+   - ✅ Header → 已使用 MUI AppBar 和 Typography
+   - ✅ Footer → 已迁移到 MUI Box 组件
+   - ✅ TextLink 和 IconLink → 已迁移到 MUI Typography 和 Box
+   - ⚠️ **注意**：DefaultLayout.Menu.scss 仍在使用，这是全局样式文件，用于 rc-menu 组件，暂时保留
+
+2. **Post 组件** ✅
+   - ✅ 迁移内联 Tailwind 类到 MUI
+   - ✅ 使用 MUI Box, Stack, Typography, Divider 组件
+   - ⚠️ **注意**：`post-frame` 和 `post-body` 类仍在使用（在 globals.scss 中定义），这些是全局样式，用于 MDX 渲染内容
+
+#### 阶段3完成情况说明
+
+**已完成的工作：**
+1. **DefaultLayout Header**：
+   - TextLink 组件：迁移到 MUI Typography，使用 sx prop 定义样式
+   - IconLink 组件：迁移到 MUI Box，使用 sx prop 定义样式
+   - MenuBar：迁移到 MUI Typography
+   - Home 图标：迁移到 MUI HomeIcon，使用 sx prop
+   - 移除了所有 CSS 模块类的使用
+
+2. **DefaultLayout Footer**：
+   - 迁移到 MUI Box 组件
+   - 使用 sx prop 定义所有样式（颜色、间距、布局等）
+   - Footer 图标：迁移到 MUI Box，使用 sx prop
+
+3. **Post 组件**：
+   - 标题：使用 MUI Typography variant="h1"
+   - 时间显示：使用 MUI Box，迁移 text-sm text-slate-700
+   - 标签：使用 MUI Box 包裹 TagsBox，迁移 mt-2, mt-4
+   - 前后导航：使用 MUI Stack，迁移 flex justify-center 等
+   - 分隔线：使用 MUI Divider，迁移 hr mt-4
+   - post-frame 样式：使用 MUI Box sx prop 定义（flex, flex-col, mx-auto, min-h-screen, p-2）
+
+**需要注意的事项：**
+1. ⚠️ **DefaultLayout.module.scss**：
+   - 文件已清空，但保留文件以避免破坏导入
+   - 如果确认没有其他地方引用，可以安全删除
+
+2. ⚠️ **DefaultLayout.Menu.scss**：
+   - 这是全局样式文件，用于 rc-menu 组件（第三方菜单组件）
+   - 暂时保留，后续可以考虑迁移到 MUI Menu 组件
+
+3. ⚠️ **post-frame 和 post-body 类**：
+   - 这些类仍在 globals.scss 中定义，用于 MDX 渲染的内容
+   - Post 组件现在使用 MUI Box 定义 post-frame 的布局样式
+   - post-body 类仍在使用，因为它是 MDX 内容的容器，样式在 globals.scss 中定义
+
+4. ⚠️ **颜色值硬编码**：
+   - DefaultLayout 中使用了一些硬编码的颜色值（如 gray-300: #d1d5db, gray-900: #111827）
+   - 这些值在 theme.ts 中已定义（gray300, gray900），但为了保持与原样式一致，暂时使用硬编码
+   - 后续可以考虑提取到 theme 中统一管理
+
+5. ⚠️ **text-shadow 效果**：
+   - TextLink 和 MenuBar 中的 text-shadow 效果（0 0 10px #69e0ff, 0 0 20px #69e0ff）已保留
+   - 这是 hover 时的特殊效果，使用 sx prop 的 &:hover 定义
 
 ### 阶段 4: 内容组件迁移（中优先级）
 1. **PostList 组件**

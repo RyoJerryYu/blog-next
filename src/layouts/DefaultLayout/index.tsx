@@ -1,6 +1,13 @@
 import { GitHubIcon, PixivIcon, TwitterIcon } from "@/components/svgs";
 import HomeIcon from "@mui/icons-material/Home";
-import { AppBar, Box, Slide, Toolbar, useScrollTrigger } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Slide,
+  Toolbar,
+  useScrollTrigger,
+  useTheme,
+} from "@mui/material";
 import Link from "next/link";
 import React from "react";
 import style from "./DefaultLayout.module.scss";
@@ -32,8 +39,29 @@ function TextLink(props: ClickableItem) {
 
 function IconLink(props: ClickableIcon) {
   return (
-    <Link href={props.href} title={props.text} key={props.text}>
-      <props.Icon className="h-6 w-6 fill-gray-300 hover:fill-white mx-1 sm:mx-2" />
+    <Link
+      href={props.href}
+      title={props.text}
+      key={props.text}
+      style={{ textDecoration: "none", color: "inherit" }}
+    >
+      <Box
+        component={props.Icon}
+        sx={{
+          width: "1.5rem", // h-6 w-6
+          height: "1.5rem",
+          fill: "#d1d5db", // fill-gray-300
+          marginLeft: { xs: "0.25rem", sm: "0.5rem" }, // mx-1 sm:mx-2
+          marginRight: { xs: "0.25rem", sm: "0.5rem" },
+          transitionProperty:
+            "color, background-color, border-color, text-decoration-color, fill, stroke", // transition-colors
+          transitionDuration: "0.2s", // duration-200
+          transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)", // default Tailwind timing
+          "&:hover": {
+            fill: "#ffffff", // hover:fill-white
+          },
+        }}
+      />
     </Link>
   );
 }
@@ -70,17 +98,37 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
           <Toolbar>
             {/* home */}
             <Box
-              className="ml-2 w-24 mr-4"
-              sx={{ display: { xs: "none", md: "flex" } }}
+              sx={{
+                display: { xs: "none", md: "flex" },
+                marginLeft: "0.5rem", // ml-2
+                width: "6rem", // w-24
+                marginRight: "1rem", // mr-4
+              }}
             >
               <TextLink {...homeItem} />
             </Box>
             <Box
-              className="ml-2 mr-2"
-              sx={{ display: { xs: "flex", md: "none" } }}
+              sx={{
+                display: { xs: "flex", md: "none" },
+                marginLeft: "0.5rem", // ml-2
+                marginRight: "0.5rem", // mr-2
+              }}
             >
               <Link href={homeItem.href} title={homeItem.text}>
-                <HomeIcon className="h-6 w-6 text-gray-300 hover:text-white" />
+                <HomeIcon
+                  sx={{
+                    width: "1.5rem", // h-6 w-6
+                    height: "1.5rem",
+                    color: "#d1d5db", // text-gray-300
+                    transitionProperty:
+                      "color, background-color, border-color, text-decoration-color, fill, stroke", // transition-colors
+                    transitionDuration: "0.2s", // duration-200
+                    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)", // default Tailwind timing
+                    "&:hover": {
+                      color: "#ffffff", // hover:text-white
+                    },
+                  }}
+                />
               </Link>
             </Box>
 
@@ -109,23 +157,83 @@ type DefaultFooterProps = {
 const DefaultFooter: React.FC<DefaultFooterProps> = (
   props: DefaultFooterProps
 ) => {
+  const theme = useTheme();
   return (
-    <footer className={style.footer}>
+    <Box
+      component="footer"
+      sx={{
+        bottom: 0,
+        width: "100%",
+        zIndex: 50,
+        backgroundColor: "rgba(17, 24, 39, 0.9)", // bg-gray-900 bg-opacity-90
+        transitionProperty:
+          "color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter, backdrop-filter", // transition
+        transitionDuration: "0.15s", // default Tailwind transition duration
+        transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)", // default Tailwind timing
+        height: "4rem", // $footer-height
+        color: "#f1f5f9", // text-slate-100
+        fontSize: "0.875rem", // text-sm
+        fontFamily: theme.typography.fontFamily, // font-sans
+        fontWeight: 400, // font-normal
+        lineHeight: "1.25rem", // leading-5 (text-sm line-height)
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
       <MainWidth>
-        <div className="flex flex-row justify-center items-center">
-          <div className={style.footerLeft}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <Box sx={{ marginLeft: "0.5rem" }}>
             {"© 2023 Ryo Jerry Yu. All rights reserved."}
-          </div>
-          <div className={style.footerRight}>
+          </Box>
+          <Box
+            sx={{
+              marginLeft: "auto",
+              marginRight: "0.5rem",
+              display: "flex",
+              flexDirection: "row",
+              gap: "1rem", // gap-4
+              alignItems: "center",
+              justifyContent: "center",
+              float: "right", // float-right
+            }}
+          >
             {props.iconItems.map((item) => (
-              <Link href={item.href} title={item.text} key={item.text}>
-                <item.Icon className="h-6 w-6 fill-gray-300 hover:fill-white transition-all ease-in-out mx-1 md:mx-2" />
+              <Link
+                href={item.href}
+                title={item.text}
+                key={item.text}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <Box
+                  component={item.Icon}
+                  sx={{
+                    width: "1.5rem", // h-6 w-6
+                    height: "1.5rem",
+                    fill: "#94a3b8", // fill-slate-400
+                    marginLeft: { xs: "0.25rem", md: "0.5rem" }, // mx-1 md:mx-2
+                    marginRight: { xs: "0.25rem", md: "0.5rem" },
+                    transitionProperty: "all", // transition-all
+                    transitionDuration: "0.3s", // duration-300
+                    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)", // ease-in-out (Tailwind default)
+                    "&:hover": {
+                      fill: "#f1f5f9", // hover:fill-slate-100
+                    },
+                  }}
+                />
               </Link>
             ))}
-          </div>
-        </div>
+          </Box>
+        </Box>
       </MainWidth>
-    </footer>
+    </Box>
   );
 };
 
