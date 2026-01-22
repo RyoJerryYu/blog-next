@@ -438,6 +438,8 @@ file path 全路径 [[public/content/articles/2022-08-13-introduction-for-k8s|�
 
 一行多个 [[2022-08-13-introduction-for-k8s|其他文章]] [[2022-08-20-introduction-for-k8s-2|其他文章2]]
 
+同一文章内其他 fragment [[#其他 MD 语法]]
+
 > 目前未实现 Obsidian Anchor 直接引用到块或标题
 
 ## Rich Content 短引用
