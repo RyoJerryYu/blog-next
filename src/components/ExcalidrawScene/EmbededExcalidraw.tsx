@@ -12,10 +12,10 @@ export type EmbededExcalidrawProps = {
 };
 
 /**
- * 从 Markdown 格式的 excalidraw 文件中提取 compressed-json 代码块并解压
+ * Extract and decompress compressed-json code block from Markdown format excalidraw file
  */
 function parseExcalidrawMarkdown(content: string): ExcalidrawElement[] | null {
-  // 查找 compressed-json 代码块
+  // Find compressed-json code block
   const compressedJsonMatch = content.match(
     /```compressed-json\n([\s\S]*?)\n```/
   );
@@ -23,20 +23,20 @@ function parseExcalidrawMarkdown(content: string): ExcalidrawElement[] | null {
     return null;
   }
 
-  // 提取 base64 字符串并移除所有空白字符（包括换行和空格）
+  // Extract base64 string and remove all whitespace characters (including newlines and spaces)
   const compressedBase64 = compressedJsonMatch[1].replace(/\s/g, "");
   if (!compressedBase64) {
     return null;
   }
 
   try {
-    // 解压缩 base64 编码的 LZ-String 数据
+    // Decompress base64-encoded LZ-String data
     const decompressed = LZString.decompressFromBase64(compressedBase64);
     if (!decompressed) {
       return null;
     }
 
-    // 解析 JSON
+    // Parse JSON
     const parsed = JSON.parse(decompressed);
     return parsed.elements as ExcalidrawElement[];
   } catch (error) {
@@ -46,7 +46,7 @@ function parseExcalidrawMarkdown(content: string): ExcalidrawElement[] | null {
 }
 
 /**
- * 从 JSON 格式的 excalidraw 数据中提取 elements
+ * Extract elements from JSON format excalidraw data
  */
 function parseExcalidrawJson(data: any): ExcalidrawElement[] | null {
   if (data && Array.isArray(data.elements)) {
@@ -64,16 +64,16 @@ export default function EmbededExcalidraw({
     const response = await fetch(url);
     const contentType = response.headers.get("content-type") || "";
 
-    // 如果是 JSON 格式
+    // If it's JSON format
     if (contentType.includes("application/json")) {
       const json = await response.json();
       return parseExcalidrawJson(json);
     }
 
-    // 如果是文本格式（可能是 Markdown）
+    // If it's text format (possibly Markdown)
     const text = await response.text();
 
-    // 尝试解析为 JSON（向后兼容）
+    // Try to parse as JSON (for backward compatibility)
     try {
       const json = JSON.parse(text);
       const elements = parseExcalidrawJson(json);
@@ -81,10 +81,10 @@ export default function EmbededExcalidraw({
         return elements;
       }
     } catch {
-      // 不是 JSON，继续尝试 Markdown 格式
+      // Not JSON, continue trying Markdown format
     }
 
-    // 尝试解析为 Markdown 格式
+    // Try to parse as Markdown format
     return parseExcalidrawMarkdown(text);
   });
 
