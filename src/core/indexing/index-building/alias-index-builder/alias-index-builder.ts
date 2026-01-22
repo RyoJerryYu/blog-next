@@ -119,6 +119,9 @@ export class AliasIndex {
     if (alias.includes("#")) {
       [realAlias, fragment] = alias.split("#");
     }
+    if (realAlias === "" && fragment !== "") {
+      return `#${fragment}`;
+    }
 
     const path = this.index.get(realAlias);
     if (fragment) {

@@ -26,14 +26,19 @@ const parseObsidianWikilinkProp = (
   resolveRefAlias: (alias: string) => string | undefined
 ): ObsidianWikilinkPropsMdx => {
   let [alias, label] = matched.split("|");
-  if (!label) {
-    label = alias;
-  }
 
   let path = resolveRefAlias(alias);
   // alias to a post no need for considering extension
   if (!path) {
     throw new Error(`Invalid alias: ${alias}`);
+  }
+
+  if (!label) {
+    if (alias.includes("#")) {
+      label = alias.split("#")[1];
+    } else {
+      label = alias;
+    }
   }
 
   // this alias should always be resolvable below
