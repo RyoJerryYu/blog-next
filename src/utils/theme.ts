@@ -17,14 +17,30 @@ export const slate900 = "#0f172a";
 export const gray300 = "#d1d5db";
 export const gray900 = "#111827";
 export const sky500 = "#0ea5e9";
+export const sky100 = "#e0f2fe"; // rgb(224 242 254)
 export const indigo500 = "#6366f1";
+export const indigo100 = "#e0e7ff"; // rgb(224 231 255)
 export const fuchsia500 = "#d946ef";
+export const fuchsia100 = "#fae8ff"; // rgb(250 232 255)
 export const pink300 = "#f9a8d4";
 export const pink500 = "#ec4899";
 export const yellow500 = "#eab308";
 export const emerald500 = "#10b981";
 export const orange500 = "#f97316";
+export const orange100 = "#ffedd5"; // rgb(255 237 213)
 export const lime500 = "#84cc16";
+export const teal100 = "#ccfbf1"; // rgb(204 251 241)
+export const teal500 = "#14b8a6"; // rgb(20 184 166)
+export const green100 = "#dcfce7"; // rgb(220 252 231)
+export const green500 = "#22c55e"; // rgb(34 197 94)
+export const amber100 = "#fef3c7"; // rgb(254 243 199)
+export const amber500 = "#f59e0b"; // rgb(245 158 11)
+export const red100 = "#fee2e2"; // rgb(254 226 226)
+export const red500 = "#ef4444"; // rgb(239 68 68)
+export const zinc100 = "#f4f4f5"; // rgb(244 244 245)
+export const zinc500 = "#71717a"; // rgb(113 113 122)
+export const violet100 = "#ede9fe"; // rgb(237 233 254)
+export const violet500 = "#8b5cf6"; // rgb(139 92 246)
 
 export const codeblock = {
   900: "#0f172a",
@@ -56,6 +72,18 @@ declare module "@mui/material/styles" {
   interface Palette {
     header: {
       background: string;
+    };
+    callout: {
+      sky: { bg: string; title: string };
+      teal: { bg: string; title: string };
+      green: { bg: string; title: string };
+      amber: { bg: string; title: string };
+      orange: { bg: string; title: string };
+      red: { bg: string; title: string };
+      indigo: { bg: string; title: string };
+      zinc: { bg: string; title: string };
+      fuchsia: { bg: string; title: string };
+      violet: { bg: string; title: string };
     };
     codeblock: {
       darkBg: string;
@@ -119,6 +147,18 @@ declare module "@mui/material/styles" {
   interface PaletteOptions {
     header: {
       background: string;
+    };
+    callout: {
+      sky: { bg: string; title: string };
+      teal: { bg: string; title: string };
+      green: { bg: string; title: string };
+      amber: { bg: string; title: string };
+      orange: { bg: string; title: string };
+      red: { bg: string; title: string };
+      indigo: { bg: string; title: string };
+      zinc: { bg: string; title: string };
+      fuchsia: { bg: string; title: string };
+      violet: { bg: string; title: string };
     };
     codeblock: {
       darkBg: string;
@@ -195,9 +235,21 @@ export const muiTheme = createTheme({
       default: slate50, // bg.DEFAULT
       paper: slate100, // bg.focus
     },
-    divider: slate400, // border.DEFAULT
+    divider: alpha(slate300, 0.5),
     header: {
       background: alpha(slate900, 0.75),
+    },
+    callout: {
+      sky: { bg: sky100, title: sky500 },
+      teal: { bg: teal100, title: teal500 },
+      green: { bg: green100, title: green500 },
+      amber: { bg: amber100, title: amber500 },
+      orange: { bg: orange100, title: orange500 },
+      red: { bg: red100, title: red500 },
+      indigo: { bg: indigo100, title: indigo500 },
+      zinc: { bg: zinc100, title: zinc500 },
+      fuchsia: { bg: fuchsia100, title: fuchsia500 },
+      violet: { bg: violet100, title: violet500 },
     },
     codeblock: {
       darkBg: alpha(codeblock[900], 0.9),
@@ -308,6 +360,15 @@ export const muiTheme = createTheme({
     },
     body1: {
       lineHeight: "1.75rem", // leading-7 = 1.75rem = 28px
+    },
+  },
+  components: {
+    MuiDivider: {
+      styleOverrides: {
+        root: {
+          borderColor: alpha(slate300, 0.5),
+        },
+      },
     },
   },
 });

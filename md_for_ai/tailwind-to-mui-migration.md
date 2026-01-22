@@ -279,19 +279,65 @@
    - TextLink 和 MenuBar 中的 text-shadow 效果（0 0 10px #69e0ff, 0 0 20px #69e0ff）已保留
    - 这是 hover 时的特殊效果，使用 sx prop 的 &:hover 定义
 
-### 阶段 4: 内容组件迁移（中优先级）
+### 阶段 4: 内容组件迁移（中优先级）✅ 已完成
+
 1. **PostList 组件**
    - ✅ 已完成
 
-2. **TagsBox 组件**
-   - 统一迁移（包括 className prop 的处理）
+2. **TagsBox 组件** ✅
+   - ✅ 已迁移到 MUI Stack 组件
+   - ✅ 移除了 CSS 模块中的 `@apply` 指令
+   - ✅ 保留了 `.tag` 和 `.highlightedTag` 的 CSS 变量定义（用于 Tag 组件）
+   - ✅ 支持 `sx` prop 和 `className` prop（向后兼容）
 
-3. **BackRefList 组件**
-   - 迁移到 MUI
+3. **BackRefList 组件** ✅
+   - ✅ 已迁移到 MUI Box, Stack, Typography, Divider 组件
+   - ✅ 所有 Tailwind 类已替换为 MUI `sx` prop
+   - ✅ 响应式样式（`py-4 md:py-1`）使用 MUI 的响应式 `sx` prop
 
-4. **ObsidianCallout 组件**
-   - 提取颜色到 theme
-   - 迁移样式到 MUI
+4. **ObsidianCallout 组件** ✅
+   - ✅ 已在 theme.ts 中添加 `callout` palette，包含所有需要的颜色（sky, teal, green, amber, orange, red, indigo, zinc, fuchsia, violet）
+   - ✅ 已迁移到 MUI Box 组件
+   - ✅ 所有 Tailwind 类已替换为 MUI `sx` prop
+   - ✅ 旋转动画（`rotate-90`）使用 MUI `sx` prop 的 `transform` 属性
+
+#### 阶段4完成情况说明
+
+**已完成的工作：**
+1. **TagsBox 组件**：
+   - 将 `.tagsBox` 的 CSS 模块样式迁移到 MUI Stack 组件
+   - 使用 `direction="row"`, `flexWrap="wrap"`, `gap="0.5rem"` 替代 `@apply flex flex-row flex-wrap gap-2`
+   - 保留了 `.tag` 和 `.highlightedTag` 的 CSS 变量定义，因为 Tag 组件仍在使用这些类
+   - 支持 `sx` prop 和 `className` prop，保持向后兼容
+
+2. **BackRefList 组件**：
+   - 将所有 Tailwind 类替换为 MUI 组件和 `sx` prop
+   - 使用 MUI Box 替代 `div`，Typography 替代文本元素
+   - 使用 MUI Stack 处理 flex 布局
+   - 使用 MUI Divider 替代 `hr`
+   - 响应式样式使用 MUI 的响应式 `sx` prop（如 `paddingTop: { xs: "1rem", md: "0.25rem" }`）
+
+3. **ObsidianCallout 组件**：
+   - 在 theme.ts 中添加了 `callout` palette，包含 10 种颜色类型（sky, teal, green, amber, orange, red, indigo, zinc, fuchsia, violet）
+   - 每种颜色包含 `bg` 和 `title` 两个属性
+   - 将 `calloutTypeFeatures` 从使用 Tailwind 类名改为使用 theme 中的颜色键
+   - 所有 Tailwind 类已替换为 MUI `sx` prop
+   - 旋转动画使用 `transform` 和 `transition` 属性
+
+**需要注意的事项：**
+1. ⚠️ **TagsBox.module.scss 仍在使用**：
+   - `.tag` 和 `.highlightedTag` 的 CSS 变量定义仍保留在 SCSS 文件中
+   - 这些类被 Tag 组件使用，Tag 组件使用全局的 `.tag-word` 类
+   - 后续可以考虑将 Tag 组件也迁移到 MUI，但目前保留现状
+
+2. ⚠️ **ObsidianCallout 颜色定义**：
+   - 所有颜色值已提取到 theme.ts 中
+   - 颜色值来自原 CSS 文件中的实际渲染值
+   - 如果后续需要调整颜色，只需在 theme.ts 中修改
+
+3. ⚠️ **响应式样式**：
+   - BackRefList 中的响应式样式（`py-4 md:py-1`）已正确迁移为 MUI 的响应式 `sx` prop
+   - 确保在不同屏幕尺寸下显示正确
 
 ### 阶段 5: 复杂组件迁移（低优先级）
 1. **HomeCategoryList 组件**
@@ -314,7 +360,7 @@
 ## 四、改造策略总结
 
 ### 4.1 应该提取到 MUI Theme 的内容
-- ✅ 所有颜色定义（fg, bg, border, codeblock, codeinline 等）
+- ✅ 所有颜色定义（fg, bg, border, codeblock, codeinline, callout 等）
 - ✅ Typography 配置（字体、大小、行高等）
 - ✅ 间距系统（部分，复杂场景保留在 CSS）
 - ✅ CSS 变量值（--hover, --line, --link）
@@ -322,7 +368,7 @@
 ### 4.2 应该提取为 MUI 组件的内容
 - ✅ 布局组件（PostList, BackRefList 等）
 - ✅ 语义化组件（Blockquote, Table 等）
-- ✅ 功能组件（TagsBox, License 等）
+- ✅ 功能组件（TagsBox, ObsidianCallout 等）
 
 ### 4.3 应该保留在 globals.scss 的内容
 - ✅ MDX 渲染内容的复杂选择器（`& :not(pre) > code`）
