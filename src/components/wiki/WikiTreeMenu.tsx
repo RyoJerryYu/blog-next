@@ -1,6 +1,6 @@
 "use client";
 import { WikiTreeNode } from "@/core/indexing/index-building/wiki-tree-index-builder/types";
-import clsx from "clsx";
+import { Box } from "@mui/material";
 import Link from "next/link";
 import { default as Menu } from "rc-menu";
 // import "rc-menu/assets/index.css";
@@ -112,7 +112,13 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
   );
 
   return (
-    <div className={clsx("w-full h-full", "WikiTreeMenu")}>
+    <Box
+      className="WikiTreeMenu"
+      sx={{
+        width: "100%", // w-full
+        height: "100%", // h-full
+      }}
+    >
       <Menu
         mode="inline"
         inlineIndent={10}
@@ -124,6 +130,6 @@ export function WikiTreeMenu(props: WikiTreeMenuProps) {
         }
         defaultMotions={motionMap}
       />
-    </div>
+    </Box>
   );
 }

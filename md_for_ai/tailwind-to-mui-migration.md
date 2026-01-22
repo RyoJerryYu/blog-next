@@ -339,12 +339,77 @@
    - BackRefList 中的响应式样式（`py-4 md:py-1`）已正确迁移为 MUI 的响应式 `sx` prop
    - 确保在不同屏幕尺寸下显示正确
 
-### 阶段 5: 复杂组件迁移（低优先级）
-1. **HomeCategoryList 组件**
-   - 复杂布局和动画，需要仔细规划
+### 阶段 5: 复杂组件迁移（低优先级）✅ 已完成
 
-2. **其他复杂组件**
-   - 根据实际情况处理
+1. **HomeCategoryList 组件** ✅
+   - ✅ 已迁移到 MUI Box, Typography 组件
+   - ✅ 移除了 CSS 模块中的 `@apply` 指令，替换为原生 CSS
+   - ✅ 所有 Tailwind 类已替换为 MUI `sx` prop
+   - ✅ 处理了复杂的 group-hover 效果（使用父元素的 `&:hover` 选择器）
+   - ✅ 处理了 before 伪元素的样式
+   - ✅ 保留了复杂的动画效果和绝对定位布局
+
+2. **pages/index.tsx** ✅
+   - ✅ 已迁移到 MUI Box, Stack, Typography 组件
+   - ✅ 所有 Tailwind 类已替换为 MUI `sx` prop
+   - ✅ 处理了背景图片的样式（使用 Box 包裹 Next.js Image 组件）
+
+3. **其他组件** ✅
+   - ✅ License 组件：已迁移到 MUI Box, Typography, Link 组件
+   - ✅ TagSelector 组件：已迁移到 MUI Box 组件
+   - ✅ LoadError 组件：已迁移到 MUI Box 组件
+   - ✅ Comments 组件：已迁移到 MUI Box 组件
+   - ✅ WikiTreeMenu 组件：已迁移到 MUI Box 组件
+   - ✅ ExcalidrawScene 组件（EmbededExcalidraw, ExcalidrawSceneImpl）：已迁移到 MUI Box 组件
+
+#### 阶段5完成情况说明
+
+**已完成的工作：**
+1. **HomeCategoryList 组件**：
+   - 将 CSS 模块中的 `@apply` 指令替换为原生 CSS
+   - 使用 MUI Box 替代 `ul` 和 `li` 元素
+   - 使用 MUI Typography 替代文本元素
+   - 处理了复杂的 group-hover 效果：使用父元素 `li` 的 `&:hover` 选择器来影响子元素（`.group-hover-target`, `.group-hover-bg`, `.group-hover-border`, `.group-hover-charactor`）
+   - 处理了 before 伪元素的样式（使用 `&:before` 和 `&:hover:before`）
+   - 保留了复杂的动画效果和绝对定位布局（在 SCSS 文件中定义）
+
+2. **pages/index.tsx**：
+   - 将所有 Tailwind 类替换为 MUI `sx` prop
+   - 使用 MUI Box 替代 `div` 元素
+   - 使用 MUI Stack 处理 flex 布局
+   - 使用 MUI Typography 替代文本元素
+   - 处理了背景图片的样式（使用 Box 包裹 Next.js Image 组件，通过 `& img` 选择器设置样式）
+
+3. **其他组件**：
+   - **License 组件**：迁移到 MUI Box, Typography, Link 组件，处理了 Next.js Image 组件的样式
+   - **TagSelector 组件**：迁移到 MUI Box 组件
+   - **LoadError 组件**：迁移到 MUI Box 组件
+   - **Comments 组件**：迁移到 MUI Box 组件
+   - **WikiTreeMenu 组件**：迁移到 MUI Box 组件，保留了 `WikiTreeMenu` 类名用于样式
+   - **ExcalidrawScene 组件**：
+     - **EmbededExcalidraw**：迁移到 MUI Box 组件，处理了相对定位和固定高度
+     - **ExcalidrawSceneImpl**：迁移到 MUI Box 组件，处理了全宽全高布局
+
+**需要注意的事项：**
+1. ⚠️ **HomeCategoryList.module.scss 仍在使用**：
+   - 保留了复杂的布局样式（`.listItem`, `.bg`, `.title`, `.charactor`, `.border`）
+   - 这些样式包含复杂的绝对定位和 z-index 层级，保留在 SCSS 中更合适
+   - 动画效果（`.hoverAnimation`）也保留在 SCSS 中
+
+2. ⚠️ **group-hover 效果的处理**：
+   - Tailwind 的 `group-hover:` 类在 MUI 中需要使用父元素的 `&:hover` 选择器
+   - 通过添加辅助类名（`.group-hover-target`, `.group-hover-bg` 等）来实现
+   - 这种方式保持了原有的 hover 效果
+
+3. ⚠️ **Next.js Image 组件的样式**：
+   - Next.js 的 Image 组件不支持 `sx` prop
+   - 需要使用 Box 包裹，并通过 `& img` 选择器设置样式
+   - 或者使用 `className` prop（但需要确保样式正确应用）
+
+4. ⚠️ **复杂的伪元素和动画**：
+   - before 伪元素的样式保留在 SCSS 中，通过 `&:before` 在 MUI `sx` prop 中定义
+   - 复杂的动画效果（如 scale, translate）使用 MUI `sx` prop 的 `transform` 属性
+   - transition 效果也使用 MUI `sx` prop 定义
 
 ### 阶段 6: 清理工作（最后）
 1. **移除 Tailwind 依赖**
