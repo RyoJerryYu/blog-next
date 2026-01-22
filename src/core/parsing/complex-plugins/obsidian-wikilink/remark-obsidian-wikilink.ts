@@ -21,6 +21,30 @@ import { ObsidianWikilinkPropsMdx } from "./types";
 
 const syntax = /\[\[([^\]]+)\]\]/;
 
+const parseObsidianWikilinkProp = (
+  matched: string,
+  resolveRefAlias: (alias: string) => string | undefined
+): ObsidianWikilinkPropsMdx => {
+  let [alias, label] = matched.split("|");
+  if (!label) {
+    label = alias;
+  }
+
+  let path = resolveRefAlias(alias);
+  // alias to a post no need for considering extension
+  if (!path) {
+    throw new Error(`Invalid alias: ${alias}`);
+  }
+
+  // this alias should always be resolvable below
+  const props: ObsidianWikilinkPropsMdx = {
+    alias,
+    path, // no need to consider prefix
+    label,
+  };
+  return props;
+};
+
 export type Matcher = RegExp | ((props: ObsidianWikilinkPropsMdx) => boolean);
 
 const testMatcher = (matcher: Matcher, props: ObsidianWikilinkPropsMdx) => {
@@ -87,23 +111,7 @@ const remarkObsidianWikilink: Plugin<[RemarkObsidianWikilinkOptions?]> = (
           return index + 2;
         };
 
-        let [alias, label] = match[1].split("|");
-        if (!label) {
-          label = alias;
-        }
-
-        let path = resolveRefAlias(alias);
-        // alias to a post no need for considering extension
-        if (!path) {
-          throw new Error(`Invalid alias: ${alias}`);
-        }
-
-        // this alias should always be resolvable below
-        const props: ObsidianWikilinkPropsMdx = {
-          alias,
-          path, // no need to consider prefix
-          label,
-        };
+        const props = parseObsidianWikilinkProp(match[1], resolveRefAlias);
 
         for (let [matcher, componentName] of opts.matchers) {
           if (!testMatcher(matcher, props)) {
