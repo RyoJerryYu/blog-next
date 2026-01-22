@@ -12,37 +12,59 @@ export type EmbededExcalidrawProps = {
 };
 
 /**
- * Extract and decompress compressed-json code block from Markdown format excalidraw file
+ * Parse Markdown format excalidraw file
+ * Supports both compressed-json (base64 LZ-String) and plain json code blocks
  */
 function parseExcalidrawMarkdown(content: string): ExcalidrawElement[] | null {
-  // Find compressed-json code block
+  // First, try to find compressed-json code block
   const compressedJsonMatch = content.match(
     /```compressed-json\n([\s\S]*?)\n```/
   );
-  if (!compressedJsonMatch) {
-    return null;
-  }
-
-  // Extract base64 string and remove all whitespace characters (including newlines and spaces)
-  const compressedBase64 = compressedJsonMatch[1].replace(/\s/g, "");
-  if (!compressedBase64) {
-    return null;
-  }
-
-  try {
-    // Decompress base64-encoded LZ-String data
-    const decompressed = LZString.decompressFromBase64(compressedBase64);
-    if (!decompressed) {
+  if (compressedJsonMatch) {
+    // Extract base64 string and remove all whitespace characters (including newlines and spaces)
+    const compressedBase64 = compressedJsonMatch[1].replace(/\s/g, "");
+    if (!compressedBase64) {
       return null;
     }
 
-    // Parse JSON
-    const parsed = JSON.parse(decompressed);
-    return parsed.elements as ExcalidrawElement[];
-  } catch (error) {
-    console.error("Failed to parse excalidraw markdown:", error);
-    return null;
+    try {
+      // Decompress base64-encoded LZ-String data
+      const decompressed = LZString.decompressFromBase64(compressedBase64);
+      if (!decompressed) {
+        return null;
+      }
+
+      // Parse JSON
+      const parsed = JSON.parse(decompressed);
+      return parsed.elements as ExcalidrawElement[];
+    } catch (error) {
+      console.error(
+        "Failed to parse compressed-json excalidraw markdown:",
+        error
+      );
+      return null;
+    }
   }
+
+  // If compressed-json not found, try to find plain json code block
+  const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/);
+  if (jsonMatch) {
+    try {
+      const jsonContent = jsonMatch[1].trim();
+      if (!jsonContent) {
+        return null;
+      }
+
+      // Parse JSON directly
+      const parsed = JSON.parse(jsonContent);
+      return parseExcalidrawJson(parsed);
+    } catch (error) {
+      console.error("Failed to parse json excalidraw markdown:", error);
+      return null;
+    }
+  }
+
+  return null;
 }
 
 /**
