@@ -46,10 +46,11 @@ const motionMap: Record<"horizontal" | "inline" | "vertical", CSSMotionProps> =
 export type MenuProps = {
   items: ClickableMenu[];
   renderItem: (item: ClickableMenu) => React.ReactNode;
+  mode?: "horizontal" | "vertical" | "inline";
 };
 
 export function Menu(props: MenuProps) {
-  const { items, renderItem } = props;
+  const { items, renderItem, mode = "horizontal" } = props;
 
   function itemToComponent(item: ClickableMenu) {
     const renderedItem = renderItem(item);
@@ -73,7 +74,7 @@ export function Menu(props: MenuProps) {
       }}
     >
       <RCMenu
-        mode="horizontal"
+        mode={mode}
         getPopupContainer={(node) => node.parentNode as HTMLElement}
         defaultMotions={motionMap}
       >

@@ -1,15 +1,18 @@
 import { GitHubIcon, PixivIcon, TwitterIcon } from "@/components/svgs";
 import HomeIcon from "@mui/icons-material/Home";
+import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
   Box,
+  Drawer,
+  IconButton,
   Slide,
   Toolbar,
   useScrollTrigger,
   useTheme,
 } from "@mui/material";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import style from "./DefaultLayout.module.scss";
 import MainWidth from "./MainWidth";
 import { Menu } from "./Menu";
@@ -91,6 +94,16 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
   homeItem,
   iconItems,
 }: DefaultHeaderProps) => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
+
   return (
     <>
       <HideOnScroll>
@@ -132,9 +145,43 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
               </Link>
             </Box>
 
-            {/* menu */}
-            <Box sx={{ display: "flex", flex: 1, flexGrow: 1 }}>
+            {/* menu - desktop */}
+            <Box
+              sx={{
+                display: { xs: "none", md: "flex" },
+                flex: 1,
+                flexGrow: 1,
+              }}
+            >
               <MenuBar items={menuItems} />
+            </Box>
+
+            {/* menu button - mobile */}
+            <Box
+              sx={{
+                display: { xs: "flex", md: "none" },
+                flex: 1,
+                flexGrow: 1,
+              }}
+            >
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                onClick={handleDrawerToggle}
+                sx={{
+                  color: "#d1d5db", // text-gray-300
+                  transitionProperty:
+                    "color, background-color, border-color, text-decoration-color, fill, stroke", // transition-colors
+                  transitionDuration: "0.2s", // duration-200
+                  transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)", // default Tailwind timing
+                  "&:hover": {
+                    color: "#ffffff", // hover:text-white
+                  },
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
             </Box>
 
             {/* icon */}
@@ -146,6 +193,51 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
           </Toolbar>
         </AppBar>
       </HideOnScroll>
+
+      {/* Drawer for mobile menu */}
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={handleDrawerClose}
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile.
+        }}
+        sx={{
+          display: { xs: "block", md: "none" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: 280,
+            backgroundColor: "rgba(17, 24, 39, 0.95)", // bg-gray-900 bg-opacity-95
+            color: "#f1f5f9", // text-slate-100
+          },
+        }}
+      >
+        <Box
+          sx={{
+            padding: "1rem",
+            paddingTop: "4rem", // Add top padding for AppBar
+          }}
+        >
+          <Menu
+            items={menuItems}
+            mode="inline"
+            renderItem={(item) =>
+              item.href ? (
+                <Link
+                  href={item.href}
+                  className={style.textlink}
+                  onClick={handleDrawerClose}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  {item.text}
+                </Link>
+              ) : (
+                <span className={style.textlink}>{item.text}</span>
+              )
+            }
+          />
+        </Box>
+      </Drawer>
     </>
   );
 };
