@@ -1,36 +1,81 @@
+// HomeCategoryList 样式已迁移到 MUI 组件
+// 保留此文件仅用于定义复杂的伪元素和动画效果
+
 .list {
-  @apply overflow-hidden;
+  overflow: hidden;
 }
 
 .hoverAnimation {
-  @apply transition-all duration-300 ease-in-out;
+  transition-property: all;
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .listItem {
-  @apply w-full h-64 bg-center bg-no-repeat bg-cover
-  relative overflow-hidden cursor-pointer;
+  width: 100%;
+  height: 16rem; // h-64
+  background-position: 50%; // bg-center
+  background-repeat: no-repeat; // bg-no-repeat
+  background-size: cover; // bg-cover
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
 
   &:before {
-    @apply -z-10 absolute w-full h-full;
-    @apply hoverAnimation;
+    z-index: -10;
     content: "";
+    width: 100%;
+    height: 100%;
+    transition-property: all;
+    transition-duration: 0.3s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    position: absolute;
   }
 
   & .bg {
-    @apply -z-30 absolute top-0 left-0 block w-full h-full bg-opacity-70 bg-amber-600;
-    @apply flex justify-center items-center;
+    z-index: -30;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(217, 119, 6, 0.7); // bg-amber-600 bg-opacity-70
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   & .title {
-    @apply absolute inline-block z-0 w-full h-full;
-    @apply text-4xl text-center flex items-center justify-center;
+    position: absolute;
+    display: inline-block;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 2.25rem; // text-4xl
+    line-height: 2.5rem; // text-4xl line-height
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   & .charactor {
-    @apply -z-20 absolute top-0 right-0 block;
+    z-index: -20;
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 
   & .border {
-    @apply -z-0 absolute w-full h-full block text-white border-solid border-white;
+    z-index: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: block;
+    color: rgb(255, 255, 255); // text-white
+    border-style: solid;
+    border-color: rgb(255, 255, 255); // border-white
   }
 }

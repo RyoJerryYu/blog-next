@@ -1,4 +1,5 @@
 import useScript from "@/hooks/use-script";
+import { Box } from "@mui/material";
 import { useRef } from "react";
 
 export type CommentsProps = {
@@ -23,17 +24,22 @@ const Comments = (props?: CommentsProps) => {
   });
 
   return (
-    <div className="w-full">
+    <Box sx={{ width: "100%" }}>
       <div ref={comment} />
       {status === "loading" && (
-        <div className="text-center">Loading comments...</div>
+        <Box sx={{ textAlign: "center" }}>Loading comments...</Box>
       )}
       {status === "error" && (
-        <div className="text-center text-red-500">
+        <Box
+          sx={{
+            textAlign: "center", // text-center
+            color: "rgb(239, 68, 68)", // text-red-500
+          }}
+        >
           Error loading comments. Please try again later.
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 

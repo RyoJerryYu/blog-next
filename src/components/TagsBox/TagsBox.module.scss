@@ -1,12 +1,12 @@
-.tagsBox {
-  @apply flex flex-row flex-wrap gap-2;
-}
+// TagsBox 样式已迁移到 MUI Stack 组件
+// 保留此文件仅用于 tag 和 highlightedTag 的 CSS 变量定义
+
 .tag {
-  --tag-text-color: theme("colors.pink.500");
+  --tag-text-color: #ec4899; // pink-500
 }
 
 .highlightedTag {
-  @extend .tag;
+  --tag-text-color: #ec4899; // pink-500
   --tag-bg-opacity: 20%;
   --tag-border-opacity: 80%;
 }

@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+// Tailwind CSS directives removed - all styles migrated to native CSS
 
 @font-face {
   font-family: "FontAwesome";
@@ -23,10 +21,13 @@
     padding-left: 0;
     padding-right: 0;
     list-style: none;
-    @apply border-solid border-slate-400/50 border;
-    @apply shadow-slate-400/50 shadow-md;
-    @apply rounded-md;
-    @apply text-gray-300;
+    border-style: solid; // border-solid
+    border-color: rgba(148, 163, 184, 0.5); // border-slate-400/50
+    border-width: 1px; // border
+    box-shadow: 0 4px 6px -1px rgba(148, 163, 184, 0.5),
+      0 2px 4px -1px rgba(148, 163, 184, 0.5); // shadow-slate-400/50 shadow-md
+    border-radius: 0.375rem; // rounded-md
+    color: rgb(209, 213, 219); // text-gray-300
   }
   .rc-menu-hidden,
   .rc-menu-submenu-hidden {
@@ -47,11 +48,11 @@
     border-bottom: 1px solid #dedede;
   }
   .rc-menu-item-selected {
-    @apply bg-inherit;
+    background-color: inherit; // bg-inherit
     transform: translateZ(0);
   }
   .rc-menu-submenu-selected {
-    @apply bg-inherit;
+    background-color: inherit; // bg-inherit
   }
   .rc-menu > li.rc-menu-submenu {
     padding: 0;
@@ -100,7 +101,7 @@
     padding-right: 20px;
   }
   .rc-menu-submenu > .rc-menu {
-    @apply bg-slate-900/75;
+    background-color: rgba(15, 23, 42, 0.75); // bg-slate-900/75
   }
   .rc-menu .rc-menu-submenu-title .anticon,
   .rc-menu .rc-menu-item .anticon {
@@ -117,14 +118,20 @@
   }
   .rc-menu-horizontal > .rc-menu-item,
   .rc-menu-horizontal > .rc-menu-submenu > .rc-menu-submenu-title {
-    @apply px-4 py-1;
+    padding-left: 1rem; // px-4
+    padding-right: 1rem;
+    padding-top: 0.25rem; // py-1
+    padding-bottom: 0.25rem;
   }
   .rc-menu-horizontal > .rc-menu-submenu,
   .rc-menu-horizontal > .rc-menu-item {
     border-bottom: 2px solid transparent;
     display: inline-block;
     vertical-align: bottom;
-    @apply transition-colors duration-200;
+    transition-property: color, background-color, border-color,
+      text-decoration-color, fill, stroke; // transition-colors
+    transition-duration: 0.2s; // duration-200
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
   .rc-menu-horizontal > .rc-menu-submenu-active,
   .rc-menu-horizontal > .rc-menu-item-active {

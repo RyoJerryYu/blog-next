@@ -18,112 +18,95 @@ import {
   TipsAndUpdatesOutlined,
   WarningAmberOutlined,
 } from "@mui/icons-material";
-import clsx from "clsx";
+import { Box, Typography, useTheme } from "@mui/material";
 import { useState } from "react";
+
+type CalloutColorKey = "sky" | "teal" | "green" | "amber" | "orange" | "red" | "indigo" | "zinc" | "fuchsia" | "violet";
 
 type CalloutTypeFeature = {
   icon: React.ReactNode;
-  bgColor: string;
-  titleColor: string;
+  colorKey: CalloutColorKey;
 };
 
 const defaultCalloutTypeFeature: CalloutTypeFeature = {
   icon: <EditOutlined />,
-  bgColor: "bg-sky-100",
-  titleColor: "text-sky-500",
+  colorKey: "sky",
 };
 
 const calloutTypeFeatures: Record<string, CalloutTypeFeature> = {
   note: {
     icon: <EditOutlined />,
-    bgColor: "bg-sky-100",
-    titleColor: "text-sky-500",
+    colorKey: "sky",
   },
   abstract: {
     icon: <AssignmentOutlined />,
-    bgColor: "bg-teal-100",
-    titleColor: "text-teal-500",
+    colorKey: "teal",
   },
   info: {
     icon: <InfoOutlined />,
-    bgColor: "bg-sky-100",
-    titleColor: "text-sky-500",
+    colorKey: "sky",
   },
   todo: {
     icon: <TaskAltOutlined />,
-    bgColor: "bg-sky-100",
-    titleColor: "text-sky-500",
+    colorKey: "sky",
   },
   tip: {
     icon: <LightbulbOutlined />,
-    bgColor: "bg-teal-100",
-    titleColor: "text-teal-500",
+    colorKey: "teal",
   },
   success: {
     icon: <CheckOutlined />,
-    bgColor: "bg-green-100",
-    titleColor: "text-green-500",
+    colorKey: "green",
   },
   question: {
     icon: <HelpOutlineOutlined />,
-    bgColor: "bg-amber-100",
-    titleColor: "text-amber-500",
+    colorKey: "amber",
   },
   warning: {
     icon: <WarningAmberOutlined />,
-    bgColor: "bg-orange-100",
-    titleColor: "text-orange-500",
+    colorKey: "orange",
   },
   failure: {
     icon: <CloseOutlined />,
-    bgColor: "bg-red-100",
-    titleColor: "text-red-500",
+    colorKey: "red",
   },
   danger: {
     icon: <OfflineBoltOutlined />,
-    bgColor: "bg-red-100",
-    titleColor: "text-red-500",
+    colorKey: "red",
   },
   bug: {
     icon: <BugReportOutlined />,
-    bgColor: "bg-red-100",
-    titleColor: "text-red-500",
+    colorKey: "red",
   },
   example: {
     icon: <ListOutlined />,
-    bgColor: "bg-indigo-100",
-    titleColor: "text-indigo-500",
+    colorKey: "indigo",
   },
   quote: {
     icon: <FormatQuoteOutlined />,
-    bgColor: "bg-zinc-100",
-    titleColor: "text-zinc-500",
+    colorKey: "zinc",
   },
 
   // custom callout types
   reasoning: {
     // for ai conversation llm reasoning
     icon: <PsychologyOutlined />,
-    bgColor: "bg-sky-100",
-    titleColor: "text-sky-500",
+    colorKey: "sky",
   },
   query: {
     // for ai conversation user query
     icon: <HelpOutlineOutlined />,
-    bgColor: "bg-fuchsia-100",
-    titleColor: "text-fuchsia-500",
+    colorKey: "fuchsia",
   },
   ai: {
     // for ai generated content
     icon: <SmartToyOutlined />,
-    bgColor: "bg-indigo-100",
-    titleColor: "text-indigo-500",
+    colorKey: "indigo",
   },
   think: {
     // further thinking by writer
     icon: <TipsAndUpdatesOutlined />,
-    bgColor: "bg-violet-100",
-    titleColor: "text-violet-500",
+    colorKey: "violet",
   },
 };
 
@@ -148,11 +131,12 @@ const calloutTypeAlias: Record<string, keyof typeof calloutTypeFeatures> = {
 // feature between foldable and un-foldable callout
 type FoldableFeature = {
   onClick: () => void;
-  titleClassName: string;
+  cursorPointer: boolean;
   arrowIcon?: React.ReactNode;
 };
 
 export const ObsidianCallout = (props: ObsidianCalloutProps) => {
+  const theme = useTheme();
   // default to collapsed only when foldable and isCollapsed
   const [isCollapsed, setIsCollapsed] = useState(
     props.foldable && props.isCollapsed
@@ -163,16 +147,23 @@ export const ObsidianCallout = (props: ObsidianCalloutProps) => {
   const calloutTypeFeature =
     calloutTypeFeatures[calloutType] || defaultCalloutTypeFeature;
 
+  const calloutColors = theme.palette.callout[calloutTypeFeature.colorKey];
+
   let foldableFeature: FoldableFeature = {
     onClick: () => {},
-    titleClassName: "",
+    cursorPointer: false,
   };
   if (props.foldable) {
     foldableFeature = {
       onClick: () => setIsCollapsed((prev) => !prev),
-      titleClassName: "cursor-pointer",
+      cursorPointer: true,
       arrowIcon: (
-        <KeyboardArrowRight className={clsx(!isCollapsed && "rotate-90")} />
+        <KeyboardArrowRight
+          sx={{
+            transform: isCollapsed ? "rotate(0deg)" : "rotate(90deg)", // rotate-90
+            transition: "transform 0.2s",
+          }}
+        />
       ),
     };
   }
@@ -183,20 +174,33 @@ export const ObsidianCallout = (props: ObsidianCalloutProps) => {
     : props.type.charAt(0).toUpperCase() + props.type.slice(1);
 
   return (
-    <div className={clsx("rounded-md p-2 my-4", calloutTypeFeature.bgColor)}>
-      <div
+    <Box
+      sx={{
+        borderRadius: "0.375rem", // rounded-md
+        padding: "0.5rem", // p-2
+        marginTop: "1rem", // my-4
+        marginBottom: "1rem",
+        backgroundColor: calloutColors.bg, // bgColor from theme
+      }}
+    >
+      <Box
         onClick={foldableFeature.onClick}
-        className={clsx(
-          "text-base font-bold",
-          calloutTypeFeature.titleColor,
-          foldableFeature.titleClassName
-        )}
+        sx={{
+          fontSize: "1rem", // text-base
+          lineHeight: "1.5rem", // text-base line-height
+          fontWeight: 700, // font-bold
+          color: calloutColors.title, // titleColor from theme
+          cursor: foldableFeature.cursorPointer ? "pointer" : "default", // cursor-pointer
+          display: "flex",
+          alignItems: "center",
+          gap: "0.25rem",
+        }}
       >
         {calloutTypeFeature.icon} {title} {foldableFeature.arrowIcon}
-      </div>
+      </Box>
       {props.children && !isCollapsed && (
-        <div className={clsx("m-2")}>{props.children}</div>
+        <Box sx={{ margin: "0.5rem" }}>{props.children}</Box> // m-2
       )}
-    </div>
+    </Box>
   );
 };

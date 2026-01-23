@@ -1,4 +1,5 @@
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
+import { Box } from "@mui/material";
 import TagsBox from "./TagsBox";
 
 export type TagSelectorProps = {
@@ -8,8 +9,8 @@ export type TagSelectorProps = {
 
 export default function TagSelector(props: TagSelectorProps) {
   return (
-    <div className="p-2">
+    <Box sx={{ padding: "0.5rem" }}>
       <TagsBox tags={props.tags} highlightedTagSlug={props.selectedTagSlug} />
-    </div>
+    </Box>
   );
 }

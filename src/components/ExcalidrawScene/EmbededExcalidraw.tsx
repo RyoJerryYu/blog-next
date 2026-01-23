@@ -1,6 +1,7 @@
 import { LoadError } from "@/components/Loading/LoadError";
 import { Loading } from "@/components/Loading/Loading";
 import { ExcalidrawElement } from "@excalidraw/excalidraw/dist/types/excalidraw/element/types";
+import { Box } from "@mui/material";
 import LZString from "lz-string";
 import useSWR from "swr";
 import { ExcalidrawScene } from "./ExcalidrawScene";
@@ -111,7 +112,14 @@ export default function EmbededExcalidraw({
   });
 
   return (
-    <div className="relative h-[600px] my-4">
+    <Box
+      sx={{
+        position: "relative", // relative
+        height: "600px", // h-[600px]
+        marginTop: "1rem", // my-4
+        marginBottom: "1rem",
+      }}
+    >
       {isLoading ? (
         <Loading />
       ) : refData ? (
@@ -119,6 +127,6 @@ export default function EmbededExcalidraw({
       ) : (
         <LoadError />
       )}
-    </div>
+    </Box>
   );
 }

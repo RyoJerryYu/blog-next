@@ -1,6 +1,7 @@
 import { PrevNextInfo } from "@/core/indexing/index-building/prev-next-index-builder/types";
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
 import { PostMeta } from "@/core/types/indexing";
+import { Box, Divider, Stack, Typography, useTheme } from "@mui/material";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import Link from "next/link";
 import License from "../License";
@@ -16,41 +17,69 @@ type PostProps = {
 
 const Post = ({ meta, source, tags, prevNextInfo }: PostProps) => {
   const { prevInfo, nextInfo } = prevNextInfo;
+  const theme = useTheme();
   return (
-    <article className="post-frame">
-      <h1>{meta.title}</h1>
+    <Box component="article" className="post-frame">
+      <Typography variant="h1">{meta.title}</Typography>
       {meta.created_at && (
-        <RelativeTime className="text-sm text-slate-700">
-          {meta.created_at}
-        </RelativeTime>
+        <Box
+          sx={{
+            fontSize: "0.875rem", // text-sm
+            lineHeight: "1.25rem", // text-sm line-height
+            color: theme.palette.fg.main, // text-slate-700
+          }}
+        >
+          <RelativeTime>{meta.created_at}</RelativeTime>
+        </Box>
       )}
-      {meta.tags.length > 0 && <TagsBox className="mt-2" tags={tags} />}
+      {meta.tags.length > 0 && (
+        <Box sx={{ marginTop: "0.5rem" }}>
+          <TagsBox tags={tags} />
+        </Box>
+      )}
 
-      <div className="post-body">
+      <Box className="post-body">
         <MDXRemote {...source} />
-      </div>
+      </Box>
       {meta.license && <License />}
-      {meta.tags.length > 0 && <TagsBox className="mt-4" tags={tags} />}
+      {meta.tags.length > 0 && (
+        <Box sx={{ marginTop: "1rem" }}>
+          <TagsBox tags={tags} />
+        </Box>
+      )}
       {(prevInfo || nextInfo) && (
-        <div className="mt-4 mb-4 flex justify-center">
+        <Stack
+          direction="row"
+          sx={{
+            marginTop: "1rem",
+            marginBottom: "1rem",
+            justifyContent: "center",
+          }}
+        >
           {prevInfo && (
-            <div className="ml-0 mr-auto">
+            <Box sx={{ marginLeft: 0, marginRight: "auto" }}>
               <Link
                 href={prevInfo.pathMapping.pagePath}
-              >{`<- ${prevInfo.meta.title}`}</Link>
-            </div>
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                {`<- ${prevInfo.meta.title}`}
+              </Link>
+            </Box>
           )}
           {nextInfo && (
-            <div className="mr-0 ml-auto">
+            <Box sx={{ marginRight: 0, marginLeft: "auto" }}>
               <Link
                 href={nextInfo.pathMapping.pagePath}
-              >{`${nextInfo.meta.title} ->`}</Link>
-            </div>
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                {`${nextInfo.meta.title} ->`}
+              </Link>
+            </Box>
           )}
-        </div>
+        </Stack>
       )}
-      <hr className="mt-4" />
-    </article>
+      <Divider sx={{ marginTop: "1rem" }} />
+    </Box>
   );
 };
 

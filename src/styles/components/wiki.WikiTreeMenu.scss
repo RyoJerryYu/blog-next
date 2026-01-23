@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+// Tailwind CSS directives removed - all styles migrated to native CSS
 
 @font-face {
   font-family: "FontAwesome";
@@ -20,24 +18,31 @@
 .WikiTreeMenu {
   --boarder-width: 4px;
   --menu-bg: transparent;
-  --sub-menu-bg: rgb(from theme("colors.slate.900") r g b / 5%);
-  --item-color: theme("colors.fg.light");
-  --item-hover-color: theme("colors.sky.300");
-  --link-hover-color: theme("colors.pink.300");
-  --item-selected-color: theme("colors.pink.500");
+  --sub-menu-bg: rgba(15, 23, 42, 0.05); // rgb(from slate.900 r g b / 5%)
+  --item-color: #64748b; // fg.light = slate.500
+  --item-hover-color: #7dd3fc; // sky.300
+  --link-hover-color: #f9a8d4; // pink.300
+  --item-selected-color: #ec4899; // pink.500
   --item-bg: transparent;
-  --item-hover-bg: rgb(from theme("colors.slate.900") r g b / 75%);
-  --item-selected-bg: rgb(from theme("colors.slate.900") r g b / 10%);
+  --item-hover-bg: rgba(15, 23, 42, 0.75); // rgb(from slate.900 r g b / 75%)
+  --item-selected-bg: rgba(15, 23, 42, 0.1); // rgb(from slate.900 r g b / 10%)
   --item-border: transparent;
-  --item-hover-border: rgb(from theme("colors.sky.500") r g b / 70%);
-  --item-selected-border: rgb(from theme("colors.pink.500") r g b / 70%);
+  --item-hover-border: rgba(14, 165, 233, 0.7); // rgb(from sky.500 r g b / 70%)
+  --item-selected-border: rgba(
+    236,
+    72,
+    153,
+    0.7
+  ); // rgb(from pink.500 r g b / 70%)
   .rc-menu {
     outline: none;
     margin-bottom: 0;
     padding-left: 0;
     padding-right: 0;
     list-style: none;
-    @apply border-solid border-slate-400/10 border-r;
+    border-style: solid; // border-solid
+    border-color: rgba(148, 163, 184, 0.1); // border-slate-400/10
+    border-right-width: 1px; // border-r
     color: var(--item-color);
     background-color: var(--menu-bg);
   }
@@ -64,11 +69,14 @@
     color: var(--item-color);
     background-color: var(--item-bg);
     border-right: var(--boarder-width) solid var(--item-border);
-    @apply transition duration-300 ease-in-out;
+    transition-property: all; // transition
+    transition-duration: 0.3s; // duration-300
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); // ease-in-out
 
     > a {
       transition-property: color;
-      @apply duration-75 ease-in-out;
+      transition-duration: 75ms; // duration-75
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); // ease-in-out
       &:hover {
         color: var(--link-hover-color);
       }
