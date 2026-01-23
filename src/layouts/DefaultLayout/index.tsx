@@ -1,5 +1,4 @@
 import { GitHubIcon, PixivIcon, TwitterIcon } from "@/components/svgs";
-import HomeIcon from "@mui/icons-material/Home";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
@@ -119,30 +118,6 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
               }}
             >
               <TextLink {...homeItem} />
-            </Box>
-            <Box
-              sx={{
-                display: { xs: "flex", md: "none" },
-                marginLeft: "0.5rem", // ml-2
-                marginRight: "0.5rem", // mr-2
-              }}
-            >
-              <Link href={homeItem.href} title={homeItem.text}>
-                <HomeIcon
-                  sx={{
-                    width: "1.5rem", // h-6 w-6
-                    height: "1.5rem",
-                    color: "#d1d5db", // text-gray-300
-                    transitionProperty:
-                      "color, background-color, border-color, text-decoration-color, fill, stroke", // transition-colors
-                    transitionDuration: "0.2s", // duration-200
-                    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)", // default Tailwind timing
-                    "&:hover": {
-                      color: "#ffffff", // hover:text-white
-                    },
-                  }}
-                />
-              </Link>
             </Box>
 
             {/* menu - desktop */}
