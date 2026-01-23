@@ -22,6 +22,7 @@ const PostAbstract: React.FC<PostAbstractProps> = ({ children }) => {
             sx={{
               py: 0.5, // py-1 = 0.25rem = 0.5 * theme.spacing(1)
               lineHeight: 1.375, // leading-snug
+              overflow: "hidden",
             }}
           >
             {line}
