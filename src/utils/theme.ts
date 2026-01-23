@@ -68,6 +68,9 @@ export const codeblockSecondary = {
   50: "#fff9e0",
 };
 
+// ============================================================================
+// MUI Theme 类型扩展
+// ============================================================================
 declare module "@mui/material/styles" {
   interface Palette {
     header: {
@@ -118,31 +121,29 @@ declare module "@mui/material/styles" {
       main: string;
       focus: string;
     };
-    cssVars: {
-      hover: string;
-      line: string;
-      link: string;
-      yellow500: string;
-      pink500: string;
-      fgMain: string;
-      bgDefault: string;
-      fontFamily: string;
-      fgLight: string;
-      bgFocus2: string;
-      codeinlineBg: string;
-      codeinlineText: string;
-      codeblockTitlebg: string;
-      codeblockTitletext: string;
-      codeblockBg: string;
-      codeblockText: string;
-      codeblockHighlightedbg: string;
-      codeblockColoredA: string;
-      codeblockColoredB: string;
-      codeblockColoredC: string;
-      codeblockColoredD: string;
-      codeblockColoredE: string;
-      codeblockColoredF: string;
-    };
+    // 自定义 CSS 变量（通过 colorSchemes 定义，MUI 会自动生成 CSS 变量）
+    hover: string;
+    line: string;
+    link: string;
+    yellow500: string;
+    pink500: string;
+    fgMain: string;
+    bgDefault: string;
+    fgLight: string;
+    bgFocus2: string;
+    codeinlineBg: string;
+    codeinlineText: string;
+    codeblockTitlebg: string;
+    codeblockTitletext: string;
+    codeblockBg: string;
+    codeblockText: string;
+    codeblockHighlightedbg: string;
+    codeblockColoredA: string;
+    codeblockColoredB: string;
+    codeblockColoredC: string;
+    codeblockColoredD: string;
+    codeblockColoredE: string;
+    codeblockColoredF: string;
   }
   interface PaletteOptions {
     header: {
@@ -193,35 +194,72 @@ declare module "@mui/material/styles" {
       main: string;
       focus: string;
     };
-    cssVars: {
-      hover: string;
-      line: string;
-      link: string;
-      yellow500: string;
-      pink500: string;
-      fgMain: string;
-      bgDefault: string;
-      fontFamily: string;
-      fgLight: string;
-      bgFocus2: string;
-      codeinlineBg: string;
-      codeinlineText: string;
-      codeblockTitlebg: string;
-      codeblockTitletext: string;
-      codeblockBg: string;
-      codeblockText: string;
-      codeblockHighlightedbg: string;
-      codeblockColoredA: string;
-      codeblockColoredB: string;
-      codeblockColoredC: string;
-      codeblockColoredD: string;
-      codeblockColoredE: string;
-      codeblockColoredF: string;
-    };
+    // 自定义 CSS 变量（通过 colorSchemes 定义，MUI 会自动生成 CSS 变量）
+    hover: string;
+    line: string;
+    link: string;
+    yellow500: string;
+    pink500: string;
+    fgMain: string;
+    bgDefault: string;
+    fgLight: string;
+    bgFocus2: string;
+    codeinlineBg: string;
+    codeinlineText: string;
+    codeblockTitlebg: string;
+    codeblockTitletext: string;
+    codeblockBg: string;
+    codeblockText: string;
+    codeblockHighlightedbg: string;
+    codeblockColoredA: string;
+    codeblockColoredB: string;
+    codeblockColoredC: string;
+    codeblockColoredD: string;
+    codeblockColoredE: string;
+    codeblockColoredF: string;
   }
 }
 
+// ============================================================================
+// 字体族定义（单一数据源）
+// ============================================================================
+export const fontFamily = [
+  "ui-sans-serif",
+  "system-ui",
+  "-apple-system",
+  "BlinkMacSystemFont",
+  "Segoe UI",
+  "Roboto",
+  "Helvetica Neue",
+  "Arial",
+  "Noto Sans",
+  "sans-serif",
+  '"Apple Color Emoji"',
+  '"Segoe UI Emoji"',
+  '"Segoe UI Symbol"',
+  '"Noto Color Emoji"',
+].join(", ");
+
+// ============================================================================
+// MUI Theme 配置
+// ============================================================================
+/**
+ * 启用 MUI 的 CSS 变量功能
+ * 这将自动生成 CSS 变量到 :root，无需手动注入
+ * 参考: https://mui.com/material-ui/customization/css-theme-variables/usage/
+ *
+ * ⚠️ 重要提示：修改自定义 CSS 变量时的注意事项
+ *
+ * 1. 自定义 CSS 变量（如 hover, line, link 等）会被 MUI 自动生成，格式为 --mui-palette-xxx
+ * 2. 这些变量在 globals.scss 中被映射为原有的变量名（如 --hover, --line 等）以保持向后兼容
+ * 3. 如果添加新的自定义变量，需要：
+ *    - 在下面的 palette 中添加变量定义
+ *    - 在 Palette 和 PaletteOptions 接口中添加类型定义
+ *    - 在 globals.scss 中添加映射：--your-var-name: var(--mui-palette-yourVarName);
+ * 4. 如果删除或重命名变量，需要同时更新 globals.scss 中的映射
+ */
 export const muiTheme = createTheme({
+  cssVariables: true, // 启用 CSS 变量功能
   palette: {
     mode: "light",
     primary: {
@@ -284,50 +322,40 @@ export const muiTheme = createTheme({
       main: slate400, // border.DEFAULT
       focus: slate500, // border.focus
     },
-    cssVars: {
-      hover: "#edebef", // --hover
-      line: "#8a829955", // --line (with alpha)
-      link: pink500, // --link
-      yellow500: yellow500, // --yellow-500 (for highlight-word)
-      pink500: pink500, // --pink-500 (for tag-word)
-      fgMain: slate700, // --fg-main (for body text)
-      bgDefault: slate50, // --bg-default (for body background)
-      fontFamily: [
-        "ui-sans-serif",
-        "system-ui",
-        "sans-serif",
-        '"Apple Color Emoji"',
-        '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"',
-        '"Noto Color Emoji"',
-      ].join(","), // --font-family
-      fgLight: slate500, // --fg-light (for blockquote, etc.)
-      bgFocus2: slate200, // --bg-focus2 (for blockquote, etc.)
-      codeinlineBg: slate400, // --codeinline-bg
-      codeinlineText: slate700, // --codeinline-text
-      codeblockTitlebg: alpha(slate900, 0.9), // --codeblock-titlebg (#0f172ae6)
-      codeblockTitletext: slate100, // --codeblock-titletext (rgb(241 245 249))
-      codeblockBg: alpha(slate900, 0.85), // --codeblock-bg (#0f172ad9)
-      codeblockText: slate200, // --codeblock-text (rgb(226 232 240))
-      codeblockHighlightedbg: slate500, // --codeblock-highlightedbg
-      codeblockColoredA: emerald500, // --codeblock-colored-a
-      codeblockColoredB: indigo500, // --codeblock-colored-b
-      codeblockColoredC: orange500, // --codeblock-colored-c
-      codeblockColoredD: sky500, // --codeblock-colored-d
-      codeblockColoredE: fuchsia500, // --codeblock-colored-e
-      codeblockColoredF: lime500, // --codeblock-colored-f
-    },
+    // ============================================================================
+    // 自定义 CSS 变量
+    // ============================================================================
+    // ⚠️ 注意：这些变量会被 MUI 自动生成 CSS 变量（格式：--mui-palette-xxx）
+    // 如需修改、添加或删除变量，请同时更新：
+    // 1. 此处的变量定义
+    // 2. Palette 和 PaletteOptions 接口中的类型定义（上方）
+    // 3. globals.scss 中的变量映射（保持向后兼容）
+    hover: "#edebef",
+    line: "#8a829955",
+    link: pink500,
+    yellow500: yellow500,
+    pink500: pink500,
+    fgMain: slate700,
+    bgDefault: slate50,
+    fgLight: slate500,
+    bgFocus2: slate200,
+    codeinlineBg: slate400,
+    codeinlineText: slate700,
+    codeblockTitlebg: alpha(slate900, 0.9),
+    codeblockTitletext: slate100,
+    codeblockBg: alpha(slate900, 0.85),
+    codeblockText: slate200,
+    codeblockHighlightedbg: slate500,
+    codeblockColoredA: emerald500,
+    codeblockColoredB: indigo500,
+    codeblockColoredC: orange500,
+    codeblockColoredD: sky500,
+    codeblockColoredE: fuchsia500,
+    codeblockColoredF: lime500,
   },
   typography: {
-    fontFamily: [
-      "ui-sans-serif",
-      "system-ui",
-      "sans-serif",
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-      '"Noto Color Emoji"',
-    ].join(","),
+    fontFamily,
+    // 标题样式（统一配置，避免重复）
     h1: {
       fontSize: "2.25rem", // text-4xl
       fontWeight: 700,

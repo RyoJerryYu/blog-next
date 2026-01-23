@@ -1,34 +1,41 @@
 // Tailwind CSS directives removed - all styles migrated to MUI or native CSS
 // Tailwind CSS preflight styles integrated below
 
-// CSS 变量定义必须在最前面，供后续样式使用
+// ============================================================================
+// CSS 变量映射（向后兼容）
+// ============================================================================
+// 注意：CSS 变量由 MUI theme 通过 cssVariables: true 自动生成到 :root
+// MUI 生成的变量格式为 --mui-palette-xxx（例如 --mui-palette-hover）
+// 主要数据源在 src/utils/theme.ts 的 palette 中定义（自定义变量如 hover, line, link 等）
+// 如需修改 CSS 变量值，只需修改 theme.ts 中的 palette，MUI 会自动生成对应的 CSS 变量
+//
+// 以下映射是为了保持向后兼容，将原有的变量名（--hover, --line 等）映射到 MUI 生成的变量
+// 这样现有的 CSS 代码无需修改，仍可使用原有的变量名
 :root {
-  /* CSS 变量现在由 MUI theme 通过 ThemeCSSVars 组件注入 */
-  /* 这些值作为 fallback，实际值在运行时由 theme.palette.cssVars 提供 */
-  --hover: #edebef;
-  --line: #8a829955;
-  --link: #ec4899;
-  --yellow-500: #eab308;
-  --pink-500: #ec4899;
-  --fg-main: #334155;
-  --bg-default: #f8fafc;
-  --font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif;
-  --fg-light: #64748b;
-  --bg-focus2: #e2e8f0;
-  --codeinline-bg: #94a3b8;
-  --codeinline-text: #334155;
-  --codeblock-titlebg: #0f172a;
-  --codeblock-titletext: #f1f5f9;
-  --codeblock-bg: rgba(48, 55, 76, 0.85);
-  --codeblock-text: rgba(138, 144, 169, 0.9);
-  --codeblock-highlightedbg: #64748b;
-  --codeblock-colored-a: #10b981;
-  --codeblock-colored-b: #6366f1;
-  --codeblock-colored-c: #f97316;
-  --codeblock-colored-d: #0ea5e9;
-  --codeblock-colored-e: #d946ef;
-  --codeblock-colored-f: #84cc16;
+  // 向后兼容：原有的变量名映射到 MUI 生成的变量
+  --hover: var(--mui-palette-hover);
+  --line: var(--mui-palette-line);
+  --link: var(--mui-palette-link);
+  --yellow-500: var(--mui-palette-yellow500);
+  --pink-500: var(--mui-palette-pink500);
+  --fg-main: var(--mui-palette-fgMain);
+  --bg-default: var(--mui-palette-bgDefault);
+  --font-family: var(--mui-typography-fontFamily);
+  --fg-light: var(--mui-palette-fgLight);
+  --bg-focus2: var(--mui-palette-bgFocus2);
+  --codeinline-bg: var(--mui-palette-codeinlineBg);
+  --codeinline-text: var(--mui-palette-codeinlineText);
+  --codeblock-titlebg: var(--mui-palette-codeblockTitlebg);
+  --codeblock-titletext: var(--mui-palette-codeblockTitletext);
+  --codeblock-bg: var(--mui-palette-codeblockBg);
+  --codeblock-text: var(--mui-palette-codeblockText);
+  --codeblock-highlightedbg: var(--mui-palette-codeblockHighlightedbg);
+  --codeblock-colored-a: var(--mui-palette-codeblockColoredA);
+  --codeblock-colored-b: var(--mui-palette-codeblockColoredB);
+  --codeblock-colored-c: var(--mui-palette-codeblockColoredC);
+  --codeblock-colored-d: var(--mui-palette-codeblockColoredD);
+  --codeblock-colored-e: var(--mui-palette-codeblockColoredE);
+  --codeblock-colored-f: var(--mui-palette-codeblockColoredF);
 }
 
 /*

@@ -1,4 +1,3 @@
-import ThemeCSSVars from "@/components/ThemeCSSVars";
 import { GlobalScriptProvider } from "@/hooks/use-global-Script";
 import UniversalHead from "@/layouts/UniversalHead";
 import "@/styles/DefaultLayout.Menu.scss";
@@ -28,7 +27,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <GlobalScriptProvider>
         <ThemeProvider theme={muiTheme}>
           <CssBaseline />
-          <ThemeCSSVars />
+          {/* ThemeCSSVars 组件已移除，MUI 的 cssVariables: true 会自动处理 CSS 变量 */}
           <Component {...pageProps} />
         </ThemeProvider>
       </GlobalScriptProvider>
