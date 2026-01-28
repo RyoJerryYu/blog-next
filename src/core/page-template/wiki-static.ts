@@ -54,10 +54,11 @@ export const wikiGetStaticProps = async (
 
   const meta = await getPostMetaOrReload(pagePath);
   const tags = getTagIndex().getTagsOf(meta.tags);
+  const filePath = getResource<WikiPathMapping, PostMeta>(pagePath).pathMapping
+    .filePath;
   const { source } = await parseMdx(meta.content, {
     pagePath: pagePath,
-    filePath: getResource<WikiPathMapping, PostMeta>(pagePath).pathMapping
-      .filePath,
+    filePath: filePath,
   });
   const backRefPagePaths = getBackrefIndex().resolve(pagePath);
   const backRefResources = backRefPagePaths.map((pagePath) => {
