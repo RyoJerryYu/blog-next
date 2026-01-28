@@ -27,7 +27,8 @@ export class MDXMetaCollector
     }
     const { capturedResult } = await parseMdx(raw, {
       isMetaPhase: true,
-      pagePath: pathMapping.filePath,
+      pagePath: pathMapping.pagePath,
+      filePath: pathMapping.filePath,
     });
 
     if (prevMeta.tags) {

@@ -12,6 +12,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkUnwrapImages from "remark-unwrap-images";
 import { createHighlighter } from "shiki";
+import { VFile } from "vfile";
 import { CapturedResult, ParseMdxProps } from "../types/rendering";
 import {
   remarkCodeBlockEscape,
@@ -157,7 +158,9 @@ export const parseMdx = async (
 }> => {
   const { defaultMdxOptions: mdxOptions, capturedResult } =
     genMdxOptions(props);
-  const source = await serialize(content, {
+  // Pass a VFile with `.path` so downstream plugins can resolve relative refs.
+  const vfile = new VFile({ value: content, path: props.filePath });
+  const source = await serialize(vfile, {
     mdxOptions: mdxOptions,
   });
   return { source, capturedResult };

@@ -1,6 +1,6 @@
 ---
-created_at: 2025-03-06 23:50:00+08:00
-updated_at: 2025-03-06 23:50:00+08:00
+created_at: 2025-03-06T23:50:00
+updated_at: 2026-01-28T11:41:16
 title: PyTorch 自动微分与反向传播机制原理解析
 license: true
 tags:
