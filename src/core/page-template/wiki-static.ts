@@ -15,7 +15,7 @@ import { WikiPageProps } from "./wiki-type";
 export const wikiGetStaticPaths = async (resourceType: string) => {
   const testwikiMap = getResourceMap<WikiPathMapping, PostMeta>(
     mustGetCache().resourcePool,
-    resourceType
+    resourceType,
   );
   const pagePaths = testwikiMap.listPagePaths();
   const wikiTreeIndex = getWikiTreeIndex();
@@ -32,14 +32,14 @@ export const wikiGetStaticPaths = async (resourceType: string) => {
 export const wikiGetStaticProps = async (
   resourceType: string,
   slugs: string[],
-  pathMapper: WikiPathMapper
+  pathMapper: WikiPathMapper,
 ): Promise<{ props: WikiPageProps }> => {
   const pagePath = pathMapper.slugsToPagePath(slugs);
   const wikiTreeIndex = getWikiTreeIndex();
   const wikiTree = wikiTreeIndex.pagePathToWikiTree(resourceType, pagePath);
   const treeNodeTOC = wikiTreeIndex.pagePathToTreeNodeTOC(
     resourceType,
-    pagePath
+    pagePath,
   );
   if (treeNodeTOC.isVirtual) {
     return {
@@ -56,6 +56,8 @@ export const wikiGetStaticProps = async (
   const tags = getTagIndex().getTagsOf(meta.tags);
   const { source } = await parseMdx(meta.content, {
     pagePath: pagePath,
+    filePath: getResource<WikiPathMapping, PostMeta>(pagePath).pathMapping
+      .filePath,
   });
   const backRefPagePaths = getBackrefIndex().resolve(pagePath);
   const backRefResources = backRefPagePaths.map((pagePath) => {

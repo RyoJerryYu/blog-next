@@ -21,7 +21,7 @@ export const postGetStaticPaths = async (resourceType: string) => {
   console.log(`onGetStaticPaths: ${resourceType}`);
   const pageMap = getResourceMap<PagePathMapping, PostMeta>(
     mustGetCache().resourcePool,
-    resourceType
+    resourceType,
   );
   const pagePaths = pageMap.listPagePaths();
   return {
@@ -34,14 +34,16 @@ export async function postGetStaticProps(
   resourceType: string,
   pathMapper: PostPathMapper,
   slug: string,
-  hyperProps: PostPageHyperProps
+  hyperProps: PostPageHyperProps,
 ): Promise<{ props: PostPageProps }> {
   console.log(`onGetStaticProps: ${slug}`);
   const pagePath = pathMapper.slugToPagePath(slug);
+  const filePath = getResource<PagePathMapping, PostMeta>(pagePath).pathMapping
+    .filePath;
   const meta = await getPostMetaOrReload(pagePath);
   const prevNextInfo = getPrevNextIndex().pagePathToPrevNextInfo(
     mustGetResourceType(pagePath),
-    pagePath
+    pagePath,
   );
   const backRefPagePaths = getBackrefIndex().resolve(pagePath);
   const backRefResources = backRefPagePaths.map((pagePath) => {
@@ -52,6 +54,7 @@ export async function postGetStaticProps(
 
   const { source } = await parseMdx(meta.content, {
     pagePath: pagePath,
+    filePath: filePath,
   });
 
   const props: PostPageProps = {
@@ -68,12 +71,12 @@ export async function postGetStaticProps(
 }
 
 export async function postIndexGetStaticProps(
-  resourceType: string
+  resourceType: string,
 ): Promise<{ props: PostIndexPageProps }> {
   console.log(`onGetStaticProps: ${resourceType}`);
   const pageMap = getResourceMap<PagePathMapping, PostMeta>(
     mustGetCache().resourcePool,
-    resourceType
+    resourceType,
   );
   console.log(`all page paths for ${resourceType}:`, pageMap.listPagePaths());
 
