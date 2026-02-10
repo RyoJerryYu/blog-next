@@ -25,7 +25,7 @@
     "@mui/base": "5.0.0-beta.70",
     "@mui/icons-material": "^7.3.7",
     "@mui/material": "^7.3.7",
-    "antd": "^6.2.3",
+    "antd": "^6.3.0",
     "async-mutex": "^0.5.0",
     "chart.js": "^4.5.1",
     "clsx": "^2.1.1",
