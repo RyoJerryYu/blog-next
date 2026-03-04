@@ -31,7 +31,7 @@ yisy = line(
 largeFont = <<fontSize:18>>;
 deltaP = point(ppx,ppy)<<name:'$\\Delta y$', label:largeFont>>;
 dyP = intersection(xisdx, tanL) <<name:'$dy$', label:largeFont>>;
-dxP = point(ppx, P.Y())<<withLabel:false>>;
+dxP = point(ppx, function(){return P.Y();})<<withLabel:false>>;
 
 dxL = segment(dxP, P)<<name:'$dx = \\Delta x$', withLabel: true, label: largeFont>>;
 delyL = segment(dxP, deltaP)<<color: 'blue'>>;
