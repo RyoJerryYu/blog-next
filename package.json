@@ -62,7 +62,7 @@
     "remark-unwrap-images": "^4.0.0",
     "sass": "^1.97.3",
     "shiki": "^3.22.0",
-    "svgo": "^4.0.0",
+    "svgo": "^4.0.1",
     "swr": "^2.4.0",
     "unified": "^11.0.5",
     "unist-util-visit": "5.0.0",
