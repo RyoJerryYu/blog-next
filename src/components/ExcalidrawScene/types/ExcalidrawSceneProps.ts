@@ -1,4 +1,4 @@
-import { ExcalidrawElement } from "@excalidraw/excalidraw/dist/types/excalidraw/element/types";
+import type { ExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 export type ExcalidrawSceneProps = {
   elements: ExcalidrawElement[];
 };

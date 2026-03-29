@@ -1,6 +1,6 @@
 "use client";
 import { Excalidraw, MainMenu } from "@excalidraw/excalidraw";
-import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/dist/types/excalidraw/types";
+import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
 import { Refresh } from "@mui/icons-material";
 import { Box } from "@mui/material";

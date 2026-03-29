@@ -1,6 +1,6 @@
 import { LoadError } from "@/components/Loading/LoadError";
 import { Loading } from "@/components/Loading/Loading";
-import { ExcalidrawElement } from "@excalidraw/excalidraw/dist/types/excalidraw/element/types";
+import type { ExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import { Box } from "@mui/material";
 import LZString from "lz-string";
 import useSWR from "swr";

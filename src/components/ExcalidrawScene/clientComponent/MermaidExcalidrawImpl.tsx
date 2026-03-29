@@ -2,8 +2,8 @@
 import { Loading } from "@/components/Loading/Loading";
 import { useMutex } from "@/hooks/use-mutex";
 import { convertToExcalidrawElements } from "@excalidraw/excalidraw";
-import { ExcalidrawElementSkeleton } from "@excalidraw/excalidraw/dist/types/excalidraw/data/transform";
-import { ExcalidrawElement } from "@excalidraw/excalidraw/dist/types/excalidraw/element/types";
+import type { ExcalidrawElementSkeleton } from "@excalidraw/excalidraw/data/transform";
+import type { ExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import { parseMermaidToExcalidraw } from "@excalidraw/mermaid-to-excalidraw";
 import { useEffect, useState } from "react";
 import { MermaidCodeBlockProps } from "../types/MermaidExcalidrawProps";
