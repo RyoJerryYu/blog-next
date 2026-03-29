@@ -16,7 +16,7 @@ export const CodeBlockImpl = (props: CodeBlockProps) => {
       <ShikiHighlighter
         language={props.language || "plaintext"}
         theme="plastic"
-        customLanguages={langs}
+        preloadLanguages={langs}
         langAlias={langAlias}
         addDefaultStyles
       >
