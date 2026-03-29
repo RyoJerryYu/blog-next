@@ -151,7 +151,7 @@ const genMdxOptions = (props: ParseMdxProps) => {
 
 export const parseMdx = async (
   content: string,
-  props: ParseMdxProps
+  props: ParseMdxProps,
 ): Promise<{
   source: MDXRemoteSerializeResult;
   capturedResult: CapturedResult;
@@ -162,6 +162,7 @@ export const parseMdx = async (
   const vfile = new VFile({ value: content, path: props.filePath });
   const source = await serialize(vfile, {
     mdxOptions: mdxOptions,
+    blockJS: false,
   });
   return { source, capturedResult };
 };
