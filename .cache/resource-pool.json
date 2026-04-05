@@ -1416,6 +1416,20 @@
     },
     {
       "pathMapping": {
+        "filePath": "public/content/learn_from_ai/2026-03-28-Kubernetes Pod 生命周期深度调研报告（完整版）.md",
+        "pagePath": "/content/learn_from_ai/2026-03-28-Kubernetes Pod 生命周期深度调研报告（完整版）.md"
+      },
+      "meta": {}
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/learn_from_ai/2026-04-05-K8s 流量调度与 Ready.md",
+        "pagePath": "/content/learn_from_ai/2026-04-05-K8s 流量调度与 Ready.md"
+      },
+      "meta": {}
+    },
+    {
+      "pathMapping": {
         "filePath": "public/content/jessiecode-wiki/04-Cool Showcase/01-立方体投影.md",
         "pagePath": "/content/jessiecode-wiki/04-Cool Showcase/01-立方体投影.md"
       },
@@ -15120,6 +15134,522 @@
             "title": "7. 总结",
             "children": [],
             "id": "7-总结"
+          }
+        ],
+        "wikiRefAliases": [],
+        "richRefAliases": []
+      }
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/learn_from_ai/2026-03-28-Kubernetes Pod 生命周期深度调研报告（完整版）.md",
+        "pagePath": "/learn_from_ai/Kubernetes Pod 生命周期深度调研报告（完整版）",
+        "slug": "Kubernetes Pod 生命周期深度调研报告（完整版）"
+      },
+      "meta": {
+        "content": "**调研日期：** 2026-03-28  \n**主题：** Kubernetes Pod 生命周期、探针机制与调度原理  \n**来源：** Kubernetes 官方文档 v1.35  \n**版本：** v2.0（含深入讨论补充）\n\n---\n\n## 📌 TL;DR\n\nKubernetes Pod 遵循明确定义的生命周期：从 `Pending` 开始，经过 `Running`，最终进入 `Succeeded` 或 `Failed` 终止状态。Pod 的健康状况由三种探针（Liveness、Readiness、Startup）监控，调度器通过多阶段过滤和评分机制将 Pod 分配到最优节点。\n\n**核心洞察：**\n- **Pod Phase、Container State、ready 状态** 是三个独立但相关的概念\n- **控制器决策依据是 ready 状态，而不是 Pod Phase**\n- **探针成功/失败都会影响 ready 状态，但不一定影响 Phase**\n- **Deployment 无序并行更新，StatefulSet 有序串行更新**\n\n---\n\n## 1. Pod 生命周期概览\n\n### 1.1 三个核心概念的关系\n\n```\nPending → Running → Succeeded/Failed\n   ↑         ↑\n   └─────────┘ (容器重启)\n```\n\n```\n┌─────────────────────────────────────────────────────────┐\n│  Pod 生命周期 (Pod Lifecycle)                            │\n│  → 抽象概念：Pod 从创建到删除的完整过程                  │\n│  → 不是 API 字段，帮助理解                              │\n└─────────────────────────────────────────────────────────┘\n                    ↓\n┌─────────────────────────────────────────────────────────┐\n│  Pod Phase (5 种)                                        │\n│  → Pod 整体的状态摘要                                    │\n│  → 一个 Pod 只有一个 Phase                               │\n│  → API 正式字段：.status.phase                          │\n└─────────────────────────────────────────────────────────┘\n                    ↓\n┌─────────────────────────────────────────────────────────┐\n│  Container State (3 种)                                  │\n│  → 每个容器的状态                                        │\n│  → 一个 Pod 可以有 N 个容器，N 个 State                   │\n│  → API 字段：.status.containerStatuses                  │\n└─────────────────────────────────────────────────────────┘\n```\n\n### 1.2 Pod 的五种相位（Phase）\n\n| 相位 | 描述 | 触发条件 |\n|------|------|----------|\n| **Pending** | Pod 已被集群接受，但容器尚未就绪 | 等待调度、镜像下载中 |\n| **Running** | Pod 已绑定节点，至少一个容器正在运行 | 所有容器已创建 |\n| **Succeeded** | 所有容器成功终止，不再重启 | 任务完成型工作负载 |\n| **Failed** | 所有容器终止，至少一个失败退出 | 非零退出码或被系统终止 |\n| **Unknown** | Pod 状态无法获取 | 节点通信故障 |\n\n> ⚠️ **注意：** `CrashLoopBackOff` 和 `Terminating` 是 kubectl 显示的状态提示，不是 Pod 的正式 Phase。\n\n### 1.3 容器的三种状态\n\n| 状态 | 含义 | 常见原因 |\n|------|------|----------|\n| **Waiting** | 容器尚未开始执行 | 拉取镜像、应用 Secret 数据 |\n| **Running** | 容器正常执行中 | postStart hook 已完成 |\n| **Terminated** | 容器执行完毕或失败 | 包含退出码、起止时间 |\n\n### 1.4 ready 状态（关键！）\n\n```yaml\nstatus:\n  containerStatuses:\n  - name: app\n    ready: true  # ⭐ 控制器决策的核心依据\n```\n\n| 概念                  | 作用         | 数量      | 控制器是否使用      |\n| ------------------- | ---------- | ------- | ------------ |\n| **Pod Phase**       | Pod 整体状态摘要 | 1 个/Pod | ❌ 不直接用于决策    |\n| **Container State** | 每个容器的状态    | N 个/Pod | ❌ 不直接用于决策    |\n| **ready**           | 容器是否可接收流量  | N 个/Pod | ✅ **核心决策依据** |\n\n\n> 🎯 **核心结论：** 控制器（Deployment/StatefulSet）的滚动更新决策基于 **ready 状态**，而不是 Pod Phase！\n\n---\n\n## 2. 容器重启策略（restartPolicy）\n\n### 2.1 Pod 级别重启策略\n\n```yaml\nspec:\n  restartPolicy: Always|OnFailure|Never  # 默认：Always\n```\n\n| 退出码 | Always | OnFailure | Never | Sidecar 容器 |\n|--------|--------|-----------|-------|-------------|\n| 0 (成功) | 重启 | 不重启 | 不重启 | 总是重启 |\n| 非零 (失败) | 重启 | 重启 | 不重启 | 总是重启 |\n\n### 2.2 作用范围\n\n| 版本 | 作用范围 | 配置位置 |\n|------|---------|---------|\n| **Kubernetes <1.35** | Pod 级别 | `spec.restartPolicy` |\n| **Kubernetes ≥1.35** | Pod 级别 + 容器级别覆盖 | `spec.containers[].restartPolicy` |\n\n```yaml\n# v1.35+ 容器级别覆盖示例\nspec:\n  restartPolicy: OnFailure  # 默认策略\n  containers:\n  - name: main\n    restartPolicy: Always   # 覆盖：这个容器总是重启\n  - name: init-once\n    restartPolicy: Never    # 覆盖：这个容器从不重启\n```\n\n### 2.3 与 Pod Phase 的关系\n\n```\nrestartPolicy 决定容器终止后是否重启\n    ↓\n容器重启 → Pod 保持 Running\n容器不重启 → Pod 进入 Succeeded/Failed\n    ↓\n间接影响 Pod Phase\n```\n\n### 2.4 典型应用场景\n\n| 工作负载类型 | 推荐策略 | 说明 |\n|-------------|---------|------|\n| **Deployments** | `Always` | 保持应用持续运行 |\n| **Jobs** | `OnFailure` 或 `Never` | 批处理任务 |\n| **Sidecar 容器** | `Always` (容器级) | 独立于 Pod 策略 |\n\n### 2.5 指数退避重启机制\n\n```\n第 1 次重启：10s 延迟\n第 2 次重启：20s 延迟\n第 3 次重启：40s 延迟\n...\n最大延迟：300s (5 分钟)\n```\n\n**退避重置：** 容器正常运行 10 分钟后，退避计时器重置。\n\n### 2.6 CrashLoopBackOff 排查流程\n\n```bash\n# 1. 查看日志\nkubectl logs <pod-name>\n\n# 2. 检查事件\nkubectl describe pod <pod-name>\n\n# 3. 审查配置（环境变量、挂载卷）\n# 4. 检查资源限制\n# 5. 本地调试容器镜像\n```\n\n---\n\n## 3. 健康检查探针（Probes）\n\n### 3.1 三种探针类型对比\n\n| 探针类型 | 作用 | 失败后果 | 成功后果 | 默认状态 |\n|---------|------|---------|---------|---------|\n| **livenessProbe** | 判断容器是否存活 | 杀死容器 | 容器继续运行 | Success |\n| **readinessProbe** | 判断容器是否就绪 | 移除流量 | **ready=true，接收流量** | Failure (初始) |\n| **startupProbe** | 判断应用是否已启动 | 杀死容器 | **启用其他探针** | Success |\n\n### 3.2 探针与 Phase/State/ready 的关系\n\n| 探针 | 成功影响 | 失败影响 | 影响 State? | 影响 Phase? | 影响 ready? |\n|------|---------|---------|-----------|-----------|------------|\n| **livenessProbe** | 无变化 | 杀死容器 → restartPolicy 判断 | ✅ 间接 | ✅ 间接 | ✅ 间接 |\n| **readinessProbe** | **ready=true** | **ready=false**，移除流量 | ❌ | ❌ | ✅ 直接 |\n| **startupProbe** | **启用其他探针** | 杀死容器 → restartPolicy 判断 | ✅ 间接 | ✅ 间接 | ✅ 间接 |\n\n> 🎯 **关键：** readinessProbe **只影响 ready 状态**，不影响 Container State 或 Pod Phase！\n\n### 3.3 探针检查机制\n\n| 机制 | 描述 | 成功条件 | 性能注意 |\n|------|------|---------|---------|\n| **exec** | 执行容器内命令 | 退出码为 0 | ⚠️ fork 多进程，高密度集群慎用 |\n| **httpGet** | HTTP GET 请求 | 状态码 200-399 | ✅ 推荐 |\n| **tcpSocket** | TCP 端口检查 | 端口开放 | ✅ 推荐 |\n| **grpc** | gRPC 健康检查 | status=SERVING | ✅ 推荐 |\n\n### 3.4 探针配置示例\n\n```yaml\ncontainers:\n- name: web-app\n  image: nginx:1.14.2\n  livenessProbe:\n    httpGet:\n      path: /healthz\n      port: 8080\n    initialDelaySeconds: 30\n    periodSeconds: 10\n    timeoutSeconds: 5\n    failureThreshold: 3\n  readinessProbe:\n    httpGet:\n      path: /ready\n      port: 8080\n    initialDelaySeconds: 5\n    periodSeconds: 5\n  startupProbe:\n    httpGet:\n      path: /started\n      port: 8080\n    failureThreshold: 30  # 允许 300s 启动时间\n    periodSeconds: 10\n```\n\n---\n\n## 4. 调度与 Pod Phase 的关系\n\n### 4.1 调度流程中的 Phase 变化\n\n```\nPod 创建 (无 Phase)\n    ↓\n调度器绑定节点\n    ↓\nPod Phase: Pending  ⭐\n    ↓\n容器启动\n    ↓\nPod Phase: Running  ⭐\n```\n\n| 调度阶段 | Pod Phase | 说明 |\n|---------|-----------|------|\n| 未调度 | 无/Pending | Pod 刚创建 |\n| 已调度 | Pending | 等待容器启动 |\n| 容器启动 | Running | 至少一个容器运行 |\n| 调度失败 | Pending (持续) | 无法找到合适节点 |\n\n### 4.2 Deployment vs StatefulSet 更新策略\n\n| 特性 | Deployment | StatefulSet |\n|------|-----------|-------------|\n| **Pod 名称** | 每次更新都变化 (带随机 hash) | 保持不变 (db-0, db-1, db-2) |\n| **更新顺序** | 无序，可并行 | 有序，从后向前 (N-1→0) |\n| **更新速度** | 快 (多个 Pod 同时更新) | 慢 (一次只更新一个) |\n| **适用场景** | 无状态应用 (Web、API) | 有状态应用 (数据库、缓存) |\n| **存储** | 临时存储，Pod 删除后丢失 | 持久存储 (PVC)，Pod 重建后保留 |\n| **调度偏好** | 无偏好 | 优先原节点 (PVC 绑定) |\n\n### 4.3 控制器决策逻辑（核心！）\n\n```\n┌─────────────────────────────────────────────────────────┐\n│  控制器滚动更新决策依据：                                │\n│                                                         │\n│  ❌ 不是 Pod Phase (Pending/Running/Succeeded/Failed)   │\n│  ✅ 是 Pod ready 状态 (.status.containerStatuses[].ready)│\n│                                                         │\n│  ready = true  →  Pod 可用，计入可用副本数               │\n│  ready = false →  Pod 不可用，不计入可用副本数          │\n└─────────────────────────────────────────────────────────┘\n```\n\n#### Deployment 滚动更新流程\n\n```\n创建新 Pod (v2)\n    ↓\n新 Pod Pending → Running (ready=false)\n    ↓\n⚠️ 此时不删除旧 Pod（可用副本数不足）\n    ↓\nreadinessProbe 成功\n    ↓\n新 Pod ready=true  ⭐\n    ↓\n✅ 现在删除旧 Pod（可用副本数满足）\n```\n\n#### StatefulSet 滚动更新流程\n\n```\n终止 db-2 (v1)\n    ↓\n重建 db-2 (v2)，同名 Pod\n    ↓\ndb-2 Pending → Running (ready=false)\n    ↓\n⚠️ 等待 db-2 ready\n    ↓\ndb-2 ready=true  ⭐\n    ↓\n✅ 继续更新 db-1\n```\n\n---\n\n## 5. Pod 终止流程（含详细状态变化）\n\n### 5.1 优雅终止时序图（含状态变化）\n\n```\n┌─────────────────────────────────────────────────────────────────┐\n│  T0: 正常运行                                                    │\n│  Pod Phase: Running | 容器 State: Running | ready: true         │\n└─────────────────────────────────────────────────────────────────┘\n    ↓ kubectl delete pod\n┌─────────────────────────────────────────────────────────────────┐\n│  T1-T2: API Server 设置 deletionTimestamp                        │\n│  Pod Phase: Running | 容器 State: Running | ready: true         │\n│  ⚠️ 此时 Pod 仍接收流量！                                        │\n└─────────────────────────────────────────────────────────────────┘\n    ↓ kubelet 检测到删除标记\n┌─────────────────────────────────────────────────────────────────┐\n│  T3-T4: 执行 preStop hook (如有)                                 │\n│  Pod Phase: Running | 容器 State: Running | ready: false ⭐     │\n│  ⭐ ready 立即变 false，停止接收新流量！                          │\n└─────────────────────────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────────────────────────┐\n│  T5: 发送 SIGTERM 信号                                           │\n│  Pod Phase: Running | 容器 State: Running | ready: false        │\n└─────────────────────────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────────────────────────┐\n│  T6: 从 EndpointSlice 移除                                       │\n│  Pod Phase: Running | 容器 State: Running | ready: false        │\n│  EndpointSlice: ready=false, serving=false, terminating=true   │\n└─────────────────────────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────────────────────────┐\n│  T7: 容器优雅关闭中                                              │\n│  Pod Phase: Running | 容器 State: Running | ready: false        │\n└─────────────────────────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────────────────────────┐\n│  T8: 容器退出 (退出码 0)                                         │\n│  Pod Phase: Running ⚠️ | 容器 State: Terminated ⭐ | ready: false│\n│  ⚠️ 容器已终止，但 Pod Phase 仍为 Running！                       │\n└─────────────────────────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────────────────────────┐\n│  T9: 宽限期内等待                                                │\n│  Pod Phase: Running | 容器 State: Terminated | ready: false    │\n│  (多容器 Pod 可能仍有其他容器在运行)                              │\n└─────────────────────────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────────────────────────┐\n│  T10: 所有容器终止，Pod Phase 变化                                │\n│  Pod Phase: Succeeded/Failed ⭐ | 容器 State: Terminated        │\n│  ⭐ Pod Phase 终于变化！                                         │\n└─────────────────────────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────────────────────────┐\n│  T11: Pod 从 API Server 删除                                      │\n│  Pod 对象消失                                                    │\n└─────────────────────────────────────────────────────────────────┘\n```\n\n### 5.2 完整状态变化表\n\n| 步骤 | 事件 | Pod Phase | 容器 State | ready | kubectl get 显示 |\n|------|------|-----------|-----------|-------|-----------------|\n| T0 | 正常运行 | Running | Running | true | `1/1 Running` |\n| T2 | 删除标记 | Running | Running | true | `1/1 Running` |\n| T4 | preStop 执行 | Running | Running | **false** | `0/1 Running` |\n| T6 | EndpointSlice 移除 | Running | Running | false | `0/1 Terminating` |\n| T8 | 容器终止 | Running | **Terminated** | false | `0/1 Terminating` |\n| T10 | 所有容器终止 | **Succeeded/Failed** | Terminated | false | (即将删除) |\n| T11 | Pod 删除 | 无 | 无 | 无 | (不显示) |\n\n### 5.3 关键发现\n\n| 发现 | 说明 |\n|------|------|\n| **ready 变化最早** | preStop 执行时就变 false，确保流量提前切断 |\n| **Pod Phase 变化最晚** | 所有容器都终止后才变化 |\n| **中间状态窗口** | 容器已 Terminated 但 Pod 仍显示 Running |\n| **多容器复杂状态** | Phase 由最后一个终止的容器决定 |\n\n### 5.4 Sidecar 容器终止顺序\n\n**Kubernetes v1.35 行为：**\n1. 等待所有主容器终止\n2. 按定义顺序的**逆序**终止 Sidecar 容器\n3. 确保 Sidecar 服务持续到不再需要\n\n### 5.5 强制删除 Pod\n\n```bash\n# 立即从 API Server 删除（不等待 kubelet 确认）\nkubectl delete pod <pod-name> --grace-period=0 --force\n```\n\n> ⚠️ **警告：** 强制删除可能导致资源在节点上继续运行，仅用于极端故障场景。\n\n---\n\n## 6. Pod 垃圾回收（PodGC）\n\n### 6.1 PodGC 触发条件\n\nPodGC 是控制平面中的控制器，在以下情况清理 Pod：\n\n1. **超过阈值：** 终止 Pod 数量超过 `terminated-pod-gc-threshold`\n2. **孤儿 Pod：** 绑定到不存在的节点\n3. **未调度终止 Pod：** 始终无法调度的终止 Pod\n4. **不可用节点上的终止 Pod：** 节点标记为 `out-of-service`\n\n### 6.2 清理行为\n\n- 将非终端相位的 Pod 标记为 `Failed`\n- 添加 Pod 中断条件（Pod disruption condition）\n- 从 API Server 删除 Pod 对象\n\n---\n\n## 7. 实践建议与最佳实践\n\n### 7.1 生命周期设计原则\n\n| 原则 | 说明 |\n|------|------|\n| **云原生弹性设计** | 预期任意时刻容器可能被重启 |\n| **无状态优先** | 数据持久化到外部存储 |\n| **优雅终止** | 实现 SIGTERM 处理逻辑，完成正在进行的工作 |\n| **健康检查分离** | liveness 和 readiness 使用不同端点 |\n\n### 7.2 探针配置建议\n\n```yaml\n# 推荐配置模板\nlivenessProbe:\n  httpGet:\n    path: /healthz\n    port: 8080\n  initialDelaySeconds: 15   # 给启动留时间\n  periodSeconds: 10         # 每 10 秒检查\n  timeoutSeconds: 5         # 5 秒超时\n  failureThreshold: 3       # 3 次失败后重启\n\nreadinessProbe:\n  httpGet:\n    path: /ready\n    port: 8080\n  initialDelaySeconds: 5    # 快速进入就绪\n  periodSeconds: 5\n  successThreshold: 1\n  failureThreshold: 3\n\nstartupProbe:  # 慢启动应用必备\n  httpGet:\n    path: /started\n    port: 8080\n  failureThreshold: 30      # 允许 300s 启动\n  periodSeconds: 10\n```\n\n### 7.3 调试命令速查\n\n```bash\n# 查看 Pod Phase\nkubectl get pod <name> -o jsonpath='{.status.phase}'\n\n# 查看容器 ready 状态\nkubectl get pod <name> -o jsonpath='{.status.containerStatuses[*].ready}'\n\n# 查看容器状态\nkubectl get pod <name> -o jsonpath='{.status.containerStatuses[*].state}'\n\n# 查看容器重启次数\nkubectl get pod <name> -o jsonpath='{.status.containerStatuses[*].restartCount}'\n\n# 查看删除时间戳\nkubectl get pod <name> -o jsonpath='{.metadata.deletionTimestamp}'\n\n# 查看详细状态和事件\nkubectl describe pod <name>\n\n# 观察状态变化\nkubectl get pod <name> -w\n\n# 查看 Pod 条件\nkubectl describe pod <name> | grep -A 10 \"Conditions:\"\n```\n\n---\n\n## 8. 关键发现总结\n\n### 8.1 三个概念的关系\n\n| 概念 | 描述对象 | 数量 | 控制器是否使用 |\n|------|---------|------|---------------|\n| **Pod 生命周期** | Pod 整体过程 | 1 个概念 | - |\n| **Pod Phase** | Pod 整体状态 | 1 个/Pod | ❌ |\n| **Container State** | 每个容器状态 | N 个/Pod | ❌ |\n| **ready** | 容器是否就绪 | N 个/Pod | ✅ **核心依据** |\n\n### 8.2 生命周期核心要点\n\n1. **Pod 相位是高级摘要**，不是详细状态机\n2. **容器重启有指数退避**，防止系统过载\n3. **Sidecar 容器有独立生命周期**，Always 重启\n4. **优雅终止是默认行为**，30 秒宽限期\n5. **ready 在 preStop 执行时就变 false**，提前切断流量\n6. **Pod Phase 变化最晚**，所有容器终止后才变化\n\n### 8.3 探针核心要点\n\n1. **三种探针职责分离**，不应混用\n2. **startupProbe 保护慢启动应用**，避免误杀\n3. **exec 探针有 CPU 开销**，高密度集群慎用\n4. **readinessProbe 控制流量**，livenessProbe 控制生死\n5. **readinessProbe 成功 → ready=true，接收流量**\n6. **readinessProbe 失败 → ready=false，移除流量**\n\n### 8.4 调度与更新核心要点\n\n1. **调度是 Pod 从 Pending 到 Running 的关键触发点**\n2. **控制器决策依据是 ready 状态，不是 Pod Phase**\n3. **Deployment 无序并行更新**，Pod 名称变化\n4. **StatefulSet 有序串行更新**，Pod 名称不变\n5. **新 Pod ready 后才删除旧 Pod**，确保服务可用\n\n---\n\n## 9. 参考资料\n\n- [Kubernetes Pod Lifecycle](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/)\n- [Liveness, Readiness, and Startup Probes](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/)\n- [Kubernetes Scheduler](https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/)\n- [Assigning Pods to Nodes](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/)\n- [Container Lifecycle Hooks](https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/)\n- [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)\n- [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)\n\n---\n\n_本报告基于 Kubernetes v1.35 官方文档整理，部分特性（如 ContainerRestartRules）可能处于 Alpha/Beta 阶段。_\n\n_报告版本：v2.0（含深入讨论补充）_\n",
+        "title": "Kubernetes Pod 生命周期深度调研报告（完整版）",
+        "abstract": "**调研日期：** 2026-03-28  \n**主题：** Kubernetes Pod 生命周期、探针机制与调度原理  \n**来源：** Kubernetes 官方文档 v1.35  ",
+        "length": 557,
+        "created_at": "2026-04-04T23:39:06.000Z",
+        "updated_at": "2026-04-04T23:39:36.000Z",
+        "tags": [],
+        "license": false,
+        "headingTrees": [
+          {
+            "key": "-tldr",
+            "href": "#-tldr",
+            "heading": 2,
+            "title": "📌 TL;DR",
+            "children": [],
+            "id": "-tldr"
+          },
+          {
+            "key": "1-pod-生命周期概览",
+            "href": "#1-pod-生命周期概览",
+            "heading": 2,
+            "title": "1. Pod 生命周期概览",
+            "children": [
+              {
+                "key": "11-三个核心概念的关系",
+                "href": "#11-三个核心概念的关系",
+                "heading": 3,
+                "title": "1.1 三个核心概念的关系",
+                "children": [],
+                "id": "11-三个核心概念的关系"
+              },
+              {
+                "key": "12-pod-的五种相位phase",
+                "href": "#12-pod-的五种相位phase",
+                "heading": 3,
+                "title": "1.2 Pod 的五种相位（Phase）",
+                "children": [],
+                "id": "12-pod-的五种相位phase"
+              },
+              {
+                "key": "13-容器的三种状态",
+                "href": "#13-容器的三种状态",
+                "heading": 3,
+                "title": "1.3 容器的三种状态",
+                "children": [],
+                "id": "13-容器的三种状态"
+              },
+              {
+                "key": "14-ready-状态关键",
+                "href": "#14-ready-状态关键",
+                "heading": 3,
+                "title": "1.4 ready 状态（关键！）",
+                "children": [],
+                "id": "14-ready-状态关键"
+              }
+            ],
+            "id": "1-pod-生命周期概览"
+          },
+          {
+            "key": "2-容器重启策略restartpolicy",
+            "href": "#2-容器重启策略restartpolicy",
+            "heading": 2,
+            "title": "2. 容器重启策略（restartPolicy）",
+            "children": [
+              {
+                "key": "21-pod-级别重启策略",
+                "href": "#21-pod-级别重启策略",
+                "heading": 3,
+                "title": "2.1 Pod 级别重启策略",
+                "children": [],
+                "id": "21-pod-级别重启策略"
+              },
+              {
+                "key": "22-作用范围",
+                "href": "#22-作用范围",
+                "heading": 3,
+                "title": "2.2 作用范围",
+                "children": [],
+                "id": "22-作用范围"
+              },
+              {
+                "key": "23-与-pod-phase-的关系",
+                "href": "#23-与-pod-phase-的关系",
+                "heading": 3,
+                "title": "2.3 与 Pod Phase 的关系",
+                "children": [],
+                "id": "23-与-pod-phase-的关系"
+              },
+              {
+                "key": "24-典型应用场景",
+                "href": "#24-典型应用场景",
+                "heading": 3,
+                "title": "2.4 典型应用场景",
+                "children": [],
+                "id": "24-典型应用场景"
+              },
+              {
+                "key": "25-指数退避重启机制",
+                "href": "#25-指数退避重启机制",
+                "heading": 3,
+                "title": "2.5 指数退避重启机制",
+                "children": [],
+                "id": "25-指数退避重启机制"
+              },
+              {
+                "key": "26-crashloopbackoff-排查流程",
+                "href": "#26-crashloopbackoff-排查流程",
+                "heading": 3,
+                "title": "2.6 CrashLoopBackOff 排查流程",
+                "children": [],
+                "id": "26-crashloopbackoff-排查流程"
+              }
+            ],
+            "id": "2-容器重启策略restartpolicy"
+          },
+          {
+            "key": "3-健康检查探针probes",
+            "href": "#3-健康检查探针probes",
+            "heading": 2,
+            "title": "3. 健康检查探针（Probes）",
+            "children": [
+              {
+                "key": "31-三种探针类型对比",
+                "href": "#31-三种探针类型对比",
+                "heading": 3,
+                "title": "3.1 三种探针类型对比",
+                "children": [],
+                "id": "31-三种探针类型对比"
+              },
+              {
+                "key": "32-探针与-phasestateready-的关系",
+                "href": "#32-探针与-phasestateready-的关系",
+                "heading": 3,
+                "title": "3.2 探针与 Phase/State/ready 的关系",
+                "children": [],
+                "id": "32-探针与-phasestateready-的关系"
+              },
+              {
+                "key": "33-探针检查机制",
+                "href": "#33-探针检查机制",
+                "heading": 3,
+                "title": "3.3 探针检查机制",
+                "children": [],
+                "id": "33-探针检查机制"
+              },
+              {
+                "key": "34-探针配置示例",
+                "href": "#34-探针配置示例",
+                "heading": 3,
+                "title": "3.4 探针配置示例",
+                "children": [],
+                "id": "34-探针配置示例"
+              }
+            ],
+            "id": "3-健康检查探针probes"
+          },
+          {
+            "key": "4-调度与-pod-phase-的关系",
+            "href": "#4-调度与-pod-phase-的关系",
+            "heading": 2,
+            "title": "4. 调度与 Pod Phase 的关系",
+            "children": [
+              {
+                "key": "41-调度流程中的-phase-变化",
+                "href": "#41-调度流程中的-phase-变化",
+                "heading": 3,
+                "title": "4.1 调度流程中的 Phase 变化",
+                "children": [],
+                "id": "41-调度流程中的-phase-变化"
+              },
+              {
+                "key": "42-deployment-vs-statefulset-更新策略",
+                "href": "#42-deployment-vs-statefulset-更新策略",
+                "heading": 3,
+                "title": "4.2 Deployment vs StatefulSet 更新策略",
+                "children": [],
+                "id": "42-deployment-vs-statefulset-更新策略"
+              },
+              {
+                "key": "43-控制器决策逻辑核心",
+                "href": "#43-控制器决策逻辑核心",
+                "heading": 3,
+                "title": "4.3 控制器决策逻辑（核心！）",
+                "children": [
+                  {
+                    "key": "deployment-滚动更新流程",
+                    "href": "#deployment-滚动更新流程",
+                    "heading": 4,
+                    "title": "Deployment 滚动更新流程",
+                    "children": [],
+                    "id": "deployment-滚动更新流程"
+                  },
+                  {
+                    "key": "statefulset-滚动更新流程",
+                    "href": "#statefulset-滚动更新流程",
+                    "heading": 4,
+                    "title": "StatefulSet 滚动更新流程",
+                    "children": [],
+                    "id": "statefulset-滚动更新流程"
+                  }
+                ],
+                "id": "43-控制器决策逻辑核心"
+              }
+            ],
+            "id": "4-调度与-pod-phase-的关系"
+          },
+          {
+            "key": "5-pod-终止流程含详细状态变化",
+            "href": "#5-pod-终止流程含详细状态变化",
+            "heading": 2,
+            "title": "5. Pod 终止流程（含详细状态变化）",
+            "children": [
+              {
+                "key": "51-优雅终止时序图含状态变化",
+                "href": "#51-优雅终止时序图含状态变化",
+                "heading": 3,
+                "title": "5.1 优雅终止时序图（含状态变化）",
+                "children": [],
+                "id": "51-优雅终止时序图含状态变化"
+              },
+              {
+                "key": "52-完整状态变化表",
+                "href": "#52-完整状态变化表",
+                "heading": 3,
+                "title": "5.2 完整状态变化表",
+                "children": [],
+                "id": "52-完整状态变化表"
+              },
+              {
+                "key": "53-关键发现",
+                "href": "#53-关键发现",
+                "heading": 3,
+                "title": "5.3 关键发现",
+                "children": [],
+                "id": "53-关键发现"
+              },
+              {
+                "key": "54-sidecar-容器终止顺序",
+                "href": "#54-sidecar-容器终止顺序",
+                "heading": 3,
+                "title": "5.4 Sidecar 容器终止顺序",
+                "children": [],
+                "id": "54-sidecar-容器终止顺序"
+              },
+              {
+                "key": "55-强制删除-pod",
+                "href": "#55-强制删除-pod",
+                "heading": 3,
+                "title": "5.5 强制删除 Pod",
+                "children": [],
+                "id": "55-强制删除-pod"
+              }
+            ],
+            "id": "5-pod-终止流程含详细状态变化"
+          },
+          {
+            "key": "6-pod-垃圾回收podgc",
+            "href": "#6-pod-垃圾回收podgc",
+            "heading": 2,
+            "title": "6. Pod 垃圾回收（PodGC）",
+            "children": [
+              {
+                "key": "61-podgc-触发条件",
+                "href": "#61-podgc-触发条件",
+                "heading": 3,
+                "title": "6.1 PodGC 触发条件",
+                "children": [],
+                "id": "61-podgc-触发条件"
+              },
+              {
+                "key": "62-清理行为",
+                "href": "#62-清理行为",
+                "heading": 3,
+                "title": "6.2 清理行为",
+                "children": [],
+                "id": "62-清理行为"
+              }
+            ],
+            "id": "6-pod-垃圾回收podgc"
+          },
+          {
+            "key": "7-实践建议与最佳实践",
+            "href": "#7-实践建议与最佳实践",
+            "heading": 2,
+            "title": "7. 实践建议与最佳实践",
+            "children": [
+              {
+                "key": "71-生命周期设计原则",
+                "href": "#71-生命周期设计原则",
+                "heading": 3,
+                "title": "7.1 生命周期设计原则",
+                "children": [],
+                "id": "71-生命周期设计原则"
+              },
+              {
+                "key": "72-探针配置建议",
+                "href": "#72-探针配置建议",
+                "heading": 3,
+                "title": "7.2 探针配置建议",
+                "children": [],
+                "id": "72-探针配置建议"
+              },
+              {
+                "key": "73-调试命令速查",
+                "href": "#73-调试命令速查",
+                "heading": 3,
+                "title": "7.3 调试命令速查",
+                "children": [],
+                "id": "73-调试命令速查"
+              }
+            ],
+            "id": "7-实践建议与最佳实践"
+          },
+          {
+            "key": "8-关键发现总结",
+            "href": "#8-关键发现总结",
+            "heading": 2,
+            "title": "8. 关键发现总结",
+            "children": [
+              {
+                "key": "81-三个概念的关系",
+                "href": "#81-三个概念的关系",
+                "heading": 3,
+                "title": "8.1 三个概念的关系",
+                "children": [],
+                "id": "81-三个概念的关系"
+              },
+              {
+                "key": "82-生命周期核心要点",
+                "href": "#82-生命周期核心要点",
+                "heading": 3,
+                "title": "8.2 生命周期核心要点",
+                "children": [],
+                "id": "82-生命周期核心要点"
+              },
+              {
+                "key": "83-探针核心要点",
+                "href": "#83-探针核心要点",
+                "heading": 3,
+                "title": "8.3 探针核心要点",
+                "children": [],
+                "id": "83-探针核心要点"
+              },
+              {
+                "key": "84-调度与更新核心要点",
+                "href": "#84-调度与更新核心要点",
+                "heading": 3,
+                "title": "8.4 调度与更新核心要点",
+                "children": [],
+                "id": "84-调度与更新核心要点"
+              }
+            ],
+            "id": "8-关键发现总结"
+          },
+          {
+            "key": "9-参考资料",
+            "href": "#9-参考资料",
+            "heading": 2,
+            "title": "9. 参考资料",
+            "children": [],
+            "id": "9-参考资料"
+          }
+        ],
+        "wikiRefAliases": [],
+        "richRefAliases": []
+      }
+    },
+    {
+      "pathMapping": {
+        "filePath": "public/content/learn_from_ai/2026-04-05-K8s 流量调度与 Ready.md",
+        "pagePath": "/learn_from_ai/K8s 流量调度与 Ready",
+        "slug": "K8s 流量调度与 Ready"
+      },
+      "meta": {
+        "content": "\n> [!query]\n> Kubernetes 的流量调度是以 Pod 为单位还是以容器为单位？影响 Service 中记录是否可接受流量的，是 容器的 ready 状态还是 Pod 的？\n\n在 Kubernetes 中，这两个问题的答案非常明确：\n\n1.  **流量调度是以 Pod 为单位**，而不是容器。\n2.  **影响 Service 是否转发流量的，是 Pod 的就绪状态**（由容器的就绪探针综合决定）。\n\n下面为你详细解释原因：\n\n### 1. 流量调度以 Pod 为单位\n\n-   **Pod 是调度的原子单位**：Kubernetes 中最小的部署和调度单元是 Pod。一个 Pod 内可以有一个或多个容器，但它们共享网络命名空间（IP 地址、端口等）、存储卷（Volume）和 IPC 命名空间。\n-   **Service 的后端是 Pod**：当创建 Service（例如 ClusterIP、NodePort 类型）并通过标签选择器（Label Selector）关联后端时，Service 的 Endpoint（或 EndpointSlice）列表中记录的是 **Pod 的 IP 地址和端口**，而不是容器的 IP（容器没有独立的节点网络 IP）。\n-   **负载均衡分发粒度**：kube-proxy 或 Ingress Controller 在转发流量时，会将请求分发到不同的 **Pod IP** 上。同一个 Pod 内的多个容器访问同一个 Service 时，流量也会被均衡到不同的后端 Pod，而不会在容器级别做区分。\n\n**举例**：假设有一个 Pod 里运行了 `nginx` 和 `sidecar` 两个容器，它们共享同一个 Pod IP `10.244.1.5`。Service 的 Endpoint 只会记录 `10.244.1.5:80`（nginx 的端口）。发往该 Service 的流量全部到达这个 Pod IP，然后由 Pod 内部的网络栈根据端口决定交给哪个容器（这里 80 端口属于 nginx）。\n\n### 2. 影响 Service 流量的关键是 Pod 的就绪状态\n\nService 是否将某个 Pod 的 IP 加入其负载均衡列表（Endpoint），取决于 **Pod 的 `Ready` 条件**。而这个条件是由 **Pod 内所有容器的就绪探针（Readiness Probe）** 共同决定的。\n\n-   **Pod 的就绪状态规则**：一个 Pod 被认为是“就绪”的**当且仅当** Pod 内的**所有容器**都处于就绪状态（即通过各自的就绪探针检查，或未定义探针时默认就绪）。\n-   **与容器 Ready 的关系**：如果 Pod 内**任何一个**容器的就绪探针失败（或容器未运行），那么整个 Pod 就会被标记为 `NotReady`。Service 控制器会立刻将该 Pod 的 IP 从 Endpoint 列表中移除，停止向它转发新流量。\n-   **与容器 Running 状态的区别**：容器仅仅是 `Running`（进程存在）并不代表它能正常提供服务（比如应用还在加载缓存、预热连接池）。就绪探针正是用来解决这个问题的——只有容器真正“准备好接收流量”时，才允许 Service 把流量放进来。\n\n**特殊情况**：\n-   如果 Pod 里只有一个容器，那么该容器的就绪状态直接决定 Pod 的就绪状态。\n-   如果 Pod 里有多个容器，比如一个主容器和一个 sidecar 辅助容器，那么**两个都必须就绪**，Pod 才会被 Service 纳入后端。若 sidecar 探针失败，即使主容器完全正常，整个 Pod 也会被踢出 Service 的负载均衡。\n\n### 总结对比表\n\n| 问题 | 答案 | 原因 |\n| :--- | :--- | :--- |\n| **流量调度单位** | **Pod** | Service 的 Endpoint 记录的是 Pod IP；kube-proxy 以 Pod 为目标做负载均衡。 |\n| **决定是否接收流量** | **Pod 的就绪状态** | Pod 的就绪状态由其所有容器的就绪探针**逻辑与**（AND）结果决定。只有所有容器都就绪，Pod 才会被加入 Service。 |\n\n### 实践建议\n\n-   如果你希望同一个 Pod 内的不同容器独立接收 Service 流量（例如一个提供 HTTP API，另一个提供 gRPC），你需要**创建两个不同的 Service**，分别使用不同的端口和标签选择器来指向同一个 Pod（但监听不同容器端口）。注意：此时流量到达 Pod 后，内核会根据目标端口自动路由到正确的容器。\n-   在定义多容器 Pod 时，务必为每个容器都配置合适的**就绪探针**（尤其是那些需要初始化时间或会暂时不可用的辅助容器），否则 sidecar 容器一旦探针失败，整个 Pod 就会被 Service 剔除，导致主容器也无辜“掉线”。\n\n> [!query]\n> Pod 的就绪状态与容器 Ready 分别记录在哪个资源的哪个字段？\n\nPod 的就绪状态和每个容器的 Ready 状态，分别记录在 Pod 资源的不同字段中。要获取这些信息，可以通过 `kubectl get pod <pod-name> -o yaml` 来查看完整的 YAML 输出。\n\n### 📝 核心字段详解\n\n| 状态类型             | 资源  | 字段路径                                                           | 取值                               | 含义                                                                                                   |\n| :--------------- | :-- | :------------------------------------------------------------- | :------------------------------- | :--------------------------------------------------------------------------------------------------- |\n| **Pod 整体就绪状态**   | Pod | `.status.conditions` 数组中 `type: Ready` 的 `status` 字段           | `\"True\"`, `\"False\"`, `\"Unknown\"` | **True**：Pod 整体就绪，已列入 Service 负载均衡列表[reference:0]。 <br> **False**：Pod 未就绪，已从 Service 的 Endpoint 中移除。 |\n| **单个容器就绪状态**     | Pod | `.status.containerStatuses[]` 数组中对应容器的 `.ready` 字段             | `true`, `false`                  | **true**：该容器已通过就绪探针检查[reference:1]。 <br> **false**：容器未就绪。                                            |\n| **Pod 所有容器就绪状态** | Pod | `.status.conditions` 数组中 `type: ContainersReady` 的 `status` 字段 | `\"True\"`, `\"False\"`, `\"Unknown\"` | **True**：Pod 内**所有**容器都处于就绪状态[reference:2][reference:3]。                                             |\n\n### 🔗 与流量调度机制的关系\n\n理解这些字段是理解 Kubernetes 流量调度原理的关键：\n\n1.  **核心规则**：一个 Pod 只有在其 `Ready` 条件为 `True` 时，才会被 Service 作为流量转发的后端。这是上一轮对话的核心结论。\n2.  **字段联动**：Pod 的 `Ready` 条件是一个“聚合”结果，其计算逻辑包含一个严格的“与”运算：\n    *   **必要条件**：Pod 必须已调度成功 (`PodScheduled`)、所有初始化容器已完成 (`Initialized`)[reference:4]。\n    *   **决定因素**：Pod 的 `Ready` 条件，最终取决于 `.status.conditions` 中 `ContainersReady` 的条件是否为 `True`[reference:5]。\n    *   **关键联动**：而 `ContainersReady` 条件是否为 `True`，又取决于 `.status.containerStatuses` 中**每一个**容器的 `ready` 字段是否都为 `true`。\n\n### 💡 示例：如何解读 Pod 状态\n\n假设你有一个运行 `nginx` 和 `sidecar` 两个容器的 Pod。\n\n*   **情况 A：容器均正常**\n    *   `status.containerStatuses[0].ready` (nginx): **true**\n    *   `status.containerStatuses[1].ready` (sidecar): **true**\n    *   `status.conditions` 中 `type: ContainersReady` 的 `status`: **\"True\"**\n    *   `status.conditions` 中 `type: Ready` 的 `status`: **\"True\"**\n    *   **结果**：Pod IP 出现在 Service 的 Endpoint 列表中，正常接收流量。\n\n*   **情况 B：sidecar 探针失败**\n    *   `status.containerStatuses[0].ready` (nginx): **true**\n    *   `status.containerStatuses[1].ready` (sidecar): **false**\n    *   `status.conditions` 中 `type: ContainersReady` 的 `status`: **\"False\"** (因为有容器未就绪)\n    *   `status.conditions` 中 `type: Ready` 的 `status`: **\"False\"** (因为 `ContainersReady` 为 `False`)\n    *   **结果**：Pod IP 会立刻从 Service 的 Endpoint 中移除，即使主容器 `nginx` 仍在运行。\n\n> **查看命令**：你也可以直接使用 `kubectl describe pod <pod-name>` 命令，在输出的 `Conditions` 和 `Container Statuses` 部分清晰地看到这些字段的值，这比直接查看 YAML 更直观。\n\n### ⚙️ 后台处理机制：从 Pod 状态到 Endpoint 更新\n\n理解 Pod 状态字段后，再看 Kubernetes 后台的自动化流程，能更好地理解为什么 Pod 未就绪时流量就会中断：\n\n1.  **状态监控**：集群中的 **Endpoint Controller** 持续监听 Pod 资源的 `.status.conditions` 字段的变化。\n2.  **更新 Endpoints**：一旦发现某个 Pod 的 `Ready` 条件变为 `False`，控制器会立即更新与 Service 同名的 `Endpoints` 资源（或 `EndpointSlice` 资源）。\n3.  **流量切除**：\n    *   **传统 Endpoints**：会将此 Pod 的 IP 从 `subsets.addresses` (就绪地址列表) 移动到 `subsets.notReadyAddresses` (未就绪地址列表)[reference:6][reference:7]。\n    *   **新版 EndpointSlice**：会更新该端点条目，将其 `conditions.ready` 字段标记为 `false`[reference:8]。\n4.  **数据平面生效**：在每个节点上运行的 **kube-proxy** 组件会 watch `Endpoints` / `EndpointSlice` 的变化，并更新本地的 IPVS 或 iptables 规则，从负载均衡池中移除故障 Pod 的 IP。至此，新的流量将不再发往该 Pod。\n\n> [!query]\n> .status.conditions 数组中 type: Ready 的 status 字段，与 .status.conditions 数组中 type: ContainersReady 的 status 字段，有什么不同吗？什么时候这两个字段会不同？\n\n这两个字段分别代表 **Pod 的整体就绪状态** 和 **容器就绪状态的聚合**。虽然它们密切相关，但 **并不总是相同**，差异源于 `Ready` 条件会考虑 **容器就绪之外的附加因素**。\n\n### 核心区别\n\n| 字段 | 含义 | 判断依据 |\n| :--- | :--- | :--- |\n| **`ContainersReady`** | Pod 内**所有普通容器**是否都已就绪（通过各自的就绪探针） | 仅取决于 `.status.containerStatuses[].ready` 字段：所有容器该字段均为 `true` 时，`ContainersReady` 为 `True`；否则为 `False`。 |\n| **`Ready`** | Pod 整体是否**可以接收 Service 流量** | 基于多个条件的“逻辑与”：<br> - `PodScheduled` = `True`<br> - `Initialized` = `True`<br> - `ContainersReady` = `True`<br> - **所有自定义 `ReadinessGates`** 都满足 |\n\n> `ReadinessGates` 是 Pod 规范 `.spec.readinessGates` 中定义的一组额外条件，允许用户自定义影响 Pod 就绪状态的判断逻辑（例如等待外部控制器确认网络规则已生效）。\n\n### 什么时候两者会不同？\n\n两个字段的值**可能不一致**，主要有两种情况：\n\n#### 1. 自定义 ReadinessGates 未满足（最常见）\n这是设计上最主要的差异场景。  \n- **现象**：`ContainersReady` = `True`，但 `Ready` = `False`。  \n- **原因**：Pod 定义了 `.spec.readinessGates`，例如要求某个自定义条件 `custom-condition` 必须为 `True`，但该条件尚未满足。  \n- **影响**：Pod 容器已经完全就绪，但整体仍被 Service 排除在负载均衡之外，直到所有门控条件通过。  \n- **示例**：\n  ```yaml\n  spec:\n    readinessGates:\n    - conditionType: \"example.com/network-ready\"\n  ```\n  如果该条件在 `.status.conditions` 中状态不为 `True`，则 `Ready` 为 `False`。\n\n#### 2. Pod 正在终止（Terminating）\n当 Pod 被删除或节点压力导致驱逐时，kubelet 会将 Pod 标记为不可用，但容器可能仍处于运行且就绪状态。  \n- **现象**：`ContainersReady` = `True`，而 `Ready` = `False`（或很快变为 `False`）。  \n- **原因**：Pod 的 `deletionTimestamp` 被设置，kubelet 开始优雅终止流程，主动将 `Ready` 条件置为 `False` 以停止接收新流量，但容器尚未停止，探针可能仍然返回成功。  \n- **影响**：Service 立即摘除该 Pod，但正在处理的现有连接可继续完成（取决于终止宽限期）。\n\n#### 3. 其他调度或初始化问题（理论上差异短暂）\n虽然不太常见，但以下情况也可能造成短暂差异：  \n- `PodScheduled` = `True` 但节点网络尚未就绪（由外部控制器反映在 `ReadinessGates` 中）。  \n- `Initialized` = `True` 但容器已就绪，而某个自定义条件（如挂载外部存储）尚未满足。  \n\n> **注意**：如果所有普通容器都已就绪（`ContainersReady=True`），但 `PodScheduled` 或 `Initialized` 为 `False`，实际上 `ContainersReady` 不可能为 `True`（因为容器运行的前提是调度完成且初始化容器结束）。所以这两个条件不会导致“`ContainersReady=True` 而 `Ready=False`”，它们只会让两者同时为 `False`。\n\n### 快速判断方法\n\n使用 `kubectl get pod <pod-name> -o yaml` 查看 `.status.conditions` 数组，对比 `type: ContainersReady` 和 `type: Ready` 的 `status` 字段：\n\n- **两者均为 `True`**：正常，Pod 接收流量。  \n- **两者均为 `False`**：容器未就绪（探针失败或未运行），或调度/初始化未完成。  \n- **`ContainersReady` = `True` 但 `Ready` = `False`**：存在自定义就绪门控未满足，或 Pod 正在终止。这是需要重点排查的差异情况。\n\n### 实际意义\n\n了解这个区别有助于诊断“容器已就绪但 Service 仍不转发流量”的问题。此时应检查：\n1. Pod 是否定义了 `.spec.readinessGates`，以及对应条件的状态。\n2. Pod 是否处于 `Terminating` 状态（`.metadata.deletionTimestamp` 非空）。\n\n",
+        "title": "K8s 流量调度与 Ready",
+        "abstract": "> [!query]\n> Kubernetes 的流量调度是以 Pod 为单位还是以容器为单位？影响 Service 中记录是否可接受流量的，是 容器的 ready 状态还是 Pod 的？\n在 Kubernetes 中，这两个问题的答案非常明确：",
+        "length": 156,
+        "created_at": "2026-04-05T00:36:26.000Z",
+        "updated_at": "2026-04-05T11:40:51.000Z",
+        "tags": [],
+        "license": false,
+        "headingTrees": [
+          {
+            "key": "1-流量调度以-pod-为单位",
+            "href": "#1-流量调度以-pod-为单位",
+            "heading": 3,
+            "title": "1. 流量调度以 Pod 为单位",
+            "children": [],
+            "id": "1-流量调度以-pod-为单位"
+          },
+          {
+            "key": "2-影响-service-流量的关键是-pod-的就绪状态",
+            "href": "#2-影响-service-流量的关键是-pod-的就绪状态",
+            "heading": 3,
+            "title": "2. 影响 Service 流量的关键是 Pod 的就绪状态",
+            "children": [],
+            "id": "2-影响-service-流量的关键是-pod-的就绪状态"
+          },
+          {
+            "key": "总结对比表",
+            "href": "#总结对比表",
+            "heading": 3,
+            "title": "总结对比表",
+            "children": [],
+            "id": "总结对比表"
+          },
+          {
+            "key": "实践建议",
+            "href": "#实践建议",
+            "heading": 3,
+            "title": "实践建议",
+            "children": [],
+            "id": "实践建议"
+          },
+          {
+            "key": "-核心字段详解",
+            "href": "#-核心字段详解",
+            "heading": 3,
+            "title": "📝 核心字段详解",
+            "children": [],
+            "id": "-核心字段详解"
+          },
+          {
+            "key": "-与流量调度机制的关系",
+            "href": "#-与流量调度机制的关系",
+            "heading": 3,
+            "title": "🔗 与流量调度机制的关系",
+            "children": [],
+            "id": "-与流量调度机制的关系"
+          },
+          {
+            "key": "-示例如何解读-pod-状态",
+            "href": "#-示例如何解读-pod-状态",
+            "heading": 3,
+            "title": "💡 示例：如何解读 Pod 状态",
+            "children": [],
+            "id": "-示例如何解读-pod-状态"
+          },
+          {
+            "key": "️-后台处理机制从-pod-状态到-endpoint-更新",
+            "href": "#️-后台处理机制从-pod-状态到-endpoint-更新",
+            "heading": 3,
+            "title": "⚙️ 后台处理机制：从 Pod 状态到 Endpoint 更新",
+            "children": [],
+            "id": "️-后台处理机制从-pod-状态到-endpoint-更新"
+          },
+          {
+            "key": "核心区别",
+            "href": "#核心区别",
+            "heading": 3,
+            "title": "核心区别",
+            "children": [],
+            "id": "核心区别"
+          },
+          {
+            "key": "什么时候两者会不同",
+            "href": "#什么时候两者会不同",
+            "heading": 3,
+            "title": "什么时候两者会不同？",
+            "children": [
+              {
+                "key": "1-自定义-readinessgates-未满足最常见",
+                "href": "#1-自定义-readinessgates-未满足最常见",
+                "heading": 4,
+                "title": "1. 自定义 ReadinessGates 未满足（最常见）",
+                "children": [],
+                "id": "1-自定义-readinessgates-未满足最常见"
+              },
+              {
+                "key": "2-pod-正在终止terminating",
+                "href": "#2-pod-正在终止terminating",
+                "heading": 4,
+                "title": "2. Pod 正在终止（Terminating）",
+                "children": [],
+                "id": "2-pod-正在终止terminating"
+              },
+              {
+                "key": "3-其他调度或初始化问题理论上差异短暂",
+                "href": "#3-其他调度或初始化问题理论上差异短暂",
+                "heading": 4,
+                "title": "3. 其他调度或初始化问题（理论上差异短暂）",
+                "children": [],
+                "id": "3-其他调度或初始化问题理论上差异短暂"
+              }
+            ],
+            "id": "什么时候两者会不同"
+          },
+          {
+            "key": "快速判断方法",
+            "href": "#快速判断方法",
+            "heading": 3,
+            "title": "快速判断方法",
+            "children": [],
+            "id": "快速判断方法"
+          },
+          {
+            "key": "实际意义",
+            "href": "#实际意义",
+            "heading": 3,
+            "title": "实际意义",
+            "children": [],
+            "id": "实际意义"
           }
         ],
         "wikiRefAliases": [],
