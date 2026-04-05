@@ -15,7 +15,11 @@ export type HomeCategoryListProps = {
 export default function HomeCategoryList(props: HomeCategoryListProps) {
   const { items } = props;
   return (
-    <Box component="ul" className={style.list} sx={{ listStyle: "none", padding: 0, margin: 0 }}>
+    <Box
+      component="ul"
+      className={style.list}
+      sx={{ listStyle: "none", padding: 0, margin: 0 }}
+    >
       {items.map((item) => (
         <Box
           component="li"
