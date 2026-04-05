@@ -73,7 +73,7 @@ export default function MainWidth(props: MainWidthProps) {
             onClose={() => setDrawerOpen(false)}
             anchor="left"
           >
-            <Box sx={{ minWidth: "30vw" }}>{props.left}</Box>
+            <Box sx={{ minWidth: "30vw", maxWidth: "80vw" }}>{props.left}</Box>
           </Drawer>
           <Fab
             onClick={() => setDrawerOpen(true)}

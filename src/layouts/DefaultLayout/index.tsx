@@ -222,7 +222,7 @@ type DefaultFooterProps = {
 };
 
 const DefaultFooter: React.FC<DefaultFooterProps> = (
-  props: DefaultFooterProps
+  props: DefaultFooterProps,
 ) => {
   const theme = useTheme();
   return (
