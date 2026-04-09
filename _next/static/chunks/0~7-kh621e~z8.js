@@ -1,16 +1,16 @@
-__turbopack_load_page_chunks__("/ideas/[slug]", [
-  "static/chunks/05o7x01uch0lj.js",
+__turbopack_load_page_chunks__("/testwiki/[[...slugs]]", [
+  "static/chunks/0qzg59k_z~xt9.js",
   "static/chunks/00h.7bhp~re5i.js",
-  "static/chunks/0reeii0tlaee0.js",
+  "static/chunks/0.2~7casj4dm..js",
   "static/chunks/0f237uxdvt8i3.js",
   "static/chunks/00rwt3pwgp30i.js",
-  "static/chunks/02g.-k-xryis~.js",
   "static/chunks/10yw01wtv9.0~.js",
-  "static/chunks/0gnlmolz657j2.js",
-  "static/chunks/0a.p798in.30-.js",
   "static/chunks/0iud3.e2o-~6q.js",
+  "static/chunks/0reeii0tlaee0.js",
+  "static/chunks/0a.p798in.30-.js",
+  "static/chunks/02g.-k-xryis~.js",
   "static/chunks/0_r2knpnc0spf.js",
   "static/chunks/07bd~.h5tw7dt.css",
   "static/chunks/10oo6.5m3nmlt.css",
-  "static/chunks/turbopack-0htpx7qg2s~w1.js"
+  "static/chunks/turbopack-0r_xkitts0fjq.js"
 ])
