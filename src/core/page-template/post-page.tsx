@@ -32,7 +32,7 @@ export const PostPage = (props: PostPageProps) => {
           />
         }
       >
-        <ParsingProvider>
+        <ParsingProvider wikilinkPreviewMap={props.wikilinkPreviewMap}>
           <Post
             meta={props.meta}
             tags={props.tags}
@@ -53,7 +53,13 @@ export const PostIndexPage = (props: PostIndexPageProps) => {
     <>
       <Title>Articles</Title>
       <DefaultLayout>
-        <PostList posts={props.posts} allTags={allTagsMap} />
+        <ParsingProvider>
+          <PostList
+            posts={props.posts}
+            allTags={allTagsMap}
+            postAbstracts={props.postAbstracts}
+          />
+        </ParsingProvider>
       </DefaultLayout>
     </>
   );

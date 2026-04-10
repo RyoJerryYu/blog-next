@@ -1,34 +1,20 @@
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
+import { RenderedAbstract } from "@/core/page-template/post-type";
 import { PostMeta, PostResource } from "@/core/types/indexing";
 import { Box, Stack, Typography, useTheme } from "@mui/material";
+import { MDXRemote } from "next-mdx-remote";
 import Link from "next/link";
 import React from "react";
 import RelativeTime from "../RelativeTime";
 import TagsBox from "../TagsBox";
 
 type PostAbstractProps = {
-  children: string;
+  source: RenderedAbstract;
 };
-const PostAbstract: React.FC<PostAbstractProps> = ({ children }) => {
-  const lines = children.split("\n");
-
+const PostAbstract: React.FC<PostAbstractProps> = ({ source }) => {
   return (
-    <Box>
-      {lines.map((line, index) => {
-        return (
-          <Typography
-            key={index}
-            variant="body2"
-            sx={{
-              py: 0.5, // py-1 = 0.25rem = 0.5 * theme.spacing(1)
-              lineHeight: 1.375, // leading-snug
-              overflow: "hidden",
-            }}
-          >
-            {line}
-          </Typography>
-        );
-      })}
+    <Box sx={{ "& p": { my: 0.5 } }}>
+      <MDXRemote {...source.source} />
     </Box>
   );
 };
@@ -37,9 +23,15 @@ type PostListElementProps = {
   postMeta: PostMeta;
   url: string;
   tags: TagInfo[];
+  abstractSource?: RenderedAbstract;
 };
 
-export function PostListElement({ postMeta, url, tags }: PostListElementProps) {
+export function PostListElement({
+  postMeta,
+  url,
+  tags,
+  abstractSource,
+}: PostListElementProps) {
   const theme = useTheme();
 
   return (
@@ -74,13 +66,13 @@ export function PostListElement({ postMeta, url, tags }: PostListElementProps) {
             <RelativeTime>{postMeta.created_at}</RelativeTime>
           </Box>
         )}
-        {postMeta.abstract && postMeta.abstract.length > 0 && (
+        {abstractSource && (
           <Box
             sx={{
               fontSize: "0.875rem", // text-sm
             }}
           >
-            <PostAbstract>{postMeta.abstract}</PostAbstract>
+            <PostAbstract source={abstractSource} />
           </Box>
         )}
       </Link>
@@ -100,9 +92,14 @@ export function PostListElement({ postMeta, url, tags }: PostListElementProps) {
 type PostListProps = {
   posts: PostResource[];
   allTags: Map<string, TagInfo>; // Map<tag, TagInfo>
+  postAbstracts?: Record<string, RenderedAbstract>;
 };
 
-export default function PostList({ posts, allTags }: PostListProps) {
+export default function PostList({
+  posts,
+  allTags,
+  postAbstracts = {},
+}: PostListProps) {
   if (posts.length === 0) {
     return <Box>No posts</Box>;
   }
@@ -126,6 +123,7 @@ export default function PostList({ posts, allTags }: PostListProps) {
       post: post,
       url: pagePath,
       tags: tags,
+      abstractSource: postAbstracts[pagePath],
     };
   });
 
@@ -134,12 +132,13 @@ export default function PostList({ posts, allTags }: PostListProps) {
       direction="column"
       spacing={{ xs: 2, md: 0 }} // gap-4 md:gap-0
     >
-      {elementsProps.map(({ post, url, tags }) => (
+      {elementsProps.map(({ post, url, tags, abstractSource }) => (
         <PostListElement
           key={post.pathMapping.pagePath}
           postMeta={post.meta}
           tags={tags}
           url={url}
+          abstractSource={abstractSource}
         />
       ))}
     </Stack>

@@ -10,6 +10,7 @@ import { WikiPathMapper } from "../indexing/path-mapping/wiki-path-mapper";
 import { getResourceMap } from "../indexing/pipeline/resource-pool";
 import { parseMdx } from "../parsing/rendering-parse";
 import { PagePathMapping, PostMeta, WikiPathMapping } from "../types/indexing";
+import { collectWikilinkPreviewMap } from "./rendered-abstract";
 import { WikiPageProps } from "./wiki-type";
 
 export const wikiGetStaticPaths = async (resourceType: string) => {
@@ -60,6 +61,7 @@ export const wikiGetStaticProps = async (
     pagePath: pagePath,
     filePath: filePath,
   });
+  const wikilinkPreviewMap = await collectWikilinkPreviewMap(meta.wikiRefAliases);
   const backRefPagePaths = getBackrefIndex().resolve(pagePath);
   const backRefResources = backRefPagePaths.map((pagePath) => {
     return getResource<PagePathMapping, PostMeta>(pagePath);
@@ -72,6 +74,7 @@ export const wikiGetStaticProps = async (
       tags,
       source,
       backRefResources,
+      wikilinkPreviewMap,
     },
   };
 };

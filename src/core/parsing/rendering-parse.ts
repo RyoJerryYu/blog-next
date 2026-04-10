@@ -71,6 +71,7 @@ const genMdxOptions = (props: ParseMdxProps) => {
       [
         remarkObsidianWikilink,
         {
+          matchers: [[/^\//, "ObsidianWikilinkPreview"]],
           isMetaPhase: props.isMetaPhase,
           collectRefAliases: (aliases) => {
             capturedResult.wikiRefAliases = aliases;

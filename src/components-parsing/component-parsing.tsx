@@ -3,6 +3,7 @@ import { MDXProvider } from "@mdx-js/react";
 import { MDXComponents } from "mdx/types";
 import Link from "next/link";
 import { ReactNode } from "react";
+import type { WikilinkPreviewMap } from "@/core/page-template/post-type";
 import { Bar } from "./chartjs";
 import { CodeBlockJessieCode } from "./complex-plugin-components/code-block-escape/CodeBlockJessieCode";
 import { CodeBlockMermaid } from "./complex-plugin-components/code-block-escape/CodeBlockMermaid";
@@ -10,6 +11,8 @@ import { ObsidianCallout } from "./complex-plugin-components/obsidian-callout/Ob
 import { ObsidianHighlight } from "./complex-plugin-components/obsidian-highlight/ObsidianHighlight";
 import { ObsidianRichExcalidraw } from "./complex-plugin-components/obsidian-rich/ObsidianRichExcalidraw";
 import { ObsidianTag } from "./complex-plugin-components/obsidian-tag/ObsidianTag";
+import { ObsidianWikilinkPreview } from "@/components-parsing/complex-plugin-components/obsidian-wikilink/ObsidianWikilinkPreview";
+import { WikilinkPreviewContext } from "./wikilink-preview-context";
 
 export const components: MDXComponents = {
   Bar,
@@ -19,6 +22,7 @@ export const components: MDXComponents = {
   ObsidianRichExcalidraw,
   ObsidianCallout,
   ObsidianTag,
+  ObsidianWikilinkPreview,
   a: (props) => {
     const { href, ...rest } = props;
     if (href?.startsWith("/")) {
@@ -36,10 +40,18 @@ export const components: MDXComponents = {
   // },
 };
 
-export const ParsingProvider = ({ children }: { children: ReactNode }) => {
+export const ParsingProvider = ({
+  children,
+  wikilinkPreviewMap = {},
+}: {
+  children: ReactNode;
+  wikilinkPreviewMap?: WikilinkPreviewMap;
+}) => {
   return (
-    <MutexProvider>
-      <MDXProvider components={components}>{children}</MDXProvider>
-    </MutexProvider>
+    <WikilinkPreviewContext.Provider value={wikilinkPreviewMap}>
+      <MutexProvider>
+        <MDXProvider components={components}>{children}</MDXProvider>
+      </MutexProvider>
+    </WikilinkPreviewContext.Provider>
   );
 };

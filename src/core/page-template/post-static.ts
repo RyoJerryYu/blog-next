@@ -16,6 +16,7 @@ import {
   PostPageHyperProps,
   PostPageProps,
 } from "./post-type";
+import { collectWikilinkPreviewMap, renderAbstract } from "./rendered-abstract";
 
 export const postGetStaticPaths = async (resourceType: string) => {
   console.log(`onGetStaticPaths: ${resourceType}`);
@@ -56,6 +57,7 @@ export async function postGetStaticProps(
     pagePath: pagePath,
     filePath: filePath,
   });
+  const wikilinkPreviewMap = await collectWikilinkPreviewMap(meta.wikiRefAliases);
 
   const props: PostPageProps = {
     slug,
@@ -64,6 +66,7 @@ export async function postGetStaticProps(
     meta,
     prevNextInfo,
     backRefResources,
+    wikilinkPreviewMap,
     hyperProps,
   };
 
@@ -84,12 +87,29 @@ export async function postIndexGetStaticProps(
     .listResources(resourceType)
     .map((r) => r.pathMapping.pagePath);
   const posts = pagePaths.map(pageMap.pagePathToResource);
+  const postAbstractEntries = await Promise.all(
+    posts.map(async (post) => {
+      const renderedAbstract = await renderAbstract(
+        post.meta.abstract,
+        post.pathMapping.pagePath,
+        post.pathMapping.filePath,
+      );
+      return [post.pathMapping.pagePath, renderedAbstract] as const;
+    }),
+  );
   const allTagsList = getTagIndex().getTags();
+  const postAbstracts: PostIndexPageProps["postAbstracts"] = {};
+  for (const [pagePath, renderedAbstract] of postAbstractEntries) {
+    if (renderedAbstract) {
+      postAbstracts[pagePath] = renderedAbstract;
+    }
+  }
 
   return {
     props: {
       posts,
       allTagsList,
+      postAbstracts,
     },
   };
 }

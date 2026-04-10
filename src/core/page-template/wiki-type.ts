@@ -5,6 +5,7 @@ import {
   WikiTreeNodeTOC,
 } from "../indexing/index-building/wiki-tree-index-builder/types";
 import { MDXMeta, PostMeta, PostResource } from "../types/indexing";
+import { WikilinkPreviewMap } from "./post-type";
 
 export type WikiPageProps = {
   slugs: string[];
@@ -16,6 +17,7 @@ export type WikiPageProps = {
       tags: TagInfo[];
       source: MDXRemoteSerializeResult;
       backRefResources: PostResource[];
+      wikilinkPreviewMap: WikilinkPreviewMap;
     }
   | {
       isIndexOnly: true;
