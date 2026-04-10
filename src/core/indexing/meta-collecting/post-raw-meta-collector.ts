@@ -15,7 +15,7 @@ import { MetaCollector } from "./meta-collecting";
  * - abstract:
  *   1) frontmatter.abstract if provided
  *   2) if the first non-empty block is an Obsidian abstract callout, use its children text
- *   3) otherwise, first 3 non-empty, non-heading paragraphs
+ *   3) otherwise, first 3 non-empty paragraphs after removing headings and code blocks
  * - length: Number of lines in content
  * - created_at: From frontmatter, parsed as ISO date string
  * - updated_at: From frontmatter, parsed as ISO date string
@@ -70,8 +70,27 @@ export class PostRawMetaCollector implements MetaCollector<PostMeta> {
   };
 
   private extractParagraphAbstract = (content: string): string | undefined => {
+    const lines = content.split("\n");
+    const filteredLines: string[] = [];
+    let fencedCodeMarker: string | null = null;
+    for (const line of lines) {
+      const fenceMatch = line.match(/^\s*(`{3,}|~{3,})/);
+      if (fencedCodeMarker) {
+        if (fenceMatch && fenceMatch[1][0] === fencedCodeMarker[0]) {
+          fencedCodeMarker = null;
+        }
+        continue;
+      }
+      if (fenceMatch) {
+        fencedCodeMarker = fenceMatch[1];
+        continue;
+      }
+      filteredLines.push(line);
+    }
+
     const headingLineRegex = /^\s{0,3}#{1,6}\s+/;
-    const paragraphs = content
+    const paragraphs = filteredLines
+      .join("\n")
       .split(/\n\s*\n+/)
       .map((paragraph) =>
         paragraph

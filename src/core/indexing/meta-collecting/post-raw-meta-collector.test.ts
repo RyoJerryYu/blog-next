@@ -107,6 +107,30 @@ paragraph 4
         abstract: "paragraph 1 line 1\nparagraph 1 line 2\n\nparagraph 2\n\nparagraph 3",
       },
     },
+    {
+      name: "should ignore fenced code block when fallback paragraphs",
+      input: `---
+title: abc
+---
+paragraph 1
+
+\`\`\`ts
+const x = 1;
+console.log(x);
+\`\`\`
+
+paragraph 2
+
+paragraph 3
+
+paragraph 4
+`,
+      want: {
+        title: "abc",
+        tagLength: undefined,
+        abstract: "paragraph 1\n\nparagraph 2\n\nparagraph 3",
+      },
+    },
   ];
   const collector = new PostRawMetaCollector();
 
