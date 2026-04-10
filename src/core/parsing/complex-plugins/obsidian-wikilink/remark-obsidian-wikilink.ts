@@ -62,6 +62,7 @@ const testMatcher = (matcher: Matcher, props: ObsidianWikilinkPropsMdx) => {
 export type RemarkObsidianWikilinkOptions = {
   matchers: [Matcher, string][];
   isMetaPhase?: boolean; // if true, only collect meta data, and not to use index
+  resolveRefAlias?: (alias: string) => string | undefined;
   collectRefAliases: (alias: string[]) => void;
 };
 
@@ -80,6 +81,8 @@ const remarkObsidianWikilink: Plugin<[RemarkObsidianWikilinkOptions?]> = (
     if (opts.isMetaPhase) {
       collectedRefAliases.push(alias);
       return "-";
+    } else if (opts.resolveRefAlias) {
+      return opts.resolveRefAlias(alias);
     } else {
       return getAliasIndex().resolve(alias);
     }

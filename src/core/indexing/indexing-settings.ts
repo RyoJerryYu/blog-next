@@ -1,5 +1,6 @@
 import { BaseMeta, MDXMeta, PostMeta } from "../types/indexing";
 import { AliasIndexBuilder } from "./index-building/alias-index-builder/alias-index-builder";
+import { AbstractRenderIndexBuilder } from "./index-building/abstract-render-index-builder/abstract-render-index-builder";
 import { BackrefIndexBuilder } from "./index-building/backref-index-builder/backref-index-builder";
 import { ClipDataIndexBuilder } from "./index-building/clip-data-index-builder/clip-data-index-builder";
 import { PrevNextIndexBuilder } from "./index-building/prev-next-index-builder/prev-next-index-builder";
@@ -173,6 +174,17 @@ export function pipeline() {
           "staticResources",
         ],
         builder: new AliasIndexBuilder(),
+      },
+      {
+        handleResources: [
+          "articles",
+          "ideas",
+          "learn_from_ai",
+          "jessiecode-wiki",
+          "ygowiki",
+          "testwiki",
+        ],
+        builder: new AbstractRenderIndexBuilder(),
       },
       {
         handleResources: [

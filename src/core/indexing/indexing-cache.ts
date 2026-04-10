@@ -12,6 +12,7 @@ import {
   PostMeta,
 } from "../types/indexing";
 import { AliasIndex } from "./index-building/alias-index-builder/alias-index-builder";
+import { AbstractRenderIndex } from "./index-building/abstract-render-index-builder/abstract-render-index-builder";
 import { BackrefIndex } from "./index-building/backref-index-builder/backref-index-builder";
 import { clipDataFromPool } from "./index-building/clip-data-index-builder/clip-data-index-builder";
 import { PrevNextIndex } from "./index-building/prev-next-index-builder/prev-next-index-builder";
@@ -85,6 +86,9 @@ export const getAliasIndex = () => {
 };
 export const getBackrefIndex = () => {
   return BackrefIndex.fromPool(mustGetCache().indexPool);
+};
+export const getAbstractRenderIndex = () => {
+  return AbstractRenderIndex.fromPool(mustGetCache().indexPool);
 };
 export const getClipData = () => {
   return clipDataFromPool(mustGetCache().indexPool);

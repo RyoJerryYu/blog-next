@@ -14,6 +14,7 @@ export type ParseMdxProps = {
    */
   filePath: string;
   isMetaPhase?: boolean; // if true, only collect meta data, and not to use index
+  resolveRefAlias?: (alias: string) => string | undefined;
 };
 
 export type CapturedResult = {
