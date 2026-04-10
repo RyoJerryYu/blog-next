@@ -110,6 +110,7 @@ export type RemarkObsidianRichOptions = {
    */
   matchers: [Matcher, string][];
   isMetaPhase?: boolean; // if true, only collect meta data, and not to use index
+  resolveRefAlias?: (alias: string) => string | undefined;
   collectRefAliases: (aliases: string[]) => void;
 };
 
@@ -126,6 +127,8 @@ const remarkObsidianRich: Plugin<[RemarkObsidianRichOptions?]> = (options) => {
     if (opts.isMetaPhase) {
       collectedRefAliases.push(alias);
       return "-";
+    } else if (opts.resolveRefAlias) {
+      return opts.resolveRefAlias(alias);
     } else {
       return getAliasIndex().resolve(alias);
     }

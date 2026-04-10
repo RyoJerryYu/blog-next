@@ -63,6 +63,7 @@ const genMdxOptions = (props: ParseMdxProps) => {
             ],
           ],
           isMetaPhase: props.isMetaPhase,
+          resolveRefAlias: props.resolveRefAlias,
           collectRefAliases: (aliases) => {
             capturedResult.richRefAliases = aliases;
           },
@@ -83,6 +84,7 @@ const genMdxOptions = (props: ParseMdxProps) => {
         remarkObsidianTag,
         {
           isMetaPhase: props.isMetaPhase,
+          resolveTags: props.resolveTags,
           firstTagParagraph: true,
           collectMdxTags: (tags) => {
             capturedResult.tags = tags;

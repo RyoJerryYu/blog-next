@@ -6,6 +6,7 @@ import type {
   WikilinkPreviewMap,
 } from "@/core/page-template/post-type";
 import { AliasIndex } from "../alias-index-builder/alias-index-builder";
+import { TagIndex } from "../tag-index-builder/tag-index-builder";
 import { getIndexFromIndexPool, IndexPool } from "../index-building";
 import { IndexBuilder } from "../index-building";
 
@@ -35,6 +36,7 @@ export class AbstractRenderIndexBuilder
     indexPool: IndexPool,
   ): Promise<{ abstractRender: AbstractRenderIndex }> => {
     const aliasIndex = AliasIndex.fromPool(indexPool);
+    const tagIndex = TagIndex.fromPool(indexPool);
     const abstractMap: Record<string, RenderedAbstract> = {};
     const previewMapByPage: Record<string, WikilinkPreviewMap> = {};
 
@@ -45,11 +47,21 @@ export class AbstractRenderIndexBuilder
       if (!abstract) {
         continue;
       }
-      const { source } = await parseMdx(abstract, {
-        pagePath: resource.pathMapping.pagePath,
-        filePath: resource.pathMapping.filePath,
-        resolveRefAlias: (alias) => aliasIndex.resolve(alias),
-      });
+      let source;
+      try {
+        const parsed = await parseMdx(abstract, {
+          pagePath: resource.pathMapping.pagePath,
+          filePath: resource.pathMapping.filePath,
+          resolveRefAlias: (alias) => aliasIndex.resolve(alias),
+          resolveTags: (tags) => tagIndex.getTagsOf(tags),
+        });
+        source = parsed.source;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        throw new Error(
+          `Failed to render abstract for ${pagePath}: ${message}`,
+        );
+      }
       abstractMap[pagePath] = { source };
     }
 
