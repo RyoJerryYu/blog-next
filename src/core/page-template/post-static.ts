@@ -1,4 +1,5 @@
 import {
+  getAbstractRenderIndex,
   getBackrefIndex,
   getPostMetaOrReload,
   getPrevNextIndex,
@@ -56,6 +57,7 @@ export async function postGetStaticProps(
     pagePath: pagePath,
     filePath: filePath,
   });
+  const wikilinkPreviewMap = getAbstractRenderIndex().getWikilinkPreviewMap(pagePath);
 
   const props: PostPageProps = {
     slug,
@@ -64,6 +66,7 @@ export async function postGetStaticProps(
     meta,
     prevNextInfo,
     backRefResources,
+    wikilinkPreviewMap,
     hyperProps,
   };
 
@@ -85,11 +88,21 @@ export async function postIndexGetStaticProps(
     .map((r) => r.pathMapping.pagePath);
   const posts = pagePaths.map(pageMap.pagePathToResource);
   const allTagsList = getTagIndex().getTags();
+  const postAbstracts: PostIndexPageProps["postAbstracts"] = {};
+  const abstractRenderIndex = getAbstractRenderIndex();
+  for (const post of posts) {
+    const pagePath = post.pathMapping.pagePath;
+    const renderedAbstract = abstractRenderIndex.getAbstract(pagePath);
+    if (renderedAbstract) {
+      postAbstracts[pagePath] = renderedAbstract;
+    }
+  }
 
   return {
     props: {
       posts,
       allTagsList,
+      postAbstracts,
     },
   };
 }

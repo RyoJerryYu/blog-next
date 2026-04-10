@@ -58,7 +58,7 @@ export const WikiPage = (props: WikiPageProps) => {
           />
         }
       >
-        <ParsingProvider>
+        <ParsingProvider wikilinkPreviewMap={props.wikilinkPreviewMap}>
           <Post
             meta={props.meta}
             tags={props.tags}

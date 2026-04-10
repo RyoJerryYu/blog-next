@@ -1,34 +1,20 @@
 import { TagInfo } from "@/core/indexing/index-building/tag-index-builder/types";
+import { RenderedAbstract } from "@/core/page-template/post-type";
 import { PostMeta, PostResource } from "@/core/types/indexing";
 import { Box, Stack, Typography, useTheme } from "@mui/material";
-import Link from "next/link";
+import { MDXRemote } from "next-mdx-remote";
+import { useRouter } from "next/router";
 import React from "react";
 import RelativeTime from "../RelativeTime";
 import TagsBox from "../TagsBox";
 
 type PostAbstractProps = {
-  children: string;
+  source: RenderedAbstract;
 };
-const PostAbstract: React.FC<PostAbstractProps> = ({ children }) => {
-  const lines = children.split("\n");
-
+const PostAbstract: React.FC<PostAbstractProps> = ({ source }) => {
   return (
-    <Box>
-      {lines.map((line, index) => {
-        return (
-          <Typography
-            key={index}
-            variant="body2"
-            sx={{
-              py: 0.5, // py-1 = 0.25rem = 0.5 * theme.spacing(1)
-              lineHeight: 1.375, // leading-snug
-              overflow: "hidden",
-            }}
-          >
-            {line}
-          </Typography>
-        );
-      })}
+    <Box sx={{ "& p": { my: 0.5 } }}>
+      <MDXRemote {...source.source} />
     </Box>
   );
 };
@@ -37,53 +23,82 @@ type PostListElementProps = {
   postMeta: PostMeta;
   url: string;
   tags: TagInfo[];
+  abstractSource?: RenderedAbstract;
 };
 
-export function PostListElement({ postMeta, url, tags }: PostListElementProps) {
+export function PostListElement({
+  postMeta,
+  url,
+  tags,
+  abstractSource,
+}: PostListElementProps) {
   const theme = useTheme();
+  const router = useRouter();
+
+  const shouldIgnoreCardNavigation = (target: EventTarget | null) => {
+    return target instanceof Element && target.closest("a") !== null;
+  };
+
+  const navigateToPost = () => {
+    void router.push(url);
+  };
 
   return (
     <Box
+      role="link"
+      tabIndex={0}
+      onClick={(event) => {
+        if (shouldIgnoreCardNavigation(event.target)) {
+          return;
+        }
+        navigateToPost();
+      }}
+      onKeyDown={(event) => {
+        if (event.key !== "Enter" && event.key !== " ") {
+          return;
+        }
+        event.preventDefault();
+        navigateToPost();
+      }}
       sx={{
         flex: 1,
         p: 1, // p-2 = 0.5rem = 1 * theme.spacing(1)
         borderRadius: 1, // rounded-md = 0.375rem
+        cursor: "pointer",
         "&:hover": {
           backgroundColor: theme.palette.bg.focus, // hover:bg-bg-focus
         },
       }}
     >
-      <Link href={url}>
-        <Typography
-          variant="h6"
+      <Typography
+        variant="h6"
+        sx={{
+          fontSize: "1.25rem", // text-xl
+          fontWeight: "bold",
+        }}
+      >
+        {postMeta.title}
+      </Typography>
+      {postMeta.created_at && (
+        <Box
           sx={{
-            fontSize: "1.25rem", // text-xl
-            fontWeight: "bold",
+            fontSize: "0.75rem", // text-xs
+            color: theme.palette.fg.light, // text-fg-light
+            width: "100%",
           }}
         >
-          {postMeta.title}
-        </Typography>
-        {postMeta.created_at && (
-          <Box
-            sx={{
-              fontSize: "0.75rem", // text-xs
-              color: theme.palette.fg.light, // text-fg-light
-              width: "100%",
-            }}
-          >
-            <RelativeTime>{postMeta.created_at}</RelativeTime>
-          </Box>
-        )}
-        {postMeta.abstract && postMeta.abstract.length > 0 && (
-          <Box
-            sx={{
-              fontSize: "0.875rem", // text-sm
-            }}
-          >
-            <PostAbstract>{postMeta.abstract}</PostAbstract>
-          </Box>
-        )}
-      </Link>
+          <RelativeTime>{postMeta.created_at}</RelativeTime>
+        </Box>
+      )}
+      {abstractSource && (
+        <Box
+          sx={{
+            fontSize: "0.875rem", // text-sm
+          }}
+        >
+          <PostAbstract source={abstractSource} />
+        </Box>
+      )}
       {postMeta.tags && postMeta.tags.length > 0 && (
         <Box
           sx={{
@@ -100,9 +115,14 @@ export function PostListElement({ postMeta, url, tags }: PostListElementProps) {
 type PostListProps = {
   posts: PostResource[];
   allTags: Map<string, TagInfo>; // Map<tag, TagInfo>
+  postAbstracts?: Record<string, RenderedAbstract>;
 };
 
-export default function PostList({ posts, allTags }: PostListProps) {
+export default function PostList({
+  posts,
+  allTags,
+  postAbstracts = {},
+}: PostListProps) {
   if (posts.length === 0) {
     return <Box>No posts</Box>;
   }
@@ -126,20 +146,22 @@ export default function PostList({ posts, allTags }: PostListProps) {
       post: post,
       url: pagePath,
       tags: tags,
+      abstractSource: postAbstracts[pagePath],
     };
   });
 
   return (
     <Stack
       direction="column"
-      spacing={{ xs: 2, md: 0 }} // gap-4 md:gap-0
+      spacing={{ xs: 2, md: 2 }} // gap-4
     >
-      {elementsProps.map(({ post, url, tags }) => (
+      {elementsProps.map(({ post, url, tags, abstractSource }) => (
         <PostListElement
           key={post.pathMapping.pagePath}
           postMeta={post.meta}
           tags={tags}
           url={url}
+          abstractSource={abstractSource}
         />
       ))}
     </Stack>

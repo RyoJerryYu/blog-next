@@ -49,6 +49,88 @@ second line
         abstract: "first line\nsecond line",
       },
     },
+    {
+      name: "should use frontmatter abstract first",
+      input: `---
+title: abc
+abstract: from frontmatter
+---
+# heading should be ignored
+content paragraph
+`,
+      want: {
+        title: "abc",
+        tagLength: undefined,
+        abstract: "from frontmatter",
+      },
+    },
+    {
+      name: "should use first abstract callout children",
+      input: `---
+title: abc
+---
+> [!abstract] TL;DR
+> line 1
+> line 2
+>
+> line 3
+
+after paragraph
+`,
+      want: {
+        title: "abc",
+        tagLength: undefined,
+        abstract: "line 1\nline 2\n\nline 3",
+      },
+    },
+    {
+      name: "should fallback to first 3 non-heading paragraphs",
+      input: `---
+title: abc
+---
+# Heading
+
+paragraph 1 line 1
+paragraph 1 line 2
+
+## Heading 2
+
+paragraph 2
+
+paragraph 3
+
+paragraph 4
+`,
+      want: {
+        title: "abc",
+        tagLength: undefined,
+        abstract: "paragraph 1 line 1\nparagraph 1 line 2\n\nparagraph 2\n\nparagraph 3",
+      },
+    },
+    {
+      name: "should ignore fenced code block when fallback paragraphs",
+      input: `---
+title: abc
+---
+paragraph 1
+
+\`\`\`ts
+const x = 1;
+console.log(x);
+\`\`\`
+
+paragraph 2
+
+paragraph 3
+
+paragraph 4
+`,
+      want: {
+        title: "abc",
+        tagLength: undefined,
+        abstract: "paragraph 1\n\nparagraph 2\n\nparagraph 3",
+      },
+    },
   ];
   const collector = new PostRawMetaCollector();
 

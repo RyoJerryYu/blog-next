@@ -1,4 +1,5 @@
 import {
+  getAbstractRenderIndex,
   getBackrefIndex,
   getPostMetaOrReload,
   getResource,
@@ -60,6 +61,7 @@ export const wikiGetStaticProps = async (
     pagePath: pagePath,
     filePath: filePath,
   });
+  const wikilinkPreviewMap = getAbstractRenderIndex().getWikilinkPreviewMap(pagePath);
   const backRefPagePaths = getBackrefIndex().resolve(pagePath);
   const backRefResources = backRefPagePaths.map((pagePath) => {
     return getResource<PagePathMapping, PostMeta>(pagePath);
@@ -72,6 +74,7 @@ export const wikiGetStaticProps = async (
       tags,
       source,
       backRefResources,
+      wikilinkPreviewMap,
     },
   };
 };

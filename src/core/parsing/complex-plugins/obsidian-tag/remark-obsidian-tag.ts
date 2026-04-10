@@ -49,6 +49,7 @@ const syntax = /(^|[\s])(#[^\s]+)/;
 
 export type RemarkObsidianTagOptions = {
   isMetaPhase?: boolean; // if true, only collect meta data, and not to use index
+  resolveTags?: (tags: string[]) => Array<{ slug: string; path: string }>;
   collectMdxTags: (tags: string[]) => void;
   firstTagParagraph?: boolean; // if true, remove first paragraph if it's only tags
 };
@@ -66,6 +67,9 @@ export const remarkObsidianTag: Plugin<[RemarkObsidianTagOptions?]> = (
     if (opts.isMetaPhase) {
       collectedMdxTags.push(...tags);
       return [];
+    }
+    if (opts.resolveTags) {
+      return opts.resolveTags(tags);
     }
     return getTagIndex().getTagsOf(tags);
   };
