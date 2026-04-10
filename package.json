@@ -84,7 +84,7 @@
     "autoprefixer": "^10.4.27",
     "eslint": "10.2.0",
     "eslint-config-next": "16.2.2",
-    "isomorphic-git": "^1.37.4",
+    "isomorphic-git": "^1.37.5",
     "jest": "30.3.0",
     "jest-environment-jsdom": "30.3.0",
     "postcss": "8.5.9",
