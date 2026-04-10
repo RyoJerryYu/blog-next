@@ -153,7 +153,7 @@ export default function PostList({
   return (
     <Stack
       direction="column"
-      spacing={{ xs: 2, md: 0 }} // gap-4 md:gap-0
+      spacing={{ xs: 2, md: 2 }} // gap-4
     >
       {elementsProps.map(({ post, url, tags, abstractSource }) => (
         <PostListElement
