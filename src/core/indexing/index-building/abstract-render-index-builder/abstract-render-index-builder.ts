@@ -52,6 +52,7 @@ export class AbstractRenderIndexBuilder
         const parsed = await parseMdx(abstract, {
           pagePath: resource.pathMapping.pagePath,
           filePath: resource.pathMapping.filePath,
+          disableWikilinkLink: true,
           resolveRefAlias: (alias) => aliasIndex.resolve(alias),
           resolveTags: (tags) => tagIndex.getTagsOf(tags),
         });

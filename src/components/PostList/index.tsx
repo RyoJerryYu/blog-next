@@ -3,7 +3,7 @@ import { RenderedAbstract } from "@/core/page-template/post-type";
 import { PostMeta, PostResource } from "@/core/types/indexing";
 import { Box, Stack, Typography, useTheme } from "@mui/material";
 import { MDXRemote } from "next-mdx-remote";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 import RelativeTime from "../RelativeTime";
 import TagsBox from "../TagsBox";
@@ -33,49 +33,72 @@ export function PostListElement({
   abstractSource,
 }: PostListElementProps) {
   const theme = useTheme();
+  const router = useRouter();
+
+  const shouldIgnoreCardNavigation = (target: EventTarget | null) => {
+    return target instanceof Element && target.closest("a") !== null;
+  };
+
+  const navigateToPost = () => {
+    void router.push(url);
+  };
 
   return (
     <Box
+      role="link"
+      tabIndex={0}
+      onClick={(event) => {
+        if (shouldIgnoreCardNavigation(event.target)) {
+          return;
+        }
+        navigateToPost();
+      }}
+      onKeyDown={(event) => {
+        if (event.key !== "Enter" && event.key !== " ") {
+          return;
+        }
+        event.preventDefault();
+        navigateToPost();
+      }}
       sx={{
         flex: 1,
         p: 1, // p-2 = 0.5rem = 1 * theme.spacing(1)
         borderRadius: 1, // rounded-md = 0.375rem
+        cursor: "pointer",
         "&:hover": {
           backgroundColor: theme.palette.bg.focus, // hover:bg-bg-focus
         },
       }}
     >
-      <Link href={url}>
-        <Typography
-          variant="h6"
+      <Typography
+        variant="h6"
+        sx={{
+          fontSize: "1.25rem", // text-xl
+          fontWeight: "bold",
+        }}
+      >
+        {postMeta.title}
+      </Typography>
+      {postMeta.created_at && (
+        <Box
           sx={{
-            fontSize: "1.25rem", // text-xl
-            fontWeight: "bold",
+            fontSize: "0.75rem", // text-xs
+            color: theme.palette.fg.light, // text-fg-light
+            width: "100%",
           }}
         >
-          {postMeta.title}
-        </Typography>
-        {postMeta.created_at && (
-          <Box
-            sx={{
-              fontSize: "0.75rem", // text-xs
-              color: theme.palette.fg.light, // text-fg-light
-              width: "100%",
-            }}
-          >
-            <RelativeTime>{postMeta.created_at}</RelativeTime>
-          </Box>
-        )}
-        {abstractSource && (
-          <Box
-            sx={{
-              fontSize: "0.875rem", // text-sm
-            }}
-          >
-            <PostAbstract source={abstractSource} />
-          </Box>
-        )}
-      </Link>
+          <RelativeTime>{postMeta.created_at}</RelativeTime>
+        </Box>
+      )}
+      {abstractSource && (
+        <Box
+          sx={{
+            fontSize: "0.875rem", // text-sm
+          }}
+        >
+          <PostAbstract source={abstractSource} />
+        </Box>
+      )}
       {postMeta.tags && postMeta.tags.length > 0 && (
         <Box
           sx={{

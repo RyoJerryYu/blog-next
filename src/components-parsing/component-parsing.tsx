@@ -11,6 +11,7 @@ import { ObsidianCallout } from "./complex-plugin-components/obsidian-callout/Ob
 import { ObsidianHighlight } from "./complex-plugin-components/obsidian-highlight/ObsidianHighlight";
 import { ObsidianRichExcalidraw } from "./complex-plugin-components/obsidian-rich/ObsidianRichExcalidraw";
 import { ObsidianTag } from "./complex-plugin-components/obsidian-tag/ObsidianTag";
+import { ObsidianWikilinkText } from "@/components-parsing/complex-plugin-components/obsidian-wikilink/ObsidianWikilinkText";
 import { ObsidianWikilinkPreview } from "@/components-parsing/complex-plugin-components/obsidian-wikilink/ObsidianWikilinkPreview";
 import { WikilinkPreviewContext } from "./wikilink-preview-context";
 
@@ -22,6 +23,7 @@ export const components: MDXComponents = {
   ObsidianRichExcalidraw,
   ObsidianCallout,
   ObsidianTag,
+  ObsidianWikilinkText,
   ObsidianWikilinkPreview,
   a: (props) => {
     const { href, ...rest } = props;
