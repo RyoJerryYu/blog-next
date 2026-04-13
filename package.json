@@ -83,7 +83,7 @@
     "@types/unist": "^3.0.2",
     "autoprefixer": "^10.4.27",
     "eslint": "10.2.0",
-    "eslint-config-next": "16.2.2",
+    "eslint-config-next": "16.2.3",
     "isomorphic-git": "^1.37.4",
     "jest": "30.3.0",
     "jest-environment-jsdom": "30.3.0",
