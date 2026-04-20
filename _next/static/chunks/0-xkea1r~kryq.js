@@ -1,5 +1,5 @@
-__turbopack_load_page_chunks__("/learn_from_ai", [
-  "static/chunks/0kryt-05bsxak.js",
+__turbopack_load_page_chunks__("/ideas/[slug]", [
+  "static/chunks/10qe1j5op1eo~.js",
   "static/chunks/16ytwov67259v.js",
   "static/chunks/02g.-k-xryis~.js",
   "static/chunks/0cy.1a5rz5ki-.js",
@@ -12,5 +12,5 @@ __turbopack_load_page_chunks__("/learn_from_ai", [
   "static/chunks/0_r2knpnc0spf.js",
   "static/chunks/07bd~.h5tw7dt.css",
   "static/chunks/10oo6.5m3nmlt.css",
-  "static/chunks/turbopack-0fg4r86h8qg15.js"
+  "static/chunks/turbopack-081s_z5150dfq.js"
 ])
