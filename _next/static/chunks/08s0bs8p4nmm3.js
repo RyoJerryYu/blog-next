@@ -1,5 +1,5 @@
 __turbopack_load_page_chunks__("/ideas/[slug]", [
-  "static/chunks/14qhv7leuahy~.js",
+  "static/chunks/07a7s0.7~s4k3.js",
   "static/chunks/16ytwov67259v.js",
   "static/chunks/02g.-k-xryis~.js",
   "static/chunks/0cy.1a5rz5ki-.js",
@@ -12,5 +12,5 @@ __turbopack_load_page_chunks__("/ideas/[slug]", [
   "static/chunks/0_r2knpnc0spf.js",
   "static/chunks/07bd~.h5tw7dt.css",
   "static/chunks/10oo6.5m3nmlt.css",
-  "static/chunks/turbopack-0m7ug1m09r233.js"
+  "static/chunks/turbopack-0dzxs44y-p66h.js"
 ])
