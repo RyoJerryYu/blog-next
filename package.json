@@ -82,7 +82,7 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "@types/unist": "^3.0.2",
     "autoprefixer": "^10.5.0",
-    "eslint": "10.2.1",
+    "eslint": "10.3.0",
     "eslint-config-next": "16.2.4",
     "isomorphic-git": "^1.37.5",
     "jest": "30.3.0",
