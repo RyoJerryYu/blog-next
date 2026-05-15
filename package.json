@@ -87,7 +87,7 @@
     "isomorphic-git": "^1.37.5",
     "jest": "30.4.0",
     "jest-environment-jsdom": "30.4.0",
-    "postcss": "8.5.10",
+    "postcss": "8.5.14",
     "postcss-import": "^16.1.1",
     "remark-mdx": "^3.1.1",
     "remark-parse": "^11.0.0",
