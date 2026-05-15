@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,64774,e=>{"use strict";var c=e.i(39110);e.i(94697),e.s([],40581),e.i(40581),e.s(["createInfoServices",()=>c.createInfoServices],64774)}]);
