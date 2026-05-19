@@ -6,28 +6,28 @@ self.__BUILD_MANIFEST = {
     "static/chunks/03xhx1ga~.7c_.js"
   ],
   "/articles": [
-    "static/chunks/0az6s2ro-iu3z.js"
+    "static/chunks/0kqlf44y-_aw0.js"
   ],
   "/articles/[slug]": [
-    "static/chunks/0.04d2q2o7m~b.js"
+    "static/chunks/0gq29sgugq.zj.js"
   ],
   "/clips": [
     "static/chunks/0h.fe7zbxi6l~.js"
   ],
   "/ideas": [
-    "static/chunks/0tdgvhqj2lb~-.js"
+    "static/chunks/00mmv2k7vs_p8.js"
   ],
   "/ideas/[slug]": [
-    "static/chunks/0kqcsbi4quf4-.js"
+    "static/chunks/06vwjwbk39jzk.js"
   ],
   "/jessiecode-wiki/[[...slugs]]": [
-    "static/chunks/107bf98qf226m.js"
+    "static/chunks/0vvtvs3n-xxit.js"
   ],
   "/learn_from_ai": [
-    "static/chunks/0fmc.80_yn2fi.js"
+    "static/chunks/0y9j~70dx9lh_.js"
   ],
   "/learn_from_ai/[slug]": [
-    "static/chunks/044tgfzoex5n1.js"
+    "static/chunks/0~hg3pdi61o7-.js"
   ],
   "/prev": [
     "static/chunks/0hzwdyzk_k0ou.js"
@@ -39,10 +39,10 @@ self.__BUILD_MANIFEST = {
     "static/chunks/00~pj1vh2w58u.js"
   ],
   "/testwiki/[[...slugs]]": [
-    "static/chunks/0nu.~mxkk02m2.js"
+    "static/chunks/0yc7isp22qzl7.js"
   ],
   "/ygowiki/[[...slugs]]": [
-    "static/chunks/14k6.3p016o7w.js"
+    "static/chunks/0membt0t33txe.js"
   ],
   "__rewrites": {
     "afterFiles": [],
