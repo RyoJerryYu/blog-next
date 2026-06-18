@@ -1,5 +1,5 @@
-__turbopack_load_page_chunks__("/ygowiki/[[...slugs]]", [
-  "static/chunks/024e_i0-_7.7p.js",
+__turbopack_load_page_chunks__("/jessiecode-wiki/[[...slugs]]", [
+  "static/chunks/00x31mah41nih.js",
   "static/chunks/18b564zyqn~4r.js",
   "static/chunks/0mxe8akekxpxu.js",
   "static/chunks/0dv~m9j4e5lh5.js",
@@ -12,5 +12,5 @@ __turbopack_load_page_chunks__("/ygowiki/[[...slugs]]", [
   "static/chunks/0_r2knpnc0spf.js",
   "static/chunks/07bd~.h5tw7dt.css",
   "static/chunks/10oo6.5m3nmlt.css",
-  "static/chunks/turbopack-0fmdcad7_8vs8.js"
+  "static/chunks/turbopack-0ecqn3_0r9do7.js"
 ])
